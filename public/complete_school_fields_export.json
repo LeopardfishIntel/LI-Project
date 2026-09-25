@@ -103,8 +103,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.268Z",
     "salary_scale_5yr_net": 52500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://www.gsis.edu.hk"
+    "website": "https://www.gsis.edu.hk",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0002",
@@ -183,10 +183,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 43500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.spcc.edu.hk",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0003",
@@ -324,7 +324,6 @@
     "salary_source_year": "2025/2026",
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "net_salary": 437500,
     "notes": "Top academic IB continuum school in Koto-ku, Tokyo. Calibrated to net monthly take-home pay: JPY 437,500/mo (~$2,900 USD).",
     "currency": "JPY",
@@ -334,7 +333,8 @@
     "careersPageUrl": "https://www.kist.ed.jp/careers",
     "careersUrl": "https://www.kist.ed.jp/careers",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0004",
@@ -401,7 +401,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 42000,
-    "updatedAt": "2026-09-25T10:53:15.253Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0005",
@@ -466,9 +466,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.676Z",
     "salary_scale_5yr_net": 8750,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 5
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0006",
@@ -545,10 +545,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 1600,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 7
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0007",
@@ -613,9 +613,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 30000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0008",
@@ -683,8 +683,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 160000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://www.dais.edu.in"
+    "website": "https://www.dais.edu.in",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0009",
@@ -750,12 +750,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 8500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.tts.edu.sg",
     "careersPageUrl": "https://www.tts.edu.sg/working-with-us/current-vacancies",
     "careersUrl": "https://www.tts.edu.sg/working-with-us/current-vacancies",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0010",
@@ -817,10 +817,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 41500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.gtcollege.edu.hk",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 6
+    "openJobsCount": 6,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0011",
@@ -882,12 +882,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 26500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.bgy.gd.cn",
     "careersPageUrl": "https://www.bgy.gd.cn",
     "careersUrl": "https://www.bgy.gd.cn",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0012",
@@ -952,9 +952,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 42000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0013",
@@ -1018,10 +1018,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 7500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.acsinternational.edu.sg",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0014",
@@ -1115,8 +1115,8 @@
     "currency": "AZN",
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 3700,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://eas.edu.az"
+    "website": "https://eas.edu.az",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0015",
@@ -1185,10 +1185,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 5500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://singapore.nps-international.com",
     "careersPageUrl": "https://singapore.nps-international.com",
-    "careersUrl": "https://singapore.nps-international.com"
+    "careersUrl": "https://singapore.nps-international.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0016",
@@ -1259,10 +1259,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 48000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://academy.isf.edu.hk",
     "careersPageUrl": "https://academy.isf.edu.hk/en/join-us/careers/",
-    "careersUrl": "https://academy.isf.edu.hk/en/join-us/careers/"
+    "careersUrl": "https://academy.isf.edu.hk/en/join-us/careers/",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0017",
@@ -1335,10 +1335,10 @@
     "net_salary": 31667,
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 31667,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://beijing.dulwich.org",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0018",
@@ -1409,12 +1409,12 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 42000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.singapore.edu.hk",
     "careersPageUrl": "https://www.singapore.edu.hk/join-us/",
     "careersUrl": "https://www.singapore.edu.hk/join-us/",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 4
+    "openJobsCount": 4,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0019",
@@ -1483,10 +1483,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 42500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "http://www.cky.edu.hk",
     "careersPageUrl": "http://www.cky.edu.hk",
-    "careersUrl": "http://www.cky.edu.hk"
+    "careersUrl": "http://www.cky.edu.hk",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0020",
@@ -1550,10 +1550,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 31500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.ykpaoschool.cn",
     "careersPageUrl": "https://www.ykpaoschool.cn/join-us",
-    "careersUrl": "https://www.ykpaoschool.cn/join-us"
+    "careersUrl": "https://www.ykpaoschool.cn/join-us",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0021",
@@ -1617,8 +1617,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 85000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://stepbystep.ed.in"
+    "website": "https://stepbystep.ed.in",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0022",
@@ -1692,8 +1692,8 @@
     "net_salary": 32500,
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 32500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://shanghai-pudong.dulwich.org"
+    "website": "https://shanghai-pudong.dulwich.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0023",
@@ -1762,12 +1762,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 7667,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.sji-international.com.sg",
     "lastSweptDate": "2026-09-25T11:31:18.385Z",
     "lastSweptAtMillis": 1790335878385,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0024",
@@ -1832,9 +1832,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 51500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0025",
@@ -1898,10 +1898,10 @@
     "net_salary": 16667,
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 16667,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.qf.org.qa",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0026",
@@ -1979,12 +1979,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 16800,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.gemsworldacademy-dubai.com",
     "careersPageUrl": "https://www.gemseducation.com/careers",
     "careersUrl": "https://www.gemseducation.com/careers",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0027",
@@ -2242,10 +2242,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://aldareducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0028",
@@ -2318,10 +2318,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 18000,
     "last_benchmark_update": "2026-09-25T07:25:58.678Z",
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://www.jess.sch.ae",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 12
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0029",
@@ -2391,12 +2391,12 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 95000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://neevacademy.org",
     "lastSweptDate": "2026-09-25T11:31:42.223Z",
     "lastSweptAtMillis": 1790335902223,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 5
+    "openJobsCount": 5,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0030",
@@ -2467,8 +2467,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 90000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://bis.edu.in"
+    "website": "https://bis.edu.in",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0031",
@@ -2541,8 +2541,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.105Z",
     "salary_scale_5yr_net": 7400,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://www.hcis.edu.sg"
+    "website": "https://www.hcis.edu.sg",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0032",
@@ -2615,8 +2615,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.106Z",
     "salary_scale_5yr_net": 28000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://www.isnsz.com"
+    "website": "https://www.isnsz.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0033",
@@ -2676,12 +2676,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.106Z",
     "salary_scale_5yr_net": 33333,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
     "website": "https://shanghai.wellingtoncollege.cn",
     "careersPageUrl": "https://shanghai.wellingtoncollege.cn/join-us",
     "careersUrl": "https://shanghai.wellingtoncollege.cn/join-us",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0034",
@@ -2756,8 +2756,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 26000,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0035",
@@ -2821,8 +2821,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 5400,
-    "updatedAt": "2026-09-25T10:53:15.253Z",
-    "website": "https://singapore.globalindianschool.org"
+    "website": "https://singapore.globalindianschool.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0036",
@@ -2898,8 +2898,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 55000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.porg.cz"
+    "website": "https://www.porg.cz",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0037",
@@ -3154,10 +3154,10 @@
         "type": "Titres-Restaurant (Meal Vouchers)"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.ecolejeanninemanuel.org",
     "careersPageUrl": "https://www.ecolejeanninemanuel.org/en/work-with-us/",
-    "careersUrl": "https://www.ecolejeanninemanuel.org/en/work-with-us/"
+    "careersUrl": "https://www.ecolejeanninemanuel.org/en/work-with-us/",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0038",
@@ -3219,10 +3219,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.stcatherines.gr",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0039",
@@ -3316,8 +3316,8 @@
     "net_salary": 4333,
     "last_benchmark_update": "2026-09-25T07:25:58.678Z",
     "salary_scale_5yr_net": 4333,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.ismonaco.org"
+    "website": "https://www.ismonaco.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0040",
@@ -3382,10 +3382,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.stlouisschool.com",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0041",
@@ -3451,8 +3451,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 90000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.heritagexperiential.org"
+    "website": "https://www.heritagexperiential.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0042",
@@ -3671,9 +3671,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 1400,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0043",
@@ -3737,8 +3737,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 140000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.tisb.org"
+    "website": "https://www.tisb.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0044",
@@ -3800,10 +3800,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 75000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.calcat.in",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0045",
@@ -3867,8 +3867,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 28500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.ssis.asia"
+    "website": "https://www.ssis.asia",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0046",
@@ -3932,8 +3932,8 @@
     "net_salary": 30000,
     "last_benchmark_update": "2026-09-25T07:25:58.678Z",
     "salary_scale_5yr_net": 30000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://suzhou.dulwich.org"
+    "website": "https://suzhou.dulwich.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0047",
@@ -4008,8 +4008,8 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.aiglon.ch"
+    "website": "https://www.aiglon.ch",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0048",
@@ -4083,7 +4083,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 1700,
-    "updatedAt": "2026-09-25T10:53:15.254Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0049",
@@ -4154,10 +4154,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 85000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.isp.cz",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0050",
@@ -4234,8 +4234,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.fis.edu"
+    "website": "https://www.fis.edu",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0051",
@@ -4339,8 +4339,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2100,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://alicante.kingscollegeschool.es"
+    "website": "https://alicante.kingscollegeschool.es",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0052",
@@ -4414,10 +4414,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.stgeorge.it",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0053",
@@ -4588,8 +4588,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.oakhouseschool.com"
+    "website": "https://www.oakhouseschool.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0054",
@@ -4662,10 +4662,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.077Z",
     "salary_scale_5yr_net": 7917,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.isl.ch",
     "careersPageUrl": "https://www.isl.ch/join-us/employment-opportunities",
-    "careersUrl": "https://www.isl.ch/join-us/employment-opportunities"
+    "careersUrl": "https://www.isl.ch/join-us/employment-opportunities",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0055",
@@ -4741,10 +4741,10 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.nordangliaeducation.com/beau-soleil",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "careersUrl": "https://www.nordangliaeducation.com/careers"
+    "careersUrl": "https://www.nordangliaeducation.com/careers",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0056",
@@ -4977,10 +4977,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.078Z",
     "salary_scale_5yr_net": 66000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.englishcollege.cz",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0057",
@@ -5049,12 +5049,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.asmilan.org",
     "careersPageUrl": "https://www.asmilan.org/work-with-us",
     "careersUrl": "https://www.asmilan.org/work-with-us",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0058",
@@ -5131,8 +5131,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 7167,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.stgeorges.ch"
+    "website": "https://www.stgeorges.ch",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0059",
@@ -5571,10 +5571,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.park-is.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 7
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0060",
@@ -5650,8 +5650,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 8333,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.zis.ch"
+    "website": "https://www.zis.ch",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0061",
@@ -5763,10 +5763,10 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.britishschool.be",
     "careersPageUrl": "https://www.britishschool.be/our-school/work-with-us/",
-    "careersUrl": "https://www.britishschool.be/our-school/work-with-us/"
+    "careersUrl": "https://www.britishschool.be/our-school/work-with-us/",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0062",
@@ -5837,8 +5837,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://stpeters.es"
+    "website": "https://stpeters.es",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0063",
@@ -6095,8 +6095,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0064",
@@ -6158,10 +6158,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2350,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://aloha-college.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 7
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0065",
@@ -6240,8 +6240,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 3333,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.bfischool.org"
+    "website": "https://www.bfischool.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0066",
@@ -6305,8 +6305,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 6500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.las.ch"
+    "website": "https://www.las.ch",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0067",
@@ -6380,7 +6380,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 3833,
-    "updatedAt": "2026-09-25T10:53:15.254Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0068",
@@ -6458,10 +6458,10 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.isa.nl",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0069",
@@ -6510,7 +6510,6 @@
       "lms": []
     },
     "housingBenefit": "Not Included",
-    "lastCountersSyncedAt": 1789150445853,
     "profitStatus": "Non-Profit",
     "careersUrl": "https://www.asbarcelona.com/careers",
     "numericalstaff": "110",
@@ -6628,7 +6627,6 @@
     "name": "American School BCN",
     "isCampusStub": false,
     "schoolname": "American School BCN",
-    "openJobsCount": 0,
     "schoolId": "FLIS0069",
     "historicalLeadershipTurnover": [
       {
@@ -6648,8 +6646,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2900,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.asbarcelona.com"
+    "website": "https://www.asbarcelona.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0070",
@@ -6713,8 +6713,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 6800,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.haut-lac.ch"
+    "website": "https://www.haut-lac.ch",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0071",
@@ -6981,12 +6981,12 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.ais.at",
     "lastSweptDate": "2026-09-25T11:33:37.628Z",
     "lastSweptAtMillis": 1790336017628,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4
+    "openJobsCount": 4,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0072",
@@ -7068,10 +7068,10 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.nordangliaeducation.com/cdl-geneva",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "careersUrl": "https://www.nordangliaeducation.com/careers"
+    "careersUrl": "https://www.nordangliaeducation.com/careers",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0073",
@@ -7163,12 +7163,12 @@
     "net_salary": 4167,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.isb.be",
     "careersPageUrl": "https://www.isb.be/join-our-team",
     "careersUrl": "https://www.isb.be/join-our-team",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0074",
@@ -7243,7 +7243,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 70000,
-    "updatedAt": "2026-09-25T10:53:15.254Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0075",
@@ -7306,9 +7306,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 27000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0076",
@@ -7372,8 +7372,6 @@
     "isLocked": true,
     "isCampusStub": false,
     "schoolId": "FLIS0076",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 1,
     "currency": "EUR",
     "salary_source_year": "2025/2026",
     "net_salary": 2750,
@@ -7381,8 +7379,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2750,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.stgeorgesschool.com"
+    "website": "https://www.stgeorgesschool.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0077",
@@ -7453,10 +7453,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 3350,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.isdedu.de",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0078",
@@ -7527,12 +7527,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 8000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.iszl.ch",
     "careersPageUrl": "https://www.iszl.ch/join-our-team",
     "careersUrl": "https://www.iszl.ch/join-our-team",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0079",
@@ -7603,8 +7603,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2650,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://m-s-f.de"
+    "website": "https://m-s-f.de",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0080",
@@ -7679,10 +7679,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.ermitage.fr",
     "careersPageUrl": "https://www.ermitage.fr/en/join-our-team",
-    "careersUrl": "https://www.ermitage.fr/en/join-our-team"
+    "careersUrl": "https://www.ermitage.fr/en/join-our-team",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0081",
@@ -7753,8 +7753,8 @@
     "net_salary": 45833,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 45833,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.oslointernationalschool.no"
+    "website": "https://www.oslointernationalschool.no",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0082",
@@ -7827,12 +7827,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.stjulians.com",
     "careersPageUrl": "https://www.stjulians.com/work-with-us",
     "careersUrl": "https://www.stjulians.com/work-with-us",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0083",
@@ -7905,8 +7905,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.424Z",
     "salary_scale_5yr_net": 2850,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.asmadrid.org"
+    "website": "https://www.asmadrid.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0084",
@@ -7981,8 +7981,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 1050000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0085",
@@ -8053,8 +8053,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.stgeorgesschool.com"
+    "website": "https://www.stgeorgesschool.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0086",
@@ -8127,8 +8127,8 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://switzerland.tasis.com"
+    "website": "https://switzerland.tasis.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0087",
@@ -8200,7 +8200,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.254Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0088",
@@ -8474,11 +8474,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "lastSweptDate": "2026-09-25T11:34:25.958Z",
     "lastSweptAtMillis": 1790336065958,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0089",
@@ -8551,8 +8551,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.britishschoolbarcelona.com"
+    "website": "https://www.britishschoolbarcelona.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0090",
@@ -8623,8 +8623,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.hischool.de"
+    "website": "https://www.hischool.de",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0091",
@@ -8701,10 +8701,10 @@
     "net_salary": 17917,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 17917,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.bisr.com.sa",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0092",
@@ -8769,7 +8769,6 @@
     "currency": "SAR",
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -8780,7 +8779,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0093",
@@ -8931,10 +8931,10 @@
     "net_salary": 15417,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 15417,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://rgs-riyadh.edu.sa",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0094",
@@ -8999,8 +8999,8 @@
     "net_salary": 15833,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 15833,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.downehouseriyadh.com"
+    "website": "https://www.downehouseriyadh.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0095",
@@ -9064,7 +9064,6 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -9076,7 +9075,8 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "website": "https://alfaris.edu.sa"
+    "website": "https://alfaris.edu.sa",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0096",
@@ -9368,8 +9368,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 19583,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://miskschools.edu.sa"
+    "website": "https://miskschools.edu.sa",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0097",
@@ -9431,7 +9431,6 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_scale_5yr_net": 13800,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -9445,7 +9444,8 @@
     },
     "website": "https://sis.edu.sa",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0098",
@@ -9515,8 +9515,6 @@
     "isCampusStub": false,
     "country": "United Arab Emirates",
     "schoolId": "FLIS0098",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 0,
     "net_salary": 16500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
@@ -9524,8 +9522,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.254Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0099",
@@ -9596,10 +9596,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T10:53:15.254Z",
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0100",
@@ -9668,10 +9668,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17200,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.cranleigh.ae",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0101",
@@ -9747,10 +9747,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.brightoncollege.ae",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 12
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 17
   },
   {
     "id": "FLIS0102",
@@ -9945,10 +9945,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 16000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.taaleem.ae",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 11
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0103",
@@ -10024,10 +10024,10 @@
     "salary_confidence": "High",
     "salary_scale_5yr_net": 21500,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.dubaicollege.org",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0104",
@@ -10106,9 +10106,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "lastCountersSyncedAt": "2026-09-25T12:07:58.404Z",
-    "openJobsCount": 10
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 20
   },
   {
     "id": "FLIS0105",
@@ -10178,9 +10178,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 19
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 22
   },
   {
     "id": "FLIS0106",
@@ -10251,10 +10251,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16800,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 13
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0107",
@@ -10333,9 +10333,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 17000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0108",
@@ -10414,9 +10414,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 13
+    "openJobsCount": 13,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0109",
@@ -10585,12 +10585,12 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.eteach.com",
     "lastSweptDate": "2026-09-25T11:35:46.969Z",
     "lastSweptAtMillis": 1790336146969,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 7
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0110",
@@ -10668,10 +10668,10 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16800,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.reptondubai.org",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0111",
@@ -10734,7 +10734,6 @@
     "currency": "AED",
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -10747,8 +10746,9 @@
       "packageType": "Full Expat Package + Provided Accommodation"
     },
     "website": "https://hisdubai.ae",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0112",
@@ -10826,10 +10826,10 @@
     "net_salary": 14167,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 14167,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0113",
@@ -10899,10 +10899,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 7
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0114",
@@ -10980,10 +10980,10 @@
     "net_salary": 1042,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 1042,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.bsk.edu.kw",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 3
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0115",
@@ -11146,9 +11146,9 @@
     "net_salary": 1708,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 1708,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 6
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0116",
@@ -11223,9 +11223,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 1600,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 7
+    "openJobsCount": 7,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0117",
@@ -11311,10 +11311,10 @@
     "net_salary": 1500,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 1500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.britishschoolbahrain.com",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0118",
@@ -11392,10 +11392,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 3200,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.bisc.edu.eg",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0119",
@@ -11471,10 +11471,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://malverncollege.edu.eg",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0120",
@@ -11552,10 +11552,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.alsson.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0121",
@@ -11635,10 +11635,10 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.isk.ac.ke",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0122",
@@ -11714,10 +11714,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 320000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.brookhouse.ac.ke",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0123",
@@ -11789,10 +11789,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 280000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://gardenestate.braeburn.com",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 5
+    "openJobsCount": 5,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0124",
@@ -11868,10 +11868,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 40000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.isct.co.za",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0125",
@@ -11951,10 +11951,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 52000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.aisj-jhb.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0126",
@@ -12030,10 +12030,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 43000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.aisct.org",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 6
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 12
   },
   {
     "id": "FLIS0127",
@@ -12163,8 +12163,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0128",
@@ -12238,8 +12238,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 3750,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0129",
@@ -12313,8 +12313,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.unishanoi.org"
+    "website": "https://www.unishanoi.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0130",
@@ -12536,10 +12536,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 3833,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.ishcmc.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0131",
@@ -12620,7 +12620,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.381Z",
     "salary_scale_5yr_net": 15000,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0132",
@@ -12700,7 +12700,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 14200,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0133",
@@ -12779,9 +12779,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0134",
@@ -12861,7 +12861,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0135",
@@ -12934,8 +12934,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 145833,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.shrewsbury.ac.th"
+    "website": "https://www.shrewsbury.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0136",
@@ -13004,10 +13004,10 @@
     "net_salary": 150000,
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 150000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.patana.ac.th",
     "careersPageUrl": "https://www.patana.ac.th/employment/",
-    "careersUrl": "https://www.patana.ac.th/employment/"
+    "careersUrl": "https://www.patana.ac.th/employment/",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0137",
@@ -13066,12 +13066,10 @@
     "cachedStability": null,
     "profitStatus": "For-Profit",
     "careersUrl": "https://www.standrews107.com/careers",
-    "lastCountersSyncedAt": "2026-09-18T09:18:59.986Z",
     "numericalstaff": "90",
     "profit status": "For-Profit",
     "isLocked": true,
     "isCampusStub": false,
-    "openJobsCount": 1,
     "schoolId": "FLIS0137",
     "currency": "THB",
     "salary_source_year": "2025/2026",
@@ -13080,8 +13078,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 108000,
-    "updatedAt": "2026-09-25T10:53:15.258Z",
-    "website": "https://www.standrews107.com"
+    "website": "https://www.standrews107.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0138",
@@ -13138,12 +13138,10 @@
     "cachedStability": null,
     "profitStatus": "For-Profit",
     "careersUrl": "https://brightoncollege.ac.th/careers/",
-    "lastCountersSyncedAt": "2026-09-18T09:18:59.986Z",
     "numericalstaff": "95",
     "profit status": "For-Profit",
     "isLocked": true,
     "isCampusStub": false,
-    "openJobsCount": 0,
     "schoolId": "FLIS0138",
     "currency": "THB",
     "salary_source_year": "2025/2026",
@@ -13153,8 +13151,10 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 112,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 112000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://brightoncollege.ac.th"
+    "website": "https://brightoncollege.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0139",
@@ -13224,12 +13224,12 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.kingsbangkok.ac.th",
     "careersPageUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
     "careersUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 6
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0140",
@@ -13302,8 +13302,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.rugbyschool.ac.th"
+    "website": "https://www.rugbyschool.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0141",
@@ -13368,8 +13368,6 @@
     "isLocked": true,
     "isCampusStub": false,
     "schoolId": "FLIS0141",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 3,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "currency": "THB",
@@ -13378,8 +13376,10 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 115,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 115000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.wellingtoncollege.ac.th"
+    "website": "https://www.wellingtoncollege.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0142",
@@ -13469,8 +13469,8 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.isb.ac.th"
+    "website": "https://www.isb.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0143",
@@ -13543,8 +13543,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.uwcthailand.ac.th"
+    "website": "https://www.uwcthailand.ac.th",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0144",
@@ -13613,12 +13613,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.bsj.sch.id",
     "careersPageUrl": "https://www.bsj.sch.id/work-at-bsj",
     "careersUrl": "https://www.bsj.sch.id/work-at-bsj",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0145",
@@ -13711,10 +13711,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.jisedu.or.id",
     "careersPageUrl": "https://www.jisedu.or.id/work-with-us",
-    "careersUrl": "https://www.jisedu.or.id/work-with-us"
+    "careersUrl": "https://www.jisedu.or.id/work-with-us",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0146",
@@ -13785,10 +13785,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://jakarta.acgedu.com",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 7
+    "openJobsCount": 7,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0147",
@@ -13859,8 +13859,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2600,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.ccsbali.com"
+    "website": "https://www.ccsbali.com",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0148",
@@ -13931,10 +13931,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 3750,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.britishschoolmanila.org",
     "careersPageUrl": "https://www.britishschoolmanila.org/work-with-us",
-    "careersUrl": "https://www.britishschoolmanila.org/work-with-us"
+    "careersUrl": "https://www.britishschoolmanila.org/work-with-us",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0149",
@@ -14003,14 +14003,14 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 4200,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.ismanila.org",
     "careersPageUrl": "https://www.ismanila.org/work-at-ism",
     "careersUrl": "https://www.ismanila.org/work-at-ism",
     "lastSweptDate": "2026-09-25T11:37:47.874Z",
     "lastSweptAtMillis": 1790336267874,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0150",
@@ -14206,12 +14206,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 500000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.bst.ac.jp",
     "careersPageUrl": "https://www.bst.ac.jp/work-at-bst",
     "careersUrl": "https://www.bst.ac.jp/work-at-bst",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0151",
@@ -14413,10 +14413,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 483333,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.malverncollegetokyo.jp",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0152",
@@ -14490,8 +14490,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 508333,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.rugbyschooljapan.ed.jp"
+    "website": "https://www.rugbyschooljapan.ed.jp",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0153",
@@ -14563,10 +14563,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 516667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.harrowappi.jp",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0154",
@@ -14636,9 +14636,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 475000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.stmaur.ac.jp",
-    "lastCountersSyncedAt": "2026-09-25T12:07:24.373Z",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
     "openJobsCount": 1
   },
   {
@@ -14726,8 +14726,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 516667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.yis.ac.jp"
+    "website": "https://www.yis.ac.jp",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0156",
@@ -14801,8 +14801,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 466667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.canacademy.ac.jp"
+    "website": "https://www.canacademy.ac.jp",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0157",
@@ -14868,8 +14868,6 @@
     "isLocked": true,
     "isCampusStub": false,
     "schoolId": "FLIS0157",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 7,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "currency": "KRW",
@@ -14877,10 +14875,12 @@
     "net_salary": 5166667,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 5166667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.seoulforeign.org",
     "careersPageUrl": "https://www.seoulforeign.org/employment",
-    "careersUrl": "https://www.seoulforeign.org/employment"
+    "careersUrl": "https://www.seoulforeign.org/employment",
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0158",
@@ -14953,8 +14953,8 @@
     "net_salary": 5250000,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 5250000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.chadwickinternational.org"
+    "website": "https://www.chadwickinternational.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0159",
@@ -15027,8 +15027,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 4666667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.branksome.asia"
+    "website": "https://www.branksome.asia",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0160",
@@ -15101,8 +15101,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 4833333,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.nlcsjeju.co.kr"
+    "website": "https://www.nlcsjeju.co.kr",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0161",
@@ -15175,8 +15175,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 35417,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.concordiashanghai.org"
+    "website": "https://www.concordiashanghai.org",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0162",
@@ -15247,10 +15247,10 @@
     "net_salary": 34583,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 34583,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.wab.edu",
     "careersPageUrl": "https://www.wab.edu/work-at-wab",
-    "careersUrl": "https://www.wab.edu/work-at-wab"
+    "careersUrl": "https://www.wab.edu/work-at-wab",
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0163",
@@ -15323,10 +15323,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 14583,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.nordangliaeducation.com",
     "lastCountersSyncedAt": "2026-09-25T12:07:24.373Z",
-    "openJobsCount": 0
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0164",
@@ -15395,10 +15395,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://akademeia.edu.pl",
-    "lastCountersSyncedAt": "2026-09-25T12:07:24.373Z",
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0165",
@@ -15499,10 +15499,10 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.isb.ro",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.167Z"
   },
   {
     "id": "FLIS0166",
@@ -15579,8 +15579,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 83333,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.nordangliaeducation.com"
+    "website": "https://www.nordangliaeducation.com",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0167",
@@ -15665,8 +15665,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2250,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://stgeorgeschool.es"
+    "website": "https://stgeorgeschool.es",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0168",
@@ -15742,8 +15742,8 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.ishelsinki.fi"
+    "website": "https://www.ishelsinki.fi",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0169",
@@ -15818,7 +15818,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2600,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0170",
@@ -15898,10 +15898,10 @@
     "net_salary": 36667,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 36667,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.intsch.se",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 4
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0171",
@@ -15970,12 +15970,12 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 34167,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.bisstockholm.se",
     "lastSweptDate": "2026-09-25T11:38:21.311Z",
     "lastSweptAtMillis": 1790336301311,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0172",
@@ -16051,8 +16051,8 @@
     "net_salary": 35000,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 35000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.copenhageninternational.school"
+    "website": "https://www.copenhageninternational.school",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0173",
@@ -16125,8 +16125,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2750,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.southbank.org"
+    "website": "https://www.southbank.org",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0174",
@@ -16205,10 +16205,10 @@
         "type": "Self-Funded Private Lease / Conditional Boarding Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.acs-schools.org",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0175",
@@ -16279,8 +16279,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 4833,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.st-georges.lu"
+    "website": "https://www.st-georges.lu",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0176",
@@ -16371,8 +16371,8 @@
     "net_salary": 5417,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 5417,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.islux.lu"
+    "website": "https://www.islux.lu",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0177",
@@ -16454,8 +16454,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.051Z",
     "salary_scale_5yr_net": 2850,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.stjohns.be"
+    "website": "https://www.stjohns.be",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0178",
@@ -16536,7 +16536,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3167,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0179",
@@ -16617,7 +16617,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0180",
@@ -17056,8 +17056,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.istorin.it"
+    "website": "https://www.istorin.it",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0181",
@@ -17136,12 +17136,12 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
     "website": "https://www.isgenoa.it",
     "lastSweptDate": "2026-09-25T11:40:01.250Z",
     "lastSweptAtMillis": 1790336401250,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0182",
@@ -17219,8 +17219,8 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,300/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 14300,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.stpauls.br"
+    "website": "https://www.stpauls.br",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0183",
@@ -17299,8 +17299,8 @@
     "net_salary": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.britishschool.g12.br"
+    "website": "https://www.britishschool.g12.br",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0184",
@@ -17363,8 +17363,6 @@
     "isRevalidating": true,
     "revalidationError": null,
     "revalidationStatus": "success",
-    "lastCountersSyncedAt": 1789148314021,
-    "openJobsCount": 0,
     "revalidationCompletedAt": {
       "_nanoseconds": 964000000,
       "_seconds": 1788076594
@@ -17386,8 +17384,10 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,800/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 14800,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.graded.br"
+    "website": "https://www.graded.br",
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0185",
@@ -17522,8 +17522,6 @@
     "profit status": "Non-Profit",
     "isCampusStub": false,
     "schoolId": "FLIS0185",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 1,
     "currency": "USD",
     "salary_source_year": "2025/2026",
     "net_salary": 2200,
@@ -17531,8 +17529,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.northlands.edu.ar"
+    "website": "https://www.northlands.edu.ar",
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0186",
@@ -17573,7 +17573,6 @@
     },
     "profitStatus": "Non-Profit",
     "careersUrl": "https://www.markham.edu.pe/careers",
-    "lastCountersSyncedAt": "2026-09-18T09:18:59.986Z",
     "insurance": "Private EPS Healthcare & Dental (employee co-pay); Automatic Life Insurance after 5 years.",
     "visa_details": "Foreign hire teachers must have their university degrees apostilled and registered/validated through SUNEDU (National Superintendence of Higher University Education) for legal work visas. Fully sponsored by school.",
     "aliases": [
@@ -17744,7 +17743,6 @@
     "confidence": "8.8",
     "totalscore": "8.0",
     "isCampusStub": false,
-    "openJobsCount": 0,
     "schoolId": "FLIS0186",
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
@@ -17753,8 +17751,10 @@
     "net_salary": 3333,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3333,
-    "updatedAt": "2026-09-25T10:53:15.255Z",
-    "website": "https://www.markham.edu.pe"
+    "website": "https://www.markham.edu.pe",
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0187",
@@ -17838,7 +17838,7 @@
     "net_salary": 1458,
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 1458,
-    "updatedAt": "2026-09-25T10:53:15.255Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0188",
@@ -18211,8 +18211,8 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 62000,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "website": "https://www.parklane-is.com"
+    "website": "https://www.parklane-is.com",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0189",
@@ -18287,7 +18287,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 1583,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0190",
@@ -18392,7 +18392,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0191",
@@ -18494,12 +18494,12 @@
     "salary_source_year": "2025/2026",
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "net_salary": 2350,
     "notes": "Verified Austrian collective agreement (Kollektivvertrag) baseline: €2,350 net/month (paid 14x/year).",
     "currency": "EUR",
     "last_benchmark_update": "2026-09-25T11:08:43.859Z",
-    "salary_scale_5yr_net": 2350
+    "salary_scale_5yr_net": 2350,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0192",
@@ -18577,7 +18577,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0193",
@@ -18653,9 +18653,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "careersPageUrl": "https://www.innsbruck-iis.at",
-    "careersUrl": "https://www.innsbruck-iis.at"
+    "careersUrl": "https://www.innsbruck-iis.at",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0194",
@@ -18729,11 +18729,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "careersPageUrl": "https://www.lais.at",
     "careersUrl": "https://www.lais.at",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0195",
@@ -18808,8 +18808,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "website": "https://lisa.europagym.at"
+    "website": "https://lisa.europagym.at",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0196",
@@ -18884,10 +18884,10 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "website": "https://salis.salzburg.at",
     "careersPageUrl": "https://salis.salzburg.at",
-    "careersUrl": "https://salis.salzburg.at"
+    "careersUrl": "https://salis.salzburg.at",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0197",
@@ -18963,7 +18963,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0198",
@@ -19065,7 +19065,7 @@
     "net_salary": 4167,
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0199",
@@ -19136,9 +19136,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 1150,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0200",
@@ -19209,9 +19209,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 1542,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0201",
@@ -19286,7 +19286,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 1450,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0202",
@@ -19359,9 +19359,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0203",
@@ -19430,11 +19430,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 1300,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastSweptDate": "2026-09-25T11:40:58.041Z",
     "lastSweptAtMillis": 1790336458041,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 10
+    "openJobsCount": 10,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0204",
@@ -19924,9 +19924,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 11500,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 11
+    "openJobsCount": 11,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0205",
@@ -20013,9 +20013,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0206",
@@ -20100,9 +20100,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.087Z",
     "salary_scale_5yr_net": 2150,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0207",
@@ -20191,7 +20191,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 1950,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0208",
@@ -20280,7 +20280,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 1700,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0209",
@@ -20436,7 +20436,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 1600,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0210",
@@ -20524,7 +20524,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 3583,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0211",
@@ -20598,7 +20598,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0212",
@@ -20674,7 +20674,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0213",
@@ -20739,8 +20739,6 @@
     "careersPageUrl": "https://www.bjab.org/our-community/work-with-us",
     "careersUrl": "https://www.bjab.org/our-community/work-with-us",
     "schoolId": "FLIS0213",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 0,
     "currency": "EUR",
     "salary_source_year": "2025/2026",
     "net_salary": 2450,
@@ -20748,7 +20746,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0214",
@@ -20819,7 +20819,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2600,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0215",
@@ -20890,7 +20890,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0216",
@@ -20961,7 +20961,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2350,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0217",
@@ -21062,11 +21062,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastSweptDate": "2026-09-25T11:41:31.758Z",
     "lastSweptAtMillis": 1790336491758,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0218",
@@ -21136,8 +21136,8 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
-    "website": "https://www.isfwaterloo.org"
+    "website": "https://www.isfwaterloo.org",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0219",
@@ -21206,9 +21206,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2400,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0220",
@@ -21281,7 +21281,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0221",
@@ -21511,9 +21511,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 5000,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0222",
@@ -21699,9 +21699,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 4600,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0223",
@@ -21843,10 +21843,10 @@
     "currency": "AZN",
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 3750,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "website": "https://www.bakuoxfordschool.com",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0224",
@@ -21933,7 +21933,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0225",
@@ -22004,7 +22004,6 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_scale_5yr_net": 3800,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -22015,7 +22014,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0226",
@@ -22114,9 +22114,9 @@
     "currency": "AZN",
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 5417,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0227",
@@ -22411,7 +22411,7 @@
         "type": "Titres-Restaurant (Meal Vouchers)"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0228",
@@ -22544,7 +22544,7 @@
         "type": "Titres-Restaurant (Meal Vouchers)"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0229",
@@ -22838,9 +22838,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 1850,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 9
+    "openJobsCount": 9,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0230",
@@ -22973,7 +22973,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 1900,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0231",
@@ -23084,7 +23084,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0232",
@@ -23213,7 +23213,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.230Z",
     "salary_scale_5yr_net": 2500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0233",
@@ -23303,7 +23303,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 1550,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0234",
@@ -23357,7 +23357,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.684Z",
     "salary_scale_5yr_net": 46667,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0235",
@@ -23411,7 +23411,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 39500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0236",
@@ -23503,7 +23503,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 39500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0237",
@@ -23558,7 +23558,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 25000,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -23569,7 +23568,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0238",
@@ -23624,7 +23624,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 25000,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -23635,7 +23634,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0239",
@@ -23691,7 +23691,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 17000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0240",
@@ -23746,7 +23746,7 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,500/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0241",
@@ -23838,7 +23838,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0242",
@@ -23932,7 +23932,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0243",
@@ -23976,9 +23976,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0244",
@@ -24298,7 +24298,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.684Z",
     "salary_scale_5yr_net": 2667,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0245",
@@ -24342,9 +24342,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 2100,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0246",
@@ -24388,9 +24388,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 1900,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0247",
@@ -24435,7 +24435,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 1850,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0248",
@@ -24480,7 +24480,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0249",
@@ -24525,7 +24525,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0250",
@@ -24569,7 +24569,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "notes": "Premier parent-governed non-profit US/IB flagship in KL. Benchmark calibrated to net take-home pay: MYR 16,500/mo (~$3,550 USD).",
     "housingprovision": "Provided housing allowance (MYR 5,000–7,000/mo) or modern Ampang Hilir condo",
     "name": "The International School of Kuala Lumpur (ISKL)",
@@ -24577,7 +24576,8 @@
     "last_benchmark_update": "2026-09-25T11:09:16.555Z",
     "schoolname": "The International School of Kuala Lumpur (ISKL)",
     "careersPageUrl": "https://www.iskl.edu.my/careers",
-    "careersUrl": "https://www.iskl.edu.my/careers"
+    "careersUrl": "https://www.iskl.edu.my/careers",
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0251",
@@ -24628,7 +24628,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 13200,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0252",
@@ -24680,7 +24680,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 12800,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0253",
@@ -24773,7 +24773,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 13000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0254",
@@ -24811,7 +24811,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0255",
@@ -24873,7 +24873,6 @@
       }
     ],
     "leadershipVacanciesCount": 3,
-    "openJobsCount": 0,
     "salary_source_year": "2025/2026",
     "net_salary": 15833,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
@@ -24881,7 +24880,9 @@
     "currency": "PLN",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 15833,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0256",
@@ -24919,7 +24920,7 @@
     "net_salary": 43333,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 43333,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0257",
@@ -24957,7 +24958,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3333,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0258",
@@ -25004,7 +25005,6 @@
       }
     ],
     "leadershipVacanciesCount": 1,
-    "openJobsCount": 0,
     "currency": "EUR",
     "salary_source_year": "2025/2026",
     "net_salary": 3000,
@@ -25012,7 +25012,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0259",
@@ -25071,7 +25073,6 @@
       }
     ],
     "leadershipVacanciesCount": 2,
-    "openJobsCount": 2,
     "currency": "TWD",
     "salary_source_year": "2025/2026",
     "net_salary": 152000,
@@ -25079,7 +25080,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 152000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0260",
@@ -25136,7 +25139,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 2833,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0261",
@@ -25178,7 +25181,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.313Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0262",
@@ -25221,7 +25224,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0263",
@@ -25266,11 +25269,11 @@
     "net_salary": 54167,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 54167,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "lastSweptDate": "2026-09-25T11:44:16.514Z",
     "lastSweptAtMillis": 1790336656514,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0264",
@@ -25319,7 +25322,7 @@
     "aliases": [
       "FLIS0428"
     ],
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0265",
@@ -25365,7 +25368,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 3300,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0266",
@@ -25411,7 +25414,7 @@
     "net_salary": 56667,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 56667,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0267",
@@ -25462,7 +25465,7 @@
       "Greengates",
       "FLIS0449"
     ],
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0268",
@@ -25508,7 +25511,7 @@
     "net_salary": 48333,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 48333,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0269",
@@ -25554,7 +25557,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 38000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0270",
@@ -25613,7 +25616,7 @@
     "currency": "USD",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3167,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0271",
@@ -25659,7 +25662,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 11500000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0272",
@@ -25705,7 +25708,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 10500000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0273",
@@ -25751,7 +25754,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 3050,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0274",
@@ -25797,7 +25800,7 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0275",
@@ -25843,7 +25846,7 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0276",
@@ -25889,7 +25892,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1125,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0277",
@@ -25935,7 +25938,7 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0278",
@@ -25981,7 +25984,7 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0279",
@@ -26050,7 +26053,7 @@
     "net_salary": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0280",
@@ -26097,7 +26100,7 @@
     "city": "Doha",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17917,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0281",
@@ -26142,7 +26145,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 13000,
-    "updatedAt": "2026-09-25T10:53:15.256Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -26153,7 +26155,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0282",
@@ -26199,7 +26202,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0283",
@@ -26245,7 +26248,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 2917,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0284",
@@ -26291,7 +26294,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3667,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0285",
@@ -26337,7 +26340,7 @@
     "city": "Seoul",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4916667,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0286",
@@ -26383,7 +26386,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 4600000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0287",
@@ -26429,7 +26432,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4833333,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0288",
@@ -26475,7 +26478,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 142000,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0289",
@@ -26522,7 +26525,7 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0290",
@@ -26571,7 +26574,7 @@
     "aliases": [
       "FLIS0429"
     ],
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0291",
@@ -26618,7 +26621,7 @@
     "salary_scale_5yr_net": 18500,
     "city": "Dubai",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0292",
@@ -26664,7 +26667,7 @@
     "salary_scale_5yr_net": 18000,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0293",
@@ -26710,7 +26713,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0294",
@@ -26756,7 +26759,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0295",
@@ -26802,7 +26805,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.256Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0296",
@@ -26849,7 +26852,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 17000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0297",
@@ -26894,11 +26897,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3833,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:45:27.730Z",
     "lastSweptAtMillis": 1790336727730,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0298",
@@ -26944,7 +26947,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0299",
@@ -26990,7 +26993,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2100,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0300",
@@ -27049,7 +27052,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0301",
@@ -27095,7 +27098,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0302",
@@ -27141,7 +27144,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0303",
@@ -27187,7 +27190,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0304",
@@ -27234,7 +27237,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0305",
@@ -27279,7 +27282,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -27290,7 +27292,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0306",
@@ -27335,7 +27338,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -27346,7 +27348,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0307",
@@ -27390,7 +27393,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -27401,7 +27403,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0308",
@@ -27447,7 +27450,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0309",
@@ -27493,7 +27496,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0310",
@@ -27539,7 +27542,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 14583,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0311",
@@ -27585,7 +27588,7 @@
     "salary_scale_5yr_net": 18200,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0312",
@@ -27632,7 +27635,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0313",
@@ -27679,7 +27682,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0314",
@@ -27725,7 +27728,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 13800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0315",
@@ -27771,7 +27774,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0316",
@@ -27816,11 +27819,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:46:57.196Z",
     "lastSweptAtMillis": 1790336817196,
     "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 6
+    "openJobsCount": 6,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0317",
@@ -27866,7 +27869,7 @@
     "salary_scale_5yr_net": 16000,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0318",
@@ -27927,7 +27930,6 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14000,
     "city": "Dubai",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -27942,7 +27944,8 @@
     "lastSweptDate": "2026-09-25T11:48:03.632Z",
     "lastSweptAtMillis": 1790336883632,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 5
+    "openJobsCount": 5,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0319",
@@ -28003,7 +28006,6 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14000,
     "city": "Dubai",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -28018,7 +28020,8 @@
     "lastSweptDate": "2026-09-25T11:48:02.805Z",
     "lastSweptAtMillis": 1790336882805,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2
+    "openJobsCount": 2,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0320",
@@ -28082,9 +28085,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:48:03.772Z",
-    "lastSweptAtMillis": 1790336883772
+    "lastSweptAtMillis": 1790336883772,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0321",
@@ -28146,7 +28149,6 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14000,
     "city": "Dubai",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -28159,7 +28161,8 @@
       "packageType": "Full Expat Package + Provided Accommodation"
     },
     "lastSweptDate": "2026-09-25T11:48:02.056Z",
-    "lastSweptAtMillis": 1790336882056
+    "lastSweptAtMillis": 1790336882056,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0322",
@@ -28221,7 +28224,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 13000,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -28234,7 +28236,8 @@
       "packageType": "Full Expat Package + Provided Accommodation"
     },
     "lastSweptDate": "2026-09-25T11:48:05.206Z",
-    "lastSweptAtMillis": 1790336885206
+    "lastSweptAtMillis": 1790336885206,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0323",
@@ -28297,7 +28300,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0324",
@@ -28360,7 +28363,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0325",
@@ -28423,7 +28426,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0326",
@@ -28487,7 +28490,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 18500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0327",
@@ -28553,7 +28556,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0328",
@@ -28616,7 +28619,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0329",
@@ -28682,7 +28685,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0330",
@@ -28745,7 +28748,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0331",
@@ -28808,7 +28811,7 @@
     "salary_confidence": "High",
     "salary_scale_5yr_net": 17000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0332",
@@ -28872,7 +28875,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0333",
@@ -28935,7 +28938,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0334",
@@ -28998,7 +29001,7 @@
     "net_salary": 16000,
     "salary_scale_5yr_net": 16000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0335",
@@ -29061,7 +29064,7 @@
     "net_salary": 14500,
     "salary_scale_5yr_net": 14500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0336",
@@ -29127,7 +29130,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 11500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0337",
@@ -29190,7 +29193,7 @@
     "net_salary": 14200,
     "salary_scale_5yr_net": 14200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0338",
@@ -29253,7 +29256,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0339",
@@ -29316,7 +29319,7 @@
     "net_salary": 13000,
     "salary_scale_5yr_net": 13000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0340",
@@ -29379,7 +29382,7 @@
     "salary_scale_5yr_net": 13500,
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0341",
@@ -29424,7 +29427,6 @@
       }
     },
     "schoolname": "Jebel Ali School",
-    "openJobsCount": 0,
     "lastJobSyncAt": {
       "_seconds": 1790170114,
       "_nanoseconds": 270000000
@@ -29442,7 +29444,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0342",
@@ -29487,7 +29491,6 @@
       }
     },
     "schoolname": "Greenfield International School",
-    "openJobsCount": 0,
     "lastJobSyncAt": {
       "_seconds": 1790170114,
       "_nanoseconds": 270000000
@@ -29505,7 +29508,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0343",
@@ -29550,7 +29555,6 @@
       }
     },
     "schoolname": "Uptown International School",
-    "openJobsCount": 0,
     "lastJobSyncAt": {
       "_seconds": 1790170114,
       "_nanoseconds": 270000000
@@ -29568,7 +29572,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0344",
@@ -29629,9 +29635,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0345",
@@ -29697,7 +29703,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0346",
@@ -29763,7 +29769,7 @@
     "net_salary": 15200,
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0347",
@@ -29826,7 +29832,7 @@
     "net_salary": 14800,
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0348",
@@ -29889,7 +29895,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0349",
@@ -29952,7 +29958,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0350",
@@ -30015,7 +30021,7 @@
     "salary_scale_5yr_net": 15500,
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0351",
@@ -30078,7 +30084,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0352",
@@ -30141,7 +30147,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0353",
@@ -30204,7 +30210,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0354",
@@ -30369,9 +30375,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 3
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0355",
@@ -30433,9 +30439,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 6
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0356",
@@ -30489,7 +30495,6 @@
       "_seconds": 1790189382,
       "_nanoseconds": 658000000
     },
-    "openJobsCount": 3,
     "schoolId": "FLIS0356",
     "isLocked": true,
     "salary_source_year": "2025/2026",
@@ -30498,7 +30503,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0357",
@@ -30561,7 +30568,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0358",
@@ -30624,7 +30631,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0359",
@@ -30687,7 +30694,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0360",
@@ -30750,7 +30757,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0361",
@@ -30812,9 +30819,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 12500,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0362",
@@ -30877,7 +30884,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0363",
@@ -30940,7 +30947,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0364",
@@ -31003,7 +31010,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0365",
@@ -31065,7 +31072,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 13800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0366",
@@ -31107,7 +31114,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 15000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0367",
@@ -31149,7 +31156,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0368",
@@ -31190,7 +31197,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0369",
@@ -31231,7 +31238,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0370",
@@ -31278,7 +31285,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16250,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0371",
@@ -31319,7 +31326,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0372",
@@ -31365,7 +31372,6 @@
       }
     ],
     "leadershipVacanciesCount": 1,
-    "openJobsCount": 1,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "currency": "SAR",
@@ -31373,7 +31379,9 @@
     "net_salary": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0373",
@@ -31412,7 +31420,6 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_scale_5yr_net": 16000,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "housing_status": "Provided",
     "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "last_benchmark_update": "2026-09-25T11:08:43.860Z",
@@ -31423,7 +31430,8 @@
         "type": "Provided Compound Residence / Corporate Leased Flat"
       },
       "packageType": "Full Expat Package + Provided Accommodation"
-    }
+    },
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0374",
@@ -31480,7 +31488,6 @@
       }
     ],
     "leadershipVacanciesCount": 2,
-    "openJobsCount": 0,
     "salary_source_year": "2025/2026",
     "net_salary": 9000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
@@ -31497,7 +31504,9 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0375",
@@ -31548,7 +31557,7 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0376",
@@ -31594,7 +31603,7 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0377",
@@ -31636,7 +31645,7 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 115,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 115000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0378",
@@ -31678,7 +31687,7 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0379",
@@ -31719,7 +31728,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 15200,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0380",
@@ -31762,7 +31771,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0381",
@@ -31809,7 +31818,6 @@
       }
     ],
     "leadershipVacanciesCount": 1,
-    "openJobsCount": 0,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
@@ -31826,7 +31834,9 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0382",
@@ -31877,7 +31887,7 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0383",
@@ -31928,7 +31938,7 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0384",
@@ -32008,7 +32018,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 566667,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0385",
@@ -32049,7 +32059,7 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0386",
@@ -32090,7 +32100,7 @@
     "net_salary": 4333,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 4333,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0387",
@@ -32131,7 +32141,7 @@
     "net_salary": 8333,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 8333,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0388",
@@ -32172,7 +32182,7 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0389",
@@ -32214,7 +32224,7 @@
     "salary_benchmark_category": "VERIFIED_SCALE",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 8167,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0390",
@@ -32254,11 +32264,11 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 4333,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:53:15.548Z",
     "lastSweptAtMillis": 1790337195548,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0391",
@@ -32299,7 +32309,7 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0392",
@@ -32339,7 +32349,7 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0393",
@@ -32380,7 +32390,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0394",
@@ -32421,7 +32431,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 20833,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0395",
@@ -32462,7 +32472,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0396",
@@ -32503,7 +32513,7 @@
     "net_salary": 5000000,
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 5000000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0397",
@@ -32583,7 +32593,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 466667,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0398",
@@ -32664,7 +32674,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 458333,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0399",
@@ -32706,7 +32716,7 @@
     "currency": "CNY",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 35833,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0400",
@@ -32765,7 +32775,7 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 35000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0401",
@@ -32813,7 +32823,7 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0402",
@@ -32854,7 +32864,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 7400,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0403",
@@ -32895,9 +32905,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 6833,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:53:53.260Z",
-    "lastSweptAtMillis": 1790337233260
+    "lastSweptAtMillis": 1790337233260,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0404",
@@ -32938,7 +32948,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 7333,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0405",
@@ -32979,7 +32989,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 12800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0406",
@@ -33020,7 +33030,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0407",
@@ -33061,7 +33071,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.260Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0408",
@@ -33102,7 +33112,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 3333,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0409",
@@ -33143,7 +33153,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 6400,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0410",
@@ -33184,7 +33194,7 @@
     "net_salary": 8750,
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 8750,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0411",
@@ -33234,7 +33244,7 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0412",
@@ -33284,7 +33294,7 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0413",
@@ -33325,7 +33335,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2550,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0414",
@@ -33366,7 +33376,7 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0415",
@@ -33413,7 +33423,7 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0416",
@@ -33454,7 +33464,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 2917,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0417",
@@ -33495,7 +33505,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0418",
@@ -33534,7 +33544,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0419",
@@ -33575,7 +33585,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0420",
@@ -33613,7 +33623,7 @@
     "net_salary": 15800,
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
     "salary_scale_5yr_net": 15800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0421",
@@ -33653,7 +33663,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
     "salary_scale_5yr_net": 17000,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0422",
@@ -33692,7 +33702,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 1600,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0423",
@@ -33878,9 +33888,9 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15800,
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 5
+    "openJobsCount": 5,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0424",
@@ -33920,7 +33930,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0425",
@@ -34048,9 +34058,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 1900,
-    "updatedAt": "2026-09-25T10:53:15.257Z",
     "lastSweptDate": "2026-09-25T11:54:14.406Z",
-    "lastSweptAtMillis": 1790337254406
+    "lastSweptAtMillis": 1790337254406,
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0426",
@@ -34097,7 +34107,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 6100,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0427",
@@ -34134,7 +34144,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0430",
@@ -34171,7 +34181,7 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 2600,
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0431",
@@ -34211,7 +34221,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2900,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0432",
@@ -34251,7 +34261,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0433",
@@ -34290,7 +34300,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2750,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0434",
@@ -34329,7 +34339,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2650,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0435",
@@ -34368,7 +34378,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.426Z",
     "salary_scale_5yr_net": 5800,
-    "updatedAt": "2026-09-25T10:53:15.257Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0436",
@@ -34407,7 +34417,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 5200,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0437",
@@ -34447,7 +34457,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 235000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0438",
@@ -34487,7 +34497,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 26500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0439",
@@ -34527,7 +34537,7 @@
     "net_salary": 30000,
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 30000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0440",
@@ -34567,7 +34577,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 28500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0441",
@@ -34644,7 +34654,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 27000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0442",
@@ -34684,7 +34694,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0443",
@@ -34724,7 +34734,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 3100,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0444",
@@ -34763,7 +34773,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 26500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0445",
@@ -34835,7 +34845,7 @@
     "net_salary": 2166667,
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 2166667,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0446",
@@ -34906,7 +34916,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2400000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0447",
@@ -34946,7 +34956,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 120833,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0448",
@@ -34986,7 +34996,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2350,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0450",
@@ -35026,7 +35036,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2600,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0451",
@@ -35105,7 +35115,7 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,200/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 14200,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0452",
@@ -35153,7 +35163,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 360000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0453",
@@ -35198,7 +35208,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 380000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0454",
@@ -35244,7 +35254,7 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 13,800/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 13800,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0455",
@@ -35290,7 +35300,7 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 95,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 95000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0456",
@@ -35335,7 +35345,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 42500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0457",
@@ -35380,7 +35390,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.265Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0458",
@@ -35425,7 +35435,7 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.265Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0459",
@@ -35507,7 +35517,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0460",
@@ -35552,7 +35562,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0461",
@@ -35597,7 +35607,7 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   },
   {
     "id": "FLIS0462",
@@ -35645,6 +35655,6 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T10:53:15.258Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z"
   }
 ]
