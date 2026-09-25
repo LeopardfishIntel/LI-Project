@@ -1608,7 +1608,7 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const salaryVal = getSchoolField(activeSchool, ['expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
+    const salaryVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
       const str = String(salaryVal).trim();
       const isUSD = str.includes("$") || str.toUpperCase().includes("USD") || activeSchool?.salaryCurrency === "USD" || Boolean(activeSchool?.startingSalaryUsd) || Boolean(activeSchool?.expectedSalaryNetUsd);
@@ -2288,30 +2288,63 @@ function DecoderContent() {
                       </TooltipContent>
                     </Tooltip>
                   </div>
-                  {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary && (
+                </div>
+                <div className="relative">
+                  <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
+                </div>
+
+                {/* 🎯 SEPARATE 5-YEAR BENCHMARK & PROVENANCE ROW UNDERNEATH */}
+                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1.5 px-0.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wide">
+                      5-Yr Benchmark: <span className="text-white font-black">{currency} {benchmarkSalary && benchmarkSalary !== "0" ? parseFloat(benchmarkSalary).toLocaleString() : '—'}</span>
+                    </span>
+                    {activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help">
+                            ✓ Verified Scale
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-[#0b1224] border-emerald-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
+                          Directly derived from a published or current school salary scale.
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help">
+                            ✦ Strong Market Evidence
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-[#0b1224] border-sky-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
+                          Calibrated from credible teacher compensation evidence and active vacancy postings.
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help">
+                            ≈ Modelled Estimate
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-[#0b1224] border-slate-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
+                          Derived from comparable tier-1 schools, experience curves, and local tax frameworks.
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+
+                  {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary ? (
                     <button
                       type="button"
                       onClick={() => setSettings(prev => ({ ...prev, netSalary: benchmarkSalary }))}
-                      className="text-[8.5px] font-bold text-amber-400 hover:text-amber-300 underline tracking-wider uppercase transition-colors shrink-0"
+                      className="text-[8.5px] font-black text-amber-400 hover:text-amber-300 underline tracking-wider uppercase transition-colors shrink-0"
                       title="Reset to 5-Year Benchmark"
                     >
                       Reset to Benchmark
                     </button>
-                  )}
-                </div>
-                <div className="relative">
-                  <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm pr-28", noSpinners)} />
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                    {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary ? (
-                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                        Your Offer
-                      </span>
-                    ) : (
-                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40">
-                        5-Yr Benchmark
-                      </span>
-                    )}
-                  </div>
+                  ) : null}
                 </div>
                 {analysis?.isConvertedFromAnnual && (
                   <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 p-2 rounded-sm leading-snug">
@@ -3443,9 +3476,17 @@ function DecoderContent() {
                               <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
                                 Your Offer
                               </span>
-                            ) : (
+                            ) : activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' ? (
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                Verified Scale
+                              </span>
+                            ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' ? (
                               <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/30">
-                                5-Yr Benchmark
+                                Strong Market
+                              </span>
+                            ) : (
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/30">
+                                Modelled
                               </span>
                             )}
                           </div>
