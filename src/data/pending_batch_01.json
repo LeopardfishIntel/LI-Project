@@ -1,0 +1,202 @@
+[
+  {
+    "id": "FLIS0001",
+    "name": "German Swiss Int'l",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 52500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Peak campus; gross ~HK$60k-65k/mo, net after ~15% HK standard tax."
+  },
+  {
+    "id": "FLIS0002",
+    "name": "St. Paul's Co-ed",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 43500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Mid-Levels DSS IB school; calibrated from Education Bureau MPS scale Step 5."
+  },
+  {
+    "id": "FLIS0004",
+    "name": "Diocesan Boys'",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 42000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Mong Kok DSS school; standard Hong Kong aided/MPS scale GM step 5."
+  },
+  {
+    "id": "FLIS0006",
+    "name": "Amman Academy",
+    "country": "Jordan",
+    "city": "Amman",
+    "currency": "JOD",
+    "salary_scale_5yr_net": 1600,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Private IB bilingual school in Khalda; net take-home base excluding accommodation."
+  },
+  {
+    "id": "FLIS0007",
+    "name": "Shanghai High Int'l",
+    "country": "China",
+    "city": "Shanghai",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 30000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "SHSID (Xuhui); state-affiliated international division expat net base."
+  },
+  {
+    "id": "FLIS0008",
+    "name": "Dhirubhai Ambani",
+    "country": "India",
+    "city": "Mumbai",
+    "currency": "INR",
+    "salary_scale_5yr_net": 160000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "BKC Mumbai; top IB international faculty calibrated net base."
+  },
+  {
+    "id": "FLIS0010",
+    "name": "G.T. (Ellen Yeung)",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 41500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Tseung Kwan O DSS school; standard Hong Kong aided scale Step 5 net."
+  },
+  {
+    "id": "FLIS0011",
+    "name": "GD Country Garden",
+    "country": "China",
+    "city": "Foshan",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 26500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Foshan flagship campus; established expat IB net monthly base."
+  },
+  {
+    "id": "FLIS0012",
+    "name": "St. Stephen's",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 42000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Stanley DSS IB DP school; Hong Kong aided scale Step 5 net."
+  },
+  {
+    "id": "FLIS0013",
+    "name": "ACS International",
+    "country": "Singapore",
+    "city": "Singapore",
+    "currency": "SGD",
+    "salary_scale_5yr_net": 7500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Holland Village; gross ~SGD 8.3k/mo minus progressive tax (~9%)."
+  },
+  {
+    "id": "FLIS0015",
+    "name": "NPS International",
+    "country": "Singapore",
+    "city": "Singapore",
+    "currency": "SGD",
+    "salary_scale_5yr_net": 5500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Bedok campus; calibrated from reported SGD 5.2k-6.0k gross ranges."
+  },
+  {
+    "id": "FLIS0016",
+    "name": "The ISF Academy",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 48000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Cyberport private bilingual IB school; private salary curve net base."
+  },
+  {
+    "id": "FLIS0018",
+    "name": "Singapore Int'l (HK)",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 42000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Aberdeen campus; calibrated to reported HK$32k-50k gross ranges."
+  },
+  {
+    "id": "FLIS0019",
+    "name": "PLK Choi Kai Yau",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 42500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Sham Shui Po DSS 12-year IB school; standard Hong Kong aided scale net."
+  },
+  {
+    "id": "FLIS0020",
+    "name": "YK Pao School",
+    "country": "China",
+    "city": "Shanghai",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 31500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Songjiang/Changning bilingual boarding school; net base salary."
+  },
+  {
+    "id": "FLIS0021",
+    "name": "Step by Step",
+    "country": "India",
+    "city": "Noida",
+    "currency": "INR",
+    "salary_scale_5yr_net": 85000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Noida Sector 132; calibrated from empirical Indian IB teacher ranges (₹6-12L/yr gross)."
+  },
+  {
+    "id": "FLIS0024",
+    "name": "Canadian Int'l (HK)",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 51500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Aberdeen Tier-1 IB continuum school; supported by CDNIS vacancy scale data."
+  },
+  {
+    "id": "FLIS0027",
+    "name": "Aldar Academies",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 15500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "notes": "Abu Dhabi network baseline (Al Yasmina/Al Bateen); tax-free net base excluding housing."
+  },
+  {
+    "id": "FLIS0029",
+    "name": "Neev Academy",
+    "country": "India",
+    "city": "Bengaluru",
+    "currency": "INR",
+    "salary_scale_5yr_net": 95000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "Bengaluru IB school; calibrated to domestic/expat base scale."
+  },
+  {
+    "id": "FLIS0030",
+    "name": "Bombay Int'l",
+    "country": "India",
+    "city": "Mumbai",
+    "currency": "INR",
+    "salary_scale_5yr_net": 90000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "notes": "South Mumbai heritage school; calibrated to local IB faculty scale."
+  }
+]
