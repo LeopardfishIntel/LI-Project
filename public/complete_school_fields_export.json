@@ -23982,7 +23982,10 @@
     "net_salary": 3750,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "aliases": [
+      "FLIS0428"
+    ]
   },
   {
     "financescore": "8.5",
@@ -24116,7 +24119,12 @@
     "net_salary": 50000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "aliases": [
+      "Greengates Mexico City",
+      "Greengates",
+      "FLIS0449"
+    ]
   },
   {
     "financescore": "8.4",
@@ -25147,7 +25155,10 @@
     "net_salary": 3750,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "aliases": [
+      "FLIS0429"
+    ]
   },
   {
     "financescore": "9.6",
@@ -32491,82 +32502,6 @@
     "salary_confidence": "Pending"
   },
   {
-    "id": "FLIS0428",
-    "name": "Haileybury Almaty",
-    "aliases": [],
-    "city": "Almaty",
-    "country": "Kazakhstan",
-    "region": "central-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "officialDomain": "haileybury.kz/en/almaty",
-    "careersPageUrl": "https://www.haileybury.kz/en/almaty/vacancies",
-    "tesEmployerSlug": "haileybury-almaty-1081101",
-    "tesOrganizationId": "1081101",
-    "group": "Haileybury Heritage",
-    "salaryRange": "USD 45,000 - 68,000 / year",
-    "currency": "USD",
-    "isTaxFree": true,
-    "housingprovision": "Provided furnished luxury apartment with utilities",
-    "healthcoverage": "Worldwide Bupa International Medical",
-    "classsize": "18 - 20",
-    "financescore": "9.4",
-    "totalscore": "9.3",
-    "summary": "Prestigious branch of Haileybury UK in Almaty with top-tier tax-free expat packages and premier science facilities.",
-    "openJobsCount": 0,
-    "createdAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
-    "updatedAt": "2026-09-24T18:20:36.473Z",
-    "website": "https://www.haileybury.kz/en/almaty",
-    "careersUrl": "https://www.haileybury.kz/en/almaty/careers",
-    "schoolId": "FLIS0428",
-    "isLocked": true,
-    "salary_scale_5yr_net": 3750,
-    "net_salary": 3750,
-    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
-    "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
-  },
-  {
-    "id": "FLIS0429",
-    "name": "Haileybury Astana",
-    "aliases": [],
-    "city": "Astana",
-    "country": "Kazakhstan",
-    "region": "central-asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
-    "officialDomain": "haileybury.kz/en/astana",
-    "careersPageUrl": "https://www.haileybury.kz/en/astana/vacancies",
-    "tesEmployerSlug": "haileybury-astana-1081102",
-    "tesOrganizationId": "1081102",
-    "group": "Haileybury Heritage",
-    "salaryRange": "USD 45,000 - 68,000 / year",
-    "currency": "USD",
-    "isTaxFree": true,
-    "housingprovision": "Provided furnished luxury apartment with utilities",
-    "healthcoverage": "Worldwide Bupa International Medical",
-    "classsize": "18 - 20",
-    "financescore": "9.3",
-    "totalscore": "9.2",
-    "summary": "Haileybury sister school in Kazakhstan's capital featuring full IB Diploma curriculum and generous expat benefits.",
-    "openJobsCount": 0,
-    "createdAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
-    "updatedAt": "2026-09-24T18:20:36.473Z",
-    "website": "https://www.haileybury.kz/en/astana",
-    "careersUrl": "https://www.haileybury.kz/en/astana/careers",
-    "schoolId": "FLIS0429",
-    "isLocked": true,
-    "salary_scale_5yr_net": 3750,
-    "net_salary": 3750,
-    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
-    "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
-  },
-  {
     "id": "FLIS0430",
     "name": "The British School of Tashkent",
     "aliases": [],
@@ -33359,47 +33294,6 @@
     "net_salary": null,
     "salary_benchmark_category": "PENDING",
     "salary_confidence": "Pending"
-  },
-  {
-    "id": "FLIS0449",
-    "name": "Greengates School",
-    "aliases": [
-      "Greengates Mexico City",
-      "Greengates"
-    ],
-    "city": "Mexico City",
-    "country": "Mexico",
-    "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
-    "officialDomain": "greengates.edu.mx",
-    "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "tesEmployerSlug": "greengates-school-1057309",
-    "tesOrganizationId": "1057309",
-    "group": "Nord Anglia Education",
-    "salaryRange": "USD 40,000 - 62,000 / year",
-    "currency": "MXN",
-    "isTaxFree": false,
-    "housingprovision": "Provided housing allowance & relocation stipend",
-    "healthcoverage": "Comprehensive International Major Medical",
-    "classsize": "20",
-    "financescore": "9.2",
-    "totalscore": "9.3",
-    "summary": "Prestigious British/IB school in Naucalpan, Mexico City, with top international exam scores and Nord Anglia global network.",
-    "openJobsCount": 0,
-    "createdAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
-    "updatedAt": "2026-09-24T18:20:36.473Z",
-    "website": "https://www.nordangliaeducation.com/greengates-mexico",
-    "careersUrl": "https://www.nordangliaeducation.com/greengates-mexico/careers",
-    "schoolId": "FLIS0449",
-    "isLocked": true,
-    "salary_scale_5yr_net": 50000,
-    "net_salary": 50000,
-    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
-    "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
   },
   {
     "id": "FLIS0450",
