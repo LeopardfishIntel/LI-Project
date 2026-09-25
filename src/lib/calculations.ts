@@ -261,14 +261,51 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
   const sCity = cleanStr(city);
   const sCountry = cleanStr(canonicalCountry(country));
 
+  // 🇲🇨 MONACO CROSS-BORDER ROUTING (French Riviera / Nice / Menton / Mougins Border)
   if (sCountry === "monaco" || sCity === "monaco") {
-    const flis0193Col = costOfLivingList.find((c: any) =>
-      cleanStr(c.id || "").includes("flis0193") ||
-      cleanStr(c.city || "").includes("mougins") ||
-      cleanStr(c.id || "").includes("france") ||
-      canonicalCountry(c.country || "") === "france"
+    const borderCol = costOfLivingList.find((c: any) =>
+      cleanStr(c.id || "").includes("french-border") ||
+      cleanStr(c.id || "").includes("mougins") ||
+      cleanStr(c.city || "").includes("nice") ||
+      cleanStr(c.id || "").includes("france")
     );
-    if (flis0193Col) return flis0193Col;
+    if (borderCol) return borderCol;
+  }
+
+  // 🇩🇪 GERMANY TIER ROUTING (Frankfurt, Munich, Cologne/NRW, Heidelberg, Berlin)
+  if (sCountry === "germany") {
+    if (sCity.includes("frankfurt")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("frankfurt"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("munich") || sCity.includes("munchen")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("munich"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("cologne") || sCity.includes("koln") || sCity.includes("dusseldorf") || sCity.includes("duisburg") || sCity.includes("bonn")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("cologne") || cleanStr(c.id).includes("nrw"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("heidelberg") || sCity.includes("mannheim") || sCity.includes("stuttgart")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("heidelberg"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("berlin") || sCity.includes("potsdam")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("berlin"));
+      if (doc) return doc;
+    }
+  }
+
+  // 🇫🇷 FRANCE TIER ROUTING (Paris vs Côte d'Azur / Mougins)
+  if (sCountry === "france") {
+    if (sCity.includes("mougins") || sCity.includes("cannes") || sCity.includes("nice") || sCity.includes("grasse") || sCity.includes("antibes") || sCity.includes("valbonne") || sCity.includes("cotedazur")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("mougins") || cleanStr(c.id).includes("cotedazur") || cleanStr(c.id).includes("nice"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("paris") || sCity.includes("boulogne") || sCity.includes("issy") || sCity.includes("versailles") || sCity.includes("saintcloud") || sCity.includes("saintgermain")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("paris"));
+      if (doc) return doc;
+    }
   }
 
   const countryMatches = costOfLivingList.filter((c: any) => {
@@ -666,13 +703,23 @@ export function calculateOutflows(
   const col = activeCoL || {};
   const { rentWeight, diningWeight } = getZoneLocationWeights(schoolOrLocation || col.schoolname || col.schoolName || col.city || col.location);
 
-  // Food
-  const foodCost = (safeVal(col.groceries) || safeVal(col.food) || safeVal(col.monthlyFood) || 350) * adults + 
-                   (safeVal(col.groceries) || safeVal(col.food) || 350) * 0.5 * children;
+  const countryKey = canonicalCountry(schoolOrLocation?.country || col.country || col.countryName || '');
 
-  // Transport
-  const transportCost = (safeVal(col.transport) || safeVal(col.monthlyTransport) || 45) * adults + 
-                        (safeVal(col.transport) || 45) * 0.3 * children;
+  // Food (accounting for French Titres-Restaurant meal voucher subsidies if in France)
+  let baseFood = (safeVal(col.groceries) || safeVal(col.food) || safeVal(col.monthlyFood) || 350);
+  if (countryKey === 'france') {
+    baseFood = Math.max(180, baseFood - 110); // ~€100/mo employer meal voucher benefit
+  }
+  const foodCost = baseFood * adults + baseFood * 0.5 * children;
+
+  // Transport (accounting for 50% statutory Navigo in France and €49 Deutschlandticket in Germany)
+  let baseTransport = (safeVal(col.transport) || safeVal(col.monthlyTransport) || 45);
+  if (countryKey === 'france') {
+    baseTransport = Math.round(baseTransport * 0.5); // 50% Navigo reimbursement
+  } else if (countryKey === 'germany') {
+    baseTransport = Math.min(baseTransport, 30); // JobTicket / Deutschlandticket subsidy
+  }
+  const transportCost = baseTransport * adults + baseTransport * 0.3 * children;
 
   // Mobile
   const mobileCost = (safeVal(col.mobilePhone) || safeVal(col.mobile) || safeVal(col.mobileMonthly) || 22) * adults;
@@ -680,21 +727,37 @@ export function calculateOutflows(
   // Dining & Social
   const diningSocialCost = (safeVal(col.diningSocial) || safeVal(col.socialMonthly) || 195) * adults * diningWeight;
 
-  // Medical
-  const uncoveredMedicalCost = (safeVal(col.uncoveredMedical) || 20) * adults + 
-                               (safeVal(col.uncoveredMedical) || 20) * 0.5 * children;
+  // Medical (Mutuelle in France covers 100% of out-of-pocket essentials)
+  let baseMedical = safeVal(col.uncoveredMedical) || 20;
+  if (countryKey === 'france') {
+    baseMedical = 0; // Co-funded Mutuelle benefit
+  }
+  const uncoveredMedicalCost = baseMedical * adults + baseMedical * 0.5 * children;
 
-  // Rent
+  // Rent & Subsidy Calculation
   let rentCost = 0;
   const provStr = String(schoolOrLocation?.housingprovision || schoolOrLocation?.housingProvision || '').toLowerCase();
   const explicitSubsidy = safeVal(schoolOrLocation?.housing_subsidy_rate || schoolOrLocation?.housingSubsidyRate);
   let subsidyRate = 0;
+
   if (explicitSubsidy > 0 && explicitSubsidy <= 1) {
     subsidyRate = explicitSubsidy;
   } else if (/(\d+)\s*%/i.test(provStr)) {
     subsidyRate = parseInt(provStr.match(/(\d+)\s*%/i)![1], 10) / 100;
   } else if (provStr.includes('subsid')) {
-    subsidyRate = 0.5;
+    subsidyRate = 0.90; // Standard 90% subsidy heuristic
+  } else if (provStr.includes('allowance') && !provStr.includes('not included') && !provStr.includes('no allowance')) {
+    const euroMatch = provStr.match(/[€$](\d+[\d,]*)/);
+    if (euroMatch) {
+      const allowanceVal = parseInt(euroMatch[1].replace(/,/g, ''), 10);
+      if (allowanceVal > 400 && allowanceVal < 1600) {
+        subsidyRate = Math.min(0.85, allowanceVal / 1200);
+      } else {
+        subsidyRate = 0.50;
+      }
+    } else {
+      subsidyRate = 0.50; // Standard 50% allowance support default
+    }
   }
 
   if (!isHousingProvided || subsidyRate > 0) {
