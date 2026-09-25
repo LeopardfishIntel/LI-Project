@@ -81,7 +81,12 @@ export function isValidJobTitle(title: string): boolean {
     "facilities manager", "marketing manager", "hr manager", "human resources", "admissions manager",
     "estate manager", "operations manager", "business manager", "accountant", "data analyst",
     "catering manager", "transport manager", "systems manager", "network manager", "payroll",
-    "bursar", "registrar", "reprographics", "unsolicited applications", "limpieza y comedor"
+    "payroll specialist", "development services", "development specialist", "fundraising", "alumni relations",
+    "content and marketing", "marketing", "public relations", "admissions officer",
+    "teacher salary", "salary scale", "salary", "pay scale", "benefits and compensation",
+    "bursar", "registrar", "reprographics", "unsolicited applications", "limpieza y comedor",
+    "school nurse", "nurse", "security guard", "security officer", "driver", "bus driver",
+    "maintenance technician", "it technician", "it support", "system administrator", "facilities"
   ];
 
   if (nonJobKeywords.some(kw => titleLower.includes(kw))) return false;

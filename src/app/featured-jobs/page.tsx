@@ -2010,448 +2010,439 @@ export default function FeaturedJobsPage() {
                     }}
                     className="bg-[#243147] border border-[#334155] px-6 py-4 rounded-sm shadow-md relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-3 cursor-pointer"
                   >
-                    {/* Top Accents */}
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
-                    
-                    {/* Top Header Block */}
-                    <div className="flex flex-col w-full gap-2">
-                      {/* Line 1: Job Title */}
-                      <div className="w-full">
-                        <h3 className="text-sm sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
-                          <a 
-                            href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
-                            onClick={(e) => e.stopPropagation()}
-                            className="hover:text-[#FF6B35] transition-colors duration-200 cursor-pointer"
-                            title={`Evaluate ${shortenDisplayTitle(job.title)} Opportunity`}
-                          >
-                            {shortenDisplayTitle(job.title)}
-                          </a>
-                          {job.schoolId.startsWith('AGNT') && (
-                            <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
-                              🏷️ School Agent Placement
-                            </span>
-                          )}
-                          {activeTab === 'admin_staging' && (
-                            <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                              Pending Review
-                            </span>
-                          )}
-                        </h3>
-                      </div>
+                  {(() => {
+                    const now = new Date();
+                    let isNew = false;
+                    const jAny = job as any;
+                    const firstAddedTime = jAny.ingestedAtMillis || (jAny.scrapedAtRaw ? (jAny.scrapedAtRaw.seconds ? jAny.scrapedAtRaw.seconds * 1000 : new Date(jAny.scrapedAtRaw).getTime()) : 0);
+                    if (firstAddedTime > 0 && (now.getTime() - firstAddedTime) <= 3 * 24 * 60 * 60 * 1000) {
+                      isNew = true;
+                    }
 
-                      {/* Line 2: School, Location, Curriculum & Deadline / Ref ID */}
-                      <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-3 text-xs text-slate-400 font-medium w-full">
-                        {/* Left metadata */}
-                        <div className="flex flex-wrap items-center gap-y-1 gap-x-2">
-                          <a 
-                            href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
-                            onClick={(e) => e.stopPropagation()}
-                            title={`Evaluate ${job.schoolName} Opportunity`}
-                            className="text-xs sm:text-sm font-semibold text-[#38BDF8] hover:text-[#FF6B35] tracking-tight flex items-center gap-1 transition-colors duration-200 cursor-pointer"
-                          >
-                            <Building className="size-3.5 shrink-0" /> {job.schoolName}
-                          </a>
-                          {job.campus && (
-                            <span className="bg-sky-500/10 border border-sky-500/30 text-sky-300 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                              📍 {job.campus}
-                            </span>
-                          )}
-                          <span className="text-slate-600">•</span>
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
-                          </span>
-                        </div>
+                    let isClosingSoon = false;
+                    if (job.closesDateRaw) {
+                      const closesTime = job.closesDateRaw.getTime();
+                      const diffTime = closesTime - now.getTime();
+                      if (diffTime > 0 && diffTime <= 5 * 24 * 60 * 60 * 1000) {
+                        isClosingSoon = true;
+                      }
+                    }
 
-                        {/* Right metadata: Deadline & Ref ID */}
-                        <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto shrink-0 sm:ml-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-white/5 sm:border-none">
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold leading-none">
-                            <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
-                            {activeTab === 'admin_staging' ? (
-                              <div className="flex items-center gap-1">
-                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
-                                <input
-                                  type="date"
-                                  value={
-                                    job.closesDateRaw
-                                      ? job.closesDateRaw.toISOString().substring(0, 10)
-                                      : ""
-                                  }
-                                  onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
-                                  className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
-                                />
+                    return (
+                      <>
+                        {/* Top Accents */}
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
+                        
+                        {/* Top Header Block */}
+                        <div className="flex flex-col w-full gap-2">
+                          {/* Line 1: Job Title & Top-Right Status Badges */}
+                          <div className="flex items-start justify-between gap-3 w-full">
+                            <h3 className="text-sm sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
+                              <a 
+                                href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="hover:text-[#FF6B35] transition-colors duration-200 cursor-pointer"
+                                title={`Evaluate ${shortenDisplayTitle(job.title)} Opportunity`}
+                              >
+                                {shortenDisplayTitle(job.title)}
+                              </a>
+                              {job.schoolId.startsWith('AGNT') && (
+                                <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
+                                  🏷️ School Agent Placement
+                                </span>
+                              )}
+                              {activeTab === 'admin_staging' && (
+                                <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                                  Pending Review
+                                </span>
+                              )}
+                            </h3>
+
+                            {/* Top-Right Badges (NEW & CLOSING SOON) */}
+                            {(isNew || isClosingSoon) && (
+                              <div className="flex items-center gap-1.5 shrink-0 ml-auto select-none">
+                                {isNew && (
+                                  <span 
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="h-6 px-2.5 inline-flex items-center justify-center text-[10px] sm:text-[11px] font-extrabold tracking-tight uppercase rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] cursor-default shrink-0"
+                                  >
+                                    NEW
+                                  </span>
+                                )}
+                                {isClosingSoon && (
+                                  <span 
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="h-6 px-2.5 inline-flex items-center justify-center text-[10px] sm:text-[11px] font-extrabold tracking-tight uppercase rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.15)] animate-pulse cursor-default shrink-0"
+                                  >
+                                    CLOSING SOON
+                                  </span>
+                                )}
                               </div>
-                            ) : (
-                              <>
-  <span className="sm:hidden leading-none">{job.closesDateRaw ? `Closes: ${formatClosingDateMobile(job.closesDateRaw, job.date_closing)}` : `Added: ${formatClosingDateMobile(null, job.date_listed || "Recently")}`}</span>
-  <span className="hidden sm:inline leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
-</>
                             )}
                           </div>
-                          <span className="text-slate-600 font-mono text-[10px] hidden sm:inline leading-none">•</span>
-                          <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider text-right flex items-center leading-none">
-                            {getJobCardReference(job)}
+
+                          {/* Line 2: School, Location, Curriculum & Deadline / Ref ID */}
+                          <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-3 text-xs text-slate-400 font-medium w-full">
+                            {/* Left metadata */}
+                            <div className="flex flex-wrap items-center gap-y-1 gap-x-2">
+                              <a 
+                                href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
+                                onClick={(e) => e.stopPropagation()}
+                                title={`Evaluate ${job.schoolName} Opportunity`}
+                                className="text-xs sm:text-sm font-semibold text-[#38BDF8] hover:text-[#FF6B35] tracking-tight flex items-center gap-1 transition-colors duration-200 cursor-pointer"
+                              >
+                                <Building className="size-3.5 shrink-0" /> {job.schoolName}
+                              </a>
+                              {job.campus && (
+                                <span className="bg-sky-500/10 border border-sky-500/30 text-sky-300 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                                  📍 {job.campus}
+                                </span>
+                              )}
+                              <span className="text-slate-600">•</span>
+                              <span className="flex items-center gap-1 text-slate-300">
+                                <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
+                              </span>
+                            </div>
+
+                            {/* Right metadata: Deadline & Ref ID */}
+                            <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto shrink-0 sm:ml-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-white/5 sm:border-none">
+                              <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold leading-none">
+                                <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
+                                {activeTab === 'admin_staging' ? (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
+                                    <input
+                                      type="date"
+                                      value={
+                                        job.closesDateRaw
+                                          ? job.closesDateRaw.toISOString().substring(0, 10)
+                                          : ""
+                                      }
+                                      onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
+                                      className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                                    />
+                                  </div>
+                                ) : (
+                                  <>
+                                    <span className="sm:hidden leading-none">{job.closesDateRaw ? `Closes: ${formatClosingDateMobile(job.closesDateRaw, job.date_closing)}` : `Added: ${formatClosingDateMobile(null, job.date_listed || "Recently")}`}</span>
+                                    <span className="hidden sm:inline leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+                                  </>
+                                )}
+                              </div>
+                              <span className="text-slate-600 font-mono text-[10px] hidden sm:inline leading-none">•</span>
+                              <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider text-right flex items-center leading-none">
+                                {getJobCardReference(job)}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="border-t border-white/5 my-1" />
+                        <div className="border-t border-white/5 my-1" />
 
-                    {/* Bottom Metrics & Actions Block */}
-                    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
-                      {/* Left Column: Badges & Metric Pills */}
-                      {/* Left Column: Badges & Metric Pills */}
-                      <div className="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2 w-full pb-0.5 sm:pb-0">
-                        {/* NEW, CLOSING SOON & Search Engine Source Badges */}
-                        {(() => {
-                          const now = new Date();
-                          
-                          let isNew = false;
-                          const jAny = job as any;
-                          const firstAddedTime = jAny.ingestedAtMillis || (jAny.scrapedAtRaw ? (jAny.scrapedAtRaw.seconds ? jAny.scrapedAtRaw.seconds * 1000 : new Date(jAny.scrapedAtRaw).getTime()) : 0);
-                          if (firstAddedTime > 0 && (now.getTime() - firstAddedTime) <= 3 * 24 * 60 * 60 * 1000) {
-                            isNew = true;
-                          }
+                        {/* Bottom Metrics & Actions Block */}
+                        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
+                          {/* Left Column: Badges & Metric Pills */}
+                          <div className="flex items-center justify-start flex-wrap gap-1.5 sm:gap-2 pb-0.5 sm:pb-0">
+                            {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
+                            {(() => {
+                              const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
+                              const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
+                              const sMap = new Map<string, string>();
 
-                          let isClosingSoon = false;
-                          if (job.closesDateRaw) {
-                            const closesTime = job.closesDateRaw.getTime();
-                            const diffTime = closesTime - now.getTime();
-                            if (diffTime > 0 && diffTime <= 5 * 24 * 60 * 60 * 1000) {
-                              isClosingSoon = true;
-                            }
-                          }
+                              const isTaaleemCard = isTaaleemSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group) ||
+                                String((job as any).schoolGroup || "").toUpperCase().includes("TAALEEM") ||
+                                String(job.source || "").toUpperCase().includes("TAALEEM") ||
+                                (job.sources && job.sources.some((s: string) => String(s).toUpperCase().includes("TAALEEM"))) ||
+                                applyUrlLower.includes("taaleem.ae") ||
+                                Boolean(job.sourceUrls && (job.sourceUrls["TAALEEM"] || job.sourceUrls["Taaleem"]));
 
-                          return (
-                            <>
-                              {/* Left Group: Engine Source Pills & Savings Badge */}
-                              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
-                                {(() => {
-                                  const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
-                                  const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
-                                  const sMap = new Map<string, string>();
+                              // Detect URL domain signatures to ensure engine pills are accurately assigned
+                              if (applyUrlLower.includes("searchassociates") || (job.sourceUrls && (job.sourceUrls["SEARCH ASSOCIATES"] || job.sourceUrls["Search Associates"])) || rawSources.some((s: any) => String(s || "").toUpperCase().includes("SEARCH"))) {
+                                sMap.set("SEARCH ASSOCIATES", "Search Associates");
+                              }
+                              if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates"))) {
+                                sMap.set("TES", "TES");
+                              }
+                              if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
+                                sMap.set("NORD ANGLIA", "Nord Anglia");
+                              }
+                              if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
+                                sMap.set("COGNITA", "Cognita");
+                              }
+                              if (applyUrlLower.includes("inspirededu")) {
+                                sMap.set("INSPIRED", "Inspired");
+                              }
+                              if (applyUrlLower.includes("globeducate")) {
+                                sMap.set("GLOBEDUCATE", "Globeducate");
+                              }
+                              if (applyUrlLower.includes("grcfair.org")) {
+                                sMap.set("GRC", "GRC");
+                              }
+                              if (applyUrlLower.includes("teachaway")) {
+                                sMap.set("TEACH AWAY", "Teach Away");
+                              }
+                              if (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae")) {
+                                sMap.set("GEMS", "GEMS");
+                              }
+                              if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
+                                sMap.set("GUARDIAN", "Guardian Jobs");
+                              }
+                              if (isTaaleemCard) {
+                                sMap.set("TAALEEM", "Taaleem");
+                              }
+                              if (applyUrlLower.includes("esf.wd102.myworkdayjobs.com") || applyUrlLower.includes("esf.edu.hk") || isEsfSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group, applyUrlLower)) {
+                                sMap.set("ESF", "ESF");
+                              }
 
-                                  const isTaaleemCard = isTaaleemSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group) ||
-                                    String((job as any).schoolGroup || "").toUpperCase().includes("TAALEEM") ||
-                                    String(job.source || "").toUpperCase().includes("TAALEEM") ||
-                                    (job.sources && job.sources.some((s: string) => String(s).toUpperCase().includes("TAALEEM"))) ||
-                                    applyUrlLower.includes("taaleem.ae") ||
-                                    Boolean(job.sourceUrls && (job.sourceUrls["TAALEEM"] || job.sourceUrls["Taaleem"]));
+                              rawSources.forEach((s: any) => {
+                                if (!s) return;
+                                const u = String(s).toUpperCase().trim();
+                                let key = u;
+                                let label = s;
+                                if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES") || u === "SEARCH" || u.includes("SEARCHASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
+                                else if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
+                                else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
+                                else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
+                                else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
+                                else if (u.includes("ESF") || u.includes("ENGLISH SCHOOLS FOUNDATION")) { key = "ESF"; label = "ESF"; }
+                                else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                                else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                                else if (u === "TES") { key = "TES"; label = "TES"; }
+                                else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                                else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
+                                else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
+                                else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
+                                else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
+                                else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
+                                else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
+                                else { key = "DIRECT"; label = "Direct"; }
+                                sMap.set(key, label);
+                              });
 
-                                  // Detect URL domain signatures to ensure engine pills are accurately assigned
-                                  if (applyUrlLower.includes("searchassociates") || (job.sourceUrls && (job.sourceUrls["SEARCH ASSOCIATES"] || job.sourceUrls["Search Associates"])) || rawSources.some((s: any) => String(s || "").toUpperCase().includes("SEARCH"))) {
-                                    sMap.set("SEARCH ASSOCIATES", "Search Associates");
-                                  }
-                                  if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates"))) {
-                                    sMap.set("TES", "TES");
-                                  }
-                                  if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
-                                    sMap.set("NORD ANGLIA", "Nord Anglia");
-                                  }
-                                  if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
-                                    sMap.set("COGNITA", "Cognita");
-                                  }
-                                  if (applyUrlLower.includes("inspirededu")) {
-                                    sMap.set("INSPIRED", "Inspired");
-                                  }
-                                  if (applyUrlLower.includes("globeducate")) {
-                                    sMap.set("GLOBEDUCATE", "Globeducate");
-                                  }
-                                  if (applyUrlLower.includes("grcfair.org")) {
-                                    sMap.set("GRC", "GRC");
-                                  }
-                                  if (applyUrlLower.includes("teachaway")) {
-                                    sMap.set("TEACH AWAY", "Teach Away");
-                                  }
-                                  if (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae")) {
-                                    sMap.set("GEMS", "GEMS");
-                                  }
-                                  if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
-                                    sMap.set("GUARDIAN", "Guardian Jobs");
-                                  }
-                                  if (isTaaleemCard) {
-                                    sMap.set("TAALEEM", "Taaleem");
-                                  }
-                                  if (applyUrlLower.includes("esf.wd102.myworkdayjobs.com") || applyUrlLower.includes("esf.edu.hk") || isEsfSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group, applyUrlLower)) {
-                                    sMap.set("ESF", "ESF");
-                                  }
+                              // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
+                              const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("schrole");
+                              const hasExplicitDirect = Boolean((job as any).directUrl || (job.sourceUrls && (job.sourceUrls["DIRECT"] || job.sourceUrls["Direct"])));
+                              if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL")) && !hasExplicitDirect) {
+                                sMap.delete("DIRECT");
+                              }
+                              if (sMap.has("SEARCH ASSOCIATES") && !hasExplicitDirect) {
+                                sMap.delete("DIRECT");
+                              }
+                              if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
+                                sMap.delete("DIRECT");
+                              }
+                              if (isTaaleemCard) {
+                                sMap.delete("DIRECT");
+                              }
 
-                                  rawSources.forEach((s: any) => {
-                                    if (!s) return;
-                                    const u = String(s).toUpperCase().trim();
-                                    let key = u;
-                                    let label = s;
-                                    if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES") || u === "SEARCH" || u.includes("SEARCHASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
-                                    else if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
-                                    else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
-                                    else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
-                                    else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
-                                    else if (u.includes("ESF") || u.includes("ENGLISH SCHOOLS FOUNDATION")) { key = "ESF"; label = "ESF"; }
-                                    else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
-                                    else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
-                                    else if (u === "TES") { key = "TES"; label = "TES"; }
-                                    else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
-                                    else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
-                                    else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
-                                    else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
-                                    else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
-                                    else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
-                                    else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
-                                    else { key = "DIRECT"; label = "Direct"; }
-                                    sMap.set(key, label);
-                                  });
+                              const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
+                                if (a === "DIRECT") return -1;
+                                if (b === "DIRECT") return 1;
+                                return 0;
+                              });
 
-                                  // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("schrole");
-                                  const hasExplicitDirect = Boolean((job as any).directUrl || (job.sourceUrls && (job.sourceUrls["DIRECT"] || job.sourceUrls["Direct"])));
-                                  if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL")) && !hasExplicitDirect) {
-                                    sMap.delete("DIRECT");
-                                  }
-                                  if (sMap.has("SEARCH ASSOCIATES") && !hasExplicitDirect) {
-                                    sMap.delete("DIRECT");
-                                  }
-                                  if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
-                                    sMap.delete("DIRECT");
-                                  }
-                                  if (isTaaleemCard) {
-                                    sMap.delete("DIRECT");
-                                  }
+                              const resolvedPills: { label: string; url: string; key: string }[] = [];
+                              const seenPillUrls = new Set<string>();
+                              const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
 
-                                  const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
-                                    if (a === "DIRECT") return -1;
-                                    if (b === "DIRECT") return 1;
-                                    return 0;
-                                  });
-
-                                  const resolvedPills: { label: string; url: string; key: string }[] = [];
-                                  const seenPillUrls = new Set<string>();
-                                  const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
-
-                                  sortedEntries.forEach(([key, label]) => {
-                                    const srcUpper = key;
-                                    const srcUrl = (() => {
-                                      let foundUrl: string | undefined = undefined;
-                                      if (job.sourceUrls) {
-                                        if (job.sourceUrls[label]) foundUrl = job.sourceUrls[label];
-                                        else if (job.sourceUrls[srcUpper]) foundUrl = job.sourceUrls[srcUpper];
-                                        else if (job.sourceUrls[label.toLowerCase()]) foundUrl = job.sourceUrls[label.toLowerCase()];
-                                        else {
-                                          for (const [k, v] of Object.entries(job.sourceUrls)) {
-                                            if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
-                                              foundUrl = v as string;
-                                              break;
-                                            }
-                                          }
+                              sortedEntries.forEach(([key, label]) => {
+                                const srcUpper = key;
+                                const srcUrl = (() => {
+                                  let foundUrl: string | undefined = undefined;
+                                  if (job.sourceUrls) {
+                                    if (job.sourceUrls[label]) foundUrl = job.sourceUrls[label];
+                                    else if (job.sourceUrls[srcUpper]) foundUrl = job.sourceUrls[srcUpper];
+                                    else if (job.sourceUrls[label.toLowerCase()]) foundUrl = job.sourceUrls[label.toLowerCase()];
+                                    else {
+                                      for (const [k, v] of Object.entries(job.sourceUrls)) {
+                                        if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
+                                          foundUrl = v as string;
+                                          break;
                                         }
                                       }
-                                      const isGenericUrl = (u?: string) => {
-                                        if (!u || u === "#") return true;
-                                        const norm = u.toLowerCase().trim().replace(/\/+$/, "");
-                                        return (
-                                          norm === "https://careers.nordangliaeducation.com" ||
-                                          norm === "https://www.nordangliaeducation.com/careers" ||
-                                          norm === "https://jobs.inspirededu.com" ||
-                                          norm === "https://cognitapeople.csod.com" ||
-                                          norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
-                                          norm === "https://uwc.org/careers/vacancies" ||
-                                          norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
-                                          norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide" ||
-                                          norm === "https://careers.gemseducation.com" ||
-                                          norm === "https://www.gemseducation.com" ||
-                                          norm === "https://taaleem.ae" ||
-                                          norm === "https://www.taaleem.ae" ||
-                                          norm === "https://www.taaleem.ae/careers" ||
-                                          norm === "https://careers.taaleem.ae" ||
-                                          norm === "https://careers.taaleem.ae/en" ||
-                                          norm === "https://careers.taaleem.ae/en/job-search" || norm.includes("job-search-results") || norm.includes("keyword=")
-                                        );
-                                      };
-
-                                      if (foundUrl && isGenericUrl(foundUrl)) {
-                                        foundUrl = undefined;
-                                      }
-
-                                      if (foundUrl) {
-                                        const fUrl = String(foundUrl);
-                                        if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                                        if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
-                                        if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates")) foundUrl = undefined;
-                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org") || fUrl.includes("searchassociates"))) foundUrl = undefined;
-                                      }
-                                      if (!foundUrl) {
-                                        const rawUrl = (job as any).applyUrl || job.source_url;
-                                        if (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH")) {
-                                          if (job.sourceUrls && (job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"]) && !isGenericUrl(job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"])) {
-                                            foundUrl = job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"];
-                                          } else if (applyUrlLower.includes("searchassociates") && !isGenericUrl(rawUrl)) {
-                                            foundUrl = rawUrl;
-                                          } else if (rawUrl && !isGenericUrl(rawUrl)) {
-                                            foundUrl = rawUrl;
-                                          }
-                                        } else if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
-                                           foundUrl = (job as any).directUrl;
-                                         } else if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu") && !isGenericUrl(rawUrl)) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper.includes("COGNITA") && applyUrlLower.includes("cognita") && !isGenericUrl(rawUrl)) {
-                                          foundUrl = rawUrl;
-                                        } else if ((srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE")) && applyUrlLower.includes("globeducate") && !isGenericUrl(rawUrl)) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper.includes("ISP") && applyUrlLower.includes("internationalschools") && !isGenericUrl(rawUrl)) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper === "TES" && applyUrlLower.includes("tes.com")) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper === "GUARDIAN" && (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs"))) {
-                                           foundUrl = rawUrl;
-                                        } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
-                                          foundUrl = rawUrl;
-                                        } else if (srcUpper.includes("TAALEEM")) {
-                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
-                                            foundUrl = (job as any).directUrl;
-                                          } else if (applyUrlLower.includes("taaleem.ae") && !isGenericUrl(rawUrl)) {
-                                            foundUrl = rawUrl;
-                                          } else {
-                                            foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
-                                          }
-                                        } else if (srcUpper === "ESF" || srcUpper.includes("ESF")) {
-                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
-                                            foundUrl = (job as any).directUrl;
-                                          } else if (job.sourceUrls && (job.sourceUrls["ESF"] || job.sourceUrls["esf"]) && !isGenericUrl(job.sourceUrls["ESF"] || job.sourceUrls["esf"])) {
-                                            foundUrl = job.sourceUrls["ESF"] || job.sourceUrls["esf"];
-                                          } else {
-                                            foundUrl = ESF_PORTAL_URL;
-                                          }
-                                        } else if (srcUpper === "DIRECT") {
-                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
-                                            foundUrl = (job as any).directUrl;
-                                          } else if (job.sourceUrls && (job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"]) && !isGenericUrl(job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"])) {
-                                            foundUrl = job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"];
-                                          } else if (job.schoolWebsite && job.schoolWebsite !== "#") {
-                                            foundUrl = job.schoolWebsite;
-                                          } else if (!isPureAggregator) {
-                                            foundUrl = rawUrl;
-                                          }
-                                        }
-                                      }
-                                      return foundUrl || "#";
-                                    })();
-
-                                    if (srcUrl === "#") return;
-
-                                    const norm = normalizeUrl(srcUrl);
-                                    if (seenPillUrls.has(norm)) return;
-                                    seenPillUrls.add(norm);
-
-                                    resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
-                                  });
-
-                                  return resolvedPills.map(({ label, url, key }) => {
-                                    const srcUpper = key;
+                                    }
+                                  }
+                                  const isGenericUrl = (u?: string) => {
+                                    if (!u || u === "#") return true;
+                                    const norm = u.toLowerCase().trim().replace(/\/+$/, "");
                                     return (
-                                      <a
-                                        key={`${key}_${url}`}
-                                        href={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={cn(
-                                          "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
-                                          (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH"))
-                                            ? "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
-                                            : srcUpper.includes("INSPIRED")
-                                            ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
-                                            : srcUpper === "TES"
-                                            ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
-                                            : srcUpper.includes("COGNITA")
-                                            ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
-                                            : srcUpper.includes("MALVERN")
-                                            ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
-                                            : (srcUpper === "ESF" || srcUpper.includes("ESF"))
-                                            ? "bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
-                                            : srcUpper.includes("UWC")
-                                            ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
-                                            : srcUpper.includes("ISP")
-                                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                            : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
-                                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                            : srcUpper === "NORD ANGLIA"
-                                            ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
-                                            : srcUpper === "GRC"
-                                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                            : srcUpper.includes("TAALEEM")
-                                            ? "bg-teal-500/10 border-teal-500/30 text-teal-400 hover:bg-teal-500/20"
-                                            : srcUpper === "GUARDIAN"
-                                             ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
-                                             : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
-                                            ? "bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20"
-                                            : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                        )}
-                                      >
-                                        {label} ↗
-                                      </a>
+                                      norm === "https://careers.nordangliaeducation.com" ||
+                                      norm === "https://www.nordangliaeducation.com/careers" ||
+                                      norm === "https://jobs.inspirededu.com" ||
+                                      norm === "https://cognitapeople.csod.com" ||
+                                      norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
+                                      norm === "https://uwc.org/careers/vacancies" ||
+                                      norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
+                                      norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide" ||
+                                      norm === "https://careers.gemseducation.com" ||
+                                      norm === "https://www.gemseducation.com" ||
+                                      norm === "https://taaleem.ae" ||
+                                      norm === "https://www.taaleem.ae" ||
+                                      norm === "https://www.taaleem.ae/careers" ||
+                                      norm === "https://careers.taaleem.ae" ||
+                                      norm === "https://careers.taaleem.ae/en" ||
+                                      norm === "https://careers.taaleem.ae/en/job-search" || norm.includes("job-search-results") || norm.includes("keyword=")
                                     );
-                                  });
-                                })()}
+                                  };
 
-                                {/* 5-Tier Color Box Savings Badge — Triggers Financial Forecaster Opportunity Evaluation */}
-                                {(() => {
-                                  const badge = getSavingsBadgeConfig(job.savingsPotential || 0);
+                                  if (foundUrl && isGenericUrl(foundUrl)) {
+                                    foundUrl = undefined;
+                                  }
 
-                                  return (
-                                    <Popover>
-                                      <PopoverTrigger asChild>
-                                        <button
-                                          type="button"
-                                          onClick={(e) => e.stopPropagation()}
-                                          aria-label={`${badge.label} Details`}
-                                          className={cn(
-                                            "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
-                                            badge.boxStyle
-                                          )}
-                                        >
-                                          <span className="hidden sm:inline">{badge.label}</span><span className="sm:hidden">{badge.shortLabel}</span>
-                                          <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                                        </button>
-                                      </PopoverTrigger>
-                                      <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-slate-700/80 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
-                                        <p className="font-bold text-[#FF6B35] text-xs tracking-wide mb-1">{badge.label}</p>
-                                        <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
-                                      </PopoverContent>
-                                    </Popover>
-                                  );
-                                })()}
-                              </div>
+                                  if (foundUrl) {
+                                    const fUrl = String(foundUrl);
+                                    if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                                    if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
+                                    if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates")) foundUrl = undefined;
+                                    if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org") || fUrl.includes("searchassociates"))) foundUrl = undefined;
+                                  }
+                                  if (!foundUrl) {
+                                    const rawUrl = (job as any).applyUrl || job.source_url;
+                                    if (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH")) {
+                                      if (job.sourceUrls && (job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"]) && !isGenericUrl(job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"])) {
+                                        foundUrl = job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"];
+                                      } else if (applyUrlLower.includes("searchassociates") && !isGenericUrl(rawUrl)) {
+                                        foundUrl = rawUrl;
+                                      } else if (rawUrl && !isGenericUrl(rawUrl)) {
+                                        foundUrl = rawUrl;
+                                      }
+                                    } else if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                      foundUrl = (job as any).directUrl;
+                                    } else if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("COGNITA") && applyUrlLower.includes("cognita") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if ((srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE")) && applyUrlLower.includes("globeducate") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("ISP") && applyUrlLower.includes("internationalschools") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper === "TES" && applyUrlLower.includes("tes.com")) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper === "GUARDIAN" && (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs"))) {
+                                      foundUrl = rawUrl;
+                                    } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("TAALEEM")) {
+                                      if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                        foundUrl = (job as any).directUrl;
+                                      } else if (applyUrlLower.includes("taaleem.ae") && !isGenericUrl(rawUrl)) {
+                                        foundUrl = rawUrl;
+                                      } else {
+                                        foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
+                                      }
+                                    } else if (srcUpper === "ESF" || srcUpper.includes("ESF")) {
+                                      if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                        foundUrl = (job as any).directUrl;
+                                      } else if (job.sourceUrls && (job.sourceUrls["ESF"] || job.sourceUrls["esf"]) && !isGenericUrl(job.sourceUrls["ESF"] || job.sourceUrls["esf"])) {
+                                        foundUrl = job.sourceUrls["ESF"] || job.sourceUrls["esf"];
+                                      } else {
+                                        foundUrl = ESF_PORTAL_URL;
+                                      }
+                                    } else if (srcUpper === "DIRECT") {
+                                      if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                        foundUrl = (job as any).directUrl;
+                                      } else if (job.sourceUrls && (job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"]) && !isGenericUrl(job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"])) {
+                                        foundUrl = job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"];
+                                      } else if (job.schoolWebsite && job.schoolWebsite !== "#") {
+                                        foundUrl = job.schoolWebsite;
+                                      } else if (!isPureAggregator) {
+                                        foundUrl = rawUrl;
+                                      }
+                                    }
+                                  }
+                                  return foundUrl || "#";
+                                })();
 
-                              {/* Right Group: NEW & CLOSING SOON Status Badges */}
-                              {(isNew || isClosingSoon) && (
-                                <div className="flex items-center gap-1.5 sm:gap-2 ml-auto shrink-0">
-                                  {isNew && (
-                                    <span 
+                                if (srcUrl === "#") return;
+
+                                const norm = normalizeUrl(srcUrl);
+                                if (seenPillUrls.has(norm)) return;
+                                seenPillUrls.add(norm);
+
+                                resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
+                              });
+
+                              return resolvedPills.map(({ label, url, key }) => {
+                                const srcUpper = key;
+                                return (
+                                  <a
+                                    key={`${key}_${url}`}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={cn(
+                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
+                                      (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH"))
+                                        ? "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
+                                        : srcUpper.includes("INSPIRED")
+                                        ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
+                                        : srcUpper === "TES"
+                                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
+                                        : srcUpper.includes("COGNITA")
+                                        ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
+                                        : srcUpper.includes("MALVERN")
+                                        ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
+                                        : (srcUpper === "ESF" || srcUpper.includes("ESF"))
+                                        ? "bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
+                                        : srcUpper.includes("UWC")
+                                        ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
+                                        : srcUpper.includes("ISP")
+                                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                        : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
+                                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                        : srcUpper === "NORD ANGLIA"
+                                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                                        : srcUpper === "GRC"
+                                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                        : srcUpper.includes("TAALEEM")
+                                        ? "bg-teal-500/10 border-teal-500/30 text-teal-400 hover:bg-teal-500/20"
+                                        : srcUpper === "GUARDIAN"
+                                        ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
+                                        : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
+                                        ? "bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20"
+                                        : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                    )}
+                                  >
+                                    {label} ↗
+                                  </a>
+                                );
+                              });
+                            })()}
+
+                            {/* 5-Tier Color Box Savings Badge — Triggers Financial Forecaster Opportunity Evaluation */}
+                            {(() => {
+                              const badge = getSavingsBadgeConfig(job.savingsPotential || 0);
+
+                              return (
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <button
+                                      type="button"
                                       onClick={(e) => e.stopPropagation()}
-                                      className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] cursor-default select-none shrink-0"
+                                      aria-label={`${badge.label} Details`}
+                                      className={cn(
+                                        "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
+                                        badge.boxStyle
+                                      )}
                                     >
-                                      NEW
-                                    </span>
-                                  )}
-                                  {isClosingSoon && (
-                                    <span 
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.15)] animate-pulse cursor-default select-none shrink-0"
-                                    >
-                                      CLOSING SOON
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </div>
+                                      <span className="hidden sm:inline">{badge.label}</span><span className="sm:hidden">{badge.shortLabel}</span>
+                                      <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                                    </button>
+                                  </PopoverTrigger>
+                                  <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-slate-700/80 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                    <p className="font-bold text-[#FF6B35] text-xs tracking-wide mb-1">{badge.label}</p>
+                                    <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
+                                  </PopoverContent>
+                                </Popover>
+                              );
+                            })()}
+                          </div>
 
                       
                       {/* Right Column: CTA or Admin Controls */}
@@ -2502,8 +2493,11 @@ export default function FeaturedJobsPage() {
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </>
+                );
+              })()}
+              </div>
+            ))}
               </div>
             )}
             

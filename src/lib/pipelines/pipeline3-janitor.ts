@@ -26,6 +26,7 @@ export interface JanitorRunResult {
 }
 
 import { isPastAcademicIntake, triageVacancyLifecycle } from '@/lib/crawler/dateParser';
+import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 
 // ─── Admin SDK helpers ────────────────────────────────────────────────────────
 
@@ -233,8 +234,11 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
       if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
       if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < now) return;
 
-      const sourceUpper = String(cacheDoc.source || '').toUpperCase();
-      const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
+      const title = String(cacheDoc.title || cacheDoc.job_title || '').trim();
+      if (!isValidJobTitle(title)) return;
+
+      const sourceUpper = String(cacheDoc.source || cacheDoc.engine || 'Direct').toUpperCase();
+      const applyUrlLower = String(cacheDoc.applyUrl || cacheDoc.source_url || '').toLowerCase();
 
       const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
       const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
@@ -249,9 +253,16 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
       const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
       const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
       const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
+      const isTaylors = sourceUpper.includes('TAYLOR') || applyUrlLower.includes('taylors');
+      const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
+      const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
       const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
+      const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
+      const isTaaleem = sIdUpper.startsWith('FLIS036') || ['FLIS0113', 'FLIS0114', 'FLIS0114_JBS', 'FLIS0115', 'FLIS0115_JUMEIRAH_PARK', 'FLIS0115_JUMEIRA', 'FLIS0116', 'FLIS0116_GIS', 'FLIS0117', 'FLIS0117_UIS', 'FLIS0119', 'FLIS0119_JAS'].includes(sIdUpper) || sourceUpper.includes('TAALEEM') || applyUrlLower.includes('taaleem.ae');
+      const isEureka = sourceUpper.includes('EUREKA');
+      const isSearch = sourceUpper.includes('SEARCH') || applyUrlLower.includes('searchassociates');
 
-      if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isOfficial) return;
+      if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
 
       if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
       if (applyUrlLower) seenUrls.add(applyUrlLower);

@@ -222,7 +222,7 @@ export default function Header() {
 
       // Check for any countsBySchool that did not map to an existing school document
       Object.entries(countsBySchool).forEach(([sId, count]) => {
-        if (sId === 'SEARCH_ASSOCIATES_HUB') {
+        if (sId === 'SEARCH_ASSOCIATES_HUB' || sId.startsWith('AGNT')) {
           totalSchoolOpenJobs += count;
         } else if (!schoolDocIds.has(sId)) {
           mismatches.push({

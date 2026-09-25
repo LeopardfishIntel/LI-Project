@@ -1,0 +1,5554 @@
+{
+  "timestamp": "2026-09-25T11:24:25.562Z",
+  "brokenWebsites": [
+    {
+      "id": "FLIS0011",
+      "name": "GD Country Garden",
+      "country": "China",
+      "url": "https://www.bgy.gd.cn",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0014",
+      "name": "European Azerbaijan",
+      "country": "Azerbaijan",
+      "url": "https://eas.edu.az",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0021",
+      "name": "Step by Step",
+      "country": "India",
+      "url": "https://stepbystep.ed.in",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0039",
+      "name": "IS Monaco",
+      "country": "Monaco",
+      "url": "https://www.ismonaco.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0051",
+      "name": "King's College School Alicante",
+      "country": "Spain",
+      "url": "https://alicante.kingscollegeschool.es",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0052",
+      "name": "St George's Rome",
+      "country": "Italy",
+      "url": "https://www.stgeorge.it",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0072",
+      "name": "College du Leman",
+      "country": "Switzerland",
+      "url": "https://www.nordangliaeducation.com/cdl-geneva",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0074",
+      "name": "Riverside Prague",
+      "country": "Czechia",
+      "url": "https://www.riversideschool.cz/contact/vacancies/",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0075",
+      "name": "IS Hellerup",
+      "country": "Denmark",
+      "url": "https://ish.dk/vacancies/",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0087",
+      "name": "IS Athens",
+      "country": "Greece",
+      "url": "https://www.isa.edu.gr/about/join-our-team",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0092",
+      "name": "SEK International School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://riyadh.sek.international/work-with-us/",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0093",
+      "name": "Reigate Grammar School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://rgs-riyadh.edu.sa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0095",
+      "name": "Al Faris International School",
+      "country": "Saudi Arabia",
+      "url": "https://alfaris.edu.sa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0120",
+      "name": "El Alsson School",
+      "country": "Egypt",
+      "url": "https://www.alsson.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0156",
+      "name": "Canadian Academy Kobe",
+      "country": "Japan",
+      "url": "https://www.canacademy.ac.jp",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0169",
+      "name": "British School in Helsinki",
+      "country": "Finland",
+      "url": "https://www.thebritishschool.fi/vacancies",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0180",
+      "name": "International School of Turin",
+      "country": "Italy",
+      "url": "https://www.istorin.it",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0187",
+      "name": "Sultans School",
+      "country": "Oman",
+      "url": "https://sultansschool.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0193",
+      "name": "International School Innsbruck",
+      "country": "Austria",
+      "url": "https://www.innsbruck-iis.at",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0194",
+      "name": "Lower Austrian International School",
+      "country": "Austria",
+      "url": "https://www.lais.at",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0196",
+      "name": "SALIS - Salzburg International School",
+      "country": "Austria",
+      "url": "https://salis.salzburg.at",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0224",
+      "name": "Khazar University Dunya IB School",
+      "country": "Azerbaijan",
+      "url": "https://dunya.khazar.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0214",
+      "name": "European School of Bruxelles-Argenteuil",
+      "country": "Belgium",
+      "url": "https://www.esi-argenteuil.be",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0215",
+      "name": "International Montessori School",
+      "country": "Belgium",
+      "url": "https://www.montessori-brussels.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0216",
+      "name": "International School Ghent vzw",
+      "country": "Belgium",
+      "url": "https://www.isgnt.be",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0223",
+      "name": "Baku Oxford School",
+      "country": "Azerbaijan",
+      "url": "https://www.bakuoxfordschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0231",
+      "name": "Cambridge House British International School",
+      "country": "Spain",
+      "url": "https://cambridgehouse.es",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0235",
+      "name": "Malvern College Pre-School HK (Island West)",
+      "country": "Hong Kong SAR",
+      "url": "https://malvernpreschool.hk",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0236",
+      "name": "Malvern College Pre-School HK (Coronation Circle)",
+      "country": "Hong Kong SAR",
+      "url": "https://malvernpreschool.hk",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0237",
+      "name": "Malvern College Qingdao",
+      "country": "China",
+      "url": "https://malverncollegeqd.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0239",
+      "name": "Malvern College Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://malverncollegeryadh.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0240",
+      "name": "Malvern College São Paulo",
+      "country": "Brazil",
+      "url": "https://malverncollegesaopaulo.com.br",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0243",
+      "name": "American International School in Cyprus",
+      "country": "Cyprus",
+      "url": "https://www.aisc.ac.cy",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0257",
+      "name": "Carlucci American International School of Lisbon",
+      "country": "Portugal",
+      "url": "https://www.caisl.pt",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0261",
+      "name": "British International School Bratislava",
+      "country": "Slovakia",
+      "url": "https://www.nordangliaeducation.com/bis-bratislava",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0262",
+      "name": "International School of Latvia",
+      "country": "Latvia",
+      "url": "https://www.isl.lv",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0267",
+      "name": "Greengates School",
+      "country": "Mexico",
+      "url": "https://www.nordangliaeducation.com/greengates-mexico",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0268",
+      "name": "The American School of Guadalajara",
+      "country": "Mexico",
+      "url": "https://www.asg.edu.mx",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0278",
+      "name": "New English School Kuwait",
+      "country": "Kuwait",
+      "url": "https://www.neskuwait.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0288",
+      "name": "Taipei European School",
+      "country": "Taiwan",
+      "url": "https://www.taipeieuropeanschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0289",
+      "name": "Istanbul International Community School",
+      "country": "Turkey",
+      "url": "https://www.iics.k12.tr",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0290",
+      "name": "Haileybury Astana",
+      "country": "Kazakhstan",
+      "url": "https://www.haileybury.kz/en/astana",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0291",
+      "name": "American School of Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.asdubai.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0292",
+      "name": "American Community School of Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.acs.sch.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0293",
+      "name": "Dubai English Speaking College",
+      "country": "United Arab Emirates",
+      "url": "https://www.descdubai.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0294",
+      "name": "American International School Jeddah",
+      "country": "Saudi Arabia",
+      "url": "https://www.aisj.edu.sa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0295",
+      "name": "American School Dhahran",
+      "country": "Saudi Arabia",
+      "url": "https://asd.isg.edu.sa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0296",
+      "name": "British School Dhahran",
+      "country": "Saudi Arabia",
+      "url": "https://bsd.isg.edu.sa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0297",
+      "name": "Cairo American College",
+      "country": "Egypt",
+      "url": "https://www.cacegypt.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0298",
+      "name": "American International School in Egypt",
+      "country": "Egypt",
+      "url": "https://www.aisegypt.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0299",
+      "name": "King's Academy",
+      "country": "Jordan",
+      "url": "https://www.kingsacademy.edu.jo",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0300",
+      "name": "American Community School Amman",
+      "country": "Jordan",
+      "url": "https://www.acsamman.edu.jo",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0301",
+      "name": "American Community School Beirut",
+      "country": "Lebanon",
+      "url": "https://www.acs.edu.lb",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0302",
+      "name": "International College Beirut",
+      "country": "Lebanon",
+      "url": "https://www.ic.edu.lb",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0303",
+      "name": "Mesaieed International School",
+      "country": "Qatar",
+      "url": "https://www.mis.qp.qa",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0333",
+      "name": "GEMS Wellington Academy Silicon Oasis",
+      "country": "United Arab Emirates",
+      "url": "https://wellingtonacademy-so.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0335",
+      "name": "GEMS FirstPoint School",
+      "country": "United Arab Emirates",
+      "url": "https://gemsfirstpointschool-thevilla.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0337",
+      "name": "GEMS Metropole School Motor City",
+      "country": "United Arab Emirates",
+      "url": "https://gemsmetropoleschool-motorcity.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0339",
+      "name": "GEMS Winchester School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://thewinchesterschool-dubai.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0345",
+      "name": "Swiss International Scientific School in Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://sisd.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0346",
+      "name": "Safa Community School",
+      "country": "United Arab Emirates",
+      "url": "https://safacommunityschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0347",
+      "name": "Safa British School",
+      "country": "United Arab Emirates",
+      "url": "https://safabritishschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0348",
+      "name": "The English College Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://englishcollege.ac.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0349",
+      "name": "Horizon English School",
+      "country": "United Arab Emirates",
+      "url": "https://horizonenglishschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0350",
+      "name": "Regent International School",
+      "country": "United Arab Emirates",
+      "url": "https://ris.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0351",
+      "name": "Victory Heights Primary School",
+      "country": "United Arab Emirates",
+      "url": "https://vhprimary.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0352",
+      "name": "Deira International School",
+      "country": "United Arab Emirates",
+      "url": "https://disdubai.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0353",
+      "name": "The Arbor School",
+      "country": "United Arab Emirates",
+      "url": "https://thearborschool.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0354",
+      "name": "Fairgreen International School",
+      "country": "United Arab Emirates",
+      "url": "https://fairgreen.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0355",
+      "name": "The Aquila School",
+      "country": "United Arab Emirates",
+      "url": "https://theaquilaschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0356",
+      "name": "Durham School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://durhamdubai.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0357",
+      "name": "Dwight School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://dwight.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0358",
+      "name": "Collegiate International School",
+      "country": "United Arab Emirates",
+      "url": "https://collegiate.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0361",
+      "name": "Dove Green Private School",
+      "country": "United Arab Emirates",
+      "url": "https://dovegreen-school.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0363",
+      "name": "Emirates International School Meadows",
+      "country": "United Arab Emirates",
+      "url": "https://eischools.ae/meadows",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0364",
+      "name": "The School of Research Science",
+      "country": "United Arab Emirates",
+      "url": "https://srs.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0365",
+      "name": "Dar Al Marefa Private School",
+      "country": "United Arab Emirates",
+      "url": "https://daralmarefa.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0366",
+      "name": "Yasmina British Academy",
+      "country": "United Arab Emirates",
+      "url": "https://www.alyasminaacademy.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0367",
+      "name": "Al Bateen Academy",
+      "country": "United Arab Emirates",
+      "url": "https://www.albateenacademy.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0368",
+      "name": "Al Mamoura Academy",
+      "country": "United Arab Emirates",
+      "url": "https://www.almamouraacademy.ae",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0372",
+      "name": "American International School - Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://www.aisr.org",
+      "type": "website",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0374",
+      "name": "Singapore American School",
+      "country": "Singapore",
+      "url": "https://www.sas.edu.sg",
+      "type": "website",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0375",
+      "name": "Dulwich College (Singapore)",
+      "country": "Singapore",
+      "url": "https://singapore.dulwich.org",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0376",
+      "name": "NIST International School",
+      "country": "Thailand",
+      "url": "https://www.nist.ac.th",
+      "type": "website",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0377",
+      "name": "Harrow International School Bangkok",
+      "country": "Thailand",
+      "url": "https://www.harrowschool.ac.th",
+      "type": "website",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0380",
+      "name": "The British International School of Kuala Lumpur",
+      "country": "Malaysia",
+      "url": "https://www.nordangliaeducation.com/biskl-kuala-lumpur",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0381",
+      "name": "Hong Kong International School",
+      "country": "Hong Kong",
+      "url": "https://www.hkis.edu.hk",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0382",
+      "name": "Kellett School",
+      "country": "Hong Kong",
+      "url": "https://www.kellettschool.com",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0383",
+      "name": "Chinese International School",
+      "country": "Hong Kong",
+      "url": "https://www.cis.edu.hk",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0384",
+      "name": "The American School in Japan",
+      "country": "Japan",
+      "url": "https://www.asij.ac.jp",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0385",
+      "name": "International School of Amsterdam",
+      "country": "Netherlands",
+      "url": "https://www.isa.nl",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0386",
+      "name": "Munich International School",
+      "country": "Germany",
+      "url": "https://www.mis-munich.de",
+      "type": "website",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0427",
+      "name": "The British International School Bratislava",
+      "country": "Slovakia",
+      "url": "https://www.nordangliaeducation.com/bis-bratislava",
+      "type": "website",
+      "status": "FAILED",
+      "code": 404
+    }
+  ],
+  "brokenCareers": [
+    {
+      "id": "FLIS0003",
+      "name": "K. International",
+      "country": "Japan",
+      "url": "https://www.kist.ed.jp/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0009",
+      "name": "Tanglin Trust",
+      "country": "Singapore",
+      "url": "https://www.tts.edu.sg/working-with-us/current-vacancies",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0010",
+      "name": "G.T. (Ellen Yeung)",
+      "country": "Hong Kong",
+      "url": "https://www.gtcollege.edu.hk/recruitment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0011",
+      "name": "GD Country Garden",
+      "country": "China",
+      "url": "https://www.bgy.gd.cn",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0014",
+      "name": "European Azerbaijan",
+      "country": "Azerbaijan",
+      "url": "https://eas.edu.az/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0015",
+      "name": "NPS International",
+      "country": "Singapore",
+      "url": "https://singapore.nps-international.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0016",
+      "name": "The ISF Academy",
+      "country": "Hong Kong",
+      "url": "https://academy.isf.edu.hk/en/join-us/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0018",
+      "name": "Singapore Int'l (HK)",
+      "country": "Hong Kong",
+      "url": "https://www.singapore.edu.hk/join-us/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0020",
+      "name": "YK Pao School",
+      "country": "China",
+      "url": "https://www.ykpaoschool.cn/join-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0021",
+      "name": "Step by Step",
+      "country": "India",
+      "url": "https://stepbystep.ed.in/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0033",
+      "name": "Wellington Shanghai",
+      "country": "China",
+      "url": "https://shanghai.wellingtoncollege.cn/join-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0037",
+      "name": "Ecole Jeannine Manuel",
+      "country": "France",
+      "url": "https://www.ecolejeanninemanuel.org/en/work-with-us/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0038",
+      "name": "St Catherine's",
+      "country": "Greece",
+      "url": "https://www.stcatherines.gr/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0039",
+      "name": "IS Monaco",
+      "country": "Monaco",
+      "url": "https://www.ismonaco.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0043",
+      "name": "TISB Bangalore",
+      "country": "India",
+      "url": "https://www.tisb.org/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0044",
+      "name": "Calcutta Int'l",
+      "country": "India",
+      "url": "https://www.calcat.in/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0045",
+      "name": "SSIS Shanghai",
+      "country": "China",
+      "url": "https://www.ssis.asia/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0050",
+      "name": "Frankfurt Int'l",
+      "country": "Germany",
+      "url": "https://www.fis.edu/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0051",
+      "name": "King's College School Alicante",
+      "country": "Spain",
+      "url": "https://alicante.kingscollegeschool.es/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0052",
+      "name": "St George's Rome",
+      "country": "Italy",
+      "url": "https://www.stgeorge.it/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0054",
+      "name": "IS Lausanne",
+      "country": "Switzerland",
+      "url": "https://www.isl.ch/join-us/employment-opportunities",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0057",
+      "name": "American Milan",
+      "country": "Italy",
+      "url": "https://www.asmilan.org/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0060",
+      "name": "Zurich Int'l",
+      "country": "Switzerland",
+      "url": "https://www.zis.ch/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0061",
+      "name": "British School of Brussels (BSB)",
+      "country": "Belgium",
+      "url": "https://www.britishschool.be/our-school/work-with-us/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0062",
+      "name": "St Peter's BCN",
+      "country": "Spain",
+      "url": "https://stpeters.es/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0064",
+      "name": "Aloha College",
+      "country": "Spain",
+      "url": "https://aloha-college.com/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0066",
+      "name": "Leysin American",
+      "country": "Switzerland",
+      "url": "https://www.las.ch/about/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0068",
+      "name": "IS Amsterdam",
+      "country": "Netherlands",
+      "url": "https://www.isa.nl/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0070",
+      "name": "Haut-Lac Int'l",
+      "country": "Switzerland",
+      "url": "https://www.haut-lac.ch/en/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0073",
+      "name": "International School of Brussels (ISB)",
+      "country": "Belgium",
+      "url": "https://www.isb.be/join-our-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0074",
+      "name": "Riverside Prague",
+      "country": "Czechia",
+      "url": "https://www.riversideschool.cz/contact/vacancies/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0075",
+      "name": "IS Hellerup",
+      "country": "Denmark",
+      "url": "https://ish.dk/vacancies/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0078",
+      "name": "IS Zug & Luzern",
+      "country": "Switzerland",
+      "url": "https://www.iszl.ch/join-our-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0079",
+      "name": "Metropolitan Frankfurt",
+      "country": "Germany",
+      "url": "https://m-s-f.de/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0080",
+      "name": "Ermitage Int'l",
+      "country": "France",
+      "url": "https://www.ermitage.fr/en/join-our-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0081",
+      "name": "Oslo International",
+      "country": "Norway",
+      "url": "https://www.oslointernationalschool.no/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0082",
+      "name": "St Julian's School",
+      "country": "Portugal",
+      "url": "https://www.stjulians.com/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0083",
+      "name": "American School Madrid",
+      "country": "Spain",
+      "url": "https://www.asmadrid.org/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0084",
+      "name": "British Int'l Budapest",
+      "country": "Hungary",
+      "url": "https://www.nordangliaeducation.com/bis-budapest/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0087",
+      "name": "IS Athens",
+      "country": "Greece",
+      "url": "https://www.isa.edu.gr/about/join-our-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0090",
+      "name": "Heidelberg Int'l",
+      "country": "Germany",
+      "url": "https://www.hischool.de/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0092",
+      "name": "SEK International School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://riyadh.sek.international/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0093",
+      "name": "Reigate Grammar School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://rgs-riyadh.edu.sa/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0095",
+      "name": "Al Faris International School",
+      "country": "Saudi Arabia",
+      "url": "https://alfaris.edu.sa/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0097",
+      "name": "Saud International School",
+      "country": "Saudi Arabia",
+      "url": "https://sis.edu.sa/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0101",
+      "name": "Brighton College Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.brightoncollege.ae/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0114",
+      "name": "The British School of Kuwait",
+      "country": "Kuwait",
+      "url": "https://bsk.edu.kw/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0116",
+      "name": "American International School of Muscat",
+      "country": "Oman",
+      "url": "https://www.taism.com/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0118",
+      "name": "British International School Cairo",
+      "country": "Egypt",
+      "url": "https://www.bisc.edu.eg/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0120",
+      "name": "El Alsson School",
+      "country": "Egypt",
+      "url": "https://www.alsson.com/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0124",
+      "name": "International School of Cape Town",
+      "country": "South Africa",
+      "url": "https://www.isct.co.za/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0125",
+      "name": "American International School of Johannesburg",
+      "country": "South Africa",
+      "url": "https://www.aisj-jhb.com/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0129",
+      "name": "UNIS Hanoi",
+      "country": "Vietnam",
+      "url": "https://www.unishanoi.org/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0133",
+      "name": "Epsom College in Malaysia",
+      "country": "Malaysia",
+      "url": "https://www.epsomcollege.edu.my/join-us/work-at-epsom/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0135",
+      "name": "Shrewsbury International School Riverside",
+      "country": "Thailand",
+      "url": "https://www.shrewsbury.ac.th/riverside/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0136",
+      "name": "Bangkok Patana School",
+      "country": "Thailand",
+      "url": "https://www.patana.ac.th/employment/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0150",
+      "name": "British School in Tokyo",
+      "country": "Japan",
+      "url": "https://www.bst.ac.jp/work-at-bst",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0138",
+      "name": "Brighton College Bangkok",
+      "country": "Thailand",
+      "url": "https://brightoncollege.ac.th/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0139",
+      "name": "King's College International School Bangkok",
+      "country": "Thailand",
+      "url": "https://www.kingsbangkok.ac.th/en/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0140",
+      "name": "Rugby School Thailand",
+      "country": "Thailand",
+      "url": "https://www.rugbyschool.ac.th/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0142",
+      "name": "International School Bangkok",
+      "country": "Thailand",
+      "url": "https://www.isb.ac.th/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0143",
+      "name": "UWC Thailand",
+      "country": "Thailand",
+      "url": "https://www.uwcthailand.ac.th/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0144",
+      "name": "British School Jakarta",
+      "country": "Indonesia",
+      "url": "https://www.bsj.sch.id/work-at-bsj",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0145",
+      "name": "Jakarta Intercultural School",
+      "country": "Indonesia",
+      "url": "https://www.jisedu.or.id/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0147",
+      "name": "Canggu Community School Bali",
+      "country": "Indonesia",
+      "url": "https://www.ccsbali.com/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0148",
+      "name": "British School Manila",
+      "country": "Philippines",
+      "url": "https://www.britishschoolmanila.org/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0149",
+      "name": "International School Manila",
+      "country": "Philippines",
+      "url": "https://www.ismanila.org/work-at-ism",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0151",
+      "name": "Malvern College Tokyo",
+      "country": "Japan",
+      "url": "https://www.malverncollegetokyo.jp/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0153",
+      "name": "Harrow International School Appi",
+      "country": "Japan",
+      "url": "https://www.harrowappi.jp/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0154",
+      "name": "St. Maur International School",
+      "country": "Japan",
+      "url": "https://www.stmaur.ac.jp/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0155",
+      "name": "Yokohama International School",
+      "country": "Japan",
+      "url": "https://www.yis.ac.jp/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0156",
+      "name": "Canadian Academy Kobe",
+      "country": "Japan",
+      "url": "https://www.canacademy.ac.jp/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0157",
+      "name": "Seoul Foreign School",
+      "country": "South Korea",
+      "url": "https://www.seoulforeign.org/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0158",
+      "name": "Chadwick International",
+      "country": "South Korea",
+      "url": "https://www.chadwickinternational.org/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0159",
+      "name": "Branksome Hall Asia",
+      "country": "South Korea",
+      "url": "https://www.branksome.asia/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0160",
+      "name": "North London Collegiate School Jeju",
+      "country": "South Korea",
+      "url": "https://www.nlcsjeju.co.kr/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0161",
+      "name": "Concordia International School Shanghai",
+      "country": "China",
+      "url": "https://www.concordiashanghai.org/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0162",
+      "name": "Western Academy of Beijing",
+      "country": "China",
+      "url": "https://www.wab.edu/work-at-wab",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0163",
+      "name": "British International School Warsaw",
+      "country": "Poland",
+      "url": "https://www.nordangliaeducation.com/bis-warsaw/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0164",
+      "name": "Akademeia High School",
+      "country": "Poland",
+      "url": "https://akademeia.edu.pl/en/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0167",
+      "name": "St. George's British International School Bilbao",
+      "country": "Spain",
+      "url": "https://stgeorgeschool.es/en/careers/",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0169",
+      "name": "British School in Helsinki",
+      "country": "Finland",
+      "url": "https://www.thebritishschool.fi/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0176",
+      "name": "International School of Luxembourg",
+      "country": "Luxembourg",
+      "url": "https://www.islux.lu/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0178",
+      "name": "International School of Nice",
+      "country": "France",
+      "url": "https://www.isn-nice.com/join-the-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0179",
+      "name": "Mougins School",
+      "country": "France",
+      "url": "https://mougins.britishinternationalschool.com/about/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0180",
+      "name": "International School of Turin",
+      "country": "Italy",
+      "url": "https://www.istorin.it/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0182",
+      "name": "St. Paul's School Brazil",
+      "country": "Brazil",
+      "url": "https://www.stpauls.br/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0184",
+      "name": "Graded School Sao Paulo",
+      "country": "Brazil",
+      "url": "https://www.graded.br/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0187",
+      "name": "Sultans School",
+      "country": "Oman",
+      "url": "https://sultansschool.org/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0188",
+      "name": "Parklane International School",
+      "country": "Czechia",
+      "url": "https://www.parklane-is.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0189",
+      "name": "ABA Oman International School",
+      "country": "Oman",
+      "url": "https://www.abaoman.org/join-our-team",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0193",
+      "name": "International School Innsbruck",
+      "country": "Austria",
+      "url": "https://www.innsbruck-iis.at",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0194",
+      "name": "Lower Austrian International School",
+      "country": "Austria",
+      "url": "https://www.lais.at",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0196",
+      "name": "SALIS - Salzburg International School",
+      "country": "Austria",
+      "url": "https://salis.salzburg.at",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0197",
+      "name": "Schloss Krumbach International School",
+      "country": "Austria",
+      "url": "https://join.com/companies/krumbach",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0198",
+      "name": "Vienna International School",
+      "country": "Austria",
+      "url": "https://www.vis.ac.at/work-at-vis/current-vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0199",
+      "name": "Arabian Pearl Gulf School",
+      "country": "Bahrain",
+      "url": "https://apgschool.com/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0200",
+      "name": "American School of Bahrain",
+      "country": "Bahrain",
+      "url": "https://www.asb.bh/about/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0201",
+      "name": "Bahrain Bayan School",
+      "country": "Bahrain",
+      "url": "https://www.bayanschool.edu.bh/page/view/92",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0202",
+      "name": "UWC Costa Rica",
+      "country": "Costa Rica",
+      "url": "https://uwccostarica.org/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0203",
+      "name": "Naseem International School",
+      "country": "Bahrain",
+      "url": "https://nisbah.edu.bh/employee/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0204",
+      "name": "Tenby International School Setia Eco Park",
+      "country": "Malaysia",
+      "url": "https://tenby.edu.my/setia-eco-park/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0205",
+      "name": "Nibras International School",
+      "country": "United Arab Emirates",
+      "url": "https://nisdubai.ae/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0206",
+      "name": "ICS Milan International School",
+      "country": "Italy",
+      "url": "https://icsmilan.com/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0222",
+      "name": "Baku International School",
+      "country": "Azerbaijan",
+      "url": "https://www.qsi.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0208",
+      "name": "Nobel Algarve British International School",
+      "country": "Portugal",
+      "url": "https://nobelalgarve.schoolrecruiter.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0224",
+      "name": "Khazar University Dunya IB School",
+      "country": "Azerbaijan",
+      "url": "https://khazar.org/en/item/510",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0210",
+      "name": "Antwerp International School",
+      "country": "Belgium",
+      "url": "https://isbedu.be/careers-with-isbe",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0226",
+      "name": "The International School of Azerbaijan",
+      "country": "Azerbaijan",
+      "url": "https://www.tisa.az/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0212",
+      "name": "Bogaerts International School",
+      "country": "Belgium",
+      "url": "https://www.bischool.com/careers/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0213",
+      "name": "British Junior Academy of Brussels",
+      "country": "Belgium",
+      "url": "https://www.bjab.org/our-community/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0214",
+      "name": "European School of Bruxelles-Argenteuil",
+      "country": "Belgium",
+      "url": "https://www.europeanschool.be/career/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0215",
+      "name": "International Montessori School",
+      "country": "Belgium",
+      "url": "https://www.montessori-brussels.org/about-us/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0216",
+      "name": "International School Ghent vzw",
+      "country": "Belgium",
+      "url": "https://isg-ghent.org/our-vacancies/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0217",
+      "name": "International School of Belgium",
+      "country": "Belgium",
+      "url": "https://isbedu.be/careers-with-isbe/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0219",
+      "name": "International School of Flanders RHSG",
+      "country": "Belgium",
+      "url": "https://isftervuren.org/788/job-opportunities",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0220",
+      "name": "Montgomery International School",
+      "country": "Belgium",
+      "url": "https://www.mischool.be/nav-footer-links/career",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0221",
+      "name": "Azerbaijan British College",
+      "country": "Azerbaijan",
+      "url": "https://abc.edu.az/accreditation-inspections",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0223",
+      "name": "Baku Oxford School",
+      "country": "Azerbaijan",
+      "url": "https://www.bakuoxfordschool.com/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0225",
+      "name": "Modern Educational Complex Named in Honor of Heydar Aliyev",
+      "country": "Azerbaijan",
+      "url": "https://www.mtk.edu.az/en/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0227",
+      "name": "EIB Paris International School",
+      "country": "France",
+      "url": "https://eibparis.schoolrecruiter.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0228",
+      "name": "ICS Paris International School",
+      "country": "France",
+      "url": "https://icsparis.schoolrecruiter.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0229",
+      "name": "PASCAL International Education Cyprus",
+      "country": "Cyprus",
+      "url": "https://pascal.schoolrecruiter.com/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0230",
+      "name": "Agora Madrid International School",
+      "country": "Spain",
+      "url": "https://madrid.agorainternationalschool.es/en/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0231",
+      "name": "Cambridge House British International School",
+      "country": "Spain",
+      "url": "https://cambridgehouse.schoolrecruiter.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0232",
+      "name": "UWC East Africa",
+      "country": "Tanzania",
+      "url": "https://employ.uwcea.org",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0233",
+      "name": "Riffa Views International School",
+      "country": "Bahrain",
+      "url": "https://www.rvis.edu.bh/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0234",
+      "name": "Malvern College Hong Kong",
+      "country": "Hong Kong SAR",
+      "url": "https://malverncollege.org.hk/staff-and-management/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0235",
+      "name": "Malvern College Pre-School HK (Island West)",
+      "country": "Hong Kong SAR",
+      "url": "https://www.malvernpreschool.hk/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0236",
+      "name": "Malvern College Pre-School HK (Coronation Circle)",
+      "country": "Hong Kong SAR",
+      "url": "https://www.malvernpreschool.hk/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0237",
+      "name": "Malvern College Qingdao",
+      "country": "China",
+      "url": "https://malverncollegeinternational.org/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0238",
+      "name": "Malvern College Chengdu",
+      "country": "China",
+      "url": "https://www.malvernchengdu.cn/en/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0239",
+      "name": "Malvern College Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://malverncollegeinternational.org/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0240",
+      "name": "Malvern College São Paulo",
+      "country": "Brazil",
+      "url": "https://malverncollegeinternational.org/work-with-us/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0241",
+      "name": "St. George's College",
+      "country": "Argentina",
+      "url": "https://www.stgeorges.edu.ar/en/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0242",
+      "name": "St. Andrew's Scots School",
+      "country": "Argentina",
+      "url": "https://www.sanandres.esc.edu.ar/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0243",
+      "name": "American International School in Cyprus",
+      "country": "Cyprus",
+      "url": "https://www.aisc.ac.cy/about-us/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0245",
+      "name": "The Island Private School",
+      "country": "Cyprus",
+      "url": "https://isl.cy/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0246",
+      "name": "Foley's School",
+      "country": "Cyprus",
+      "url": "https://foleysschool.com/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0247",
+      "name": "The Heritage Private School",
+      "country": "Cyprus",
+      "url": "https://www.carierista.com/en/partners/5162/the-heritage-private-school-ltd",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0248",
+      "name": "International School of Paphos",
+      "country": "Cyprus",
+      "url": "https://www.globeducate.com/our-schools/cyprus/the-international-school-of-paphos",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0249",
+      "name": "American Academy Larnaca",
+      "country": "Cyprus",
+      "url": "https://www.americanacademy.ac.cy/careers/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0250",
+      "name": "The International School of Kuala Lumpur (ISKL)",
+      "country": "Malaysia",
+      "url": "https://www.iskl.edu.my/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0251",
+      "name": "The International School of Penang (Uplands)",
+      "country": "Malaysia",
+      "url": "https://www.uplands.org/careers-at-uplands/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0252",
+      "name": "Stonyhurst International School Penang",
+      "country": "Malaysia",
+      "url": "https://www.stonyhurstpenang.edu.my/jointheteam/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0253",
+      "name": "Nexus International School Malaysia",
+      "country": "Malaysia",
+      "url": "https://www.nexus.edu.my/about-nexus/job-opportunities/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0254",
+      "name": "American International School of Bucharest",
+      "country": "Romania",
+      "url": "https://www.aisb.ro/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0255",
+      "name": "American School of Warsaw",
+      "country": "Poland",
+      "url": "https://www.aswarsaw.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0256",
+      "name": "International School of Stavanger",
+      "country": "Norway",
+      "url": "https://www.isstavanger.no/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0257",
+      "name": "Carlucci American International School of Lisbon",
+      "country": "Portugal",
+      "url": "https://www.caislisbon.org/join-us/work-at-caisl",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0258",
+      "name": "Anglo-American School of Sofia",
+      "country": "Bulgaria",
+      "url": "https://www.aas-sofia.org/discover/working-for-aas",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0259",
+      "name": "Taipei American School",
+      "country": "Taiwan",
+      "url": "https://www.tas.edu.tw/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0260",
+      "name": "International School of Belgrade",
+      "country": "Serbia",
+      "url": "https://www.isb.rs/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0261",
+      "name": "British International School Bratislava",
+      "country": "Slovakia",
+      "url": "https://www.nordangliaeducation.com/bis-bratislava/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0262",
+      "name": "International School of Latvia",
+      "country": "Latvia",
+      "url": "https://www.isl.lv/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0264",
+      "name": "Haileybury Almaty",
+      "country": "Kazakhstan",
+      "url": "https://www.haileybury.kz/en/almaty/about-us/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0265",
+      "name": "American School of The Hague",
+      "country": "Netherlands",
+      "url": "https://www.ash.nl/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0266",
+      "name": "American School Foundation of Monterrey",
+      "country": "Mexico",
+      "url": "https://www.asfm.edu.mx/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0268",
+      "name": "The American School of Guadalajara",
+      "country": "Mexico",
+      "url": "https://www.asg.edu.mx/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0269",
+      "name": "John F. Kennedy School Querétaro",
+      "country": "Mexico",
+      "url": "https://www.jfk.edu.mx/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0270",
+      "name": "Colegio Nueva Granada",
+      "country": "Colombia",
+      "url": "https://www.cng.edu/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0271",
+      "name": "Colegio Bolívar",
+      "country": "Colombia",
+      "url": "https://www.colegiobolivar.edu.co/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0272",
+      "name": "The English School Bogotá",
+      "country": "Colombia",
+      "url": "https://www.englishschool.edu.co/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0273",
+      "name": "International School of The Hague",
+      "country": "Netherlands",
+      "url": "https://www.ishthehague.nl/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0274",
+      "name": "Rotterdam International Secondary School",
+      "country": "Netherlands",
+      "url": "https://riss.wolfert.nl/about-us/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0275",
+      "name": "International School Eindhoven",
+      "country": "Netherlands",
+      "url": "https://isecampus.nl/about/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0276",
+      "name": "American International School of Kuwait",
+      "country": "Kuwait",
+      "url": "https://www.aiskuwait.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0277",
+      "name": "Universal American School Kuwait",
+      "country": "Kuwait",
+      "url": "https://www.uas.edu.kw/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0278",
+      "name": "New English School Kuwait",
+      "country": "Kuwait",
+      "url": "https://www.neskuwait.com/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0279",
+      "name": "American School of Doha",
+      "country": "Qatar",
+      "url": "https://www.asd.sch.qa/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0281",
+      "name": "Park House English School",
+      "country": "Qatar",
+      "url": "https://parkhouseschool.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0282",
+      "name": "Saigon South International School",
+      "country": "Vietnam",
+      "url": "https://www.ssis.edu.vn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0283",
+      "name": "Renaissance International School Saigon",
+      "country": "Vietnam",
+      "url": "https://www.renaissance.edu.vn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0284",
+      "name": "Concordia International School Hanoi",
+      "country": "Vietnam",
+      "url": "https://www.concordiahanoi.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0285",
+      "name": "Korea International School",
+      "country": "South Korea",
+      "url": "https://www.kis.or.kr/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0286",
+      "name": "Dwight School Seoul",
+      "country": "South Korea",
+      "url": "https://www.dwight.or.kr/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0287",
+      "name": "Seoul International School",
+      "country": "South Korea",
+      "url": "https://siskorea.org/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0288",
+      "name": "Taipei European School",
+      "country": "Taiwan",
+      "url": "https://www.taipeieuropeanschool.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0289",
+      "name": "Istanbul International Community School",
+      "country": "Turkey",
+      "url": "https://www.iics.k12.tr/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0290",
+      "name": "Haileybury Astana",
+      "country": "Kazakhstan",
+      "url": "https://www.haileybury.kz/en/astana/about-us/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0291",
+      "name": "American School of Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.asdubai.org/work-at-asd-link",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0292",
+      "name": "American Community School of Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.acs.sch.ae/join-us/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0293",
+      "name": "Dubai English Speaking College",
+      "country": "United Arab Emirates",
+      "url": "https://www.descdubai.com/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0294",
+      "name": "American International School Jeddah",
+      "country": "Saudi Arabia",
+      "url": "https://www.aisj.edu.sa/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0295",
+      "name": "American School Dhahran",
+      "country": "Saudi Arabia",
+      "url": "https://www.isg.edu.sa/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0296",
+      "name": "British School Dhahran",
+      "country": "Saudi Arabia",
+      "url": "https://www.isg.edu.sa/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0297",
+      "name": "Cairo American College",
+      "country": "Egypt",
+      "url": "https://www.cacegypt.org/index.php/working-at-cac",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0298",
+      "name": "American International School in Egypt",
+      "country": "Egypt",
+      "url": "https://www.aisegypt.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0299",
+      "name": "King's Academy",
+      "country": "Jordan",
+      "url": "https://www.kingsacademy.edu.jo/about-us/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0300",
+      "name": "American Community School Amman",
+      "country": "Jordan",
+      "url": "https://www.acsamman.edu.jo/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0301",
+      "name": "American Community School Beirut",
+      "country": "Lebanon",
+      "url": "https://www.acs.edu.lb/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0302",
+      "name": "International College Beirut",
+      "country": "Lebanon",
+      "url": "https://www.ic.edu.lb/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 429
+    },
+    {
+      "id": "FLIS0361",
+      "name": "Dove Green Private School",
+      "country": "United Arab Emirates",
+      "url": "https://dovegreen-school.com/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0365",
+      "name": "Dar Al Marefa Private School",
+      "country": "United Arab Emirates",
+      "url": "https://daralmarefa.ae/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0366",
+      "name": "Yasmina British Academy",
+      "country": "United Arab Emirates",
+      "url": "https://careers.aldaracademies.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0367",
+      "name": "Al Bateen Academy",
+      "country": "United Arab Emirates",
+      "url": "https://careers.aldaracademies.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0368",
+      "name": "Al Mamoura Academy",
+      "country": "United Arab Emirates",
+      "url": "https://careers.aldaracademies.com",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0369",
+      "name": "Brighton College Al Ain",
+      "country": "United Arab Emirates",
+      "url": "https://www.brightoncollegealain.ae/about-us/vacancies",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0373",
+      "name": "Beech Hall School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://beechhallriyadh.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0378",
+      "name": "Shrewsbury International School Bangkok Riverside",
+      "country": "Thailand",
+      "url": "https://www.shrewsbury.ac.th/riverside/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0379",
+      "name": "Alice Smith School",
+      "country": "Malaysia",
+      "url": "https://www.alice-smith.edu.my/work-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0380",
+      "name": "The British International School of Kuala Lumpur",
+      "country": "Malaysia",
+      "url": "https://www.nordangliaeducation.com/bis-kuala-lumpur/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0381",
+      "name": "Hong Kong International School",
+      "country": "Hong Kong",
+      "url": "https://www.hkis.edu.hk/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0382",
+      "name": "Kellett School",
+      "country": "Hong Kong",
+      "url": "https://www.kellettschool.com/working-at-kellett",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0384",
+      "name": "The American School in Japan",
+      "country": "Japan",
+      "url": "https://www.asij.ac.jp/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0385",
+      "name": "International School of Amsterdam",
+      "country": "Netherlands",
+      "url": "https://www.isa.nl/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0386",
+      "name": "Munich International School",
+      "country": "Germany",
+      "url": "https://www.mis-munich.de/employment",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0387",
+      "name": "Zurich International School",
+      "country": "Switzerland",
+      "url": "https://www.zis.ch/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0388",
+      "name": "American School of Paris",
+      "country": "France",
+      "url": "https://www.asparis.org/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0389",
+      "name": "International School of Geneva",
+      "country": "Switzerland",
+      "url": "https://www.ecolint.ch/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0391",
+      "name": "The English School Kuwait",
+      "country": "Kuwait",
+      "url": "https://tes.edu.kw/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0393",
+      "name": "British International School of Al Khobar",
+      "country": "Saudi Arabia",
+      "url": "https://www.bisak.org/recruitment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0397",
+      "name": "Canadian Academy",
+      "country": "Japan",
+      "url": "https://www.canacad.ac.jp/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0398",
+      "name": "Osaka International School",
+      "country": "Japan",
+      "url": "https://www.senri.ed.jp/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0400",
+      "name": "International School of Beijing",
+      "country": "China",
+      "url": "https://www.isb.bj.edu.cn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0402",
+      "name": "St. Joseph's Institution International",
+      "country": "Singapore",
+      "url": "https://www.sji-international.com.sg/join-us/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0404",
+      "name": "Stamford American International School",
+      "country": "Singapore",
+      "url": "https://www.sais.edu.sg/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0405",
+      "name": "Kolej Tuanku Ja'afar",
+      "country": "Malaysia",
+      "url": "https://www.ktj.edu.my/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0406",
+      "name": "St. George's British International School Rome",
+      "country": "Italy",
+      "url": "https://www.stgeorge.school.it/join-us/vacancies",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0407",
+      "name": "The International School of Florence",
+      "country": "Italy",
+      "url": "https://www.isfitaly.org/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0408",
+      "name": "The British School of Milan",
+      "country": "Italy",
+      "url": "https://www.britishschoolmilan.com/working-with-us",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0409",
+      "name": "International School of Basel",
+      "country": "Switzerland",
+      "url": "https://www.isbasel.ch/community/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0411",
+      "name": "College Alpin Beau Soleil",
+      "country": "Switzerland",
+      "url": "https://www.nordangliaeducation.com/beau-soleil/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0412",
+      "name": "TASIS The American School in Switzerland",
+      "country": "Switzerland",
+      "url": "https://www.tasis.ch/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0413",
+      "name": "TASIS The American School in England",
+      "country": "United Kingdom",
+      "url": "https://www.tasisengland.org/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0414",
+      "name": "The British School of Brussels",
+      "country": "Belgium",
+      "url": "https://www.britishschool.be/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0415",
+      "name": "Bavarian International School",
+      "country": "Germany",
+      "url": "https://www.bis-school.com/community/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0417",
+      "name": "King's College Madrid",
+      "country": "Spain",
+      "url": "https://www.inspirededu.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0422",
+      "name": "St. Christopher's School Senior",
+      "country": "Bahrain",
+      "url": "https://st-chris.schoolrecruiter.com/",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0424",
+      "name": "Campion School Athens",
+      "country": "Greece",
+      "url": "https://www.campion.edu.gr/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0425",
+      "name": "St. Catherine's British School",
+      "country": "Greece",
+      "url": "https://www.stcatherines.gr/opportunities",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0426",
+      "name": "St. George's International School Switzerland",
+      "country": "Switzerland",
+      "url": "https://www.inspirededu.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0430",
+      "name": "The British School of Tashkent",
+      "country": "Uzbekistan",
+      "url": "https://www.nordangliaeducation.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0431",
+      "name": "The British International School Cairo",
+      "country": "Egypt",
+      "url": "https://www.bisc.edu.eg/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0432",
+      "name": "New Cairo British International School",
+      "country": "Egypt",
+      "url": "https://www.ncbis.co/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0433",
+      "name": "King's School The Crown",
+      "country": "Egypt",
+      "url": "https://www.inspirededu.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0434",
+      "name": "The British School of Alexandria",
+      "country": "Egypt",
+      "url": "https://www.bsalex.net/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0435",
+      "name": "Jerudong International School",
+      "country": "Brunei",
+      "url": "https://www.jerudonginternationalschool.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0436",
+      "name": "International School Brunei",
+      "country": "Brunei",
+      "url": "https://www.isb.edu.bn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0437",
+      "name": "The British School New Delhi",
+      "country": "India",
+      "url": "https://www.british-school.org/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0438",
+      "name": "The British School of Guangzhou",
+      "country": "China",
+      "url": "https://www.nordangliaeducation.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0440",
+      "name": "Harrow International School Shenzhen",
+      "country": "China",
+      "url": "https://www.harrowschools.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0441",
+      "name": "Wellington College International Tianjin",
+      "country": "China",
+      "url": "https://www.wellingtoncollege.cn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0442",
+      "name": "Brighton College Vietnam",
+      "country": "Vietnam",
+      "url": "https://www.brightoncollege.edu.vn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0443",
+      "name": "Reigate Grammar School Vietnam",
+      "country": "Vietnam",
+      "url": "https://www.reigategrammar.edu.vn/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0444",
+      "name": "The British School of Beijing Sanlitun",
+      "country": "China",
+      "url": "https://www.nordangliaeducation.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0445",
+      "name": "The Grange School",
+      "country": "Chile",
+      "url": "https://www.grange.cl/employment",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0446",
+      "name": "Craighouse School",
+      "country": "Chile",
+      "url": "https://www.craighouse.cl/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0447",
+      "name": "The British Schools Montevideo",
+      "country": "Uruguay",
+      "url": "https://www.british.edu.uy/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0448",
+      "name": "The British School of Costa Rica",
+      "country": "Costa Rica",
+      "url": "https://www.thebritishschool.ed.cr/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0450",
+      "name": "The British School of Caracas",
+      "country": "Venezuela",
+      "url": "https://www.tbsc.org.ve/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0452",
+      "name": "St. Andrew's School, Turi",
+      "country": "Kenya",
+      "url": "https://www.st-andrews-turi.org/working-at-turi",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0453",
+      "name": "Peponi School",
+      "country": "Kenya",
+      "url": "https://www.peponischool.org/vacancies",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0454",
+      "name": "St. Francis' College",
+      "country": "Brazil",
+      "url": "https://www.stfrancis.com.br/careers",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0455",
+      "name": "Denla British School",
+      "country": "Thailand",
+      "url": "https://www.dbsbangkok.ac.th/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0456",
+      "name": "Discovery Bay International School",
+      "country": "Hong Kong",
+      "url": "https://www.dbis.edu.hk/working-at-dbis",
+      "type": "careers",
+      "status": "FAILED",
+      "code": 404
+    },
+    {
+      "id": "FLIS0457",
+      "name": "British Vietnamese International School Ho Chi Minh City",
+      "country": "Vietnam",
+      "url": "https://www.nordangliaeducation.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0458",
+      "name": "British Vietnamese International School Hanoi",
+      "country": "Vietnam",
+      "url": "https://www.nordangliaeducation.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0459",
+      "name": "The British International School of Tbilisi",
+      "country": "Georgia",
+      "url": "https://bist.ge/vacancies",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0460",
+      "name": "St. George's British International School Seville",
+      "country": "Spain",
+      "url": "https://www.stgeorges-school.es/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0137",
+      "name": "St. Andrews International School Sukhumvit 107",
+      "country": "Thailand",
+      "url": "https://www.standrews107.com/careers",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    },
+    {
+      "id": "FLIS0207",
+      "name": "Agora Sant Cugat International School",
+      "country": "Spain",
+      "url": "https://santcugat.agorainternationalschool.es/en/work-with-us",
+      "type": "careers",
+      "status": "ERROR",
+      "error": "fetch failed"
+    }
+  ],
+  "timedOutWeb": [
+    {
+      "id": "FLIS0001",
+      "name": "German Swiss Int'l",
+      "country": "Hong Kong",
+      "url": "https://www.gsis.edu.hk",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0013",
+      "name": "ACS International",
+      "country": "Singapore",
+      "url": "https://www.acsinternational.edu.sg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0015",
+      "name": "NPS International",
+      "country": "Singapore",
+      "url": "https://singapore.nps-international.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0017",
+      "name": "Dulwich Beijing",
+      "country": "China",
+      "url": "https://beijing.dulwich.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0019",
+      "name": "PLK Choi Kai Yau",
+      "country": "Hong Kong",
+      "url": "http://www.cky.edu.hk",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0022",
+      "name": "Dulwich Pudong",
+      "country": "China",
+      "url": "https://shanghai-pudong.dulwich.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0026",
+      "name": "GEMS World Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemsworldacademy-dubai.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0027",
+      "name": "Aldar Academies",
+      "country": "United Arab Emirates",
+      "url": "https://aldareducation.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0029",
+      "name": "Neev Academy",
+      "country": "India",
+      "url": "https://neevacademy.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0031",
+      "name": "Hwa Chong Int'l",
+      "country": "Singapore",
+      "url": "https://www.hcis.edu.sg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0033",
+      "name": "Wellington Shanghai",
+      "country": "China",
+      "url": "https://shanghai.wellingtoncollege.cn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0034",
+      "name": "Leman Chengdu",
+      "country": "China",
+      "url": "https://www.nordangliaeducation.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0037",
+      "name": "Ecole Jeannine Manuel",
+      "country": "France",
+      "url": "https://www.ecolejeanninemanuel.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0038",
+      "name": "St Catherine's",
+      "country": "Greece",
+      "url": "https://www.stcatherines.gr",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0041",
+      "name": "Heritage Gurugram",
+      "country": "India",
+      "url": "https://www.heritagexperiential.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0043",
+      "name": "TISB Bangalore",
+      "country": "India",
+      "url": "https://www.tisb.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0044",
+      "name": "Calcutta Int'l",
+      "country": "India",
+      "url": "https://www.calcat.in",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0045",
+      "name": "SSIS Shanghai",
+      "country": "China",
+      "url": "https://www.ssis.asia",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0046",
+      "name": "Dulwich Suzhou",
+      "country": "China",
+      "url": "https://suzhou.dulwich.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0047",
+      "name": "Aiglon College",
+      "country": "Switzerland",
+      "url": "https://www.aiglon.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0054",
+      "name": "IS Lausanne",
+      "country": "Switzerland",
+      "url": "https://www.isl.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0055",
+      "name": "Beau Soleil",
+      "country": "Switzerland",
+      "url": "https://www.nordangliaeducation.com/beau-soleil",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0056",
+      "name": "English College Prague",
+      "country": "Czechia",
+      "url": "https://www.englishcollege.cz",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0057",
+      "name": "American Milan",
+      "country": "Italy",
+      "url": "https://www.asmilan.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0058",
+      "name": "St George's Montreux",
+      "country": "Switzerland",
+      "url": "https://www.stgeorges.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0059",
+      "name": "PaRK International School",
+      "country": "Portugal",
+      "url": "https://www.park-is.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0060",
+      "name": "Zurich Int'l",
+      "country": "Switzerland",
+      "url": "https://www.zis.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0062",
+      "name": "St Peter's BCN",
+      "country": "Spain",
+      "url": "https://stpeters.es",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0063",
+      "name": "Int'l College Spain",
+      "country": "Spain",
+      "url": "https://www.nordangliaeducation.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0064",
+      "name": "Aloha College",
+      "country": "Spain",
+      "url": "https://aloha-college.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0065",
+      "name": "Benjamin Franklin",
+      "country": "Spain",
+      "url": "https://www.bfischool.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0115",
+      "name": "British School Muscat",
+      "country": "Oman",
+      "url": "https://www.britishschoolmuscat.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0162",
+      "name": "Western Academy of Beijing",
+      "country": "China",
+      "url": "https://www.wab.edu",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0174",
+      "name": "ACS Cobham International School",
+      "country": "UK",
+      "url": "https://www.acs-schools.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0181",
+      "name": "International School of Genoa",
+      "country": "Italy",
+      "url": "https://www.isgenoa.it",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0186",
+      "name": "Markham College Peru",
+      "country": "Peru",
+      "url": "https://www.markham.edu.pe",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0190",
+      "name": "St. Gilgen International School",
+      "country": "Austria",
+      "url": "https://www.stgis.at",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0233",
+      "name": "Riffa Views International School",
+      "country": "Bahrain",
+      "url": "https://www.rvis.edu.bh/",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0234",
+      "name": "Malvern College Hong Kong",
+      "country": "Hong Kong SAR",
+      "url": "https://malverncollege.org.hk",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0238",
+      "name": "Malvern College Chengdu",
+      "country": "China",
+      "url": "https://malvernchengdu.cn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0241",
+      "name": "St. George's College",
+      "country": "Argentina",
+      "url": "https://www.stgeorges.edu.ar",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0244",
+      "name": "The English School Nicosia",
+      "country": "Cyprus",
+      "url": "https://www.englishschool.ac.cy",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0247",
+      "name": "The Heritage Private School",
+      "country": "Cyprus",
+      "url": "https://heritageschool.ac.cy",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0249",
+      "name": "American Academy Larnaca",
+      "country": "Cyprus",
+      "url": "https://www.americanacademy.ac.cy",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0256",
+      "name": "International School of Stavanger",
+      "country": "Norway",
+      "url": "https://www.isstavanger.no",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0271",
+      "name": "Colegio Bolívar",
+      "country": "Colombia",
+      "url": "https://www.colegiobolivar.edu.co",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0283",
+      "name": "Renaissance International School Saigon",
+      "country": "Vietnam",
+      "url": "https://www.renaissance.edu.vn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0286",
+      "name": "Dwight School Seoul",
+      "country": "South Korea",
+      "url": "https://www.dwight.or.kr",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0287",
+      "name": "Seoul International School",
+      "country": "South Korea",
+      "url": "https://siskorea.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0304",
+      "name": "Dukhan English School",
+      "country": "Qatar",
+      "url": "https://www.des.qp.qa",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0306",
+      "name": "ACS International School Doha",
+      "country": "Qatar",
+      "url": "https://www.acs-schools.com/doha",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0312",
+      "name": "Sharjah English School",
+      "country": "United Arab Emirates",
+      "url": "https://www.sharjahenglishschool.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0313",
+      "name": "Victoria International School of Sharjah",
+      "country": "United Arab Emirates",
+      "url": "https://viss.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0314",
+      "name": "RAK Academy",
+      "country": "United Arab Emirates",
+      "url": "https://rakacademy.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0315",
+      "name": "Fujairah Private Academy",
+      "country": "United Arab Emirates",
+      "url": "https://fpa.sch.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0316",
+      "name": "Ajman Academy",
+      "country": "United Arab Emirates",
+      "url": "https://ajmanacademy.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0317",
+      "name": "Repton School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.reptonabudhabi.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0318",
+      "name": "Dubai Schools Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaischools-albarsha.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0319",
+      "name": "Dubai School Nad Al Sheba",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaischools-nas.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0320",
+      "name": "Harrow International School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0321",
+      "name": "Dubai Schools Al Khawaneej",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaischools-alkhawaneej.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0322",
+      "name": "Lycée Libanais Francophone Privé Meydan",
+      "country": "United Arab Emirates",
+      "url": "https://www.llfpm.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0323",
+      "name": "Kings' School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/dubai",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0324",
+      "name": "Kings' School Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/albarsha",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0325",
+      "name": "Kings' School Nad Al Sheba",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/nadalsheba",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0326",
+      "name": "North London Collegiate School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://nlcsdubai.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0327",
+      "name": "Brighton College Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://brightoncollegedubai.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0328",
+      "name": "Royal Grammar School Guildford Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://rgsgdubai.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0329",
+      "name": "Jumeirah College",
+      "country": "United Arab Emirates",
+      "url": "https://gemsjc.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0330",
+      "name": "Dubai International Academy Emirates Hills",
+      "country": "United Arab Emirates",
+      "url": "https://diadubai.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0331",
+      "name": "GEMS Dubai American Academy",
+      "country": "United Arab Emirates",
+      "url": "https://gemsaa-dubai.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0332",
+      "name": "GEMS Wellington International School",
+      "country": "United Arab Emirates",
+      "url": "https://wellingtoninternationalschool.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0334",
+      "name": "GEMS Jumeirah Primary School",
+      "country": "United Arab Emirates",
+      "url": "https://jumeirahprimaryschool.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0336",
+      "name": "GEMS Founders School Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://gemsfoundersschool-dubai.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0338",
+      "name": "GEMS Royal Dubai School",
+      "country": "United Arab Emirates",
+      "url": "https://royaldubaischool.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0340",
+      "name": "The Winchester School Jebel Ali",
+      "country": "United Arab Emirates",
+      "url": "https://winchesterschool.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0343",
+      "name": "Uptown International School",
+      "country": "United Arab Emirates",
+      "url": "https://uis.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0359",
+      "name": "Raffles World Academy",
+      "country": "United Arab Emirates",
+      "url": "https://rwadubai.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0360",
+      "name": "Raffles International School",
+      "country": "United Arab Emirates",
+      "url": "https://rafflesis.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0371",
+      "name": "King's College Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://www.kingscollegeriyadh.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0373",
+      "name": "Beech Hall School Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://beechhallschoolriyadh.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0378",
+      "name": "Shrewsbury International School Bangkok Riverside",
+      "country": "Thailand",
+      "url": "https://www.shrewsbury.ac.th/riverside",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0387",
+      "name": "Zurich International School",
+      "country": "Switzerland",
+      "url": "https://www.zis.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0388",
+      "name": "American School of Paris",
+      "country": "France",
+      "url": "https://www.asparis.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0389",
+      "name": "International School of Geneva",
+      "country": "Switzerland",
+      "url": "https://www.ecolint.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0390",
+      "name": "Frankfurt International School",
+      "country": "Germany",
+      "url": "https://www.fis.edu",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0391",
+      "name": "The English School Kuwait",
+      "country": "Kuwait",
+      "url": "https://tes.edu.kw",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0392",
+      "name": "Kuwait English School",
+      "country": "Kuwait",
+      "url": "https://www.kes.edu.kw",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0393",
+      "name": "British International School of Al Khobar",
+      "country": "Saudi Arabia",
+      "url": "https://www.bisak.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0394",
+      "name": "The KAUST School",
+      "country": "Saudi Arabia",
+      "url": "https://tks.kaust.edu.sa",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0395",
+      "name": "Amity International School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.amityabudhabi.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0396",
+      "name": "Dulwich College Seoul",
+      "country": "South Korea",
+      "url": "https://seoul.dulwich.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0397",
+      "name": "Canadian Academy",
+      "country": "Japan",
+      "url": "https://www.canacad.ac.jp",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0398",
+      "name": "Osaka International School",
+      "country": "Japan",
+      "url": "https://sois.kwansei.ac.jp/osaka-international-school",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0399",
+      "name": "Shanghai American School",
+      "country": "China",
+      "url": "https://www.saschina.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0400",
+      "name": "International School of Beijing",
+      "country": "China",
+      "url": "https://www.isb.cn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0401",
+      "name": "St. Andrews International School Bangkok",
+      "country": "Thailand",
+      "url": "https://www.nordangliaeducation.com/st-andrews-bangkok",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0402",
+      "name": "St. Joseph's Institution International",
+      "country": "Singapore",
+      "url": "https://www.sji-international.com.sg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0403",
+      "name": "Nexus International School Singapore",
+      "country": "Singapore",
+      "url": "https://www.nexus.edu.sg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0404",
+      "name": "Stamford American International School",
+      "country": "Singapore",
+      "url": "https://www.sais.edu.sg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0405",
+      "name": "Kolej Tuanku Ja'afar",
+      "country": "Malaysia",
+      "url": "https://www.ktj.edu.my",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0406",
+      "name": "St. George's British International School Rome",
+      "country": "Italy",
+      "url": "https://www.stgeorge.school.it",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0407",
+      "name": "The International School of Florence",
+      "country": "Italy",
+      "url": "https://www.isfitaly.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0408",
+      "name": "The British School of Milan",
+      "country": "Italy",
+      "url": "https://www.britishschoolmilan.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0409",
+      "name": "International School of Basel",
+      "country": "Switzerland",
+      "url": "https://www.isbasel.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0410",
+      "name": "Institut Le Rosey",
+      "country": "Switzerland",
+      "url": "https://www.rosey.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0411",
+      "name": "College Alpin Beau Soleil",
+      "country": "Switzerland",
+      "url": "https://www.beausoleil.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0412",
+      "name": "TASIS The American School in Switzerland",
+      "country": "Switzerland",
+      "url": "https://www.tasis.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0413",
+      "name": "TASIS The American School in England",
+      "country": "United Kingdom",
+      "url": "https://www.tasisengland.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0414",
+      "name": "The British School of Brussels",
+      "country": "Belgium",
+      "url": "https://www.britishschool.be",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0415",
+      "name": "Bavarian International School",
+      "country": "Germany",
+      "url": "https://www.bis-school.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0416",
+      "name": "The British School of Barcelona",
+      "country": "Spain",
+      "url": "https://www.britishschoolbarcelona.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0417",
+      "name": "King's College Madrid",
+      "country": "Spain",
+      "url": "https://www.kingscollegemadrid.es",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0418",
+      "name": "Dubai British School Jumeira",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaibritishschooljumeira.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0419",
+      "name": "Dubai British School Jumeirah Park",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaibritishschooljp.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0420",
+      "name": "Dubai British School Mira",
+      "country": "United Arab Emirates",
+      "url": "https://www.dubaibritishschoolmira.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0421",
+      "name": "Dubai English Speaking School Oud Metha",
+      "country": "United Arab Emirates",
+      "url": "https://www.dessc.sch.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0422",
+      "name": "St. Christopher's School Senior",
+      "country": "Bahrain",
+      "url": "https://st-chris.schoolrecruiter.com/",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0423",
+      "name": "Jumeira Baccalaureate School",
+      "country": "United Arab Emirates",
+      "url": "https://www.jbschool.ae",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0424",
+      "name": "Campion School Athens",
+      "country": "Greece",
+      "url": "https://www.campion.edu.gr",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0425",
+      "name": "St. Catherine's British School",
+      "country": "Greece",
+      "url": "https://www.stcatherines.gr",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0426",
+      "name": "St. George's International School Switzerland",
+      "country": "Switzerland",
+      "url": "https://www.stgeorges.ch",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0431",
+      "name": "The British International School Cairo",
+      "country": "Egypt",
+      "url": "https://www.bisc.edu.eg",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0432",
+      "name": "New Cairo British International School",
+      "country": "Egypt",
+      "url": "https://www.ncbis.co.uk",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0433",
+      "name": "King's School The Crown",
+      "country": "Egypt",
+      "url": "https://www.kingsschoolegypt.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0434",
+      "name": "The British School of Alexandria",
+      "country": "Egypt",
+      "url": "https://bsalex.net",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0435",
+      "name": "Jerudong International School",
+      "country": "Brunei",
+      "url": "https://www.jerudonginternationalschool.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0436",
+      "name": "International School Brunei",
+      "country": "Brunei",
+      "url": "https://www.isb.edu.bn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0437",
+      "name": "The British School New Delhi",
+      "country": "India",
+      "url": "https://www.british-school.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0438",
+      "name": "The British School of Guangzhou",
+      "country": "China",
+      "url": "https://www.nordangliaeducation.com/bsg-guangzhou",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0439",
+      "name": "Dulwich College Suzhou",
+      "country": "China",
+      "url": "https://suzhou.dulwich.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0440",
+      "name": "Harrow International School Shenzhen",
+      "country": "China",
+      "url": "https://www.harrowshenzhen.cn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0441",
+      "name": "Wellington College International Tianjin",
+      "country": "China",
+      "url": "https://tianjin.wellingtoncollege.cn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0442",
+      "name": "Brighton College Vietnam",
+      "country": "Vietnam",
+      "url": "https://brightoncollege.edu.vn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0443",
+      "name": "Reigate Grammar School Vietnam",
+      "country": "Vietnam",
+      "url": "https://rgsv.edu.vn",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0444",
+      "name": "The British School of Beijing Sanlitun",
+      "country": "China",
+      "url": "https://www.nordangliaeducation.com/bsb-sanlitun",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0445",
+      "name": "The Grange School",
+      "country": "Chile",
+      "url": "https://www.grange.cl",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0446",
+      "name": "Craighouse School",
+      "country": "Chile",
+      "url": "https://www.craighouse.cl",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0447",
+      "name": "The British Schools Montevideo",
+      "country": "Uruguay",
+      "url": "https://www.british.edu.uy",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0448",
+      "name": "The British School of Costa Rica",
+      "country": "Costa Rica",
+      "url": "https://thebritishschool.ed.cr",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0450",
+      "name": "The British School of Caracas",
+      "country": "Venezuela",
+      "url": "https://www.tbsc.org.ve",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0451",
+      "name": "The British School of Rio de Janeiro",
+      "country": "Brazil",
+      "url": "https://www.britishschool.g12.br",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0452",
+      "name": "St. Andrew's School, Turi",
+      "country": "Kenya",
+      "url": "https://st-andrews-turi.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0453",
+      "name": "Peponi School",
+      "country": "Kenya",
+      "url": "https://peponischool.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0454",
+      "name": "St. Francis' College",
+      "country": "Brazil",
+      "url": "https://stfrancis.com.br",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0455",
+      "name": "Denla British School",
+      "country": "Thailand",
+      "url": "https://dbsbangkok.ac.th",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0456",
+      "name": "Discovery Bay International School",
+      "country": "Hong Kong",
+      "url": "https://dbis.edu.hk",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0457",
+      "name": "British Vietnamese International School Ho Chi Minh City",
+      "country": "Vietnam",
+      "url": "https://nordangliaeducation.com/bvis-hcmc",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0458",
+      "name": "British Vietnamese International School Hanoi",
+      "country": "Vietnam",
+      "url": "https://nordangliaeducation.com/bvis-hanoi",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0459",
+      "name": "The British International School of Tbilisi",
+      "country": "Georgia",
+      "url": "https://bist.ge",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0460",
+      "name": "St. George's British International School Seville",
+      "country": "Spain",
+      "url": "https://stgeorges-school.es/sevilla",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0461",
+      "name": "Al Khor International School",
+      "country": "Qatar",
+      "url": "https://akis.sch.qa",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0462",
+      "name": "British International School of Lagos",
+      "country": "Nigeria",
+      "url": "https://bisnigeria.org",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0137",
+      "name": "St. Andrews International School Sukhumvit 107",
+      "country": "Thailand",
+      "url": "https://www.standrews107.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0207",
+      "name": "Agora Sant Cugat International School",
+      "country": "Spain",
+      "url": "https://agorasantcugat.edu.es",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0209",
+      "name": "St Christopher's School Bahrain",
+      "country": "Bahrain",
+      "url": "https://st-chris.schoolrecruiter.com/",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0211",
+      "name": "BEPS International School",
+      "country": "Belgium",
+      "url": "https://www.beps.com",
+      "type": "website",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    }
+  ],
+  "timedOutCar": [
+    {
+      "id": "FLIS0028",
+      "name": "JESS Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.jess.sch.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0029",
+      "name": "Neev Academy",
+      "country": "India",
+      "url": "https://neevacademy.org/careers/",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0031",
+      "name": "Hwa Chong Int'l",
+      "country": "Singapore",
+      "url": "https://www.hcis.edu.sg/careers/",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0032",
+      "name": "IS Nanshan",
+      "country": "China",
+      "url": "https://www.isnsz.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0036",
+      "name": "New PORG Prague",
+      "country": "Czechia",
+      "url": "https://www.porg.cz/en/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0048",
+      "name": "Bahrain Middle High School (DoDEA)",
+      "country": "Bahrain",
+      "url": "https://bahrainmhs.dodea.edu/school-employment",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0053",
+      "name": "Oak House BCN",
+      "country": "Spain",
+      "url": "https://www.oakhouseschool.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0089",
+      "name": "British BCN (Nexus)",
+      "country": "Spain",
+      "url": "https://www.britishschoolbarcelona.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0115",
+      "name": "British School Muscat",
+      "country": "Oman",
+      "url": "https://www.britishschoolmuscat.com/work-for-us/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0119",
+      "name": "Malvern College Egypt",
+      "country": "Egypt",
+      "url": "https://malverncollege.edu.eg/careers/",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0146",
+      "name": "ACG School Jakarta",
+      "country": "Indonesia",
+      "url": "https://jakarta.acgedu.com/careers/",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0152",
+      "name": "Rugby School Japan",
+      "country": "Japan",
+      "url": "https://www.rugbyschooljapan.ed.jp/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0165",
+      "name": "International School of Bucharest",
+      "country": "Romania",
+      "url": "https://www.isb.ro/careers/",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0168",
+      "name": "International School of Helsinki",
+      "country": "Finland",
+      "url": "https://www.ishelsinki.fi/employment",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0171",
+      "name": "British International School of Stockholm",
+      "country": "Sweden",
+      "url": "https://www.bisstockholm.se/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0173",
+      "name": "Southbank International School",
+      "country": "UK",
+      "url": "https://www.southbank.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0174",
+      "name": "ACS Cobham International School",
+      "country": "UK",
+      "url": "https://www.acs-schools.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0175",
+      "name": "St. George's International School Luxembourg",
+      "country": "Luxembourg",
+      "url": "https://www.st-georges.lu/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0181",
+      "name": "International School of Genoa",
+      "country": "Italy",
+      "url": "https://www.isgenoa.it/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0186",
+      "name": "Markham College Peru",
+      "country": "Peru",
+      "url": "https://www.markham.edu.pe/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0190",
+      "name": "St. Gilgen International School",
+      "country": "Austria",
+      "url": "https://www.stgis.at/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0244",
+      "name": "The English School Nicosia",
+      "country": "Cyprus",
+      "url": "https://www.englishschool.ac.cy/department/careers-university-entry",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0263",
+      "name": "The American School Foundation Mexico City",
+      "country": "Mexico",
+      "url": "https://careers.asf.edu.mx/jobs",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0303",
+      "name": "Mesaieed International School",
+      "country": "Qatar",
+      "url": "https://www.qatarenergy.qa/en/Careers/Pages/default.aspx",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0304",
+      "name": "Dukhan English School",
+      "country": "Qatar",
+      "url": "https://www.qatarenergy.qa/en/Careers/Pages/default.aspx",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0305",
+      "name": "Oryx International School",
+      "country": "Qatar",
+      "url": "https://oryxschool.qa/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0306",
+      "name": "ACS International School Doha",
+      "country": "Qatar",
+      "url": "https://www.acs-schools.com/working-acs-doha",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0307",
+      "name": "Sherborne Qatar",
+      "country": "Qatar",
+      "url": "https://www.sherborneqatar.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0308",
+      "name": "King's College Doha",
+      "country": "Qatar",
+      "url": "https://www.kingscollegedoha.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0309",
+      "name": "Swiss International School Qatar",
+      "country": "Qatar",
+      "url": "https://www.sisq.qa/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0310",
+      "name": "International School of London Qatar",
+      "country": "Qatar",
+      "url": "https://www.islqatar.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0311",
+      "name": "The British School Al Khubairat",
+      "country": "United Arab Emirates",
+      "url": "https://www.britishschool.sch.ae/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0312",
+      "name": "Sharjah English School",
+      "country": "United Arab Emirates",
+      "url": "https://www.sharjahenglishschool.org/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0313",
+      "name": "Victoria International School of Sharjah",
+      "country": "United Arab Emirates",
+      "url": "https://viss.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0314",
+      "name": "RAK Academy",
+      "country": "United Arab Emirates",
+      "url": "https://rakacademy.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0315",
+      "name": "Fujairah Private Academy",
+      "country": "United Arab Emirates",
+      "url": "https://fpa.sch.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0316",
+      "name": "Ajman Academy",
+      "country": "United Arab Emirates",
+      "url": "https://ajmanacademy.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0317",
+      "name": "Repton School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://www.reptonabudhabi.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0318",
+      "name": "Dubai Schools Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0319",
+      "name": "Dubai School Nad Al Sheba",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0320",
+      "name": "Harrow International School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0321",
+      "name": "Dubai Schools Al Khawaneej",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0322",
+      "name": "Lycée Libanais Francophone Privé Meydan",
+      "country": "United Arab Emirates",
+      "url": "https://careers.taaleem.ae",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0323",
+      "name": "Kings' School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0324",
+      "name": "Kings' School Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0325",
+      "name": "Kings' School Nad Al Sheba",
+      "country": "United Arab Emirates",
+      "url": "https://kings-edu.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0326",
+      "name": "North London Collegiate School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://nlcsdubai.schoolrecruiter.com",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0327",
+      "name": "Brighton College Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.brightoncollegedubai.ae/about-us/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0328",
+      "name": "Royal Grammar School Guildford Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.rgsgdubai.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0329",
+      "name": "Jumeirah College",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0330",
+      "name": "Dubai International Academy Emirates Hills",
+      "country": "United Arab Emirates",
+      "url": "https://www.innoventureseducation.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0331",
+      "name": "GEMS Dubai American Academy",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0332",
+      "name": "GEMS Wellington International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0333",
+      "name": "GEMS Wellington Academy Silicon Oasis",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0334",
+      "name": "GEMS Jumeirah Primary School",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0335",
+      "name": "GEMS FirstPoint School",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0336",
+      "name": "GEMS Founders School Al Barsha",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0337",
+      "name": "GEMS Metropole School Motor City",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0338",
+      "name": "GEMS Royal Dubai School",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0339",
+      "name": "GEMS Winchester School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0340",
+      "name": "The Winchester School Jebel Ali",
+      "country": "United Arab Emirates",
+      "url": "https://www.gemseducation.com/Careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0342",
+      "name": "Greenfield International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.taaleem.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0344",
+      "name": "Harrow International School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://www.taaleem.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0346",
+      "name": "Safa Community School",
+      "country": "United Arab Emirates",
+      "url": "https://www.safacommunityschool.com/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0347",
+      "name": "Safa British School",
+      "country": "United Arab Emirates",
+      "url": "https://www.safabritishschool.com/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0348",
+      "name": "The English College Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://englishcollege.ac.ae/work-with-us",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0349",
+      "name": "Horizon English School",
+      "country": "United Arab Emirates",
+      "url": "https://www.cognita.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0350",
+      "name": "Regent International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.forteseducation.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0351",
+      "name": "Victory Heights Primary School",
+      "country": "United Arab Emirates",
+      "url": "https://vhprimary.com/work-with-us",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0352",
+      "name": "Deira International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.disdubai.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0353",
+      "name": "The Arbor School",
+      "country": "United Arab Emirates",
+      "url": "https://thearborschool.ae/work-with-us",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0354",
+      "name": "Fairgreen International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.fairgreen.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0355",
+      "name": "The Aquila School",
+      "country": "United Arab Emirates",
+      "url": "https://www.international-schools-partnership.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0356",
+      "name": "Durham School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://durhamdubai.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0357",
+      "name": "Dwight School Dubai",
+      "country": "United Arab Emirates",
+      "url": "https://dwight.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0358",
+      "name": "Collegiate International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.innoventureseducation.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0359",
+      "name": "Raffles World Academy",
+      "country": "United Arab Emirates",
+      "url": "https://www.innoventureseducation.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0360",
+      "name": "Raffles International School",
+      "country": "United Arab Emirates",
+      "url": "https://www.innoventureseducation.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0362",
+      "name": "Emirates International School Jumeirah",
+      "country": "United Arab Emirates",
+      "url": "https://www.eischools.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0363",
+      "name": "Emirates International School Meadows",
+      "country": "United Arab Emirates",
+      "url": "https://www.eischools.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0364",
+      "name": "The School of Research Science",
+      "country": "United Arab Emirates",
+      "url": "https://srs.ae/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0370",
+      "name": "British International School of Jeddah",
+      "country": "Saudi Arabia",
+      "url": "https://www.bisj.com/vacancies",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0371",
+      "name": "King's College Riyadh",
+      "country": "Saudi Arabia",
+      "url": "https://kingscollegeriyadh.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0374",
+      "name": "Singapore American School",
+      "country": "Singapore",
+      "url": "https://www.sas.edu.sg/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0375",
+      "name": "Dulwich College (Singapore)",
+      "country": "Singapore",
+      "url": "https://singapore.dulwich.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0377",
+      "name": "Harrow International School Bangkok",
+      "country": "Thailand",
+      "url": "https://www.harrowschool.ac.th/working-at-harrow",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0383",
+      "name": "Chinese International School",
+      "country": "Hong Kong",
+      "url": "https://www.cis.edu.hk/join-us/employment",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0390",
+      "name": "Frankfurt International School",
+      "country": "Germany",
+      "url": "https://www.fis.edu/employment",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0392",
+      "name": "Kuwait English School",
+      "country": "Kuwait",
+      "url": "https://kes.edu.kw/work-at-kes",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0394",
+      "name": "The KAUST School",
+      "country": "Saudi Arabia",
+      "url": "https://tks.kaust.edu.sa/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0395",
+      "name": "Amity International School Abu Dhabi",
+      "country": "United Arab Emirates",
+      "url": "https://amityabudhabi.com/work-with-us",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0399",
+      "name": "Shanghai American School",
+      "country": "China",
+      "url": "https://www.saschina.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0403",
+      "name": "Nexus International School Singapore",
+      "country": "Singapore",
+      "url": "https://www.nexus.edu.sg/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0410",
+      "name": "Institut Le Rosey",
+      "country": "Switzerland",
+      "url": "https://www.rosey.ch/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0416",
+      "name": "The British School of Barcelona",
+      "country": "Spain",
+      "url": "https://www.britishschoolbarcelona.com/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0462",
+      "name": "British International School of Lagos",
+      "country": "Nigeria",
+      "url": "https://www.bisnigeria.org/careers",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    },
+    {
+      "id": "FLIS0209",
+      "name": "St Christopher's School Bahrain",
+      "country": "Bahrain",
+      "url": "https://www.st-chris.net/working-with-us",
+      "type": "careers",
+      "status": "TIMEOUT",
+      "error": "Timed out (>3s)"
+    }
+  ],
+  "orphanJobs": [
+    {
+      "jobDocId": "sa_lead_director-of-admissions-united-nations-international-school-of-hanoi-vietnam-2026",
+      "title": "Director of Admissions",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Director of Admissions"
+    },
+    {
+      "jobDocId": "sa_lead_director-of-high-school-counseling-grades-9-12-american-embassy-school-new-delhi-india-2026",
+      "title": "Director of High School Counseling Grades 9-12",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Director of High School Counseling Grades 9-12"
+    },
+    {
+      "jobDocId": "sa_lead_elementary-school-principal-walworth-barbour-american-international-school-israel-2026",
+      "title": "Elementary School Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Walworth Barbour American International School"
+    },
+    {
+      "jobDocId": "sa_lead_head-of-university-guidance-lawrence-s.-ting-school-vietnam-2026",
+      "title": "Head of University Guidance",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Lawrence S. Ting School"
+    },
+    {
+      "jobDocId": "sa_lead_high-school-principal-graded-the-american-school-of-s-o-paulo-brazil-2026",
+      "title": "High School Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "High School Principal"
+    },
+    {
+      "jobDocId": "sa_lead_lower-school-principal-international-community-school-of-abidjan-cote-d-ivoire-2026",
+      "title": "Lower School Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "International Community School of Abidjan"
+    },
+    {
+      "jobDocId": "sa_lead_primary-school-principal-berlin-brandenburg-international-school-germany-2026",
+      "title": "Primary School Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Berlin Brandenburg International School"
+    },
+    {
+      "jobDocId": "sa_lead_secondary-principal-igb-international-school-malaysia-2026",
+      "title": "Secondary Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "IGB International School"
+    },
+    {
+      "jobDocId": "sa_lead_superintendent-american-cooperative-school-of-tunis-tunisia-2026-2",
+      "title": "Superintendent",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "American Cooperative School of Tunis"
+    },
+    {
+      "jobDocId": "sa_lead_upper-school-principal-casablanca-american-school-morocco-2026",
+      "title": "Upper School Principal",
+      "unmatchedSchoolId": "SEARCH_ASSOCIATES_HUB",
+      "schoolName": "Casablanca American School"
+    }
+  ]
+}
