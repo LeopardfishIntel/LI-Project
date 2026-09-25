@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0232",
+    "name": "UWC East Africa",
+    "country": "Tanzania",
+    "city": "Moshi & Arusha",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0233",
+    "name": "Riffa Views International School",
+    "country": "Bahrain",
+    "city": "Riffa",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1550,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0235",
+    "name": "Malvern College Pre-School HK (Island West)",
+    "country": "Hong Kong SAR",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 39500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0236",
+    "name": "Malvern College Pre-School HK (Coronation Circle)",
+    "country": "Hong Kong SAR",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 39500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0237",
+    "name": "Malvern College Qingdao",
+    "country": "China",
+    "city": "Qingdao",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 25000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0238",
+    "name": "Malvern College Chengdu",
+    "country": "China",
+    "city": "Chengdu",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 25000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0239",
+    "name": "Malvern College Riyadh",
+    "country": "Saudi Arabia",
+    "city": "Riyadh",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 17000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0240",
+    "name": "Malvern College São Paulo",
+    "country": "Brazil",
+    "city": "São Paulo",
+    "currency": "BRL",
+    "salary_scale_5yr_net": 19500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0241",
+    "name": "St. George's College",
+    "country": "Argentina",
+    "city": "Buenos Aires",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2300,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0242",
+    "name": "St. Andrew's Scots School",
+    "country": "Argentina",
+    "city": "Buenos Aires",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0243",
+    "name": "American International School in Cyprus",
+    "country": "Cyprus",
+    "city": "Nicosia",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0245",
+    "name": "The Island Private School",
+    "country": "Cyprus",
+    "city": "Limassol",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2100,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0246",
+    "name": "Foley's School",
+    "country": "Cyprus",
+    "city": "Limassol",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0247",
+    "name": "The Heritage Private School",
+    "country": "Cyprus",
+    "city": "Limassol",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1850,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0248",
+    "name": "International School of Paphos",
+    "country": "Cyprus",
+    "city": "Paphos",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0249",
+    "name": "American Academy Larnaca",
+    "country": "Cyprus",
+    "city": "Larnaca",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0251",
+    "name": "The International School of Penang (Uplands)",
+    "country": "Malaysia",
+    "city": "Penang",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 13200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0252",
+    "name": "Stonyhurst International School Penang",
+    "country": "Malaysia",
+    "city": "Penang",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 12800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0253",
+    "name": "Nexus International School Malaysia",
+    "country": "Malaysia",
+    "city": "Putrajaya",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 13000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0259",
+    "name": "Taipei American School",
+    "country": "Taiwan",
+    "city": "Taipei",
+    "currency": "TWD",
+    "salary_scale_5yr_net": 152000,
+    "salary_benchmark_category": "VERIFIED_SCALE"
+  }
+]
