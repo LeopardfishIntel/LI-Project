@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0177",
+    "name": "St. John's International School Belgium",
+    "country": "Belgium",
+    "city": "Waterloo",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2850,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0179",
+    "name": "Mougins School",
+    "country": "France",
+    "city": "Mougins",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0182",
+    "name": "St. Paul's School Brazil",
+    "country": "Brazil",
+    "city": "Sao Paulo",
+    "currency": "BRL",
+    "salary_scale_5yr_net": 19167,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0184",
+    "name": "Graded School Sao Paulo",
+    "country": "Brazil",
+    "city": "Sao Paulo",
+    "currency": "BRL",
+    "salary_scale_5yr_net": 20000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0185",
+    "name": "Northlands School Argentina",
+    "country": "Argentina",
+    "city": "B. Aires",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0188",
+    "name": "Parklane International School",
+    "country": "Czechia",
+    "city": "Prague",
+    "currency": "CZK",
+    "salary_scale_5yr_net": 62000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0189",
+    "name": "ABA Oman International School",
+    "country": "Oman",
+    "city": "Muscat",
+    "currency": "OMR",
+    "salary_scale_5yr_net": 1583,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0190",
+    "name": "St. Gilgen International School",
+    "country": "Austria",
+    "city": "St. Gilgen",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0192",
+    "name": "International School Carinthia",
+    "country": "Austria",
+    "city": "Velden",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0193",
+    "name": "International School Innsbruck",
+    "country": "Austria",
+    "city": "Innsbruck",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0194",
+    "name": "Lower Austrian International School",
+    "country": "Austria",
+    "city": "St. Pölten",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2300,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0195",
+    "name": "Linz International School Auhof (LISA)",
+    "country": "Austria",
+    "city": "Linz",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0196",
+    "name": "SALIS - Salzburg International School",
+    "country": "Austria",
+    "city": "Salzburg",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0197",
+    "name": "Schloss Krumbach International School",
+    "country": "Austria",
+    "city": "Krumbach",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0199",
+    "name": "Arabian Pearl Gulf School",
+    "country": "Bahrain",
+    "city": "Manama",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1150,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0201",
+    "name": "Bahrain Bayan School",
+    "country": "Bahrain",
+    "city": "Juffair",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0202",
+    "name": "UWC Costa Rica",
+    "country": "Costa Rica",
+    "city": "San José",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0203",
+    "name": "Naseem International School",
+    "country": "Bahrain",
+    "city": "Riffa",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1300,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0204",
+    "name": "Tenby International School Setia Eco Park",
+    "country": "Malaysia",
+    "city": "Shah Alam",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 11500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0205",
+    "name": "Nibras International School",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  }
+]
