@@ -218,13 +218,20 @@ function BriefingConsoleLoader() {
 }
 
 import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
+import rawCompleteSchools from '../../../../complete_school_fields_export.json';
+
+const staticSchoolsMap = new Map<string, any>(
+  (rawCompleteSchools as any[]).map(s => [String(s.id).toUpperCase().trim(), s])
+);
 
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const { user, isAdmin: authIsAdmin, customId } = useAuth();
 
-  // FIXED: Standardize hook usage for Isomorphic Bridge
-  const { data: school, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
+  // FIXED: Standardize hook usage for Isomorphic Bridge with Instant Static Preload
+  const staticFallback = React.useMemo(() => staticSchoolsMap.get((id || '').toUpperCase().trim()) as School | undefined, [id]);
+  const { data: remoteSchool, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
+  const school = remoteSchool || staticFallback;
 
   // 🛰️ Teacher Profile & Daily Allowance Gating (24-Hour Reset with Rollover)
   const teacherDocRef = React.useMemo(() => (user && db ? doc(db, 'teachers', user.uid) : null), [user]);
@@ -673,7 +680,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     fetchBriefing();
   }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus, adults, children, partnerSalary]);
 
-  if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton schoolId={id} />;
+  if (!school && (isSchoolLoading || !mounted)) return <SchoolProfileSkeleton schoolId={id} />;
   if (!school) notFound();
 
   // Data Normalization

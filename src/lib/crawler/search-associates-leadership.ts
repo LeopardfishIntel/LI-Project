@@ -1,8 +1,12 @@
 /**
- * 🎯 SEARCH ASSOCIATES LEADERSHIP MULTI-TAB ENGINE & HISTORICAL TURNOVER AUDITOR
+ * 🎯 SEARCH ASSOCIATES LEADERSHIP MULTI-TAB ENGINE & DEEP DOM AUDITOR
  * Runs on Tuesdays & Thursdays.
- * - Tabs 1 & 2: Stages active leadership vacancies to Admin Pending.
- * - Tab 3: Parses completed appointments from Sept 1, 2025 onward to enrich Institutional Stability & Staff Turnover.
+ * - Deep-fetches each individual leadership page to extract:
+ *    1. Exact H1 Title, School Name, and Location
+ *    2. Exact "Position Posted" & "Deadline" dates
+ *    3. Direct Candidate Pack PDF links (e.g. cdn.searchassociates.com/...pdf)
+ * - Automatically routes past-deadline vacancies into school staff turnover (historicalLeadershipTurnover).
+ * - Stages/approves active future-deadline vacancies with direct PDF apply links.
  */
 
 import { getAdminDb } from "@/firebase/admin";
@@ -10,14 +14,6 @@ import { sanitizeJobTitle } from "@/lib/crawler/titleSanitizer";
 
 const SA_BASE_URL = "https://www.searchassociates.com";
 const SA_LEADERSHIP_URL = "https://www.searchassociates.com/Leadership-Vacancies/";
-const CUTOFF_DATE = new Date("2025-09-01T00:00:00Z");
-
-export interface SearchAssociatesScrapeResult {
-  activeVacanciesFound: number;
-  activeVacanciesStaged: number;
-  completedAppointmentsIndexed: number;
-  schoolsEnriched: number;
-}
 
 function cleanText(raw: string): string {
   return (raw || "")
@@ -28,23 +24,53 @@ function cleanText(raw: string): string {
     .trim();
 }
 
+function norm(str: string) {
+  return (str || "").toLowerCase().replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+export interface SearchAssociatesScrapeResult {
+  activeVacanciesFound: number;
+  activeVacanciesLive: number;
+  expiredTurnoverAppended: number;
+}
+
 export async function scrapeSearchAssociatesLeadership(): Promise<SearchAssociatesScrapeResult> {
   console.log(`\n=============================================================`);
-  console.log(`🚀 [SEARCH ASSOCIATES] Starting Multi-Tab Leadership Sweep...`);
-  console.log(`⏰ Filter: Active Vacancies + Completed Appointments from 1 Sept 2025 onward`);
+  console.log(`🚀 [SEARCH ASSOCIATES] Starting Deep DOM Multi-Tab Leadership Sweep...`);
+  console.log(`⏰ Extraction: Deep Page Traversal + Deadline Verification + PDF Packs`);
   console.log(`=============================================================\n`);
 
   const db = getAdminDb();
   const schoolsSnap = await db.collection("schools").get();
   const schoolsList = schoolsSnap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
 
-  // Helper to match school
-  function findSchoolMatch(employerOrTitle: string, countryHint?: string) {
-    const cleanEmp = employerOrTitle.toLowerCase();
+  function findSchoolMatch(text: string): any {
+    const nText = norm(text);
+    if (!nText) return null;
+
+    // Specific aliases
+    if (nText.includes("unis") || nText.includes("united nations international school of hanoi")) {
+      return schoolsList.find((s: any) => s.id === "FLIS0129");
+    }
+    if (nText.includes("international school of prague") || nText.includes("is prague")) {
+      return schoolsList.find((s: any) => s.id === "FLIS0049");
+    }
+    if (nText.includes("graded")) {
+      return schoolsList.find((s: any) => s.id === "FLIS0184");
+    }
+    if (nText.includes("american international school of zagreb") || nText.includes("aisz")) {
+      return schoolsList.find((s: any) => s.id === "FLIS0281");
+    }
+
     for (const s of schoolsList) {
-      const sName = (s.schoolname || s.name || "").toLowerCase();
-      if (sName.length > 4 && (cleanEmp.includes(sName) || sName.includes(cleanEmp))) {
+      const sName = norm(s.schoolname || s.name || "");
+      if (sName.length > 3 && (nText.includes(sName) || sName.includes(nText))) {
         return s;
+      }
+      if (s.aliases && Array.isArray(s.aliases)) {
+        if (s.aliases.some((a: string) => norm(a).length > 3 && nText.includes(norm(a)))) {
+          return s;
+        }
       }
     }
     return null;
@@ -66,13 +92,15 @@ export async function scrapeSearchAssociatesLeadership(): Promise<SearchAssociat
   const tabPanes = html.split(/class=["']tab-pane/i);
 
   let activeVacanciesFound = 0;
-  let activeVacanciesStaged = 0;
-  let completedAppointmentsIndexed = 0;
+  let activeVacanciesLive = 0;
+  let expiredTurnoverAppended = 0;
   const schoolTurnoverUpdates: Record<string, any[]> = {};
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // 1. TABS 1 & 2: Active / In-Progress Leadership Searches
-  // ─────────────────────────────────────────────────────────────────────────────
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayMs = today.getTime();
+
+  // Tabs 1 & 2: Active & In-Progress Leadership Searches
   const activePanes = [tabPanes[1] || "", tabPanes[2] || ""];
 
   for (const pane of activePanes) {
@@ -86,134 +114,138 @@ export async function scrapeSearchAssociatesLeadership(): Promise<SearchAssociat
 
       activeVacanciesFound++;
       const fullUrl = rawHref.startsWith("http") ? rawHref : `${SA_BASE_URL}${rawHref.startsWith("/") ? "" : "/"}${rawHref}`;
-      
-      // Parse URL components e.g. /leadership-vacancies/director-of-development-canadian-academy-kobe-japan-2026
       const slug = rawHref.split("/").filter(Boolean).pop() || "";
-      const slugParts = slug.split("-");
-      const year = slugParts.find(p => p === "2026" || p === "2027") || "2026";
-
-      const matchedSchool = findSchoolMatch(rawTitle) || findSchoolMatch(slug);
-      const schoolId = matchedSchool ? matchedSchool.id : "SEARCH_ASSOCIATES_HUB";
-      const schoolName = matchedSchool ? (matchedSchool.schoolname || matchedSchool.name) : rawTitle;
-
       const docId = `sa_lead_${slug.replace(/[^a-zA-Z0-9_-]/g, "") || Math.random().toString(36).substring(2, 9)}`;
 
-      const jobPayload = {
-        id: docId,
-        title: sanitizeJobTitle(rawTitle, schoolName),
-        jobTitle: rawTitle,
-        schoolName: schoolName,
-        employer: schoolName,
-        schoolId: schoolId,
-        city: matchedSchool?.city || "",
-        country: matchedSchool?.country || "",
-        source: "Search Associates",
-        agency: "Search Associates",
-        sourceName: "Search Associates",
-        sources: ["Search Associates"],
-        applyUrl: fullUrl,
-        source_url: fullUrl,
-        link: fullUrl,
-        websiteUrl: fullUrl,
-        sourceUrls: {
-          "Search Associates": fullUrl,
-          "SEARCH ASSOCIATES": fullUrl,
-        },
-        category: "Leadership",
-        department: "Leadership",
-        isLeadership: true,
-        featured: true,
-        status: "pending_review",
-        recruitmentCycle: `CURRENT_${year}`,
-        scrapedAt: new Date(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      await db.collection("jobs").doc(docId).set(jobPayload, { merge: true });
-      activeVacanciesStaged++;
-    }
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // 2. TAB 3: Completed Searches (Sept 1, 2025 Onward) -> Staff Turnover
-  // ─────────────────────────────────────────────────────────────────────────────
-  const completedPane = tabPanes[3] || "";
-  const completedLinkRegex = /<a[^>]+href=["']([^"']*(?:leadership-vacanc|Leadership-Vacanc)[^"']*)["'][^>]*>(.*?)<\/a>/gi;
-  let cMatch;
-
-  while ((cMatch = completedLinkRegex.exec(completedPane)) !== null) {
-    const rawHref = cMatch[1];
-    const rawText = cleanText(cMatch[2]);
-    if (!rawText || rawText.length < 3) continue;
-
-    // Filter by year in slug (Focus from 1 Sept 2025 / 2026 appointments)
-    const slug = rawHref.split("/").filter(Boolean).pop() || "";
-    const isTargetCycle = slug.includes("2026") || slug.includes("2027") || slug.includes("2025");
-    if (!isTargetCycle) continue;
-
-    // The slug contains both role and school name (e.g. "head-of-school-aba-oman-international-school-oman-2026-2")
-    const cleanSlugText = slug.replace(/[-_]/g, " ").replace(/\d+/g, "").trim();
-    const matchedSchool = findSchoolMatch(cleanSlugText) || findSchoolMatch(slug);
-    if (!matchedSchool) continue;
-
-    completedAppointmentsIndexed++;
-
-    const turnoverEntry = {
-      role: rawText !== "View" && rawText.length > 4 ? rawText : cleanSlugText,
-      source: "Search Associates Completed Search",
-      cycle: slug.includes("2026") ? "2026" : slug.includes("2027") ? "2027" : "2025",
-      recordedDate: "2025-09-01",
-      url: rawHref.startsWith("http") ? rawHref : `${SA_BASE_URL}${rawHref.startsWith("/") ? "" : "/"}${rawHref}`,
-      isFilled: true,
-      schoolName: matchedSchool.schoolname || matchedSchool.name,
-      schoolId: matchedSchool.id,
-    };
-
-    if (!schoolTurnoverUpdates[matchedSchool.id]) {
-      schoolTurnoverUpdates[matchedSchool.id] = [];
-    }
-    schoolTurnoverUpdates[matchedSchool.id].push(turnoverEntry);
-  }
-
-  // Commit historical leadership turnover records to school documents
-  let schoolsEnriched = 0;
-  for (const [sId, events] of Object.entries(schoolTurnoverUpdates)) {
-    try {
-      const schoolRef = db.collection("schools").doc(sId);
-      const schoolDoc = await schoolRef.get();
-      const existingData = schoolDoc.data() || {};
-      const existingHistory = Array.isArray(existingData.historicalLeadershipTurnover) ? existingData.historicalLeadershipTurnover : [];
-
-      // Merge unique by URL or role + cycle
-      const seen = new Set(existingHistory.map((h: any) => `${h.role}_${h.cycle}`));
-      const newItems = events.filter(e => !seen.has(`${e.role}_${e.cycle}`));
-
-      if (newItems.length > 0) {
-        const combined = [...existingHistory, ...newItems];
-        await schoolRef.update({
-          historicalLeadershipTurnover: combined,
-          leadershipVacanciesCount: (existingData.leadershipVacanciesCount || 0) + newItems.length,
-          lastTurnoverAuditAt: new Date().toISOString(),
+      try {
+        // Deep DOM Page Inspection
+        const pageRes = await fetch(fullUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          },
         });
-        schoolsEnriched++;
+
+        if (!pageRes.ok) continue;
+
+        const pageHtml = await pageRes.text();
+        const h1Match = pageHtml.match(/<h1>([\s\S]*?)<\/h1>/i);
+        const h1Raw = h1Match ? h1Match[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : rawTitle;
+
+        const postedMatch = pageHtml.match(/Position Posted<\/label>\s*<b>([^<]+)<\/b>/i);
+        const deadlineMatch = pageHtml.match(/Deadline<\/label>\s*<b>([^<]+)<\/b>/i);
+
+        const postedDateStr = postedMatch ? cleanText(postedMatch[1]) : "";
+        const deadlineStr = deadlineMatch ? cleanText(deadlineMatch[1]) : "Rolling";
+
+        let deadlineMs: number | null = null;
+        if (deadlineStr && deadlineStr !== "Rolling" && deadlineStr !== "Open") {
+          const parsed = Date.parse(deadlineStr);
+          if (!isNaN(parsed)) {
+            deadlineMs = parsed;
+          }
+        }
+
+        const pdfMatch = pageHtml.match(/href=["']([^"']*\.pdf[^"']*)["']/i);
+        let pdfUrl: string | null = null;
+        if (pdfMatch) {
+          let rawPdf = pdfMatch[1];
+          if (rawPdf.startsWith("//")) rawPdf = `https:${rawPdf}`;
+          else if (rawPdf.startsWith("/")) rawPdf = `${SA_BASE_URL}${rawPdf}`;
+          pdfUrl = rawPdf;
+        }
+
+        const matchedSchool = findSchoolMatch(h1Raw) || findSchoolMatch(slug);
+        const isFlisSchool = Boolean(matchedSchool);
+        const schoolId = matchedSchool ? matchedSchool.id : "SEARCH_ASSOCIATES_HUB";
+        const schoolName = matchedSchool ? (matchedSchool.schoolname || matchedSchool.name) : (h1Raw.split("(")[0] || rawTitle);
+
+        const isExpired = deadlineMs !== null && deadlineMs < todayMs;
+        const cleanRoleTitle = sanitizeJobTitle(rawTitle);
+
+        const jobRecord = {
+          id: docId,
+          title: cleanRoleTitle,
+          schoolId,
+          schoolName,
+          city: matchedSchool ? matchedSchool.city : "",
+          country: matchedSchool ? matchedSchool.country : "",
+          closingDate: deadlineStr,
+          closingDateMillis: deadlineMs,
+          datePosted: postedDateStr,
+          applyUrl: pdfUrl || fullUrl,
+          pdfUrl,
+          source: "Search Associates",
+          sourceType: "search_associates",
+          status: isExpired ? "EXPIRED" : (isFlisSchool ? "APPROVED" : "pending_review"),
+          updatedAt: new Date().toISOString(),
+        };
+
+        const jobDocRef = db.collection("jobs").doc(docId);
+        const cacheDocRef = db.collection("featured_jobs_cache").doc(docId);
+
+        if (isExpired) {
+          expiredTurnoverAppended++;
+          await jobDocRef.set({ ...jobRecord, status: "expired" }, { merge: true });
+          await cacheDocRef.set({ ...jobRecord, status: "EXPIRED" }, { merge: true });
+
+          if (matchedSchool) {
+            if (!schoolTurnoverUpdates[matchedSchool.id]) {
+              schoolTurnoverUpdates[matchedSchool.id] = [];
+            }
+            schoolTurnoverUpdates[matchedSchool.id].push({
+              role: cleanRoleTitle,
+              appointedYear: "2026",
+              cycle: "2025-2026",
+              source: "Search Associates Leadership",
+              recordedAt: new Date().toISOString(),
+              status: "closed_search",
+            });
+          }
+        } else if (isFlisSchool) {
+          activeVacanciesLive++;
+          await jobDocRef.set({ ...jobRecord, status: "approved" }, { merge: true });
+          await cacheDocRef.set({ ...jobRecord, status: "APPROVED" }, { merge: true });
+        } else {
+          // Unindexed school kept in staging
+          await jobDocRef.set({ ...jobRecord, status: "pending_review" }, { merge: true });
+        }
+      } catch (e) {
+        console.warn(`⚠️ Failed to parse details for ${slug}:`, e);
       }
-    } catch (err) {
-      console.warn(`Could not update turnover for school ${sId}:`, err);
     }
+  }
+
+  // Update School Turnover counts
+  for (const [schoolId, newTurnovers] of Object.entries(schoolTurnoverUpdates)) {
+    const schoolRef = db.collection("schools").doc(schoolId);
+    const sDoc = schoolsList.find((s: any) => s.id === schoolId);
+    const existing = sDoc?.historicalLeadershipTurnover || [];
+
+    const combined = [...existing];
+    for (const item of newTurnovers) {
+      const exists = combined.some(
+        (e: any) => e.role?.toLowerCase() === item.role?.toLowerCase() && e.appointedYear === item.appointedYear
+      );
+      if (!exists) {
+        combined.push(item);
+      }
+    }
+
+    await schoolRef.set({
+      historicalLeadershipTurnover: combined,
+      leadershipVacanciesCount: combined.length,
+    }, { merge: true });
   }
 
   console.log(`\n=============================================================`);
-  console.log(`✅ [SEARCH ASSOCIATES SWEEP COMPLETE]`);
-  console.log(`📊 Active Vacancies Found: ${activeVacanciesFound}`);
-  console.log(`📥 Active Vacancies Staged: ${activeVacanciesStaged}`);
-  console.log(`🎓 Completed Appointments Indexed (>= Sept 2025): ${completedAppointmentsIndexed}`);
-  console.log(`🏫 Schools Enriched with Turnover Data: ${schoolsEnriched}`);
+  console.log(`✅ [SEARCH ASSOCIATES] Deep Sweep Completed:`);
+  console.log(`   • Active Live Vacancies: ${activeVacanciesLive}`);
+  console.log(`   • Closed/Expired Posts Appended to Turnover: ${expiredTurnoverAppended}`);
   console.log(`=============================================================\n`);
 
   return {
     activeVacanciesFound,
-    activeVacanciesStaged,
-    completedAppointmentsIndexed,
-    schoolsEnriched,
+    activeVacanciesLive,
+    expiredTurnoverAppended,
   };
 }
