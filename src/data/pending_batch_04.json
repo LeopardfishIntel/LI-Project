@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0083",
+    "name": "American School Madrid",
+    "country": "Spain",
+    "city": "Madrid",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2850,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0084",
+    "name": "British Int'l Budapest",
+    "country": "Hungary",
+    "city": "Budapest",
+    "currency": "HUF",
+    "salary_scale_5yr_net": 1050000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0085",
+    "name": "St George's Munich",
+    "country": "Germany",
+    "city": "Munich",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0087",
+    "name": "IS Athens",
+    "country": "Greece",
+    "city": "Athens",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0089",
+    "name": "British BCN (Nexus)",
+    "country": "Spain",
+    "city": "Barcelona",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0090",
+    "name": "Heidelberg Int'l",
+    "country": "Germany",
+    "city": "Heidelberg",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2700,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0095",
+    "name": "Al Faris International School",
+    "country": "Saudi Arabia",
+    "city": "Riyadh",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0097",
+    "name": "Saud International School",
+    "country": "Saudi Arabia",
+    "city": "Riyadh",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 13800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0099",
+    "name": "Nord Anglia International School Abu Dhabi",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 16500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0102",
+    "name": "Raha International School",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 16000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0113",
+    "name": "Etqan Global Academy",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0116",
+    "name": "American International School of Muscat",
+    "country": "Oman",
+    "city": "Muscat",
+    "currency": "OMR",
+    "salary_scale_5yr_net": 1600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0118",
+    "name": "British International School Cairo",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 3200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0119",
+    "name": "Malvern College Egypt",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 3000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0120",
+    "name": "El Alsson School",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0122",
+    "name": "Brookhouse School",
+    "country": "Kenya",
+    "city": "Nairobi",
+    "currency": "KES",
+    "salary_scale_5yr_net": 320000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0123",
+    "name": "Braeburn Garden Estate",
+    "country": "Kenya",
+    "city": "Nairobi",
+    "currency": "KES",
+    "salary_scale_5yr_net": 280000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0124",
+    "name": "International School of Cape Town",
+    "country": "South Africa",
+    "city": "Cape Town",
+    "currency": "ZAR",
+    "salary_scale_5yr_net": 40000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0125",
+    "name": "American International School of Johannesburg",
+    "country": "South Africa",
+    "city": "Johannesburg",
+    "currency": "ZAR",
+    "salary_scale_5yr_net": 52000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0126",
+    "name": "American International School of Cape Town",
+    "country": "South Africa",
+    "city": "Cape Town",
+    "currency": "ZAR",
+    "salary_scale_5yr_net": 43000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]

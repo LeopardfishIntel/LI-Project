@@ -7785,10 +7785,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.469Z",
     "currency": "EUR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2850,
+    "net_salary": 2850,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.424Z"
   },
   {
     "financescore": "7.9",
@@ -7859,10 +7861,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.469Z",
     "currency": "HUF",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 1050000,
+    "net_salary": 1050000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.0",
@@ -7929,10 +7933,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.469Z",
     "currency": "EUR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2800,
+    "net_salary": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.5",
@@ -8063,10 +8069,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "EUR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2200,
+    "net_salary": 2200,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.8",
@@ -8410,10 +8418,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "EUR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2450,
+    "net_salary": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.8",
@@ -8480,10 +8490,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "EUR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2700,
+    "net_salary": 2700,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.8",
@@ -8908,10 +8920,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "SAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "9.5",
@@ -9265,10 +9279,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "SAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13800,
+    "net_salary": 13800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.5",
@@ -9416,10 +9432,12 @@
     "country": "United Arab Emirates",
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "AED",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 16500,
+    "net_salary": 16500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.5",
@@ -9761,10 +9779,12 @@
     "country": "United Arab Emirates",
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "AED",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 16000,
+    "net_salary": 16000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.5",
@@ -10694,10 +10714,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13500,
+    "net_salary": 13500,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "classsize": "25",
@@ -11013,10 +11035,12 @@
     "openJobsCount": 3,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "OMR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 1600,
+    "net_salary": 1600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.8",
@@ -11180,10 +11204,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "USD",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 3200,
+    "net_salary": 3200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.0",
@@ -11257,10 +11283,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "USD",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 3000,
+    "net_salary": 3000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.2",
@@ -11336,10 +11364,12 @@
     "openJobsCount": 2,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "USD",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2800,
+    "net_salary": 2800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.2",
@@ -11495,10 +11525,12 @@
     "openJobsCount": 3,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "KES",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 320000,
+    "net_salary": 320000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.0",
@@ -11568,10 +11600,12 @@
     "openJobsCount": 2,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "KES",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 280000,
+    "net_salary": 280000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "6.8",
@@ -11645,10 +11679,12 @@
     "openJobsCount": 2,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "ZAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 40000,
+    "net_salary": 40000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.0",
@@ -11726,10 +11762,12 @@
     "openJobsCount": 3,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "ZAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 52000,
+    "net_salary": 52000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "7.5",
@@ -11803,10 +11841,12 @@
     "openJobsCount": 4,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "ZAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 43000,
+    "net_salary": 43000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
   },
   {
     "financescore": "8.2",
