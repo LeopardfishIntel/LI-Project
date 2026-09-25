@@ -1808,34 +1808,46 @@ function DecoderContent() {
         transportVal = safeParse(transportMap) || 120;
       }
     } else {
-      // 🚌 PUBLIC TRANSIT: Check if school reimburses 100% of daily commute pass
-      const isTransitReimbursed = activeSchool?.commuteReimbursed === true ||
-        String(activeSchool?.transportBenefit || '').toLowerCase().includes('reimburse') ||
-        String(activeSchool?.transportBenefit || '').toLowerCase().includes('100%') ||
-        String(activeSchool?.transport || '').toLowerCase().includes('reimburse');
+      // 🚌 PUBLIC TRANSIT: Check if school reimburses commute (100% vs partial percentage subsidy)
+      const tbStr = `${activeSchool?.transportBenefit || ''} ${activeSchool?.transport || ''}`.toLowerCase();
+      
+      let subsidyMultiplier = 1.0;
+      if (activeSchool?.commuteReimbursed === true || tbStr.includes('100%') || tbStr.includes('fully reimbursed') || (tbStr.includes('reimburse') && !tbStr.includes('50%') && !tbStr.includes('partial') && !tbStr.includes('subsid'))) {
+        subsidyMultiplier = 0.0;
+      } else {
+        const percentMatch = tbStr.match(/(\d+)%/);
+        if (percentMatch) {
+          const pct = parseInt(percentMatch[1], 10);
+          if (!isNaN(pct) && pct > 0 && pct <= 100) {
+            subsidyMultiplier = Math.max(0, (100 - pct) / 100);
+          }
+        } else if (tbStr.includes('partial') || tbStr.includes('subsid')) {
+          subsidyMultiplier = 0.5;
+        }
+      }
 
-      if (isTransitReimbursed) {
+      if (subsidyMultiplier === 0.0) {
         transportVal = 0;
       } else if (sCountry === 'argentina') {
         const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
-        transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0);
+        transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0) * subsidyMultiplier;
       } else if (sCountry === 'vietnam') {
         const vnSingleUsd = (525000 / (currentRates['VND'] || 31614)) * (currentRates['USD'] || 1.27);
-        transportVal = vnSingleUsd * (transitScalarMap[transportKey] || 1.0);
+        transportVal = vnSingleUsd * (transitScalarMap[transportKey] || 1.0) * subsidyMultiplier;
       } else if (typeof transportMap === 'object' && transportMap !== null) {
         if (transportMap[transportKey] !== undefined && safeParse(transportMap[transportKey]) > 0) {
-          transportVal = safeParse(transportMap[transportKey]);
+          transportVal = safeParse(transportMap[transportKey]) * subsidyMultiplier;
         } else {
           const baseSingle = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0)) || 60;
-          transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
+          transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0) * subsidyMultiplier;
         }
       } else {
         const baseSingle = safeParse(transportMap) || 60;
-        transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
+        transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0) * subsidyMultiplier;
       }
 
-      if (!isTransitReimbursed && (!transportVal || transportVal <= 0)) {
-        transportVal = 60 * (transitScalarMap[transportKey] || 1.0);
+      if (subsidyMultiplier > 0 && (!transportVal || transportVal <= 0)) {
+        transportVal = 60 * (transitScalarMap[transportKey] || 1.0) * subsidyMultiplier;
       }
     }
 
