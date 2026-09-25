@@ -163,8 +163,9 @@ export default function Header() {
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
         const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
         const isEureka = sourceUpper.includes("EUREKA");
+        const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka) {
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) {
           return;
         }
 
@@ -221,7 +222,7 @@ export default function Header() {
 
       // Check for any countsBySchool that did not map to an existing school document
       Object.entries(countsBySchool).forEach(([sId, count]) => {
-        if (!schoolDocIds.has(sId)) {
+        if (!schoolDocIds.has(sId) && sId !== 'SEARCH_ASSOCIATES_HUB') {
           mismatches.push({
             schoolId: sId,
             schoolName: 'Unindexed School Document',
@@ -308,8 +309,9 @@ export default function Header() {
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
         const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
         const isEureka = sourceUpper.includes("EUREKA");
+        const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka) return;
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
         if (!title || title.length < 3) return;
 
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;

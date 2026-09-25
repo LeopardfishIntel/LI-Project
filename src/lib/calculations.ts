@@ -291,6 +291,65 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
     return null;
   }
 
+  // 🇯🇵 JAPAN 3-TIER ROUTING (Kanto Metro vs Kansai Hub vs Regional)
+  if (sCountry === "japan") {
+    const kantoCities = ["tokyo", "yokohama", "kawasaki", "chiba", "saitama"];
+    const kansaiCities = ["kobe", "osaka", "minoh", "kyoto", "hyogo"];
+    if (kantoCities.some(c => sCity.includes(c))) {
+      const kantoDoc = countryMatches.find((c: any) => cleanStr(c.id).includes("tokyo") || cleanStr(c.id).includes("kanto"));
+      if (kantoDoc) return kantoDoc;
+    }
+    if (kansaiCities.some(c => sCity.includes(c))) {
+      const kansaiDoc = countryMatches.find((c: any) => cleanStr(c.id).includes("kansai") || cleanStr(c.id).includes("kobe") || cleanStr(c.id).includes("osaka"));
+      if (kansaiDoc) return kansaiDoc;
+    }
+  }
+
+  // 🇨🇳 CHINA 3-TIER ROUTING (Tier 1 Megacity vs Tier 2 Major Regional vs Tier 3 Regional)
+  if (sCountry === "china") {
+    const tier1Cities = ["shanghai", "beijing"];
+    const tier2Cities = ["shenzhen", "guangzhou", "suzhou", "hangzhou", "foshan", "nanjing", "wuxi"];
+    if (tier1Cities.some(c => sCity.includes(c))) {
+      const t1Doc = countryMatches.find((c: any) => cleanStr(c.id).includes(sCity) || cleanStr(c.id).includes("shanghai") || cleanStr(c.id).includes("beijing"));
+      if (t1Doc) return t1Doc;
+    }
+    if (tier2Cities.some(c => sCity.includes(c))) {
+      const t2Doc = countryMatches.find((c: any) => cleanStr(c.id).includes(sCity) || cleanStr(c.id).includes("shenzhen") || cleanStr(c.id).includes("guangzhou") || cleanStr(c.id).includes("suzhou"));
+      if (t2Doc) return t2Doc;
+    }
+  }
+
+  // 🇦🇪 UAE 3-TIER ROUTING (Tier 1 Dubai vs Tier 2 Abu Dhabi vs Tier 3 Northern Emirates & Al Ain)
+  if (sCountry === "unitedarabemirates" || sCountry === "uae") {
+    if (sCity.includes("dubai")) {
+      const dubaiDoc = countryMatches.find((c: any) => cleanStr(c.id).includes("dubai"));
+      if (dubaiDoc) return dubaiDoc;
+    }
+    if (sCity.includes("abudhabi") || sCity.includes("saadiyat") || sCity.includes("reem") || sCity.includes("mushrif") || sCity.includes("yas") || sCity.includes("khalifa")) {
+      const adDoc = countryMatches.find((c: any) => cleanStr(c.id).includes("abudhabi") || cleanStr(c.id).includes("abu"));
+      if (adDoc) return adDoc;
+    }
+    const northernCities = ["sharjah", "ajman", "rasalkhaimah", "rak", "fujairah", "alain", "ummalquwain"];
+    if (northernCities.some(c => sCity.includes(c))) {
+      const northDoc = countryMatches.find((c: any) => cleanStr(c.id).includes(sCity) || cleanStr(c.id).includes("sharjah") || cleanStr(c.id).includes("northern"));
+      if (northDoc) return northDoc;
+    }
+  }
+
+  // 🇪🇸 SPAIN 3-TIER ROUTING (Tier 1 Madrid/BCN vs Tier 2 Major Coastal/Regional vs Tier 3 Secondary Regional)
+  if (sCountry === "spain") {
+    const tier1Cities = ["madrid", "barcelona", "castelldefels", "santcugat", "villaviciosa", "pozuelo", "alcobendas"];
+    const tier2Cities = ["valencia", "rocafort", "bilbao", "malaga", "marbella", "palma", "sansebastian", "donostia", "mallorca"];
+    if (tier1Cities.some(c => sCity.includes(c))) {
+      const t1Doc = countryMatches.find((c: any) => cleanStr(c.id).includes(sCity) || cleanStr(c.id).includes("madrid") || cleanStr(c.id).includes("barcelona"));
+      if (t1Doc) return t1Doc;
+    }
+    if (tier2Cities.some(c => sCity.includes(c))) {
+      const t2Doc = countryMatches.find((c: any) => cleanStr(c.id).includes(sCity) || cleanStr(c.id).includes("valencia") || cleanStr(c.id).includes("marbella") || cleanStr(c.id).includes("bilbao"));
+      if (t2Doc) return t2Doc;
+    }
+  }
+
   // 1. Exact city name or ID match
   const exactCity = countryMatches.find((c: any) => {
     const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
@@ -628,7 +687,7 @@ export function calculateOutflows(
   // Rent
   let rentCost = 0;
   const provStr = String(schoolOrLocation?.housingprovision || schoolOrLocation?.housingProvision || '').toLowerCase();
-  const explicitSubsidy = safeParse(schoolOrLocation?.housing_subsidy_rate || schoolOrLocation?.housingSubsidyRate);
+  const explicitSubsidy = safeVal(schoolOrLocation?.housing_subsidy_rate || schoolOrLocation?.housingSubsidyRate);
   let subsidyRate = 0;
   if (explicitSubsidy > 0 && explicitSubsidy <= 1) {
     subsidyRate = explicitSubsidy;
@@ -683,6 +742,69 @@ export function calculateOutflows(
  * - 1,400 BHD in Bahrain -> ~3,704 USD
  * - 1,500 JOD in Jordan -> ~2,117 USD
  */
+/**
+ * 🎯 PARSES SALARY STRING / RANGE INTO MONTHLY MEDIAN IN USD
+ * Converts ranges (e.g. "$42,000 - $54,000 / year", "14,000 - 19,500 AED / month")
+ * into a single unified 5-year experience median monthly USD figure.
+ */
+export function parseSalaryToMedianMonthlyUSD(
+  rawVal: any,
+  countryName?: string,
+  currencyCode?: string
+): number {
+  if (typeof rawVal === 'number') {
+    return normalizeMenaSalaryUSD(rawVal, countryName);
+  }
+  const str = String(rawVal || '').trim();
+  if (!str || str === '—' || str === '0' || str === 'undefined' || str === 'null') {
+    return 3000;
+  }
+
+  const cleanRange = str
+    .replace(/,/g, '')
+    .replace(/\.\d+/g, '')
+    .replace(/(\d+)\s*k\b/gi, '$1000');
+
+  const matches = cleanRange.match(/\d+/g);
+  if (!matches || matches.length === 0) return 3000;
+
+  const validNums = matches.map(Number).filter(n => n > 50 || matches.length === 1);
+  if (validNums.length === 0) return 3000;
+
+  const isStartingOnly = /starting|entry/i.test(str);
+  const min = validNums[0];
+  const max = validNums.length > 1 ? validNums[1] : min;
+  
+  // Median midpoint of range
+  let median = (validNums.length > 1 && !isStartingOnly) ? Math.round((min + max) / 2) : min;
+
+  const lower = str.toLowerCase();
+  const isUSD = /\b(usd|us\$)\b|\$/i.test(str);
+  const isExplicitAnnual = /year|annual|\/yr|\/year|gross\/yr|\/annum|p\.a\.|times\/year|month payroll/i.test(lower);
+  const isExplicitMonthly = /month|monthly|\/\s*mo|\bmo\b/i.test(lower);
+  const is14Month = /14-month|14 times/i.test(lower);
+  const monthsPerYear = is14Month ? 14 : 12;
+
+  const cur = (currencyCode || (isUSD ? 'USD' : 'USD')).toUpperCase();
+  const highValCurrencies = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR', 'AZN'];
+  const isHighVal = highValCurrencies.includes(cur) || isUSD;
+  const isAnnualVal = isHighVal ? median >= 10000 : median >= 120000;
+
+  let monthly = median;
+  if ((isExplicitAnnual || isAnnualVal) && !isExplicitMonthly) {
+    monthly = Math.round(monthly / monthsPerYear);
+  }
+
+  // If local currency is non-USD and specified, convert to USD
+  if (!isUSD && cur !== 'USD' && RATES[cur]) {
+    const usdRate = RATES['USD'] || 1.27;
+    const localRate = RATES[cur] || 1.0;
+    monthly = Math.round((monthly / localRate) * usdRate);
+  }
+
+  return normalizeMenaSalaryUSD(monthly, countryName);
+}
+
 export function normalizeMenaSalaryUSD(salary: number | string, countryName?: string): number {
   const num = typeof salary === 'number' ? salary : parseFloat(String(salary || '').replace(/[^0-9.]/g, '')) || 0;
   if (num <= 0) return num;

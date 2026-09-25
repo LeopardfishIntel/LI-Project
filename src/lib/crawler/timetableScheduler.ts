@@ -135,6 +135,16 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     utcStartWindow: "05:30",
     utcEndWindow: "05:45",
     targetDurationMinutes: 15
+  },
+  SEARCH_ASSOCIATES: {
+    engineKey: "SEARCH_ASSOCIATES",
+    sourceName: "Search Associates Leadership",
+    method: "Multi-Tab DOM Scraper & Turnover Auditor",
+    peakSchedule: "TUESDAY_THURSDAY",
+    offPeakSchedule: "TUESDAY_THURSDAY",
+    utcStartWindow: "04:45",
+    utcEndWindow: "05:05",
+    targetDurationMinutes: 20
   }
 };
 

@@ -56,7 +56,7 @@ import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
-import { calculateSurplus, normalizeMenaSalaryUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
+import { calculateSurplus, normalizeMenaSalaryUSD, parseSalaryToMedianMonthlyUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import dynamic from 'next/dynamic';
@@ -332,9 +332,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   };
 
   // 💰 Aggressive Finance Mapping declared at the very top to prevent Temporal Dead Zone ReferenceErrors
-  const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || '—';
-  const rawSalaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
-  const salaryNum = normalizeMenaSalaryUSD(rawSalaryNum, school?.country || (school as any)?.location);
+  const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || (school as any)?.salaryRange || (school as any)?.expectedSalary5Years || '—';
+  const salaryNum = parseSalaryToMedianMonthlyUSD(rawFinance, school?.country || (school as any)?.location, (school as any)?.salaryCurrency || (school as any)?.currency);
 
   const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string, generatedAt?: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);

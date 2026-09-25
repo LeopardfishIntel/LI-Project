@@ -97,7 +97,7 @@ import {
 import { AddVacancyModal } from '@/components/admin/AddVacancyModal';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
-import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, updateDoc, setDoc, deleteDoc, collectionGroup, query, where } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryUSD, findCostOfLiving } from '@/lib/calculations';
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
@@ -499,10 +499,10 @@ export default function FeaturedJobsPage() {
     [firestore, mounted]
   );
 
-  // Query 2: Admin staging — still reads from subcollections (source of truth)
+  // Query 2: Admin staging — reads from jobs collection for pending review
   const adminJobsQuery = useMemoFirebase(
     () => (mounted && firestore && calculatedIsAdmin
-      ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review'))
+      ? collection(firestore, 'jobs')
       : null),
     [firestore, mounted, calculatedIsAdmin]
   );
@@ -663,13 +663,38 @@ export default function FeaturedJobsPage() {
 
   const handleApproveJob = async (schoolId: string, jobId: string) => {
     try {
-      const cacheRef = doc(db, 'featured_jobs_cache', jobId);
-      await updateDoc(cacheRef, {
-        status: 'approved',
-        reviewedAt: new Date(),
-        reviewedBy: user?.uid || "admin"
-      });
+      // 1. Update status in root jobs collection
+      try {
+        const rootRef = doc(db, 'jobs', jobId);
+        await updateDoc(rootRef, {
+          status: 'approved',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {}
 
+      // 2. Set / update in featured_jobs_cache so it appears on live feed
+      const jobItem = allJobs.find(j => j.id === jobId);
+      if (jobItem) {
+        const cacheRef = doc(db, 'featured_jobs_cache', jobId);
+        const cleanPayload: Record<string, any> = {};
+        for (const [k, v] of Object.entries(jobItem)) {
+          if (v !== undefined) {
+            cleanPayload[k] = v;
+          }
+        }
+        cleanPayload.status = 'APPROVED';
+        cleanPayload.reviewedAt = new Date().toISOString();
+        cleanPayload.reviewedBy = user?.uid || "admin";
+        cleanPayload.updatedAt = new Date().toISOString();
+        if (!cleanPayload.savingsPotential) cleanPayload.savingsPotential = 18000;
+        if (!cleanPayload.source) cleanPayload.source = 'Search Associates';
+        if (!cleanPayload.sources || cleanPayload.sources.length === 0) cleanPayload.sources = ['Search Associates'];
+
+        await setDoc(cacheRef, cleanPayload, { merge: true });
+      }
+
+      // 3. Subcollection if exists
       try {
         const subRef = doc(db, 'schools', schoolId, 'jobs', jobId);
         await updateDoc(subRef, {
@@ -678,6 +703,37 @@ export default function FeaturedJobsPage() {
           reviewedBy: user?.uid || "admin"
         });
       } catch (e) {}
+
+      // 4. Institutional Stability: route leadership & past-deadline vacancies to school turnover history
+      if (schoolId && schoolId.startsWith('FLIS')) {
+        try {
+          const schoolDocRef = doc(db, 'schools', schoolId);
+          const schoolSnap = await getDoc(schoolDocRef);
+          if (schoolSnap.exists()) {
+            const sData = schoolSnap.data() || {};
+            const existingTurnover = Array.isArray(sData.historicalLeadershipTurnover) ? sData.historicalLeadershipTurnover : [];
+            const newTurnoverItem = {
+              jobId: jobId,
+              role: jobItem?.title || 'Leadership Vacancy',
+              source: jobItem?.source || 'Search Associates',
+              recordedDate: new Date().toISOString().split('T')[0],
+              deadline: jobItem?.date_closing || 'Past',
+              url: jobItem?.source_url || '',
+              isFilled: Boolean(jobItem?.closesDateRaw && jobItem.closesDateRaw.getTime() < Date.now())
+            };
+            const isDuplicate = existingTurnover.some((t: any) => t.jobId === jobId || (t.role === newTurnoverItem.role && t.url === newTurnoverItem.url));
+            if (!isDuplicate) {
+              await updateDoc(schoolDocRef, {
+                historicalLeadershipTurnover: [...existingTurnover, newTurnoverItem],
+                leadershipVacanciesCount: (sData.leadershipVacanciesCount || 0) + 1,
+                lastTurnoverAuditAt: new Date().toISOString()
+              });
+            }
+          }
+        } catch (turnoverErr) {
+          console.warn("Turnover history update warning:", turnoverErr);
+        }
+      }
     } catch (err) {
       console.error("Failed to approve job:", err);
     }
@@ -685,13 +741,27 @@ export default function FeaturedJobsPage() {
 
   const handleRemoveJob = async (schoolId: string, jobId: string) => {
     try {
-      const cacheRef = doc(db, 'featured_jobs_cache', jobId);
-      await updateDoc(cacheRef, {
-        status: 'rejected',
-        reviewedAt: new Date(),
-        reviewedBy: user?.uid || "admin"
-      });
+      // 1. Update status in root jobs collection
+      try {
+        const rootRef = doc(db, 'jobs', jobId);
+        await updateDoc(rootRef, {
+          status: 'rejected',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {}
 
+      // 2. Update cache if present
+      try {
+        const cacheRef = doc(db, 'featured_jobs_cache', jobId);
+        await updateDoc(cacheRef, {
+          status: 'rejected',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {}
+
+      // 3. Subcollection if exists
       try {
         const subRef = doc(db, 'schools', schoolId, 'jobs', jobId);
         await updateDoc(subRef, {
@@ -988,12 +1058,11 @@ export default function FeaturedJobsPage() {
     if (!adminJobsData || adminJobsData.length === 0) return [];
 
     adminJobsData.forEach((jobDoc: any) => {
-      const schoolId = jobDoc.ref?.parent?.parent?.id;
-      if (!schoolId) return;
-      const school = schoolsMap[schoolId];
+      const schoolId = jobDoc.schoolId || jobDoc.ref?.parent?.parent?.id || 'SEARCH_ASSOCIATES_HUB';
+      const school = schoolsMap[schoolId] || schoolsMap[String(schoolId).toUpperCase()] || null;
 
-      const rawStatus = String(jobDoc.status || '').toUpperCase();
-      if (rawStatus === 'CLOSED' || rawStatus === 'EXPIRED' || rawStatus === 'REJECTED') return;
+      const rawStatus = String(jobDoc.status || '').toLowerCase();
+      if (rawStatus !== 'pending_review' && rawStatus !== 'pending') return;
 
       const cycle = String(jobDoc.recruitmentCycle || '').toUpperCase();
       if (cycle === 'HISTORIC_Y1' || cycle.startsWith('HISTORIC')) return;
@@ -1003,42 +1072,67 @@ export default function FeaturedJobsPage() {
         closesDate = new Date(jobDoc.closingDate.seconds * 1000);
       } else if (jobDoc.closingDate) {
         closesDate = new Date(jobDoc.closingDate);
-      } else if (jobDoc.date_closing) {
-        const parsed = parseClosingDate(jobDoc.date_closing);
+      } else if (jobDoc.date_closing || jobDoc.deadline) {
+        const parsed = parseClosingDate(jobDoc.date_closing || jobDoc.deadline);
         closesDate = parsed.closingDate;
       }
-      if (closesDate && !isNaN(closesDate.getTime()) && closesDate.getTime() < todayMs) return;
 
-      const jobKey = `${schoolId}_${(jobDoc.title || '').toLowerCase().trim()}`;
+      const jobKey = jobDoc.id || `${schoolId}_${(jobDoc.schoolName || '').toLowerCase()}_${(jobDoc.title || jobDoc.jobTitle || '').toLowerCase().trim()}`;
       if (seenJobKeys.has(jobKey)) return;
       seenJobKeys.add(jobKey);
 
-      const rawSourceUrl = jobDoc.applyUrl || jobDoc.source_url || '';
-      const lowerTitle = (jobDoc.title || '').toLowerCase();
-      let department = jobDoc.department || 'Secondary';
+      const rawSourceUrl = jobDoc.applyUrl || jobDoc.source_url || jobDoc.link || jobDoc.websiteUrl || '';
+      const lowerSourceUrl = rawSourceUrl.toLowerCase();
+      const lowerTitle = (jobDoc.title || jobDoc.jobTitle || '').toLowerCase();
+      let department = jobDoc.department || (jobDoc.isLeadership ? 'Leadership' : 'Secondary');
       if (lowerTitle.includes('primary') || lowerTitle.includes('prep') || lowerTitle.includes('early years') ||
           lowerTitle.includes('eyfs') || lowerTitle.includes('kindergarten') || lowerTitle.includes('ks1')) {
         department = 'Primary';
       } else if (lowerTitle.includes('head') || lowerTitle.includes('director') || lowerTitle.includes('principal') ||
-          lowerTitle.includes('coordinator')) {
+          lowerTitle.includes('coordinator') || jobDoc.isLeadership) {
         department = 'Leadership';
+      }
+
+      let docSource = jobDoc.sourceName || jobDoc.source || jobDoc.agency || '';
+      if (!docSource || docSource === 'Official Source') {
+        if (lowerSourceUrl.includes('searchassociates')) docSource = 'Search Associates';
+        else if (lowerSourceUrl.includes('tes.com')) docSource = 'TES';
+        else if (lowerSourceUrl.includes('grcfair')) docSource = 'GRC';
+        else if (lowerSourceUrl.includes('teachaway')) docSource = 'Teach Away';
+        else if (lowerSourceUrl.includes('theguardian.com') || lowerSourceUrl.includes('guardianjobs')) docSource = 'Guardian Jobs';
+        else docSource = 'Search Associates';
+      } else if (lowerSourceUrl.includes('searchassociates')) {
+        docSource = 'Search Associates';
+      }
+
+      const sourcesList = jobDoc.sources && jobDoc.sources.length > 0 ? [...jobDoc.sources] : [docSource];
+      const sourceUrlsMap: Record<string, string> = { ...(jobDoc.sourceUrls || {}) };
+      if (docSource && rawSourceUrl && !sourceUrlsMap[docSource]) {
+        sourceUrlsMap[docSource] = rawSourceUrl;
+      }
+      if (lowerSourceUrl.includes('searchassociates')) {
+        sourceUrlsMap['Search Associates'] = rawSourceUrl;
+        sourceUrlsMap['SEARCH ASSOCIATES'] = rawSourceUrl;
+        if (!sourcesList.includes('Search Associates')) sourcesList.push('Search Associates');
       }
 
       jobsList.push({
         id: jobDoc.id || schoolId + '_' + Math.random().toString(36).substring(2, 7),
-        title: translateJobTitleToEnglish(jobDoc.title || 'Teaching Vacancy'),
+        title: translateJobTitleToEnglish(jobDoc.title || jobDoc.jobTitle || 'Teaching Vacancy'),
         department,
-        source: jobDoc.sourceName || jobDoc.source || 'Official Source',
+        source: docSource,
+        sources: sourcesList,
         source_url: rawSourceUrl,
+        sourceUrls: sourceUrlsMap,
         date_listed: jobDoc.scrapedAt
           ? new Date(jobDoc.scrapedAt.seconds ? jobDoc.scrapedAt.seconds * 1000 : jobDoc.scrapedAt).toLocaleDateString()
-          : (jobDoc.date_listed || null),
+          : (jobDoc.date_listed || jobDoc.datePosted || null),
         date_closing: closesDate
           ? formatDateCustom(closesDate)
-          : 'Rolling',
+          : (jobDoc.deadline || 'Rolling'),
         status: jobDoc.status || 'pending_review',
         schoolId: schoolId,
-        schoolName: school?.schoolname || school?.name || jobDoc.schoolName || '',
+        schoolName: school?.schoolname || school?.name || jobDoc.schoolName || jobDoc.employer || '',
         schoolRating: parseFloat(school?.academicscore || school?.rating || '0'),
         curriculum: school?.curriculum || 'British',
         city: school?.city || jobDoc.city || '',
@@ -1059,8 +1153,15 @@ export default function FeaturedJobsPage() {
   const availableCurriculums = ["BRITISH", "AMERICAN", "IB", "NATIONAL"];
 
   // Public job count for admin tab badge (raw cache size, not filtered)
-  // Public job count for admin tab badge (raw cache size, not filtered)
   const publicJobsCount = allJobs.length;
+
+  const pendingJobsCount = useMemo(() => {
+    if (!adminJobsData) return 0;
+    return adminJobsData.filter((jobDoc: any) => {
+      const rawStatus = String(jobDoc.status || '').toLowerCase();
+      return rawStatus === 'pending_review' || rawStatus === 'pending';
+    }).length;
+  }, [adminJobsData]);
 
   // Search Engine Protocol counts for header buttons
   const engineCounts = useMemo(() => {
@@ -1081,12 +1182,14 @@ export default function FeaturedJobsPage() {
     let taaleem = 0;
     let aldar = 0;
     let qatarFoundation = 0;
+    let searchAssociates = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
       const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
       const applyUrlLower = String(job.source_url || "").toLowerCase();
 
+      const hasSearchAssociates = jobSrcUpper.includes("SEARCH") || sourcesUpper.some((s) => s.includes("SEARCH")) || applyUrlLower.includes("searchassociates");
       const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => s.includes("TAYLOR")) || applyUrlLower.includes("taylors");
       const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
@@ -1101,12 +1204,13 @@ export default function FeaturedJobsPage() {
       const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => s.includes("UWC")) || applyUrlLower.includes("uwc.org");
       const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || applyUrlLower.includes("internationalschools");
       const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
-              const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
-        const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
-        const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian && !hasTaaleem && !hasAldar && !hasQatarFoundation;
+      const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+      const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
+      const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
+      const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
+      const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSearchAssociates && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian && !hasTaaleem && !hasAldar && !hasQatarFoundation;
 
+      if (hasSearchAssociates) searchAssociates++;
       if (hasDirect) direct++;
       if (hasTes) tes++;
       if (hasNae) nae++;
@@ -1118,7 +1222,7 @@ export default function FeaturedJobsPage() {
       if (hasUwc) uwc++;
       if (hasIsp) isp++;
       if (hasGlobe) globe++;
-            if (hasTaylors) taylors++;
+      if (hasTaylors) taylors++;
       if (hasGems) gems++;
       if (hasGuardian) guardian++;
       if (hasTaaleem) taaleem++;
@@ -1127,6 +1231,8 @@ export default function FeaturedJobsPage() {
     });
     return {
       ALL: allJobs.length,
+      SEARCH_ASSOCIATES: searchAssociates,
+      "SEARCH ASSOCIATES": searchAssociates,
       DIRECT: direct,
       COGNITA: cognita,
       TES: tes,
@@ -1161,9 +1267,14 @@ export default function FeaturedJobsPage() {
   // Filter Logic
   const filteredJobs = useMemo(() => {
     return allJobs.filter(job => {
-      // Must match a valid, named FLIS database school & valid teaching job title
-      if (!job.schoolName || !job.schoolName.trim() || !job.schoolId || !job.schoolId.trim()) return false;
-      if (!isValidJobTitle(job.title || '')) return false;
+      if (activeTab !== 'admin_staging') {
+        // Must match a valid, named FLIS database school & valid teaching job title
+        if (!job.schoolName || !job.schoolName.trim() || !job.schoolId || !job.schoolId.trim()) return false;
+        if (!isValidJobTitle(job.title || '')) return false;
+        if (job.savingsPotential < minSavings) return false;
+        if (job.schoolRating < minRating) return false;
+      }
+
       // Search text query (matches title, school, city, country)
       const matchesQuery = 
         normalize(job.title).includes(normalize(searchQuery)) ||
@@ -1202,12 +1313,6 @@ export default function FeaturedJobsPage() {
         if (!matchesSubject) return false;
       }
 
-      // Minimum Savings Potential match
-      if (job.savingsPotential < minSavings) return false;
-
-      // Minimum Rating match
-      if (job.schoolRating < minRating) return false;
-
       // Search Engine Protocol Filter
       if (selectedSourceEngine !== "ALL") {
         const jobSrcUpper = String(job.source || "").toUpperCase();
@@ -1216,6 +1321,7 @@ export default function FeaturedJobsPage() {
         const schoolNameUpper = String((job as any).schoolName || (job as any).schoolname || (job as any).name || "").toUpperCase();
         const applyUrlLower = String(job.source_url || "").toLowerCase();
 
+        const hasSearchAssociates = jobSrcUpper.includes("SEARCH") || sourcesUpper.some((s) => s.includes("SEARCH")) || applyUrlLower.includes("searchassociates");
         const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
         const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
         const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
@@ -1229,9 +1335,10 @@ export default function FeaturedJobsPage() {
         const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TAYLOR")) || applyUrlLower.includes("taylors");
         const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ESF") || String(s || "").toUpperCase().includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
         const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
-                const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
+        const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSearchAssociates && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
 
+        if ((selectedSourceEngine === "SEARCH_ASSOCIATES" || selectedSourceEngine === "SEARCH ASSOCIATES" || selectedSourceEngine === "SEARCH") && !hasSearchAssociates) return false;
         if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
         if (selectedSourceEngine === "TES" && !hasTes) return false;
@@ -1239,7 +1346,7 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "GRC" && !hasGrc) return false;
         if (selectedSourceEngine === "INSPIRED" && !hasInspired) return false;
         if (selectedSourceEngine === "TAYLORS" && !hasTaylors) return false;
-                if (selectedSourceEngine === "GEMS" && !hasGems) return false;
+        if (selectedSourceEngine === "GEMS" && !hasGems) return false;
         if ((selectedSourceEngine === "TEACHAWAY" || selectedSourceEngine === "TEACH_AWAY") && !hasTeachAway) return false;
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
@@ -1269,7 +1376,7 @@ export default function FeaturedJobsPage() {
         if (matchB !== matchA) return matchB - matchA;
         return (b.savingsPotential || 0) - (a.savingsPotential || 0);
       });
-    } else if (sortBy === "LF Projected Savings" || sortBy === "Projected Savings") {
+    } else if (sortBy === "LF Projected Surplus" || sortBy === "LF Projected Savings" || sortBy === "Projected Savings" || sortBy === "Surplus") {
       return jobs.sort((a, b) => b.savingsPotential - a.savingsPotential);
     } else if (sortBy === "LF School Scores" || sortBy === "School Score") {
       return jobs.sort((a, b) => b.schoolRating - a.schoolRating);
@@ -1485,7 +1592,7 @@ export default function FeaturedJobsPage() {
                       activeTab === 'admin_staging' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
                     )}
                   >
-                    Pending ({adminJobsData?.length || 0})
+                    Pending ({pendingJobsCount})
                   </button>
                 </div>
               </>
@@ -1708,7 +1815,7 @@ export default function FeaturedJobsPage() {
                       className="bg-[#1e293b] border border-slate-700/80 text-white rounded px-2.5 py-1 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                     >
                       <option value="LF Overall Match">Match</option>
-                      <option value="LF Projected Savings">Savings</option>
+                      <option value="LF Projected Surplus">Surplus</option>
                       <option value="LF School Scores">Score</option>
                       <option value="Most recent">Recent</option>
                       <option value="Oldest (by closing date)">Closing</option>
@@ -1764,7 +1871,7 @@ export default function FeaturedJobsPage() {
                         className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                       >
                         <option value="LF Overall Match">LF Overall Match</option>
-                        <option value="LF Projected Savings">LF Projected Savings</option>
+                        <option value="LF Projected Surplus">LF Projected Surplus</option>
                         <option value="LF School Scores">LF School Scores</option>
                         <option value="Most recent">Most Recent</option>
                         <option value="Oldest (by closing date)">Oldest (by closing date)</option>
@@ -2033,7 +2140,10 @@ export default function FeaturedJobsPage() {
                                     Boolean(job.sourceUrls && (job.sourceUrls["TAALEEM"] || job.sourceUrls["Taaleem"]));
 
                                   // Detect URL domain signatures to ensure engine pills are accurately assigned
-                                  if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || rawSources.some((s: any) => String(s || "").toUpperCase() === "TES")) {
+                                  if (applyUrlLower.includes("searchassociates") || (job.sourceUrls && (job.sourceUrls["SEARCH ASSOCIATES"] || job.sourceUrls["Search Associates"])) || rawSources.some((s: any) => String(s || "").toUpperCase().includes("SEARCH"))) {
+                                    sMap.set("SEARCH ASSOCIATES", "Search Associates");
+                                  }
+                                  if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates"))) {
                                     sMap.set("TES", "TES");
                                   }
                                   if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
@@ -2047,9 +2157,6 @@ export default function FeaturedJobsPage() {
                                   }
                                   if (applyUrlLower.includes("globeducate")) {
                                     sMap.set("GLOBEDUCATE", "Globeducate");
-                                  }
-                                  if (applyUrlLower.includes("searchassociates")) {
-                                    sMap.set("SEARCH ASSOCIATES", "Search Associates");
                                   }
                                   if (applyUrlLower.includes("grcfair.org")) {
                                     sMap.set("GRC", "GRC");
@@ -2075,7 +2182,8 @@ export default function FeaturedJobsPage() {
                                     const u = String(s).toUpperCase().trim();
                                     let key = u;
                                     let label = s;
-                                    if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
+                                    if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES") || u === "SEARCH" || u.includes("SEARCHASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
+                                    else if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
                                     else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
                                     else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
                                     else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
@@ -2095,9 +2203,12 @@ export default function FeaturedJobsPage() {
                                   });
 
                                   // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("schrole");
                                   const hasExplicitDirect = Boolean((job as any).directUrl || (job.sourceUrls && (job.sourceUrls["DIRECT"] || job.sourceUrls["Direct"])));
                                   if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL")) && !hasExplicitDirect) {
+                                    sMap.delete("DIRECT");
+                                  }
+                                  if (sMap.has("SEARCH ASSOCIATES") && !hasExplicitDirect) {
                                     sMap.delete("DIRECT");
                                   }
                                   if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
@@ -2164,12 +2275,21 @@ export default function FeaturedJobsPage() {
                                       if (foundUrl) {
                                         const fUrl = String(foundUrl);
                                         if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                                         if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
-                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
+                                        if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
+                                        if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates")) foundUrl = undefined;
+                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org") || fUrl.includes("searchassociates"))) foundUrl = undefined;
                                       }
                                       if (!foundUrl) {
                                         const rawUrl = (job as any).applyUrl || job.source_url;
-                                        if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                        if (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH")) {
+                                          if (job.sourceUrls && (job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"]) && !isGenericUrl(job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"])) {
+                                            foundUrl = job.sourceUrls["Search Associates"] || job.sourceUrls["SEARCH ASSOCIATES"];
+                                          } else if (applyUrlLower.includes("searchassociates") && !isGenericUrl(rawUrl)) {
+                                            foundUrl = rawUrl;
+                                          } else if (rawUrl && !isGenericUrl(rawUrl)) {
+                                            foundUrl = rawUrl;
+                                          }
+                                        } else if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
                                            foundUrl = (job as any).directUrl;
                                          } else if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
                                           foundUrl = rawUrl;
@@ -2241,7 +2361,9 @@ export default function FeaturedJobsPage() {
                                         rel="noopener noreferrer"
                                         className={cn(
                                           "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
-                                          srcUpper.includes("INSPIRED")
+                                          (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH"))
+                                            ? "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
+                                            : srcUpper.includes("INSPIRED")
                                             ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
                                             : srcUpper === "TES"
                                             ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"

@@ -17,6 +17,7 @@ interface SourceMeta {
 }
 
 export type SourceEngineKey =
+  | "SEARCH_ASSOCIATES"
   | "TES"
   | "GRC"
   | "GUARDIAN"
@@ -36,6 +37,7 @@ export type SourceEngineKey =
 
 export const ALL_SOURCES: SourceMeta[] = [
   // Job Boards & Agencies
+  { key: "SEARCH_ASSOCIATES", label: "SEARCH ASSOCIATES", category: "BOARDS_AGENCIES" },
   { key: "TES", label: "TES", category: "BOARDS_AGENCIES" },
   { key: "GRC", label: "GRC", category: "BOARDS_AGENCIES" },
   { key: "GUARDIAN", label: "GUARDIAN", category: "BOARDS_AGENCIES" },

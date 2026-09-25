@@ -1469,6 +1469,65 @@ function DecoderContent() {
 
     if (countryMatches.length === 0) return null;
 
+    // 🇯🇵 JAPAN 3-TIER ROUTING (Kanto Metro vs Kansai Hub vs Regional)
+    if (sCountry === 'japan') {
+      const kantoCities = ['tokyo', 'yokohama', 'kawasaki', 'chiba', 'saitama'];
+      const kansaiCities = ['kobe', 'osaka', 'minoh', 'kyoto', 'hyogo'];
+      if (kantoCities.some(c => sCity.includes(c))) {
+        const kantoDoc = countryMatches.find((c: any) => normalize(c.id).includes('tokyo') || normalize(c.id).includes('kanto'));
+        if (kantoDoc) return kantoDoc;
+      }
+      if (kansaiCities.some(c => sCity.includes(c))) {
+        const kansaiDoc = countryMatches.find((c: any) => normalize(c.id).includes('kansai') || normalize(c.id).includes('kobe') || normalize(c.id).includes('osaka'));
+        if (kansaiDoc) return kansaiDoc;
+      }
+    }
+
+    // 🇨🇳 CHINA 3-TIER ROUTING (Tier 1 Megacity vs Tier 2 Major Regional vs Tier 3 Regional)
+    if (sCountry === 'china') {
+      const tier1Cities = ['shanghai', 'beijing'];
+      const tier2Cities = ['shenzhen', 'guangzhou', 'suzhou', 'hangzhou', 'foshan', 'nanjing', 'wuxi'];
+      if (tier1Cities.some(c => sCity.includes(c))) {
+        const t1Doc = countryMatches.find((c: any) => normalize(c.id).includes(sCity) || normalize(c.id).includes('shanghai') || normalize(c.id).includes('beijing'));
+        if (t1Doc) return t1Doc;
+      }
+      if (tier2Cities.some(c => sCity.includes(c))) {
+        const t2Doc = countryMatches.find((c: any) => normalize(c.id).includes(sCity) || normalize(c.id).includes('shenzhen') || normalize(c.id).includes('guangzhou') || normalize(c.id).includes('suzhou'));
+        if (t2Doc) return t2Doc;
+      }
+    }
+
+    // 🇦🇪 UAE 3-TIER ROUTING (Tier 1 Dubai vs Tier 2 Abu Dhabi vs Tier 3 Northern Emirates & Al Ain)
+    if (sCountry === 'united arab emirates' || sCountry === 'uae') {
+      if (sCity.includes('dubai')) {
+        const dubaiDoc = countryMatches.find((c: any) => normalize(c.id).includes('dubai'));
+        if (dubaiDoc) return dubaiDoc;
+      }
+      if (sCity.includes('abudhabi') || sCity.includes('saadiyat') || sCity.includes('reem') || sCity.includes('mushrif') || sCity.includes('yas') || sCity.includes('khalifa')) {
+        const adDoc = countryMatches.find((c: any) => normalize(c.id).includes('abudhabi') || normalize(c.id).includes('abu'));
+        if (adDoc) return adDoc;
+      }
+      const northernCities = ['sharjah', 'ajman', 'rasalkhaimah', 'rak', 'fujairah', 'alain', 'ummalquwain'];
+      if (northernCities.some(c => sCity.includes(c))) {
+        const northDoc = countryMatches.find((c: any) => normalize(c.id).includes(sCity) || normalize(c.id).includes('sharjah') || normalize(c.id).includes('northern'));
+        if (northDoc) return northDoc;
+      }
+    }
+
+    // 🇪🇸 SPAIN 3-TIER ROUTING (Tier 1 Madrid/BCN vs Tier 2 Major Coastal/Regional vs Tier 3 Secondary Regional)
+    if (sCountry === 'spain') {
+      const tier1Cities = ['madrid', 'barcelona', 'castelldefels', 'santcugat', 'villaviciosa', 'pozuelo', 'alcobendas'];
+      const tier2Cities = ['valencia', 'rocafort', 'bilbao', 'malaga', 'marbella', 'palma', 'sansebastian', 'donostia', 'mallorca'];
+      if (tier1Cities.some(c => sCity.includes(c))) {
+        const t1Doc = countryMatches.find((c: any) => normalize(c.id).includes(sCity) || normalize(c.id).includes('madrid') || normalize(c.id).includes('barcelona'));
+        if (t1Doc) return t1Doc;
+      }
+      if (tier2Cities.some(c => sCity.includes(c))) {
+        const t2Doc = countryMatches.find((c: any) => normalize(c.id).includes(sCity) || normalize(c.id).includes('valencia') || normalize(c.id).includes('marbella') || normalize(c.id).includes('bilbao'));
+        if (t2Doc) return t2Doc;
+      }
+    }
+
     // 1. Exact city name or ID match
     const exactCity = countryMatches.find((c: any) => {
       const cCity = normalize(c.city || c.cityName || '');
@@ -1668,7 +1727,7 @@ function DecoderContent() {
     const propertyLabel = isProvided
       ? "Provided"
       : isSubsidizedActive
-      ? `Subsidised (${Math.round(housingSubsidyRate * 100)}%)`
+      ? `Sub (${Math.round(housingSubsidyRate * 100)}%)`
       : (propertyLabels[activeRentKey] || "Standard Residence");
 
     const getF = (data: any, keys: string[]) => {
@@ -3137,11 +3196,6 @@ function DecoderContent() {
                                 (cross border living)
                               </span>
                             )}
-                            {Boolean(analysis?.housingSubsidyRate && analysis.housingSubsidyRate > 0) && (
-                              <span className="text-[9px] font-bold text-teal-400 italic tracking-wider ml-6 leading-tight mt-0.5">
-                                ({Math.round(analysis.housingSubsidyRate * 100)}% school subsidy applied)
-                              </span>
-                            )}
                           </div>
 
                           <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap lg:order-3 lg:ml-auto", analysis?.housingStatus === 'provided' && "italic")}>
@@ -3152,7 +3206,7 @@ function DecoderContent() {
                         <div className="flex justify-end lg:justify-center w-full lg:w-auto lg:order-2 lg:flex-1 lg:px-4">
                           <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
                             <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>
-                              {analysis?.housingSubsidyRate ? `Subsidised (${Math.round(analysis.housingSubsidyRate * 100)}%)` : "Provided"}
+                              {analysis?.housingSubsidyRate ? `Sub (${Math.round(analysis.housingSubsidyRate * 100)}%)` : "Provided"}
                             </button>
                             <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
                             <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>

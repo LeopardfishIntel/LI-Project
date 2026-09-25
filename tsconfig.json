@@ -30,5 +30,5 @@
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "exclude": ["node_modules", ".next", "tmp", ".modified"]
+  "exclude": ["node_modules", ".next", "tmp", ".modified", "scratch"]
 }
