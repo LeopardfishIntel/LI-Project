@@ -319,6 +319,22 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
     }
   }
 
+  // 🇹🇭 THAILAND TIER ROUTING (Bangkok vs Phuket vs Chonburi/Pattaya)
+  if (sCountry === "thailand") {
+    if (sCity.includes("phuket")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("phuket"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("chonburi") || sCity.includes("pattaya") || sCity.includes("rayong")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("chonburi") || cleanStr(c.id).includes("pattaya"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("bangkok") || sCity.includes("nonthaburi") || sCity.includes("samut")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("bangkok"));
+      if (doc) return doc;
+    }
+  }
+
   const countryMatches = costOfLivingList.filter((c: any) => {
     const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || c.countryName || ""));
     const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
