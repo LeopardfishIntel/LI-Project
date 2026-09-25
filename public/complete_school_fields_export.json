@@ -26183,10 +26183,12 @@
     "lastCountersSyncedAt": 1790193420261,
     "isLocked": true,
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13500,
+    "net_salary": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.071Z"
   },
   {
     "financescore": "9.4",
@@ -26228,10 +26230,12 @@
     "lastCountersSyncedAt": 1790193420261,
     "isLocked": true,
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14000,
+    "net_salary": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.2",
@@ -26272,10 +26276,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13500,
+    "net_salary": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9",
@@ -26316,10 +26322,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14000,
+    "net_salary": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.1",
@@ -26360,10 +26368,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "QAR",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.9",
@@ -26676,10 +26686,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "AED",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13500,
+    "net_salary": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.2",
@@ -26911,10 +26923,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "AED",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 17500,
+    "net_salary": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "country": "United Arab Emirates",
@@ -27036,10 +27050,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "isLocked": true,
     "currency": "AED",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 13000,
+    "net_salary": 13000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.5",
@@ -27928,10 +27944,12 @@
     "careersUrl": "https://www.gemseducation.com/Careers",
     "lastCountersSyncedAt": 1790193420261,
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 11500,
+    "net_salary": 11500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.7",
@@ -28305,10 +28323,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "careersUrl": "https://www.taaleem.ae/careers",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.1",
@@ -28367,10 +28387,12 @@
     "updatedAt": "2026-09-24T18:20:36.473Z",
     "careersUrl": "https://www.taaleem.ae/careers",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.6",
@@ -28429,10 +28451,12 @@
     "careersUrl": "https://www.aislharrow.com/work-with-us/",
     "lastCountersSyncedAt": 1790193420261,
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 17500,
+    "net_salary": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.4",
@@ -29297,10 +29321,12 @@
     "careersUrl": "https://www.durhamdubai.com/careers",
     "revalidationStatus": "pending",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.9",
@@ -29360,10 +29386,12 @@
     "revalidationStatus": "pending",
     "lastCountersSyncedAt": 1790193420261,
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 15500,
+    "net_salary": 15500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.8",
@@ -29615,10 +29643,12 @@
     "careersUrl": "https://www.dovegreenschool.com/careers",
     "revalidationStatus": "pending",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 12500,
+    "net_salary": 12500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.9",
@@ -29678,10 +29708,12 @@
     "careersUrl": "https://www.eischools.ae/careers",
     "revalidationStatus": "pending",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14000,
+    "net_salary": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "8.9",
@@ -29741,10 +29773,12 @@
     "careersUrl": "https://www.eischools.ae/careers",
     "revalidationStatus": "pending",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14000,
+    "net_salary": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "financescore": "9.1",
@@ -29910,10 +29944,12 @@
     "careersUrl": "https://www.aldaracademies.com/join-our-team",
     "schoolId": "FLIS0366",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 15000,
+    "net_salary": 15000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "id": "FLIS0367",
@@ -29994,10 +30030,12 @@
     "careersUrl": "https://www.aldaracademies.com/join-our-team",
     "schoolId": "FLIS0368",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "id": "FLIS0369",
@@ -30125,10 +30163,12 @@
     "careersUrl": "https://www.kingscollegeriyadh.com/careers",
     "schoolId": "FLIS0371",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 17500,
+    "net_salary": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
   },
   {
     "id": "FLIS0372",

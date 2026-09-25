@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0305",
+    "name": "Oryx International School",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0306",
+    "name": "ACS International School Doha",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0307",
+    "name": "Sherborne Qatar",
+    "country": "Qatar",
+    "city": "Al Shahaniya)",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0308",
+    "name": "King's College Doha",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0309",
+    "name": "Swiss International School Qatar",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0316",
+    "name": "Ajman Academy",
+    "country": "United Arab Emirates",
+    "city": "Ajman",
+    "currency": "AED",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0320",
+    "name": "Harrow International School Abu Dhabi",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0322",
+    "name": "Lycée Libanais Francophone Privé Meydan",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 13000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0336",
+    "name": "GEMS Founders School Al Barsha",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 11500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0342",
+    "name": "Greenfield International School",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0343",
+    "name": "Uptown International School",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0344",
+    "name": "Harrow International School Dubai",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0356",
+    "name": "Durham School Dubai",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0357",
+    "name": "Dwight School Dubai",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 15500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0361",
+    "name": "Dove Green Private School",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 12500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0362",
+    "name": "Emirates International School Jumeirah",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0363",
+    "name": "Emirates International School Meadows",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0366",
+    "name": "Yasmina British Academy",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 15000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0368",
+    "name": "Al Mamoura Academy",
+    "country": "United Arab Emirates",
+    "city": "Abu Dhabi",
+    "currency": "AED",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0371",
+    "name": "King's College Riyadh",
+    "country": "Saudi Arabia",
+    "city": "Riyadh",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]
