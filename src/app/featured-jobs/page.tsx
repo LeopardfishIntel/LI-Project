@@ -918,6 +918,15 @@ export default function FeaturedJobsPage() {
         } else if (cacheDoc.closingDate) {
           const parsed = parseClosingDate(cacheDoc.closingDate);
           closesDate = parsed.closingDate;
+        } else if ((cacheDoc as any).date_closing) {
+          const parsed = parseClosingDate((cacheDoc as any).date_closing);
+          closesDate = parsed.closingDate;
+        } else if ((cacheDoc as any).closing_date) {
+          const parsed = parseClosingDate((cacheDoc as any).closing_date);
+          closesDate = parsed.closingDate;
+        } else if ((cacheDoc as any).deadline) {
+          const parsed = parseClosingDate((cacheDoc as any).deadline);
+          closesDate = parsed.closingDate;
         }
 
         const schoolObj = schoolsMap[cacheDoc.schoolId];
