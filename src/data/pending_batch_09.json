@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0261",
+    "name": "British International School Bratislava",
+    "country": "Slovakia",
+    "city": "Bratislava",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0262",
+    "name": "International School of Latvia",
+    "country": "Latvia",
+    "city": "Riga",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0265",
+    "name": "American School of The Hague",
+    "country": "Netherlands",
+    "city": "The Hague",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 3300,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0269",
+    "name": "John F. Kennedy School Querétaro",
+    "country": "Mexico",
+    "city": "Querétaro",
+    "currency": "MXN",
+    "salary_scale_5yr_net": 38000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0271",
+    "name": "Colegio Bolívar",
+    "country": "Colombia",
+    "city": "Cali",
+    "currency": "COP",
+    "salary_scale_5yr_net": 11500000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0272",
+    "name": "The English School Bogotá",
+    "country": "Colombia",
+    "city": "Bogotá",
+    "currency": "COP",
+    "salary_scale_5yr_net": 10500000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0273",
+    "name": "International School of The Hague",
+    "country": "Netherlands",
+    "city": "The Hague",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 3050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0281",
+    "name": "Park House English School",
+    "country": "Qatar",
+    "city": "Doha",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0286",
+    "name": "Dwight School Seoul",
+    "country": "South Korea",
+    "city": "Seoul",
+    "currency": "KRW",
+    "salary_scale_5yr_net": 4600000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0288",
+    "name": "Taipei European School",
+    "country": "Taiwan",
+    "city": "Taipei",
+    "currency": "TWD",
+    "salary_scale_5yr_net": 142000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0294",
+    "name": "American International School Jeddah",
+    "country": "Saudi Arabia",
+    "city": "Jeddah",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 16500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0295",
+    "name": "American School Dhahran",
+    "country": "Saudi Arabia",
+    "city": "Khobar",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 17500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0296",
+    "name": "British School Dhahran",
+    "country": "Saudi Arabia",
+    "city": "Khobar",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 17000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0298",
+    "name": "American International School in Egypt",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0299",
+    "name": "King's Academy",
+    "country": "Jordan",
+    "city": "Amman",
+    "currency": "JOD",
+    "salary_scale_5yr_net": 2100,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0300",
+    "name": "American Community School Amman",
+    "country": "Jordan",
+    "city": "Amman",
+    "currency": "JOD",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0301",
+    "name": "American Community School Beirut",
+    "country": "Lebanon",
+    "city": "Beirut",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0302",
+    "name": "International College Beirut",
+    "country": "Lebanon",
+    "city": "Beirut",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0303",
+    "name": "Mesaieed International School",
+    "country": "Qatar",
+    "city": "Mesaieed",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0304",
+    "name": "Dukhan English School",
+    "country": "Qatar",
+    "city": "Dukhan",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]
