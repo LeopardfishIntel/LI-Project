@@ -303,6 +303,70 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
     return null;
   }
 
+  // 🇦🇪 UAE TIER ROUTING (Dubai vs Abu Dhabi vs Northern Emirates)
+  if (sCountry === "unitedarabemirates") {
+    if (sCity.includes("dubai") || sCity.includes("emirates hills") || sCity.includes("academic") || sCity.includes("silicon") || sCity.includes("marina") || sCity.includes("barsha") || sCity.includes("sheba") || sCity.includes("khawaneej")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id) === "dubai-uae" || cleanStr(c.id).includes("dubai"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("abu dhabi") || sCity.includes("khalifa") || sCity.includes("saadiyat") || sCity.includes("reem")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id) === "abu-dhabi-uae" || cleanStr(c.id).includes("abudhabi"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("sharjah") || sCity.includes("ajman") || sCity.includes("rak") || sCity.includes("ras al khaimah") || sCity.includes("fujairah") || sCity.includes("al ain")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("northern-emirates") || cleanStr(c.id).includes("ajman") || cleanStr(c.id).includes("sharjah"));
+      if (doc) return doc;
+    }
+  }
+
+  // 🇮🇳 INDIA TIER ROUTING (Bengaluru vs New Delhi NCR vs Mumbai)
+  if (sCountry === "india") {
+    if (sCity.includes("bengaluru") || sCity.includes("bangalore")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("bengaluru") || cleanStr(c.city || "").includes("bangalore"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("delhi") || sCity.includes("noida") || sCity.includes("gurugram") || sCity.includes("gurgaon")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("new_delhi") || cleanStr(c.city || "").includes("delhi"));
+      if (doc) return doc;
+    }
+  }
+
+  // 🇨🇭 SWITZERLAND TIER ROUTING (Vaud/Alpine vs Geneva vs Lugano vs Zurich)
+  if (sCountry === "switzerland") {
+    if (sCity.includes("villars") || sCity.includes("chesieres") || sCity.includes("montreux") || sCity.includes("leysin") || sCity.includes("st-legier") || sCity.includes("lausanne") || sCity.includes("vaud")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("vaud") || cleanStr(c.id).includes("lausanne"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("lugano") || sCity.includes("montagnola") || sCity.includes("ticino")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("lugano"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("geneva") || sCity.includes("versoix")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("geneva"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("zurich") || sCity.includes("zug") || sCity.includes("basel")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("zurich") || cleanStr(c.id).includes("zug") || cleanStr(c.id).includes("basel"));
+      if (doc) return doc;
+    }
+  }
+
+  // 🇵🇹 PORTUGAL TIER ROUTING (Lisbon vs Porto vs Algarve/Lagoa)
+  if (sCountry === "portugal") {
+    if (sCity.includes("lagoa") || sCity.includes("algarve") || sCity.includes("lagos") || sCity.includes("faro")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("algarve"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("porto") || sCity.includes("matosinhos") || sCity.includes("gaia")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("porto"));
+      if (doc) return doc;
+    }
+    if (sCity.includes("lisbon") || sCity.includes("cascais") || sCity.includes("sintra") || sCity.includes("oeiras") || sCity.includes("estoril")) {
+      const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("lisbon"));
+      if (doc) return doc;
+    }
+  }
+
   // 🇩🇪 GERMANY TIER ROUTING (Frankfurt, Munich, Cologne/NRW, Heidelberg, Berlin)
   if (sCountry === "germany") {
     if (sCity.includes("frankfurt")) {
