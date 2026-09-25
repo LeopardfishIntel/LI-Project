@@ -2293,16 +2293,16 @@ function DecoderContent() {
                   <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
                 </div>
 
-                {/* 🎯 SEPARATE 5-YEAR BENCHMARK & PROVENANCE ROW UNDERNEATH */}
-                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1.5 px-0.5">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wide">
-                      5-Yr Benchmark: <span className="text-white font-black">{currency} {benchmarkSalary && benchmarkSalary !== "0" ? parseFloat(benchmarkSalary).toLocaleString() : '—'}</span>
+                {/* 🎯 COMPACT SINGLE-LINE 5-YEAR BENCHMARK & PROVENANCE ROW UNDERNEATH */}
+                <div className="mt-1.5 flex items-center justify-between gap-2 px-0.5 overflow-hidden">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wide whitespace-nowrap">
+                      5-Yr Bench: <span className="text-white font-black">{currency} {benchmarkSalary && benchmarkSalary !== "0" ? parseFloat(benchmarkSalary).toLocaleString() : '—'}</span>
                     </span>
                     {activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help whitespace-nowrap">
                             ✓ Verified Scale
                           </span>
                         </TooltipTrigger>
@@ -2313,8 +2313,8 @@ function DecoderContent() {
                     ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help">
-                            ✦ Strong Market Evidence
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help whitespace-nowrap">
+                            ✦ Market Evidence
                           </span>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="bg-[#0b1224] border-sky-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
@@ -2324,8 +2324,8 @@ function DecoderContent() {
                     ) : (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help">
-                            ≈ Modelled Estimate
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help whitespace-nowrap">
+                            ≈ LF Estimate
                           </span>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="bg-[#0b1224] border-slate-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
@@ -2339,10 +2339,10 @@ function DecoderContent() {
                     <button
                       type="button"
                       onClick={() => setSettings(prev => ({ ...prev, netSalary: benchmarkSalary }))}
-                      className="text-[8.5px] font-black text-amber-400 hover:text-amber-300 underline tracking-wider uppercase transition-colors shrink-0"
+                      className="text-[8.5px] font-black text-amber-400 hover:text-amber-300 underline tracking-wider uppercase transition-colors shrink-0 whitespace-nowrap"
                       title="Reset to 5-Year Benchmark"
                     >
-                      Reset to Benchmark
+                      Reset
                     </button>
                   ) : null}
                 </div>
