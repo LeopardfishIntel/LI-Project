@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0131",
+    "name": "Marlborough College Malaysia",
+    "country": "Malaysia",
+    "city": "Johor",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 15000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0132",
+    "name": "Garden International School",
+    "country": "Malaysia",
+    "city": "Kuala Lumpur",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 14200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0133",
+    "name": "Epsom College in Malaysia",
+    "country": "Malaysia",
+    "city": "Negeri Sembilan",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0134",
+    "name": "Mont'Kiara International School",
+    "country": "Malaysia",
+    "city": "Kuala Lumpur",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0135",
+    "name": "Shrewsbury International School Riverside",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "currency": "THB",
+    "salary_scale_5yr_net": 145833,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0140",
+    "name": "Rugby School Thailand",
+    "country": "Thailand",
+    "city": "Chonburi",
+    "currency": "THB",
+    "salary_scale_5yr_net": 125000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0144",
+    "name": "British School Jakarta",
+    "country": "Indonesia",
+    "city": "Jakarta",
+    "currency": "USD",
+    "salary_scale_5yr_net": 3500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0145",
+    "name": "Jakarta Intercultural School",
+    "country": "Indonesia",
+    "city": "Jakarta",
+    "currency": "USD",
+    "salary_scale_5yr_net": 4167,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0146",
+    "name": "ACG School Jakarta",
+    "country": "Indonesia",
+    "city": "Jakarta",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0147",
+    "name": "Canggu Community School Bali",
+    "country": "Indonesia",
+    "city": "Bali",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2600,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0148",
+    "name": "British School Manila",
+    "country": "Philippines",
+    "city": "Manila",
+    "currency": "USD",
+    "salary_scale_5yr_net": 3750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0149",
+    "name": "International School Manila",
+    "country": "Philippines",
+    "city": "Manila",
+    "currency": "USD",
+    "salary_scale_5yr_net": 4200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0160",
+    "name": "North London Collegiate School Jeju",
+    "country": "South Korea",
+    "city": "Jeju",
+    "currency": "KRW",
+    "salary_scale_5yr_net": 4833333,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0163",
+    "name": "British International School Warsaw",
+    "country": "Poland",
+    "city": "Warsaw",
+    "currency": "PLN",
+    "salary_scale_5yr_net": 14583,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0164",
+    "name": "Akademeia High School",
+    "country": "Poland",
+    "city": "Warsaw",
+    "currency": "PLN",
+    "salary_scale_5yr_net": 15500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0167",
+    "name": "St. George's British International School Bilbao",
+    "country": "Spain",
+    "city": "Bilbao",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2250,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0169",
+    "name": "British School in Helsinki",
+    "country": "Finland",
+    "city": "Helsinki",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2600,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0173",
+    "name": "Southbank International School",
+    "country": "UK",
+    "city": "London",
+    "currency": "GBP",
+    "salary_scale_5yr_net": 2750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0174",
+    "name": "ACS Cobham International School",
+    "country": "UK",
+    "city": "Surrey",
+    "currency": "GBP",
+    "salary_scale_5yr_net": 2750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0175",
+    "name": "St. George's International School Luxembourg",
+    "country": "Luxembourg",
+    "city": "Luxembourg",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 4833,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]
