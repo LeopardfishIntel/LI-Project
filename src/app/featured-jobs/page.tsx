@@ -832,7 +832,8 @@ export default function FeaturedJobsPage() {
         const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
         const isTaaleem = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, (cacheDoc as any).group || (cacheDoc as any).ownership) || sourceUpper.includes('TAALEEM') || applyUrlLower.includes('taaleem.ae');
         const isEureka = sourceUpper.includes('EUREKA');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka) return;
+        const isSearch = sourceUpper.includes('SEARCH') || applyUrlLower.includes('searchassociates');
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -842,8 +843,9 @@ export default function FeaturedJobsPage() {
 
         // School & Teaching Job verification guard
         const sIdCheck = (cacheDoc.schoolId || '').trim();
-        const sNameCheck = (cacheDoc.schoolName || '').trim();
-        if (!sIdCheck || !sNameCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
+        const matchedSchool = schoolsMap[sIdCheck] || schoolsMap[sIdCheck.toUpperCase()] || null;
+        const sNameCheck = (cacheDoc.schoolName || matchedSchool?.schoolname || matchedSchool?.name || '').trim();
+        if (!sIdCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
         if (!isValidJobTitle(cacheDoc.title || (cacheDoc as any).jobTitle || '')) return;
 
         // Deduplication by unique applyUrl & title + schoolId

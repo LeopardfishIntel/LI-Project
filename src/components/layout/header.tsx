@@ -177,7 +177,7 @@ export default function Header() {
           schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Expired deadline", source, applyUrl });
           return;
         }
-        if (!title || title.length < 3) return;
+        if (!title || title.length < 3 || !isValidJobTitle(title)) return;
 
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
         if (applyUrlLower) seenUrls.add(applyUrlLower);
