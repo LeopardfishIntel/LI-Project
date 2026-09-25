@@ -1,0 +1,218 @@
+[
+  {
+    "id": "FLIS0435",
+    "name": "Jerudong International School",
+    "country": "Brunei",
+    "city": "Bandar Seri Begawan",
+    "currency": "BND",
+    "salary_scale_5yr_net": 5800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0436",
+    "name": "International School Brunei",
+    "country": "Brunei",
+    "city": "Bandar Seri Begawan",
+    "currency": "BND",
+    "salary_scale_5yr_net": 5200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0437",
+    "name": "The British School New Delhi",
+    "country": "India",
+    "city": "New Delhi",
+    "currency": "INR",
+    "salary_scale_5yr_net": 235000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0438",
+    "name": "The British School of Guangzhou",
+    "country": "China",
+    "city": "Guangzhou",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 26500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0440",
+    "name": "Harrow International School Shenzhen",
+    "country": "China",
+    "city": "Shenzhen",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 28500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0441",
+    "name": "Wellington College International Tianjin",
+    "country": "China",
+    "city": "Tianjin",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 27000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0444",
+    "name": "The British School of Beijing Sanlitun",
+    "country": "China",
+    "city": "Beijing",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 26500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0446",
+    "name": "Craighouse School",
+    "country": "Chile",
+    "city": "Santiago",
+    "currency": "CLP",
+    "salary_scale_5yr_net": 2400000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0448",
+    "name": "The British School of Costa Rica",
+    "country": "Costa Rica",
+    "city": "San José",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2350,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0450",
+    "name": "The British School of Caracas",
+    "country": "Venezuela",
+    "city": "Caracas",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0451",
+    "name": "The British School of Rio de Janeiro",
+    "country": "Brazil",
+    "city": "Rio de Janeiro",
+    "currency": "BRL",
+    "salary_scale_5yr_net": 19000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0452",
+    "name": "St. Andrew's School, Turi",
+    "country": "Kenya",
+    "city": "Turi",
+    "currency": "KES",
+    "salary_scale_5yr_net": 360000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0453",
+    "name": "Peponi School",
+    "country": "Kenya",
+    "city": "Nairobi",
+    "currency": "KES",
+    "salary_scale_5yr_net": 380000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0454",
+    "name": "St. Francis' College",
+    "country": "Brazil",
+    "city": "São Paulo",
+    "currency": "BRL",
+    "salary_scale_5yr_net": 18500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0455",
+    "name": "Denla British School",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "currency": "THB",
+    "salary_scale_5yr_net": 115000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0456",
+    "name": "Discovery Bay International School",
+    "country": "Hong Kong",
+    "city": "Hong Kong",
+    "currency": "HKD",
+    "salary_scale_5yr_net": 42500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0459",
+    "name": "The British International School of Tbilisi",
+    "country": "Georgia",
+    "city": "Tbilisi",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2300,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0460",
+    "name": "St. George's British International School Seville",
+    "country": "Spain",
+    "city": "Seville",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0461",
+    "name": "Al Khor International School",
+    "country": "Qatar",
+    "city": "Al Khor",
+    "currency": "QAR",
+    "salary_scale_5yr_net": 13500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0462",
+    "name": "British International School of Lagos",
+    "country": "Nigeria",
+    "city": "Lagos",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0137",
+    "name": "St. Andrews International School Sukhumvit 107",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "currency": "THB",
+    "salary_scale_5yr_net": 108000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0207",
+    "name": "Agora Sant Cugat International School",
+    "country": "Spain",
+    "city": "Barcelona",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1950,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0209",
+    "name": "St Christopher's School Bahrain",
+    "country": "Bahrain",
+    "city": "Isa Town",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0211",
+    "name": "BEPS International School",
+    "country": "Belgium",
+    "city": "Brussels",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  }
+]
