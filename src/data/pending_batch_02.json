@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0031",
+    "name": "Hwa Chong Int'l",
+    "country": "Singapore",
+    "city": "Singapore",
+    "currency": "SGD",
+    "salary_scale_5yr_net": 7400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0032",
+    "name": "IS Nanshan",
+    "country": "China",
+    "city": "Shenzhen",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 28000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0033",
+    "name": "Wellington Shanghai",
+    "country": "China",
+    "city": "Shanghai",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 33333,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0034",
+    "name": "Leman Chengdu",
+    "country": "China",
+    "city": "Chengdu",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 26000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0035",
+    "name": "GIIS SMART",
+    "country": "Singapore",
+    "city": "Singapore",
+    "currency": "SGD",
+    "salary_scale_5yr_net": 5400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0036",
+    "name": "New PORG Prague",
+    "country": "Czechia",
+    "city": "Prague",
+    "currency": "CZK",
+    "salary_scale_5yr_net": 55000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0037",
+    "name": "Ecole Jeannine Manuel",
+    "country": "France",
+    "city": "Paris",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0038",
+    "name": "St Catherine's",
+    "country": "Greece",
+    "city": "Athens",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0040",
+    "name": "St Louis Milan",
+    "country": "Italy",
+    "city": "Milan",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0041",
+    "name": "Heritage Gurugram",
+    "country": "India",
+    "city": "Gurugram",
+    "currency": "INR",
+    "salary_scale_5yr_net": 90000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0042",
+    "name": "Cheltenham Muscat",
+    "country": "Oman",
+    "city": "Muscat",
+    "currency": "OMR",
+    "salary_scale_5yr_net": 1400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0043",
+    "name": "TISB Bangalore",
+    "country": "India",
+    "city": "Bengaluru",
+    "currency": "INR",
+    "salary_scale_5yr_net": 140000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0044",
+    "name": "Calcutta Int'l",
+    "country": "India",
+    "city": "Kolkata",
+    "currency": "INR",
+    "salary_scale_5yr_net": 75000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0045",
+    "name": "SSIS Shanghai",
+    "country": "China",
+    "city": "Shanghai",
+    "currency": "CNY",
+    "salary_scale_5yr_net": 28500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0048",
+    "name": "Bahrain Middle High School (DoDEA)",
+    "country": "Bahrain",
+    "city": "Manama",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1700,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0049",
+    "name": "IS Prague",
+    "country": "Czechia",
+    "city": "Prague",
+    "currency": "CZK",
+    "salary_scale_5yr_net": 85000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0050",
+    "name": "Frankfurt Int'l",
+    "country": "Germany",
+    "city": "Frankfurt",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 3500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0051",
+    "name": "King's College School Alicante",
+    "country": "Spain",
+    "city": "Alicante",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2100,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0052",
+    "name": "St George's Rome",
+    "country": "Italy",
+    "city": "Rome",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0053",
+    "name": "Oak House BCN",
+    "country": "Spain",
+    "city": "Barcelona",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2200,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  }
+]
