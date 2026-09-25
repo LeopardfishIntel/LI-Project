@@ -2,10 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { searchVacancies } from '../ai/flows/search-vacancies-flow';
 import { getAdminDb } from '../firebase/admin';
+import { aiBudgetGuard } from '../ai/budgetGuard';
 
 async function main() {
   console.log(`================================================================`);
   console.log(`🚀 TARGETED VACANCY SWEEP: NEWLY ENRICHED SCHOOLS (FLIS0330–FLIS0451)`);
+  console.log(`🛡️ AI Budget Limit Enforced: £${aiBudgetGuard.getBudgetLimit().toFixed(2)} GBP`);
   console.log(`================================================================\n`);
 
   const filePath = path.resolve(process.cwd(), 'complete_school_fields_export.json');
@@ -22,6 +24,12 @@ async function main() {
   const results: Array<{ id: string; name: string; city: string; country: string; jobsCount: number; status: string; error?: string }> = [];
 
   for (let i = 0; i < targets.length; i++) {
+    // Check if budget limit reached before each school
+    if (!aiBudgetGuard.canExecute()) {
+      console.warn(`\n🛑 [SAFETY CIRCUIT BREAKER] Halting remaining batch sweep. Budget limit £${aiBudgetGuard.getBudgetLimit().toFixed(2)} GBP reached.`);
+      break;
+    }
+
     const s = targets[i];
     const prefix = `[${i + 1}/${targets.length}] [${s.id}] ${s.name || s.schoolname}`;
     console.log(`\n▶️ ${prefix} (${s.city}, ${s.country})...`);
