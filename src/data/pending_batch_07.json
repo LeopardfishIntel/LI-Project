@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0206",
+    "name": "ICS Milan International School",
+    "country": "Italy",
+    "city": "Milan",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2150,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0222",
+    "name": "Baku International School",
+    "country": "Azerbaijan",
+    "city": "Baku",
+    "currency": "AZN",
+    "salary_scale_5yr_net": 4600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0208",
+    "name": "Nobel Algarve British International School",
+    "country": "Portugal",
+    "city": "Lagoa",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0224",
+    "name": "Khazar University Dunya IB School",
+    "country": "Azerbaijan",
+    "city": "Baku",
+    "currency": "AZN",
+    "salary_scale_5yr_net": 3000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0212",
+    "name": "Bogaerts International School",
+    "country": "Belgium",
+    "city": "Brussels",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0213",
+    "name": "British Junior Academy of Brussels",
+    "country": "Belgium",
+    "city": "Brussels",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0214",
+    "name": "European School of Bruxelles-Argenteuil",
+    "country": "Belgium",
+    "city": "Waterloo",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2600,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0215",
+    "name": "International Montessori School",
+    "country": "Belgium",
+    "city": "Tervuren",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2300,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0216",
+    "name": "International School Ghent vzw",
+    "country": "Belgium",
+    "city": "Ghent",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2350,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0217",
+    "name": "International School of Belgium",
+    "country": "Belgium",
+    "city": "Antwerp",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0218",
+    "name": "International School of Flanders Waterloo",
+    "country": "Belgium",
+    "city": "Waterloo",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0219",
+    "name": "International School of Flanders RHSG",
+    "country": "Belgium",
+    "city": "Rhode-Saint-Genèse",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0220",
+    "name": "Montgomery International School",
+    "country": "Belgium",
+    "city": "Brussels",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0221",
+    "name": "Azerbaijan British College",
+    "country": "Azerbaijan",
+    "city": "Baku",
+    "currency": "AZN",
+    "salary_scale_5yr_net": 5000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0225",
+    "name": "Modern Educational Complex Named in Honor of Heydar Aliyev",
+    "country": "Azerbaijan",
+    "city": "Baku",
+    "currency": "AZN",
+    "salary_scale_5yr_net": 3800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0227",
+    "name": "EIB Paris International School",
+    "country": "France",
+    "city": "Paris",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0228",
+    "name": "ICS Paris International School",
+    "country": "France",
+    "city": "Paris",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0229",
+    "name": "PASCAL International Education Cyprus",
+    "country": "Cyprus",
+    "city": "Limassol",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1850,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0230",
+    "name": "Agora Madrid International School",
+    "country": "Spain",
+    "city": "Villaviciosa de Odón, Madrid",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0231",
+    "name": "Cambridge House British International School",
+    "country": "Spain",
+    "city": "Rocafort, Valencia",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]
