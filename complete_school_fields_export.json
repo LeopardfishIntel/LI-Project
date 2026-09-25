@@ -3906,7 +3906,7 @@
     "techscore": "9.4",
     "citySafety": "9.8",
     "confidence": "9.4",
-    "housingprovision": "Provided",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "techecosystem": "Alpine Tech Hub",
     "curriculum": "British / IB",
     "staffcount": "120",
@@ -3955,7 +3955,15 @@
     "net_salary": 7833,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "financescore": "7.2",
@@ -4628,7 +4636,7 @@
     "techscore": "9.2",
     "citySafety": "9.8",
     "confidence": "9.1",
-    "housingprovision": "Provided",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "techecosystem": "Premium Media Hub",
     "curriculum": "IB / French / US",
     "staffcount": "80",
@@ -4680,7 +4688,15 @@
     "net_salary": 7667,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "city": "Prague",
@@ -6921,7 +6937,7 @@
     "techscore": "9.3",
     "citySafety": "9.0",
     "confidence": "9.3",
-    "housingprovision": "Provided",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "techecosystem": "1:1 Apple Hub",
     "curriculum": "Multilingual",
     "staffcount": "250",
@@ -6981,7 +6997,15 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:13:25.079Z"
+    "last_benchmark_update": "2026-09-25T08:13:25.079Z",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "financescore": "8.2",
@@ -7978,7 +8002,7 @@
     "techscore": "9.2",
     "citySafety": "9.6",
     "confidence": "9.6",
-    "housingprovision": "Provided",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "techecosystem": "Media Hub",
     "curriculum": "US / IB / AP",
     "staffcount": "110",
@@ -8026,7 +8050,15 @@
     "net_salary": 7083,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "financescore": "7.1",
@@ -13053,11 +13085,12 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "THB",
-    "salary_scale_5yr_net": 137500,
+    "salary_scale_5yr_net": 112000,
     "net_salary": 137500,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 112,000/mo]"
   },
   {
     "classsize": "20",
@@ -13126,11 +13159,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "THB",
-    "salary_scale_5yr_net": 154167,
+    "salary_scale_5yr_net": 125000,
     "net_salary": 154167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]"
   },
   {
     "classsize": "22",
@@ -13274,11 +13308,12 @@
     "openJobsCount": 3,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "THB",
-    "salary_scale_5yr_net": 141667,
+    "salary_scale_5yr_net": 115000,
     "net_salary": 141667,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 115,000/mo]"
   },
   {
     "id": "FLIS0142",
@@ -13349,11 +13384,12 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.470Z",
     "currency": "THB",
-    "salary_scale_5yr_net": 154167,
+    "salary_scale_5yr_net": 125000,
     "net_salary": 154167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]"
   },
   {
     "id": "FLIS0143",
@@ -15758,7 +15794,7 @@
     "techscore": "8.5",
     "citySafety": "8.5",
     "confidence": "8.8",
-    "housingprovision": "Provided",
+    "housingprovision": "Self-Funded (Unless Boarding Houseparent Role)",
     "techecosystem": "1:1 iPad",
     "curriculum": "IB/US",
     "staffcount": "175",
@@ -15814,7 +15850,15 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:15:19.382Z"
+    "last_benchmark_update": "2026-09-25T08:15:19.382Z",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding Role",
+        "notes": "General teaching staff secure and pay for private accommodation in Surrey/Cobham; free onsite accommodation is restricted to active residential Houseparent roles."
+      }
+    }
   },
   {
     "financescore": "7.6",
@@ -16800,12 +16844,13 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.471Z",
     "currency": "BRL",
-    "salary_scale_5yr_net": 19167,
+    "salary_scale_5yr_net": 14300,
     "net_salary": 19167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:16:33.052Z"
+    "last_benchmark_update": "2026-09-25T08:16:33.052Z",
+    "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,300/mo]"
   },
   {
     "financescore": "7.8",
@@ -16965,12 +17010,13 @@
     "isCampusStub": false,
     "updatedAt": "2026-09-24T18:20:36.471Z",
     "currency": "BRL",
-    "salary_scale_5yr_net": 20000,
+    "salary_scale_5yr_net": 14800,
     "net_salary": 20000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:16:33.052Z"
+    "last_benchmark_update": "2026-09-25T08:16:33.052Z",
+    "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,800/mo]"
   },
   {
     "financescore": "6.8",
@@ -22938,12 +22984,13 @@
     "careersUrl": "https://malverncollegeinternational.org/work-with-us/",
     "updatedAt": "2026-09-24T18:20:36.472Z",
     "currency": "BRL",
-    "salary_scale_5yr_net": 19500,
+    "salary_scale_5yr_net": 14500,
     "net_salary": 19500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:19:39.231Z"
+    "last_benchmark_update": "2026-09-25T08:19:39.231Z",
+    "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,500/mo]"
   },
   {
     "financescore": "8.2",
@@ -30411,7 +30458,16 @@
     "net_salary": 9000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "intel": {
+      "packageType": "Salary + Dedicated Cash Housing Allowance",
+      "housing": {
+        "provided": false,
+        "type": "Cash Housing Allowance (Pass-Through to Landlord)",
+        "notes": "School provides a monthly cash housing allowance (HKD 22k–45k / SGD 3.5k–5k) to offset local private lease rent."
+      }
+    },
+    "housing_status": "Self-funded (Allowance Offset)"
   },
   {
     "id": "FLIS0375",
@@ -30453,7 +30509,16 @@
     "net_salary": 8167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "intel": {
+      "packageType": "Salary + Dedicated Cash Housing Allowance",
+      "housing": {
+        "provided": false,
+        "type": "Cash Housing Allowance (Pass-Through to Landlord)",
+        "notes": "School provides a monthly cash housing allowance (HKD 22k–45k / SGD 3.5k–5k) to offset local private lease rent."
+      }
+    },
+    "housing_status": "Self-funded (Allowance Offset)"
   },
   {
     "id": "FLIS0376",
@@ -30495,11 +30560,12 @@
     "careersUrl": "https://www.nist.ac.th/join-us/employment",
     "schoolId": "FLIS0376",
     "isLocked": true,
-    "salary_scale_5yr_net": 154167,
+    "salary_scale_5yr_net": 125000,
     "net_salary": 154167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]"
   },
   {
     "id": "FLIS0377",
@@ -30537,11 +30603,12 @@
     "careersUrl": "https://www.harrowschool.ac.th/careers",
     "schoolId": "FLIS0377",
     "isLocked": true,
-    "salary_scale_5yr_net": 141667,
+    "salary_scale_5yr_net": 115000,
     "net_salary": 141667,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 115,000/mo]"
   },
   {
     "id": "FLIS0378",
@@ -30579,11 +30646,12 @@
     "careersUrl": "https://www.shrewsbury.ac.th/riverside/recruitment",
     "schoolId": "FLIS0378",
     "isLocked": true,
-    "salary_scale_5yr_net": 154167,
+    "salary_scale_5yr_net": 125000,
     "net_salary": 154167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]"
   },
   {
     "id": "FLIS0379",
@@ -30713,7 +30781,16 @@
     "net_salary": 56667,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "intel": {
+      "packageType": "Salary + Dedicated Cash Housing Allowance",
+      "housing": {
+        "provided": false,
+        "type": "Cash Housing Allowance (Pass-Through to Landlord)",
+        "notes": "School provides a monthly cash housing allowance (HKD 22k–45k / SGD 3.5k–5k) to offset local private lease rent."
+      }
+    },
+    "housing_status": "Self-funded (Allowance Offset)"
   },
   {
     "id": "FLIS0382",
@@ -30755,7 +30832,16 @@
     "net_salary": 50833,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "intel": {
+      "packageType": "Salary + Dedicated Cash Housing Allowance",
+      "housing": {
+        "provided": false,
+        "type": "Cash Housing Allowance (Pass-Through to Landlord)",
+        "notes": "School provides a monthly cash housing allowance (HKD 22k–45k / SGD 3.5k–5k) to offset local private lease rent."
+      }
+    },
+    "housing_status": "Self-funded (Allowance Offset)"
   },
   {
     "id": "FLIS0383",
@@ -30797,7 +30883,16 @@
     "net_salary": 53333,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "intel": {
+      "packageType": "Salary + Dedicated Cash Housing Allowance",
+      "housing": {
+        "provided": false,
+        "type": "Cash Housing Allowance (Pass-Through to Landlord)",
+        "notes": "School provides a monthly cash housing allowance (HKD 22k–45k / SGD 3.5k–5k) to offset local private lease rent."
+      }
+    },
+    "housing_status": "Self-funded (Allowance Offset)"
   },
   {
     "id": "FLIS0384",
@@ -31682,11 +31777,12 @@
     "careersUrl": "https://www.nordangliaeducation.com/st-andrews-bangkok/careers",
     "schoolId": "FLIS0401",
     "isLocked": true,
-    "salary_scale_5yr_net": 154167,
+    "salary_scale_5yr_net": 125000,
     "net_salary": 154167,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]"
   },
   {
     "id": "FLIS0402",
@@ -32092,7 +32188,7 @@
     "salaryRange": "CHF 90,000 - 138,000 / year",
     "currency": "CHF",
     "isTaxFree": false,
-    "housingprovision": "Provided Alpine boarding accommodation or local allowance",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "healthcoverage": "Comprehensive Swiss Health Insurance",
     "classsize": "10 - 14",
     "financescore": "9.6",
@@ -32112,7 +32208,15 @@
     "net_salary": 7667,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "id": "FLIS0412",
@@ -32134,7 +32238,7 @@
     "salaryRange": "CHF 88,000 - 130,000 / year",
     "currency": "CHF",
     "isTaxFree": false,
-    "housingprovision": "Provided campus housing or Lugano allowance",
+    "housingprovision": "Self-Funded (Unless Residential Boarding Houseparent Role)",
     "healthcoverage": "Swiss Health Care Support",
     "classsize": "14 - 16",
     "financescore": "9.4",
@@ -32155,7 +32259,15 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z",
+    "housing_status": "Self-funded",
+    "intel": {
+      "housing": {
+        "provided": false,
+        "type": "Self-Funded Private Lease / Conditional Boarding House Role",
+        "notes": "Standard teaching faculty secure and pay for private accommodation in Geneva/Vaud/Lugano; on-campus residential housing is restricted to active Houseparents with evening/weekend dorm supervision duties."
+      }
+    }
   },
   {
     "id": "FLIS0413",
@@ -33984,12 +34096,13 @@
     "careersUrl": "https://www.britishschool.g12.br/careers",
     "schoolId": "FLIS0451",
     "isLocked": true,
-    "salary_scale_5yr_net": 19000,
+    "salary_scale_5yr_net": 14200,
     "net_salary": 19000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:25:20.427Z"
+    "last_benchmark_update": "2026-09-25T08:25:20.427Z",
+    "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,200/mo]"
   },
   {
     "financescore": "9.2",
@@ -34122,12 +34235,13 @@
     "region": "latin-america",
     "careersUrl": "https://www.stfrancis.com.br/careers",
     "currency": "BRL",
-    "salary_scale_5yr_net": 18500,
+    "salary_scale_5yr_net": 13800,
     "net_salary": 18500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:25:20.427Z"
+    "last_benchmark_update": "2026-09-25T08:25:20.427Z",
+    "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 13,800/mo]"
   },
   {
     "financescore": "9.3",
@@ -34167,12 +34281,13 @@
     "region": "southeast-asia",
     "careersUrl": "https://www.dbsbangkok.ac.th/careers",
     "currency": "THB",
-    "salary_scale_5yr_net": 115000,
+    "salary_scale_5yr_net": 95000,
     "net_salary": 115000,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:25:20.427Z"
+    "last_benchmark_update": "2026-09-25T08:25:20.427Z",
+    "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 95,000/mo]"
   },
   {
     "financescore": "9.6",

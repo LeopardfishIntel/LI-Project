@@ -9,7 +9,8 @@ export const RATES: Record<string, number> = {
   SGD: 1.7, MYR: 5.9, THB: 45, CNY: 9.1, BRL: 6.5, ARS: 1200, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900,
   TWD: 41.5, TRY: 44.0, KZT: 630.0, KHR: 5200.0, GHS: 19.2, NGN: 2050.0, ETB: 158.0, MAD: 12.8, CLP: 1220.0, PAB: 1.28,
-  BGN: 2.30, RSD: 138.0, NPR: 175.0, LKR: 390.0, BND: 1.70, UYU: 52.0, GEL: 3.50, UZS: 16200.0
+  BGN: 2.30, RSD: 138.0, NPR: 175.0, LKR: 390.0, BND: 1.70, UYU: 52.0, GEL: 3.50, UZS: 16200.0,
+  NOK: 13.8, SEK: 13.5, PLN: 5.15, HUF: 465.0, INR: 106.0, KES: 165.0
 };
 
 export const canonicalCountry = (c: string) => {
@@ -107,24 +108,34 @@ export function getZoneLocationWeights(schoolOrLocation?: any): ZoneLocationWeig
  * Also ensures "Not Provided" does not falsely match.
  */
 export function isHousingProvided(housingProvision?: string | boolean, intelHousingProvided?: boolean): boolean {
+  if (intelHousingProvided === false) return false;
   if (intelHousingProvided === true || housingProvision === true) return true;
   if (!housingProvision) return false;
   const lower = String(housingProvision).toLowerCase().trim();
-  if (lower.includes('not provided') || lower.includes('no housing') || lower === 'no' || lower === 'false') return false;
+  if (
+    lower.includes('not provided') || 
+    lower.includes('no housing') || 
+    lower.includes('self-funded') ||
+    lower.includes('self funded') ||
+    lower === 'no' || 
+    lower === 'false'
+  ) return false;
+  
   return (
     lower === 'yes' ||
     lower === 'true' ||
     lower.startsWith('yes') ||
-    lower.includes('provided') ||
     lower.includes('free on-campus') ||
     lower.includes('on-campus housing') ||
     lower.includes('free housing') ||
     lower.includes('on campus housing') ||
     lower.includes('furnished housing') ||
     lower.includes('furnished accommodation') ||
-    lower.includes('housing allowance') ||
+    lower.includes('compound villa') ||
+    lower.includes('compound house') ||
     lower.startsWith('on-campus') ||
-    lower.startsWith('on campus')
+    lower.startsWith('on campus') ||
+    (lower.includes('provided') && !lower.includes('not provided') && !lower.includes('allowance'))
   );
 }
 
