@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0373",
+    "name": "Beech Hall School Riyadh",
+    "country": "Saudi Arabia",
+    "city": "Riyadh",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 16000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0379",
+    "name": "Alice Smith School",
+    "country": "Malaysia",
+    "city": "Kuala Lumpur",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 15200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0380",
+    "name": "The British International School of Kuala Lumpur",
+    "country": "Malaysia",
+    "city": "Kuala Lumpur",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0393",
+    "name": "British International School of Al Khobar",
+    "country": "Saudi Arabia",
+    "city": "Al Khobar",
+    "currency": "SAR",
+    "salary_scale_5yr_net": 16500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0402",
+    "name": "St. Joseph's Institution International",
+    "country": "Singapore",
+    "city": "Singapore",
+    "currency": "SGD",
+    "salary_scale_5yr_net": 7400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0405",
+    "name": "Kolej Tuanku Ja'afar",
+    "country": "Malaysia",
+    "city": "Mantin",
+    "currency": "MYR",
+    "salary_scale_5yr_net": 12800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0406",
+    "name": "St. George's British International School Rome",
+    "country": "Italy",
+    "city": "Rome",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0409",
+    "name": "International School of Basel",
+    "country": "Switzerland",
+    "city": "Basel",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 6400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0412",
+    "name": "TASIS The American School in Switzerland",
+    "country": "Switzerland",
+    "city": "Lugano",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 6000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0413",
+    "name": "TASIS The American School in England",
+    "country": "United Kingdom",
+    "city": "Thorpe",
+    "currency": "GBP",
+    "salary_scale_5yr_net": 2550,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0417",
+    "name": "King's College Madrid",
+    "country": "Spain",
+    "city": "Madrid",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0422",
+    "name": "St. Christopher's School Senior",
+    "country": "Bahrain",
+    "city": "Isa Town",
+    "currency": "BHD",
+    "salary_scale_5yr_net": 1600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0424",
+    "name": "Campion School Athens",
+    "country": "Greece",
+    "city": "Athens",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0425",
+    "name": "St. Catherine's British School",
+    "country": "Greece",
+    "city": "Athens",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 1900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0426",
+    "name": "St. George's International School Switzerland",
+    "country": "Switzerland",
+    "city": "Montreux",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 6100,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0427",
+    "name": "The British International School Bratislava",
+    "country": "Slovakia",
+    "city": "Bratislava",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0431",
+    "name": "The British International School Cairo",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0432",
+    "name": "New Cairo British International School",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0433",
+    "name": "King's School The Crown",
+    "country": "Egypt",
+    "city": "Cairo",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0434",
+    "name": "The British School of Alexandria",
+    "country": "Egypt",
+    "city": "Alexandria",
+    "currency": "USD",
+    "salary_scale_5yr_net": 2650,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]

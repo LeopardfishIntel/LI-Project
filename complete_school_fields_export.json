@@ -30248,10 +30248,12 @@
     "careersUrl": "https://beechhallschoolriyadh.com/careers",
     "schoolId": "FLIS0373",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 16000,
+    "net_salary": 16000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.607Z"
   },
   {
     "id": "FLIS0374",
@@ -30503,10 +30505,12 @@
     "careersUrl": "https://knowledge.alice-smith.edu.my/knowledge/working-with-us",
     "schoolId": "FLIS0379",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 15200,
+    "net_salary": 15200,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0380",
@@ -30546,10 +30550,12 @@
     "lastSweptDate": "2026-09-24T16:55:11.240Z",
     "lastSweptAtMillis": 1790268911240,
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 14500,
+    "net_salary": 14500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0381",
@@ -31132,10 +31138,12 @@
     "careersUrl": "https://www.bisak.org/careers",
     "schoolId": "FLIS0393",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 16500,
+    "net_salary": 16500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0394",
@@ -31600,10 +31608,12 @@
     "careersUrl": "https://www.sji-international.com.sg/careers",
     "schoolId": "FLIS0402",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 7400,
+    "net_salary": 7400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0403",
@@ -31727,10 +31737,12 @@
     "careersUrl": "https://www.ktj.edu.my/careers",
     "schoolId": "FLIS0405",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 12800,
+    "net_salary": 12800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0406",
@@ -31768,10 +31780,12 @@
     "careersUrl": "https://www.stgeorge.school.it/careers",
     "schoolId": "FLIS0406",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2450,
+    "net_salary": 2450,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0407",
@@ -31893,10 +31907,12 @@
     "careersUrl": "https://www.isbasel.ch/careers",
     "schoolId": "FLIS0409",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 6400,
+    "net_salary": 6400,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0410",
@@ -32018,10 +32034,12 @@
     "careersUrl": "https://www.tasis.ch/careers",
     "schoolId": "FLIS0412",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 6000,
+    "net_salary": 6000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0413",
@@ -32059,10 +32077,12 @@
     "careersUrl": "https://www.tasisengland.org/about/careers",
     "schoolId": "FLIS0413",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2550,
+    "net_salary": 2550,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0414",
@@ -32232,10 +32252,12 @@
     "careersUrl": "https://www.kingscollegemadrid.es/careers",
     "schoolId": "FLIS0417",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2050,
+    "net_salary": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "revalidationCompletedAt": {
@@ -32454,10 +32476,12 @@
       "IB DP"
     ],
     "currency": "BHD",
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 1600,
+    "net_salary": 1600,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0423",
@@ -32682,10 +32706,12 @@
     "careersUrl": "https://www.campion.edu.gr/careers",
     "schoolId": "FLIS0424",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 1800,
+    "net_salary": 1800,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0425",
@@ -32812,10 +32838,12 @@
     "careersUrl": "https://www.stcatherines.gr/careers",
     "schoolId": "FLIS0425",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 1900,
+    "net_salary": 1900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0426",
@@ -32859,10 +32887,12 @@
     "lastCountersSyncedAt": 1790193244633,
     "schoolId": "FLIS0426",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 6100,
+    "net_salary": 6100,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0427",
@@ -32896,10 +32926,12 @@
     "careersUrl": "https://www.nordangliaeducation.com/bis-bratislava/careers",
     "schoolId": "FLIS0427",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2050,
+    "net_salary": 2050,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0430",
@@ -32974,10 +33006,12 @@
     "careersUrl": "https://www.bisc.edu.eg/careers",
     "schoolId": "FLIS0431",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2900,
+    "net_salary": 2900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0432",
@@ -33014,10 +33048,12 @@
     "careersUrl": "https://www.ncbis.co.uk/careers",
     "schoolId": "FLIS0432",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2700,
+    "net_salary": 2700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0433",
@@ -33053,10 +33089,12 @@
     "careersUrl": "https://www.kingsschoolegypt.com/enquire-now",
     "schoolId": "FLIS0433",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2750,
+    "net_salary": 2750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0434",
@@ -33092,10 +33130,12 @@
     "careersUrl": "https://bsalex.net/careers",
     "schoolId": "FLIS0434",
     "isLocked": true,
-    "salary_scale_5yr_net": null,
-    "net_salary": null,
-    "salary_benchmark_category": "PENDING",
-    "salary_confidence": "Pending"
+    "salary_scale_5yr_net": 2650,
+    "net_salary": 2650,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
+    "salary_confidence": "High",
+    "salary_source_year": "2025/2026",
+    "last_benchmark_update": "2026-09-25T08:24:21.608Z"
   },
   {
     "id": "FLIS0435",
