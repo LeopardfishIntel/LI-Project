@@ -47,7 +47,7 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
   // 1. Load canonical schools registry
   const schoolsSnap = await db.collection("schools").get();
   const schoolMap = new Map<string, any>();
-  schoolsSnap.forEach((doc) => {
+  schoolsSnap.forEach((doc: any) => {
     schoolMap.set(doc.id.toUpperCase(), { id: doc.id, ...doc.data() });
   });
   console.log(`📌 Loaded ${schoolMap.size} canonical schools into memory.`);
@@ -208,11 +208,23 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
   console.log("\n🔄 Synchronizing database school counters...");
   const cacheSnap = await db.collection("featured_jobs_cache").get();
   const countsBySchool: Record<string, number> = {};
+  const seenJobKeys = new Set<string>();
+  const seenUrls = new Set<string>();
 
-  cacheSnap.docs.forEach((doc) => {
+  cacheSnap.docs.forEach((doc: any) => {
     const d = doc.data();
     const sId = String(d.schoolId || "").toUpperCase().trim();
     if (!sId || sId.startsWith("AGNT") || sId === "SEARCH_ASSOCIATES_HUB") return;
+
+    const title = String(d.title || d.jobTitle || "");
+    const applyUrl = String(d.applyUrl || d.source_url || "").toLowerCase().replace(/\/+$/, "").trim();
+    if (applyUrl && seenUrls.has(applyUrl)) return;
+    if (applyUrl) seenUrls.add(applyUrl);
+
+    const jobKey = `${sId.toLowerCase()}_${title.toLowerCase().trim()}`;
+    if (seenJobKeys.has(jobKey)) return;
+    seenJobKeys.add(jobKey);
+
     countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
   });
 
@@ -246,7 +258,7 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
   // Phase E: Refresh Master JSON Export Files
   const freshSchoolsSnap = await db.collection("schools").get();
   const exportSchools: any[] = [];
-  freshSchoolsSnap.forEach((doc) => exportSchools.push({ id: doc.id, ...doc.data() }));
+  freshSchoolsSnap.forEach((doc: any) => exportSchools.push({ id: doc.id, ...doc.data() }));
   exportSchools.sort((a, b) => a.id.localeCompare(b.id));
 
   const rootExport = path.resolve("./complete_school_fields_export.json");

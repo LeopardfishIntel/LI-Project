@@ -74,12 +74,22 @@ export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobR
   const searchTerm = input.city || input.country || input.schoolName;
   if (!searchTerm) return [];
 
+  // 🛡️ Gate: Never run Nord Anglia adaptor on GEMS, Braeburn, or non-Nord Anglia schools
+  const sGroup = (input.schoolName || "").toLowerCase();
+  if (sGroup.includes("gems") || sGroup.includes("braeburn") || sGroup.includes("kings college")) {
+    console.log(`🛑 [NORD ANGLIA ENGINE] Skipped non-Nord Anglia school: ${input.schoolName}`);
+    return [];
+  }
+
   const searchUrl = `${NAE_CAREERS_BASE}/search/?q=&locationsearch=${encodeURIComponent(searchTerm)}`;
   console.log(`🦁 [NORD ANGLIA ENGINE] Querying SAP SuccessFactors for ${input.schoolName} (${searchTerm}): ${searchUrl}`);
 
   try {
     const { chromium } = await import("playwright");
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
     const page = await browser.newPage();
 
     await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 18000 });
@@ -95,26 +105,56 @@ export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobR
     const records: RawJobRecord[] = [];
     const seenUrls = new Set<string>();
 
+    const targetCitySlug = (input.city || "").toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+    const targetCountrySlug = (input.country || "").toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+
     for (const item of rawItems) {
       const cleanUrl = sanitizeUrl(item.href);
       if (!cleanUrl || seenUrls.has(cleanUrl)) continue;
 
       const title = cleanNordAngliaJobTitle(item.title);
-      if (!title || isSupportOrNonTeachingRole(title) || isSupportOrNonTeachingRole(item.title)) continue; // Skip non-teaching / support staff / TA roles
+      if (!title || isSupportOrNonTeachingRole(title) || isSupportOrNonTeachingRole(item.title)) continue;
+
+      // 🛡️ Gate 1: URL Location Verification (Reject global search fallbacks)
+      const urlLower = cleanUrl.toLowerCase();
+      const matchesCity = targetCitySlug && (urlLower.includes(`/${targetCitySlug}-`) || urlLower.includes(`-${targetCitySlug}-`) || urlLower.includes(`/${targetCitySlug}/`));
+      const matchesCountry = targetCountrySlug && (urlLower.includes(`/${targetCountrySlug}-`) || urlLower.includes(`-${targetCountrySlug}-`));
+
+      // Check common aliases (e.g. Ho Chi Minh -> HCMC, UAE -> Dubai / Abu Dhabi)
+      const isUaeMatch = (targetCountrySlug.includes("emirates") || targetCitySlug.includes("dubai") || targetCitySlug.includes("abu-dhabi")) &&
+                         (urlLower.includes("/dubai-") || urlLower.includes("/abu-dhabi-"));
+      const isHcmcMatch = (targetCitySlug.includes("ho-chi-minh") || targetCitySlug.includes("hcmc")) &&
+                          (urlLower.includes("ho-chi-minh") || urlLower.includes("hcmc"));
+
+      if (!matchesCity && !matchesCountry && !isUaeMatch && !isHcmcMatch) {
+        // Global search fallback detected; skip foreign location job
+        continue;
+      }
 
       seenUrls.add(cleanUrl);
 
-      // Deep scrape job detail page for closing date in Selection Process paragraph
+      // Deep scrape job detail page for closing date in Selection Process paragraph & verify not 404
       let closingDate: string | null = null;
+      let isLive = true;
       try {
         const detailPage = await browser.newPage();
-        await detailPage.goto(cleanUrl, { waitUntil: "domcontentloaded", timeout: 12000 });
-        const detailText = await detailPage.evaluate(() => document.body.innerText);
-        closingDate = extractNordAngliaClosingDate(detailText);
+        const resp = await detailPage.goto(cleanUrl, { waitUntil: "domcontentloaded", timeout: 12000 });
+        if (resp?.status() === 404) {
+          isLive = false;
+        } else {
+          const detailText = await detailPage.evaluate(() => document.body.innerText || "");
+          if (detailText.includes("Job Not Found") || detailText.includes("This job posting is closed")) {
+            isLive = false;
+          } else {
+            closingDate = extractNordAngliaClosingDate(detailText);
+          }
+        }
         await detailPage.close();
       } catch (err: any) {
         // Fall back to null (rolling deadline) if detail fetch times out
       }
+
+      if (!isLive) continue;
 
       records.push({
         rawTitle: title,

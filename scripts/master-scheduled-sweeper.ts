@@ -34,37 +34,39 @@ export async function runMasterSequentialSweep() {
   console.log('----------------------------------------------------------------\n');
 
   // STEP 3: RUN NORD ANGLIA SEARCH
-  console.log('🦁 [STEP 3/4] Launching Protocol 2: Nord Anglia Search Engine...');
+  console.log('🦁 [STEP 3/5] Launching Protocol 2: Nord Anglia Search Engine...');
   try {
     const { stdout, stderr } = await execPromise('npx tsx scripts/sweep-nord-anglia-search.ts');
-    console.log('✅ [STEP 3/4 COMPLETE] Nord Anglia Search output:');
+    console.log('✅ [STEP 3/5 COMPLETE] Nord Anglia Search output:');
     console.log(stdout.split('\n').slice(-10).join('\n'));
   } catch (err: any) {
-    console.error('⚠️ [STEP 3/4 ERROR] Nord Anglia Search encountered an issue:', err.message);
+    console.error('⚠️ [STEP 3/5 ERROR] Nord Anglia Search encountered an issue:', err.message);
   }
 
-  // STEP 4: JANITOR PURGE & CACHE AUDIT
-  console.log('\n🧹 [STEP 4/4] Executing Janitor Purge & Cache Verification...');
-  try {
-    const db = getAdminDb();
-    const snap = await db.collection('featured_jobs_cache').get();
-    const bySource: Record<string, number> = {};
-    snap.docs.forEach((d: any) => {
-      const src = d.data().source || 'Unknown';
-      bySource[src] = (bySource[src] || 0) + 1;
-    });
+  // STEP 4: 10-MINUTE POST-CRAWL BUFFER
+  console.log('\n----------------------------------------------------------------');
+  await delayMinutes(10);
+  console.log('----------------------------------------------------------------\n');
 
+  // STEP 5: DAILY POST-SWEEP VERIFICATION GUARDIAN
+  console.log('🛡️ [STEP 5/5] Launching Daily Post-Sweep Verification Guardian...');
+  try {
+    const { runDailyJobVerification } = await import('./daily-post-sweep-verification');
+    const report = await runDailyJobVerification();
     const elapsedMins = ((Date.now() - startTime) / 1000 / 60).toFixed(2);
+
     console.log('\n================================================================');
-    console.log(`🎉 MASTER MULTI-ENGINE SWEEP COMPLETE in ${elapsedMins} minutes`);
+    console.log(`🎉 MASTER MULTI-ENGINE SWEEP & VERIFICATION COMPLETE in ${elapsedMins} mins`);
     console.log('================================================================');
-    console.log(`  • Total Active Featured Jobs in Cache: ${snap.size}`);
-    Object.entries(bySource).forEach(([src, cnt]) => {
-      console.log(`     - [${src} Search]: ${cnt} active academic vacancies`);
-    });
+    console.log(`  • Total Active Featured Jobs in Cache: ${report.activeVacanciesTotal}`);
+    console.log(`  • Verified Live Postings: ${report.liveVerified}`);
+    console.log(`  • Expired Postings Purged: ${report.expiredDatePurged + report.expiredBannersPurged}`);
+    console.log(`  • Dead Links / 404s Purged: ${report.deadLinksPurged}`);
+    console.log(`  • Geographic Mismatches Purged: ${report.geographicMismatchesPurged}`);
+    console.log(`  • Schools Synced with Parity: ${report.syncedSchoolsCount}`);
     console.log('================================================================\n');
   } catch (err: any) {
-    console.error('⚠️ [STEP 4/4 ERROR] Janitor audit failed:', err.message);
+    console.error('⚠️ [STEP 5/5 ERROR] Post-sweep verification failed:', err.message);
   }
 }
 

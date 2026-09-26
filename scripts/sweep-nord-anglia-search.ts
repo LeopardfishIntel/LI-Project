@@ -21,11 +21,30 @@ async function sweepNordAngliaSearch() {
     const name = s.schoolname || s.name || '';
     const careersUrl = s.careersPageUrl || s.schooljp || s.website || '';
     const group = s.group || s.operator || s.network || '';
-    const tesSlug = s.tesEmployerSlug || s.tespage || '';
+    const nameLower = name.toLowerCase();
+    const groupLower = (group || '').toLowerCase();
+    const ownerLower = (s.ownership || '').toLowerCase();
 
-    const combinedStr = `${name} ${careersUrl} ${group} ${tesSlug} ${sid}`.toLowerCase();
+    // 🛡️ Strict exclusions: GEMS, Braeburn, GIIS, Aloha, ISB, St George, King's College, Malvern, Taaleem, Repton, Cranleigh
+    if (
+      nameLower.includes('gems') ||
+      nameLower.includes('braeburn') ||
+      nameLower.includes('global indian') ||
+      nameLower.includes('giis') ||
+      nameLower.includes('aloha') ||
+      nameLower.includes('kings college') ||
+      nameLower.includes('st george') ||
+      nameLower.includes('malvern') ||
+      nameLower.includes('taaleem') ||
+      nameLower.includes('repton') ||
+      nameLower.includes('cranleigh')
+    ) {
+      return;
+    }
 
-    if (combinedStr.includes('nord anglia') || combinedStr.includes('nordanglia')) {
+    const isNae = groupLower.includes('nord anglia') || ownerLower.includes('nord anglia') || nameLower.includes('nord anglia');
+
+    if (isNae) {
       nordAngliaDocs.push({
         id: sid,
         name,
@@ -35,7 +54,7 @@ async function sweepNordAngliaSearch() {
     }
   });
 
-  console.log(`🦁 Found ${nordAngliaDocs.length} Nord Anglia document(s) to sweep.\n`);
+  console.log(`🦁 Found ${nordAngliaDocs.length} genuine Nord Anglia document(s) to sweep.\n`);
 
   let totalAccepted = 0;
   let totalRejected = 0;

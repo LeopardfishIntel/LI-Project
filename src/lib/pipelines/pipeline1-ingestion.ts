@@ -15,7 +15,7 @@ import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
 
 import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "../crawler/roleClassifier";
 import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
-import { generateJobFingerprint, saveScrapedJobs } from "@/firebase/admin";
+import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
 import { isMalvernCampus } from "../search/malvern";
@@ -279,7 +279,7 @@ export async function runIngestionPipeline(
     // ── MULTI-ENGINE SOURCE GATE ──────────────────────────────────────────
     const srcUpper = (record.source || "").toUpperCase();
     const isTes = srcUpper === "TES" && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
-    const isNordAnglia = srcUpper === "NORD ANGLIA" && record.applyUrl && record.applyUrl.includes("careers.nordangliaeducation.com/job/");
+    const isNordAnglia = srcUpper.includes("NORD ANGLIA") && record.applyUrl && (record.applyUrl.includes("careers.nordangliaeducation.com/job/") || record.applyUrl.includes("careers.nordanglia.com/job/"));
     const isGrc = srcUpper === "GRC" && record.applyUrl && (record.applyUrl.includes("grcfair.org/job-details/") || record.applyUrl.includes("grcfair.org/job/"));
 
     const isInspired = (srcUpper.includes("INSPIRED") || (record.applyUrl && record.applyUrl.includes("inspirededu.com/job/")));
