@@ -17198,12 +17198,6 @@
     "revalidationStatus": "success",
     "lastCountersSyncedAt": 1789148314021,
     "openJobsCount": 0,
-    "revalidationCompletedAt": {
-      "_nanoseconds": 515000000,
-      "_seconds": 1788076591
-    },
-    "lastScrapedAt": "2026-08-30T07:56:31.514Z",
-    "cachedStability": null,
     "profitStatus": "Non-Profit",
     "careersUrl": "https://www.stpauls.br/careers",
     "numericalstaff": "140",
@@ -17220,7 +17214,43 @@
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 14300,
     "website": "https://www.stpauls.br",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "revalidationCompletedAt": {
+      "_seconds": 1790357980,
+      "_nanoseconds": 633000000
+    },
+    "cachedStability": {
+      "schoolId": "FLIS0182",
+      "schoolName": "St. Paul's School Brazil",
+      "category": "INSIGHT_UNAVAILABLE",
+      "statusLabel": "Low Turnover (Stable)",
+      "isUpdating": false,
+      "lastScrapedAt": "2026-09-25T17:39:40.620Z",
+      "metrics": {
+        "estimatedStaffBase": 140,
+        "totalKnownVacancies": 0,
+        "estimatedChurnRatePercent": 0,
+        "leadershipVacanciesCount": 0,
+        "secondaryVacanciesCount": 0,
+        "primaryVacanciesCount": 0,
+        "riskRating": "INSIGHT_UNAVAILABLE",
+        "leadershipChurnRatioPercent": 0,
+        "averageYearlyTesAdverts": 0
+      },
+      "scrapedJobsList": [],
+      "vacancies_discovered": [],
+      "structured_vacancies": [],
+      "total_known_vacancies": 0,
+      "estimated_churn_percentage": 0,
+      "leadership_vacancies_count": 0,
+      "secondary_vacancies_count": 0,
+      "primary_vacancies_count": 0,
+      "leopardfishIntelAlert": "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time.",
+      "churn_implications_commentary": "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time.",
+      "senior_leadership_churn_percentage": 0,
+      "staffroom_commentary": "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time."
+    },
+    "lastScrapedAt": "2026-09-25T17:39:40.620Z"
   },
   {
     "id": "FLIS0183",
@@ -17363,12 +17393,6 @@
     "isRevalidating": true,
     "revalidationError": null,
     "revalidationStatus": "success",
-    "revalidationCompletedAt": {
-      "_nanoseconds": 964000000,
-      "_seconds": 1788076594
-    },
-    "lastScrapedAt": "2026-08-30T07:56:34.963Z",
-    "cachedStability": null,
     "profitStatus": "Non-Profit",
     "careersUrl": "https://www.graded.br/employment",
     "numericalstaff": "177",
@@ -17387,7 +17411,66 @@
     "website": "https://www.graded.br",
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "revalidationCompletedAt": {
+      "_seconds": 1790357993,
+      "_nanoseconds": 823000000
+    },
+    "cachedStability": {
+      "schoolId": "FLIS0184",
+      "schoolName": "Graded School Sao Paulo",
+      "category": "LOW_TURNOVER",
+      "statusLabel": "Low Turnover (Stable)",
+      "isUpdating": false,
+      "lastScrapedAt": "2026-09-25T17:39:45.295Z",
+      "metrics": {
+        "estimatedStaffBase": 177,
+        "totalKnownVacancies": 1,
+        "estimatedChurnRatePercent": 1,
+        "leadershipVacanciesCount": 1,
+        "secondaryVacanciesCount": 0,
+        "primaryVacanciesCount": 0,
+        "riskRating": "LOW",
+        "leadershipChurnRatioPercent": 25,
+        "averageYearlyTesAdverts": 1
+      },
+      "scrapedJobsList": [
+        "High School Principal (Posted: Sep 24, 2026; Closes: Oct 21, 2026) - Search Associates"
+      ],
+      "vacancies_discovered": [
+        {
+          "title": "High School Principal",
+          "department": "Leadership",
+          "source": "Search Associates",
+          "source_url": "https://www.graded-school-sao-paulo.com",
+          "date_listed": "Sep 24, 2026",
+          "date_closing": "Oct 21, 2026",
+          "status": "OPEN",
+          "recruitmentCycle": "CURRENT"
+        }
+      ],
+      "structured_vacancies": [
+        {
+          "title": "High School Principal",
+          "department": "Leadership",
+          "source": "Search Associates",
+          "source_url": "https://www.graded-school-sao-paulo.com",
+          "date_listed": "Sep 24, 2026",
+          "date_closing": "Oct 21, 2026",
+          "status": "OPEN",
+          "recruitmentCycle": "CURRENT"
+        }
+      ],
+      "total_known_vacancies": 1,
+      "estimated_churn_percentage": 1,
+      "leadership_vacancies_count": 1,
+      "secondary_vacancies_count": 0,
+      "primary_vacancies_count": 0,
+      "leopardfishIntelAlert": "Leopardfish Multi-Engine Audit: Stable retention pattern with 1 active vacancies detected across TES, GRC Search, and official school portals.",
+      "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 1 active vacancies detected across TES, GRC Search, and official school portals.",
+      "senior_leadership_churn_percentage": 25
+    },
+    "lastScrapedAt": "2026-09-25T17:39:45.295Z"
   },
   {
     "id": "FLIS0185",
@@ -33945,8 +34028,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "stcatherines.gr",
     "careersPageUrl": "https://www.stcatherines.gr/opportunities",
-    "tesEmployerSlug": "st-catherines-british-school-1057281",
-    "tesOrganizationId": "1057281",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 34,000 - 50,000 / year",
     "currency": "EUR",
@@ -34060,7 +34141,9 @@
     "salary_scale_5yr_net": 1900,
     "lastSweptDate": "2026-09-25T11:54:14.406Z",
     "lastSweptAtMillis": 1790337254406,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tesOrganizationId": "1065747",
+    "tesEmployerSlug": "st-catherine-s-british-school-1065747"
   },
   {
     "id": "FLIS0426",
@@ -34075,8 +34158,6 @@
     "curriculum": "British (NCfE / IGCSE) / IB DP",
     "officialDomain": "stgeorges.ch",
     "careersPageUrl": "https://www.inspirededu.com/careers",
-    "tesEmployerSlug": "st-georges-international-school-1057285",
-    "tesOrganizationId": "1057285",
     "group": "Inspired Education",
     "salaryRange": "CHF 85,000 - 125,000 / year",
     "currency": "CHF",
@@ -34107,7 +34188,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 6100,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tesOrganizationId": "1057262",
+    "tesEmployerSlug": "st-george-s-international-school-1057262"
   },
   {
     "id": "FLIS0427",

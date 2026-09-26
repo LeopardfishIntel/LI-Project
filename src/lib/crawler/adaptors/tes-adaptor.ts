@@ -98,7 +98,34 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
     const addr = posting.jobLocation.address;
     if (addr.addressLocality) city = addr.addressLocality;
     if (addr.addressRegion && !city) city = addr.addressRegion;
-    if (addr.addressCountry) country = addr.addressCountry;
+    if (addr.addressCountry) {
+      const postingCountry = String(addr.addressCountry).trim().toLowerCase();
+      const inputCountry = String(input.country || "").trim().toLowerCase();
+      // 🛡️ Gate 2: Cross-Country Mismatch Shield
+      if (inputCountry && postingCountry && !postingCountry.includes(inputCountry) && !inputCountry.includes(postingCountry)) {
+        console.warn(`🛑 [TES ADAPTOR] Rejected cross-country mismatch for ${input.schoolName} (${input.country}): job located in ${addr.addressCountry} [${cleanUrl}]`);
+        return null;
+      }
+      country = addr.addressCountry;
+    }
+  }
+
+  // 🛡️ Gate 3: URL Slug Country Mismatch Shield
+  if (input.country) {
+    const urlLower = cleanUrl.toLowerCase();
+    const inputCountryLower = input.country.toLowerCase();
+    // Check known international countries in URL slug (e.g., -thailand-, -china-, -singapore-, etc.)
+    const foreignCountries = [
+      "thailand", "china", "singapore", "japan", "spain", "italy", "france", "germany",
+      "greece", "switzerland", "brazil", "argentina", "uae", "dubai", "qatar", "oman",
+      "kuwait", "bahrain", "egypt", "kenya", "vietnam", "malaysia", "indonesia", "india"
+    ];
+    for (const fc of foreignCountries) {
+      if (urlLower.includes(`-${fc}-`) && !inputCountryLower.includes(fc) && !fc.includes(inputCountryLower)) {
+        console.warn(`🛑 [TES ADAPTOR] Rejected foreign country slug "-${fc}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
+        return null;
+      }
+    }
   }
 
   const closingDate = posting.validThrough || null;
@@ -283,6 +310,26 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
       const cleanUrl = sanitizeUrl(item.href);
       if (!cleanUrl || !cleanUrl.includes("tes.com/jobs/vacancy/") || seenUrls.has(cleanUrl)) continue;
       if (!item.title || isSupportOrNonTeachingRole(item.title)) continue;
+
+      // 🛡️ Gate: Foreign country in vacancy slug
+      if (input.country) {
+        const urlLower = cleanUrl.toLowerCase();
+        const inputCountryLower = input.country.toLowerCase();
+        const foreignCountries = [
+          "thailand", "china", "singapore", "japan", "spain", "italy", "france", "germany",
+          "greece", "switzerland", "brazil", "argentina", "uae", "dubai", "qatar", "oman",
+          "kuwait", "bahrain", "egypt", "kenya", "vietnam", "malaysia", "indonesia", "india"
+        ];
+        let hasConflict = false;
+        for (const fc of foreignCountries) {
+          if (urlLower.includes(`-${fc}-`) && !inputCountryLower.includes(fc) && !fc.includes(inputCountryLower)) {
+            hasConflict = true;
+            console.warn(`🛑 [TES PLAYWRIGHT] Rejected foreign country slug "-${fc}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
+            break;
+          }
+        }
+        if (hasConflict) continue;
+      }
 
       seenUrls.add(cleanUrl);
       validItems.push({ href: cleanUrl, title: item.title });
