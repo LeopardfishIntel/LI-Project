@@ -210,6 +210,15 @@ export async function runTaaleemAdaptor(
     const rawTitle = String(job.title || "").trim();
     if (!rawTitle || isSupportOrNonTeachingRole(rawTitle)) continue;
 
+    // 🛡️ Filter expired jobs
+    if (job.expDate) {
+      const expMillis = new Date(job.expDate).getTime();
+      if (!isNaN(expMillis) && expMillis < Date.now()) {
+        console.log(`🛑 [TAALEEM ADAPTOR] Skipping expired vacancy: "${rawTitle}" (expired: ${job.expDate})`);
+        continue;
+      }
+    }
+
     const applyUrl = job.applyUrl;
     if (seenUrls.has(applyUrl.toLowerCase())) continue;
     seenUrls.add(applyUrl.toLowerCase());

@@ -9951,8 +9951,8 @@
     "salary_scale_5yr_net": 16000,
     "website": "https://www.taaleem.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 14
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0103",
@@ -10905,8 +10905,8 @@
     "salary_scale_5yr_net": 13500,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 11
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0114",
@@ -28162,9 +28162,9 @@
     },
     "lastSweptDate": "2026-09-25T11:48:03.632Z",
     "lastSweptAtMillis": 1790336883632,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 5,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0319",
@@ -29828,8 +29828,8 @@
     "tesnumber": null,
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0344",
@@ -30643,12 +30643,12 @@
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1,
     "tespage": null,
     "tesnumber": null,
     "tesOrganizationId": null,
-    "tesEmployerSlug": null
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0355",
@@ -31100,13 +31100,13 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 12500,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "tespage": null,
     "tesnumber": null,
     "tesOrganizationId": null,
-    "tesEmployerSlug": null
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0362",
