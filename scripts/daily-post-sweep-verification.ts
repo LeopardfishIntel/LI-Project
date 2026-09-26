@@ -120,9 +120,9 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
       }
     }
 
-    // Queue for Live Portal Banner / Dead Link Inspection (Taaleem, ATS, Direct)
-    if (url.includes("careers.taaleem.ae") || url.includes("tes.com") || url.includes(".pdf")) {
-      candidateUrlChecks.push({ id: docId, url, title: job.title, schoolName: job.schoolName });
+    // Queue for Live Portal Banner / Dead Link Inspection (Taaleem, Nord Anglia, ATS, Direct)
+    if (url.includes("careers.taaleem.ae") || url.includes("tes.com") || url.includes("careers.nordanglia") || url.includes(".pdf")) {
+      candidateUrlChecks.push({ id: docId, url, title: job.title, schoolName: job.schoolName, schoolId: sId });
     } else {
       liveVerified++;
     }
@@ -131,6 +131,7 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
   // Phase B: Live Headless Verification on High-Risk Portals
   if (candidateUrlChecks.length > 0) {
     console.log(`🌐 Live-verifying ${candidateUrlChecks.length} candidate portal URLs via headless browser...`);
+    const { resolveNordAngliaSchool } = await import("../src/lib/crawler/adaptors/nord-anglia-adaptor");
     const browser = await chromium.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
@@ -140,7 +141,7 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
     for (let i = 0; i < candidateUrlChecks.length; i += concurrency) {
       const chunk = candidateUrlChecks.slice(i, i + concurrency);
       await Promise.all(
-        chunk.map(async (item) => {
+        chunk.map(async (item: any) => {
           const page = await browser.newPage();
           try {
             const resp = await page.goto(item.url, { waitUntil: "domcontentloaded", timeout: 15000 });
@@ -153,6 +154,27 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
             }
 
             const bodyText = await page.evaluate(() => document.body.innerText || "");
+            
+            // Check for Nord Anglia specific vacancy status & school mismatch
+            if (item.url.includes("careers.nordanglia")) {
+              const hasActiveTokens = bodyText.includes("Apply now") || bodyText.includes("Job ID:") || bodyText.includes("Job Posting Date:");
+              if (!hasActiveTokens || bodyText.includes("Job Not Found") || bodyText.includes("This job posting is closed")) {
+                purgeList.push({ id: item.id, reason: `Nord Anglia expired/closed posting` });
+                expiredBannersPurged++;
+                return;
+              }
+
+              const resolved = resolveNordAngliaSchool(bodyText);
+              if (resolved && resolved.id !== item.schoolId) {
+                purgeList.push({ id: item.id, reason: `Nord Anglia school mismatch: assigned to ${item.schoolId} but page is for ${resolved.id} (${resolved.name})` });
+                geographicMismatchesPurged++;
+                return;
+              }
+
+              liveVerified++;
+              return;
+            }
+
             const isClosed =
               bodyText.includes("Closed or Expired Job Posting") ||
               bodyText.includes("is closed or has expired") ||

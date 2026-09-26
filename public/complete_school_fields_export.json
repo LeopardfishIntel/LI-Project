@@ -547,8 +547,8 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastSweptDate": "2026-09-26T06:40:45.957Z",
     "lastSweptAtMillis": 1790404845957,
-    "lastCountersSyncedAt": 1790405335973,
-    "openJobsCount": 2
+    "lastCountersSyncedAt": 1790415498142,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0007",
@@ -613,9 +613,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 30000,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0008",
@@ -4760,8 +4760,8 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "ownership": "Nord Anglia",
     "schoolGroup": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:42:16.762Z",
-    "lastSweptAtMillis": 1790404936762
+    "lastSweptDate": "2026-09-26T09:33:12.141Z",
+    "lastSweptAtMillis": 1790415192141
   },
   {
     "id": "FLIS0056",
@@ -6114,8 +6114,8 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastSweptDate": "2026-09-26T06:41:27.991Z",
     "lastSweptAtMillis": 1790404887991,
-    "lastCountersSyncedAt": 1790405335973,
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0064",
@@ -7095,8 +7095,8 @@
     "ownership": "Nord Anglia",
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:42:21.646Z",
-    "lastSweptAtMillis": 1790404941646
+    "lastSweptDate": "2026-09-26T09:30:20.193Z",
+    "lastSweptAtMillis": 1790415020193
   },
   {
     "id": "FLIS0073",
@@ -7557,9 +7557,9 @@
     "website": "https://www.iszl.ch",
     "careersPageUrl": "https://www.iszl.ch/join-our-team",
     "careersUrl": "https://www.iszl.ch/join-our-team",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0079",
@@ -8738,8 +8738,8 @@
     "salary_scale_5yr_net": 17917,
     "website": "https://www.bisr.com.sa",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 2
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0092",
@@ -9561,10 +9561,10 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:42:52.229Z",
-    "lastSweptAtMillis": 1790404972229,
-    "lastCountersSyncedAt": 1790405335973,
-    "openJobsCount": 7
+    "lastSweptDate": "2026-09-26T09:31:30.402Z",
+    "lastSweptAtMillis": 1790415090402,
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0099",
@@ -9636,10 +9636,10 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:43:22.818Z",
-    "lastSweptAtMillis": 1790405002818,
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 0
+    "lastSweptDate": "2026-09-26T09:31:38.989Z",
+    "lastSweptAtMillis": 1790415098989,
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0100",
@@ -9989,8 +9989,8 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Taaleem",
     "group": "Taaleem",
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 11
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0103",
@@ -10297,10 +10297,10 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:43:40.230Z",
-    "lastSweptAtMillis": 1790405020230,
     "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 4
+    "openJobsCount": 4,
+    "lastSweptDate": "2026-09-26T09:32:51.689Z",
+    "lastSweptAtMillis": 1790415171689
   },
   {
     "id": "FLIS0107",
@@ -10880,8 +10880,8 @@
     "group": "Nord Anglia Education",
     "lastSweptDate": "2026-09-26T06:44:06.250Z",
     "lastSweptAtMillis": 1790405046250,
-    "lastCountersSyncedAt": 1790405335974,
-    "openJobsCount": 6
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0113",
@@ -10952,10 +10952,10 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Private",
     "group": "Private",
-    "lastSweptDate": "2026-09-26T06:43:40.310Z",
-    "lastSweptAtMillis": 1790405020310,
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 11
+    "lastSweptDate": "2026-09-26T09:32:10.663Z",
+    "lastSweptAtMillis": 1790415130663,
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0114",
@@ -12235,8 +12235,8 @@
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:44:18.502Z",
-    "lastSweptAtMillis": 1790405058502
+    "lastSweptDate": "2026-09-26T09:33:34.895Z",
+    "lastSweptAtMillis": 1790415214895
   },
   {
     "id": "FLIS0128",
@@ -12313,8 +12313,8 @@
     "group": "Nord Anglia Education",
     "lastSweptDate": "2026-09-26T06:43:58.400Z",
     "lastSweptAtMillis": 1790405038400,
-    "lastCountersSyncedAt": 1790405335974,
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0129",
@@ -30060,10 +30060,10 @@
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "ownership": "Nord Anglia",
     "schoolGroup": "Nord Anglia Education",
-    "lastSweptDate": "2026-09-26T06:44:59.168Z",
-    "lastSweptAtMillis": 1790405099168,
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 7
+    "lastSweptDate": "2026-09-26T09:32:53.161Z",
+    "lastSweptAtMillis": 1790415173161,
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0346",
@@ -33296,10 +33296,10 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "schoolname": "St. Andrews International School Bangkok",
-    "lastSweptDate": "2026-09-26T06:45:15.927Z",
-    "lastSweptAtMillis": 1790405115927,
     "lastCountersSyncedAt": 1790405335974,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "lastSweptDate": "2026-09-26T09:33:06.352Z",
+    "lastSweptAtMillis": 1790415186352
   },
   {
     "id": "FLIS0402",
@@ -34728,10 +34728,10 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "schoolname": "The British School of Tashkent",
-    "lastSweptDate": "2026-09-26T06:45:34.812Z",
-    "lastSweptAtMillis": 1790405134812,
     "lastCountersSyncedAt": 1790405335974,
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "lastSweptDate": "2026-09-26T09:33:21.793Z",
+    "lastSweptAtMillis": 1790415201793
   },
   {
     "id": "FLIS0431",
@@ -36014,10 +36014,10 @@
     "ownership": "Cognita",
     "schoolGroup": "Cognita",
     "group": "Cognita",
-    "lastSweptDate": "2026-09-26T06:45:43.739Z",
-    "lastSweptAtMillis": 1790405143739,
-    "lastCountersSyncedAt": "2026-09-26T06:49:31.214Z",
-    "openJobsCount": 2
+    "lastSweptDate": "2026-09-26T09:32:24.963Z",
+    "lastSweptAtMillis": 1790415144963,
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0458",
@@ -36066,8 +36066,8 @@
     "tesEmployerSlug": null,
     "lastSweptDate": "2026-09-26T06:45:51.105Z",
     "lastSweptAtMillis": 1790405151105,
-    "lastCountersSyncedAt": 1790405335974,
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790415498143,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0459",

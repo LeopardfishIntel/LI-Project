@@ -70,6 +70,60 @@ export function extractNordAngliaClosingDate(pageText: string): string | null {
   return null;
 }
 
+export const NAE_SCHOOL_REGISTRY: Array<{ id: string; name: string; patterns: RegExp[] }> = [
+  { id: "FLIS0006", name: "Amman Academy", patterns: [/amman\s+academy/i] },
+  { id: "FLIS0034", name: "Leman Chengdu", patterns: [/leman\s+international|leman\s+chengdu/i] },
+  { id: "FLIS0055", name: "Beau Soleil", patterns: [/beau\s+soleil/i] },
+  { id: "FLIS0063", name: "Int'l College Spain", patterns: [/international\s+college\s+spain|ics\s+madrid/i] },
+  { id: "FLIS0072", name: "College du Leman", patterns: [/college\s+du\s+leman|cdl\s+geneva/i] },
+  { id: "FLIS0084", name: "British Int'l Budapest", patterns: [/british\s+international\s+school\s+budapest|british\s+int'?l\s+budapest/i] },
+  { id: "FLIS0098", name: "British International School Abu Dhabi", patterns: [/british\s+international\s+school\s+abu\s+dhabi|bis\s*abu\s*dhabi|bisad/i] },
+  { id: "FLIS0099", name: "Nord Anglia International School Abu Dhabi", patterns: [/nord\s+anglia\s+international\s+school\s+abu\s+dhabi|nas\s+abu\s+dhabi/i] },
+  { id: "FLIS0106", name: "Nord Anglia International School Dubai", patterns: [/nord\s+anglia\s+international\s+school\s+dubai|nas\s+dubai/i] },
+  { id: "FLIS0112", name: "Compass International School Doha", patterns: [/compass\s+international\s+school/i] },
+  { id: "FLIS0113", name: "Etqan Global Academy", patterns: [/etqan\s+global\s+academy/i] },
+  { id: "FLIS0127", name: "British International School Hanoi", patterns: [/british\s+international\s+school\s+hanoi|bis\s+hanoi/i] },
+  { id: "FLIS0128", name: "British International School Ho Chi Minh City", patterns: [/british\s+international\s+school\s+ho\s+chi\s+minh|bis\s+hcmc|bis\s+ho\s+chi\s+minh/i] },
+  { id: "FLIS0163", name: "British International School Warsaw", patterns: [/british\s+international\s+school\s+warsaw|bis\s+warsaw/i] },
+  { id: "FLIS0166", name: "Prague British International School", patterns: [/prague\s+british\s+international\s+school|pbis\s+prague/i] },
+  { id: "FLIS0345", name: "Swiss International Scientific School in Dubai", patterns: [/swiss\s+international\s+scientific\s+school|sisd/i] },
+  { id: "FLIS0380", name: "The British International School of Kuala Lumpur", patterns: [/british\s+international\s+school\s+of\s+kuala\s+lumpur|bskl/i] },
+  { id: "FLIS0401", name: "St. Andrews International School Bangkok", patterns: [/st\.?\s*andrews\s+international\s+school\s+bangkok/i] },
+  { id: "FLIS0411", name: "College Alpin Beau Soleil", patterns: [/college\s+alpin\s+beau\s+soleil|beau\s+soleil/i] },
+  { id: "FLIS0427", name: "The British International School Bratislava", patterns: [/british\s+international\s+school\s+bratislava|bis\s+bratislava/i] },
+  { id: "FLIS0430", name: "The British School of Tashkent", patterns: [/british\s+school\s+of\s+tashkent|bst\s+tashkent/i] },
+  { id: "FLIS0438", name: "The British School of Guangzhou", patterns: [/british\s+school\s+of\s+guangzhou|bsg\s+guangzhou/i] },
+  { id: "FLIS0444", name: "The British School of Beijing Sanlitun", patterns: [/british\s+school\s+of\s+beijing\s+sanlitun|bsb\s+sanlitun/i] },
+  { id: "FLIS0457", name: "British Vietnamese International School Ho Chi Minh City", patterns: [/british\s+vietnamese\s+international\s+school\s+ho\s+chi\s+minh|bvis\s+hcmc|bvis\s+ho\s+chi\s+minh/i] },
+  { id: "FLIS0458", name: "British Vietnamese International School Hanoi", patterns: [/british\s+vietnamese\s+international\s+school\s+hanoi|bvis\s+hanoi/i] }
+];
+
+export function resolveNordAngliaSchool(pageText: string): { id: string; name: string } | null {
+  const schoolMatch = pageText.match(/School:\s*([^\n\r]+)/i);
+  const targetText = schoolMatch ? schoolMatch[1] : pageText;
+
+  for (const entry of NAE_SCHOOL_REGISTRY) {
+    for (const pat of entry.patterns) {
+      if (pat.test(targetText)) {
+        return { id: entry.id, name: entry.name };
+      }
+    }
+  }
+
+  // Fallback scan of full text
+  if (schoolMatch) {
+    for (const entry of NAE_SCHOOL_REGISTRY) {
+      for (const pat of entry.patterns) {
+        if (pat.test(pageText)) {
+          return { id: entry.id, name: entry.name };
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
 export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobRecord[]> {
   const searchTerm = input.city || input.country || input.schoolName;
   if (!searchTerm) return [];
@@ -133,9 +187,13 @@ export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobR
 
       seenUrls.add(cleanUrl);
 
-      // Deep scrape job detail page for closing date in Selection Process paragraph & verify not 404
+      // Deep scrape job detail page for exact school entity, closing date & verify active status
       let closingDate: string | null = null;
       let isLive = true;
+      let targetSchoolId = input.schoolId;
+      let targetSchoolName = input.schoolName;
+      let jobStatus: 'approved' | 'pending_review' = 'approved';
+
       try {
         const detailPage = await browser.newPage();
         const resp = await detailPage.goto(cleanUrl, { waitUntil: "domcontentloaded", timeout: 12000 });
@@ -143,15 +201,29 @@ export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobR
           isLive = false;
         } else {
           const detailText = await detailPage.evaluate(() => document.body.innerText || "");
-          if (detailText.includes("Job Not Found") || detailText.includes("This job posting is closed")) {
+          
+          // Check if vacancy is active or expired/closed
+          const hasActiveTokens = detailText.includes("Apply now") || detailText.includes("Job ID:") || detailText.includes("Job Posting Date:");
+          if (!hasActiveTokens || detailText.includes("Job Not Found") || detailText.includes("This job posting is closed") || detailText.includes("is no longer available")) {
             isLive = false;
           } else {
             closingDate = extractNordAngliaClosingDate(detailText);
+
+            // 🛡️ Gate: Deep School Disambiguation
+            const resolved = resolveNordAngliaSchool(detailText);
+            if (resolved) {
+              targetSchoolId = resolved.id;
+              targetSchoolName = resolved.name;
+            } else {
+              // If in doubt, route to pending review
+              jobStatus = 'pending_review';
+            }
           }
         }
         await detailPage.close();
       } catch (err: any) {
-        // Fall back to null (rolling deadline) if detail fetch times out
+        // Fall back if detail fetch fails
+        jobStatus = 'pending_review';
       }
 
       if (!isLive) continue;
@@ -160,13 +232,13 @@ export async function runNordAngliaAdaptor(input: AdaptorInput): Promise<RawJobR
         rawTitle: title,
         source: "Nord Anglia",
         applyUrl: cleanUrl,
-        schoolId: input.schoolId,
-        schoolName: input.schoolName,
+        schoolId: targetSchoolId,
+        schoolName: targetSchoolName,
         city: input.city,
         country: input.country,
         datePosted: null,
         closingDate: closingDate,
-        status: "approved",
+        status: jobStatus,
       });
     }
 

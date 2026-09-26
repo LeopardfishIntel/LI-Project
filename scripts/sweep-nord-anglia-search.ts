@@ -72,10 +72,20 @@ async function sweepNordAngliaSearch() {
       });
 
       if (records.length > 0) {
-        const res = await runIngestionPipeline(s.id, records);
-        totalAccepted += res.accepted;
-        totalRejected += res.rejected;
-        console.log(`  ✅ Accepted: ${res.accepted} | Rejected: ${res.rejected}`);
+        // Group extracted records by resolved schoolId
+        const byTargetSchool: Record<string, typeof records> = {};
+        for (const r of records) {
+          const targetId = r.schoolId || s.id;
+          if (!byTargetSchool[targetId]) byTargetSchool[targetId] = [];
+          byTargetSchool[targetId].push(r);
+        }
+
+        for (const [targetId, targetRecords] of Object.entries(byTargetSchool)) {
+          const res = await runIngestionPipeline(targetId, targetRecords);
+          totalAccepted += res.accepted;
+          totalRejected += res.rejected;
+          console.log(`  ✅ [${targetId}] Accepted: ${res.accepted} | Rejected: ${res.rejected}`);
+        }
       } else {
         console.log(`  ✓ 0 active Nord Anglia vacancies currently listed.`);
       }
