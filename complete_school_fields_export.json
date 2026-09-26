@@ -184,9 +184,9 @@
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 43500,
     "website": "https://www.spcc.edu.hk",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981342,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0003",
@@ -332,9 +332,9 @@
     "website": "https://www.kist.ed.jp",
     "careersPageUrl": "https://www.kist.ed.jp/careers",
     "careersUrl": "https://www.kist.ed.jp/careers",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0004",
@@ -467,8 +467,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.676Z",
     "salary_scale_5yr_net": 8750,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 10
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 17
   },
   {
     "id": "FLIS0006",
@@ -755,7 +755,7 @@
     "careersUrl": "https://www.tts.edu.sg/working-with-us/current-vacancies",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 2
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0010",
@@ -819,8 +819,8 @@
     "salary_scale_5yr_net": 41500,
     "website": "https://www.gtcollege.edu.hk",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0011",
@@ -1019,9 +1019,9 @@
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 7500,
     "website": "https://www.acsinternational.edu.sg",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0014",
@@ -1336,9 +1336,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 31667,
     "website": "https://beijing.dulwich.org",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0018",
@@ -1985,8 +1985,8 @@
     "careersPageUrl": "https://www.gemseducation.com/careers",
     "careersUrl": "https://www.gemseducation.com/careers",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 9
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0027",
@@ -2246,8 +2246,8 @@
     "salary_scale_5yr_net": 15500,
     "website": "https://aldareducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 7
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 21
   },
   {
     "id": "FLIS0028",
@@ -2322,8 +2322,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.678Z",
     "website": "https://www.jess.sch.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 9
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 23
   },
   {
     "id": "FLIS0029",
@@ -2396,9 +2396,9 @@
     "website": "https://neevacademy.org",
     "lastSweptDate": "2026-09-25T11:31:42.223Z",
     "lastSweptAtMillis": 1790335902223,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 5,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0030",
@@ -2681,9 +2681,9 @@
     "website": "https://shanghai.wellingtoncollege.cn",
     "careersPageUrl": "https://shanghai.wellingtoncollege.cn/join-us",
     "careersUrl": "https://shanghai.wellingtoncollege.cn/join-us",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0034",
@@ -3222,9 +3222,9 @@
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2400,
     "website": "https://www.stcatherines.gr",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0039",
@@ -3385,9 +3385,9 @@
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 2400,
     "website": "https://www.stlouisschool.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0041",
@@ -3674,8 +3674,8 @@
     "last_benchmark_update": "2026-09-25T08:11:30.107Z",
     "salary_scale_5yr_net": 1400,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0043",
@@ -4418,8 +4418,8 @@
     "salary_scale_5yr_net": 2500,
     "website": "https://www.stgeorge.it",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 3
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0053",
@@ -5054,9 +5054,9 @@
     "website": "https://www.asmilan.org",
     "careersPageUrl": "https://www.asmilan.org/work-with-us",
     "careersUrl": "https://www.asmilan.org/work-with-us",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0058",
@@ -5575,8 +5575,8 @@
     "salary_scale_5yr_net": 2400,
     "website": "https://www.park-is.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 11
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 13
   },
   {
     "id": "FLIS0060",
@@ -6162,8 +6162,8 @@
     "salary_scale_5yr_net": 2350,
     "website": "https://aloha-college.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 3
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0065",
@@ -6461,9 +6461,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.679Z",
     "salary_scale_5yr_net": 4000,
     "website": "https://www.isa.nl",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0069",
@@ -6651,7 +6651,7 @@
     "website": "https://www.asbarcelona.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0070",
@@ -6986,9 +6986,9 @@
     "website": "https://www.ais.at",
     "lastSweptDate": "2026-09-25T11:33:37.628Z",
     "lastSweptAtMillis": 1790336017628,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 4,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0072",
@@ -7308,9 +7308,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:13:25.079Z",
     "salary_scale_5yr_net": 27000,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0076",
@@ -7384,7 +7384,7 @@
     "website": "https://www.stgeorgesschool.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 2
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0077",
@@ -7457,8 +7457,8 @@
     "salary_scale_5yr_net": 3350,
     "website": "https://www.isdedu.de",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0078",
@@ -7833,7 +7833,7 @@
     "careersPageUrl": "https://www.stjulians.com/work-with-us",
     "careersUrl": "https://www.stjulians.com/work-with-us",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 2
   },
   {
@@ -8707,8 +8707,8 @@
     "salary_scale_5yr_net": 17917,
     "website": "https://www.bisr.com.sa",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0092",
@@ -8936,9 +8936,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 15417,
     "website": "https://rgs-riyadh.edu.sa",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0094",
@@ -9363,8 +9363,6 @@
     "revalidationError": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent: [402 Payment Required] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
     "revalidationStatus": "failed",
     "schoolId": "FLIS0096",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 4,
     "currency": "SAR",
     "salary_source_year": "2025/2026",
     "net_salary": 19583,
@@ -9373,7 +9371,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 19583,
     "website": "https://miskschools.edu.sa",
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0097",
@@ -9447,9 +9447,9 @@
       "packageType": "Full Expat Package + Provided Accommodation"
     },
     "website": "https://sis.edu.sa",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0098",
@@ -9529,7 +9529,7 @@
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 2
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0099",
@@ -9602,7 +9602,7 @@
     "salary_scale_5yr_net": 16500,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 9
   },
   {
@@ -9674,8 +9674,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.cranleigh.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 6
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0101",
@@ -9753,7 +9753,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.brightoncollege.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 17
   },
   {
@@ -9951,8 +9951,8 @@
     "salary_scale_5yr_net": 16000,
     "website": "https://www.taaleem.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
-    "openJobsCount": 11
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 17
   },
   {
     "id": "FLIS0103",
@@ -10030,7 +10030,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.dubaicollege.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 6
   },
   {
@@ -10111,8 +10111,8 @@
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 20
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 24
   },
   {
     "id": "FLIS0105",
@@ -10183,7 +10183,7 @@
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 22
   },
   {
@@ -10257,8 +10257,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 14
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 16
   },
   {
     "id": "FLIS0107",
@@ -10338,8 +10338,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 17000,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 5
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0108",
@@ -10593,7 +10593,7 @@
     "lastSweptDate": "2026-09-25T11:35:46.969Z",
     "lastSweptAtMillis": 1790336146969,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 8
   },
   {
@@ -10674,8 +10674,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "website": "https://www.reptondubai.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 5
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0111",
@@ -10752,7 +10752,7 @@
     "website": "https://hisdubai.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 3
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0112",
@@ -10833,7 +10833,7 @@
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 5
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0113",
@@ -10905,8 +10905,8 @@
     "salary_scale_5yr_net": 13500,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:20:47.537Z",
-    "openJobsCount": 10
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0114",
@@ -10988,7 +10988,7 @@
     "tesnumber": null,
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 6
   },
   {
@@ -11153,8 +11153,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 1708,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 11
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 17
   },
   {
     "id": "FLIS0116",
@@ -11230,8 +11230,8 @@
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 1600,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0117",
@@ -11400,7 +11400,7 @@
     "salary_scale_5yr_net": 3200,
     "website": "https://www.bisc.edu.eg",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 2
   },
   {
@@ -11476,13 +11476,13 @@
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 3000,
     "website": "https://malverncollege.edu.eg",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "tespage": null,
     "tesnumber": null,
     "tesOrganizationId": null,
-    "tesEmployerSlug": null
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0120",
@@ -11562,7 +11562,7 @@
     "salary_scale_5yr_net": 2800,
     "website": "https://www.alsson.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 3
   },
   {
@@ -11645,8 +11645,8 @@
     "salary_scale_5yr_net": 4000,
     "website": "https://www.isk.ac.ke",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 5
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0122",
@@ -11724,7 +11724,7 @@
     "salary_scale_5yr_net": 320000,
     "website": "https://www.brookhouse.ac.ke",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 8
   },
   {
@@ -11798,9 +11798,9 @@
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 280000,
     "website": "https://gardenestate.braeburn.com",
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 5,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0124",
@@ -11878,8 +11878,8 @@
     "salary_scale_5yr_net": 40000,
     "website": "https://www.isct.co.za",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 5
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0125",
@@ -11961,7 +11961,7 @@
     "salary_scale_5yr_net": 52000,
     "website": "https://www.aisj-jhb.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 6
   },
   {
@@ -12040,8 +12040,8 @@
     "salary_scale_5yr_net": 43000,
     "website": "https://www.aisct.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 12
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0127",
@@ -12547,7 +12547,7 @@
     "website": "https://www.ishcmc.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 3
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0131",
@@ -12790,8 +12790,8 @@
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 13500,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0134",
@@ -13091,7 +13091,7 @@
     "website": "https://www.standrews107.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 2
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0138",
@@ -13163,8 +13163,8 @@
     "salary_scale_5yr_net": 112000,
     "website": "https://brightoncollege.ac.th",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0139",
@@ -13238,8 +13238,8 @@
     "careersPageUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
     "careersUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 7
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 15
   },
   {
     "id": "FLIS0140",
@@ -13626,9 +13626,9 @@
     "website": "https://www.bsj.sch.id",
     "careersPageUrl": "https://www.bsj.sch.id/work-at-bsj",
     "careersUrl": "https://www.bsj.sch.id/work-at-bsj",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 14
   },
   {
     "id": "FLIS0145",
@@ -13797,8 +13797,8 @@
     "salary_scale_5yr_net": 2800,
     "website": "https://jakarta.acgedu.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 3
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0147",
@@ -14219,9 +14219,9 @@
     "website": "https://www.bst.ac.jp",
     "careersPageUrl": "https://www.bst.ac.jp/work-at-bst",
     "careersUrl": "https://www.bst.ac.jp/work-at-bst",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0151",
@@ -14425,8 +14425,8 @@
     "salary_scale_5yr_net": 483333,
     "website": "https://www.malverncollegetokyo.jp",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0152",
@@ -14648,8 +14648,8 @@
     "salary_scale_5yr_net": 475000,
     "website": "https://www.stmaur.ac.jp",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0155",
@@ -14891,8 +14891,8 @@
     "careersPageUrl": "https://www.seoulforeign.org/employment",
     "careersUrl": "https://www.seoulforeign.org/employment",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 8
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0158",
@@ -15337,8 +15337,8 @@
     "salary_scale_5yr_net": 14583,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 0
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0164",
@@ -15409,8 +15409,8 @@
     "salary_scale_5yr_net": 15500,
     "website": "https://akademeia.edu.pl",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0165",
@@ -15512,9 +15512,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3500,
     "website": "https://www.isb.ro",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0166",
@@ -15912,8 +15912,8 @@
     "salary_scale_5yr_net": 36667,
     "website": "https://www.intsch.se",
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 2
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0171",
@@ -16218,9 +16218,9 @@
       }
     },
     "website": "https://www.acs-schools.org",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0175",
@@ -16539,8 +16539,6 @@
     "isLocked": true,
     "isCampusStub": false,
     "schoolId": "FLIS0178",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 2,
     "salary_source_year": "2025/2026",
     "currency": "EUR",
     "net_salary": 3167,
@@ -16548,7 +16546,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 3167,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0179",
@@ -17849,7 +17849,7 @@
     "website": "https://www.markham.edu.pe",
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 3
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0187",
@@ -18826,9 +18826,9 @@
     "salary_scale_5yr_net": 2300,
     "careersPageUrl": "https://www.lais.at",
     "careersUrl": "https://www.lais.at",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0195",
@@ -19305,8 +19305,8 @@
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 1542,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0201",
@@ -19454,9 +19454,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:16:33.052Z",
     "salary_scale_5yr_net": 2400,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0203",
@@ -19527,9 +19527,9 @@
     "salary_scale_5yr_net": 1300,
     "lastSweptDate": "2026-09-25T11:40:58.041Z",
     "lastSweptAtMillis": 1790336458041,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 10,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0204",
@@ -20196,8 +20196,8 @@
     "last_benchmark_update": "2026-09-25T08:18:33.087Z",
     "salary_scale_5yr_net": 2150,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 3
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0207",
@@ -20845,7 +20845,7 @@
     "salary_scale_5yr_net": 2450,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 1
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0214",
@@ -21303,9 +21303,9 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2400,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 27
   },
   {
     "id": "FLIS0220",
@@ -21608,9 +21608,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 5000,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 3,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 12
   },
   {
     "id": "FLIS0222",
@@ -21796,9 +21796,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 4600,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0223",
@@ -21941,9 +21941,9 @@
     "last_benchmark_update": "2026-09-25T07:25:58.683Z",
     "salary_scale_5yr_net": 3750,
     "website": "https://www.bakuoxfordschool.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0224",
@@ -24077,9 +24077,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 2050,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 2,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0244",
@@ -24987,7 +24987,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 15833,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 2
   },
   {
@@ -25119,7 +25119,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3000,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 1
   },
   {
@@ -25188,7 +25188,7 @@
     "salary_scale_5yr_net": 152000,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
-    "openJobsCount": 4
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0260",
@@ -28238,15 +28238,14 @@
     },
     "lastSweptDate": "2026-09-25T11:48:02.805Z",
     "lastSweptAtMillis": 1790336882805,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 2,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0320",
     "country": "United Arab Emirates",
     "officialName": "Harrow International School Abu Dhabi",
-    "openJobsCount": 0,
     "createdAt": {
       "_seconds": 1790089783,
       "_nanoseconds": 139000000
@@ -28306,13 +28305,14 @@
     "salary_scale_5yr_net": 17500,
     "lastSweptDate": "2026-09-25T11:48:03.772Z",
     "lastSweptAtMillis": 1790336883772,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0321",
     "country": "United Arab Emirates",
     "officialName": "Dubai Schools Al Khawaneej",
-    "openJobsCount": 0,
     "createdAt": {
       "_seconds": 1790089783,
       "_nanoseconds": 964000000
@@ -28381,13 +28381,14 @@
     },
     "lastSweptDate": "2026-09-25T11:48:02.056Z",
     "lastSweptAtMillis": 1790336882056,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0322",
     "country": "United Arab Emirates",
     "officialName": "Lycée Libanais Francophone Privé Meydan",
-    "openJobsCount": 0,
     "createdAt": {
       "_seconds": 1790089784,
       "_nanoseconds": 797000000
@@ -28456,7 +28457,9 @@
     },
     "lastSweptDate": "2026-09-25T11:48:05.206Z",
     "lastSweptAtMillis": 1790336885206,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0323",
@@ -29360,18 +29363,18 @@
       "_nanoseconds": 477000000
     },
     "schoolId": "FLIS0336",
-    "lastCountersSyncedAt": 1790193420261,
     "lastSweptDate": "2026-09-24T16:42:21.275Z",
     "lastSweptAtMillis": 1790268141275,
     "isLocked": true,
-    "openJobsCount": 0,
     "salary_source_year": "2025/2026",
     "net_salary": 11500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 11500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0337",
@@ -29947,8 +29950,6 @@
       "_nanoseconds": 88000000
     },
     "schoolId": "FLIS0345",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 6,
     "lastSweptDate": "2026-09-24T16:47:48.123Z",
     "lastSweptAtMillis": 1790268468123,
     "isLocked": true,
@@ -29958,7 +29959,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 12
   },
   {
     "id": "FLIS0346",
@@ -30013,8 +30016,6 @@
       "_nanoseconds": 88000000
     },
     "schoolId": "FLIS0346",
-    "lastCountersSyncedAt": 1790193420261,
-    "openJobsCount": 1,
     "lastSweptDate": "2026-09-24T16:47:59.136Z",
     "lastSweptAtMillis": 1790268479136,
     "isLocked": true,
@@ -30024,7 +30025,9 @@
     "net_salary": 15200,
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0347",
@@ -31686,7 +31689,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 17500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 2
   },
   {
@@ -31813,7 +31816,7 @@
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 1
   },
   {
@@ -32153,7 +32156,7 @@
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "lastCountersSyncedAt": 1790403981343,
     "openJobsCount": 1
   },
   {
@@ -33097,7 +33100,6 @@
       }
     ],
     "leadershipVacanciesCount": 1,
-    "openJobsCount": 3,
     "salary_confidence": "High",
     "currency": "CNY",
     "salary_source_year": "2025/2026",
@@ -33105,7 +33107,9 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 35000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "lastCountersSyncedAt": 1790403981343,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0401",
