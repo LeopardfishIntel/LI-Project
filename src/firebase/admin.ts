@@ -943,6 +943,7 @@ export async function verifyJobUrlHttp(url: string, officialDomain?: string): Pr
 
     const normFinal = (finalUrl || '').toLowerCase().trim().replace(/\/+$/, '');
     const isGenericPortalFinal = (
+      normFinal === 'https://careers.nordanglia.com' ||
       normFinal === 'https://careers.nordangliaeducation.com' ||
       normFinal === 'https://www.nordangliaeducation.com/careers' ||
       normFinal === 'https://jobs.inspirededu.com' ||
@@ -1657,7 +1658,7 @@ export async function processRawIngestionPipeline(
         let isGroupMismatch = false;
         if (urlLower.includes("cognita") && !sGroup.includes("COGNITA") && !sNameUpper.includes("ST. ANDREWS") && !sNameUpper.includes("SOUTHBANK") && !sNameUpper.includes("ISHCMC")) {
           isGroupMismatch = true;
-        } else if (urlLower.includes("careers.nordangliaeducation.com") && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
+        } else if ((urlLower.includes("careers.nordanglia.com") || urlLower.includes("careers.nordangliaeducation.com")) && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
           isGroupMismatch = true;
         } else if (urlLower.includes("inspirededu") && !sGroup.includes("INSPIRED") && !sNameUpper.includes("INSPIRED") && !sNameUpper.includes("KING'S COLLEGE")) {
           isGroupMismatch = true;
@@ -1758,7 +1759,7 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
         let isGroupMismatch = false;
         if (rawUrlLower.includes("cognita") && !sGroup.includes("COGNITA") && !sNameUpper.includes("ST. ANDREWS") && !sNameUpper.includes("SOUTHBANK") && !sNameUpper.includes("ISHCMC")) {
           isGroupMismatch = true;
-        } else if (rawUrlLower.includes("careers.nordangliaeducation.com") && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
+        } else if ((rawUrlLower.includes("careers.nordanglia.com") || rawUrlLower.includes("careers.nordangliaeducation.com")) && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
           isGroupMismatch = true;
         } else if (rawUrlLower.includes("inspirededu") && !sGroup.includes("INSPIRED") && !sNameUpper.includes("INSPIRED") && !sNameUpper.includes("KING'S COLLEGE")) {
           isGroupMismatch = true;

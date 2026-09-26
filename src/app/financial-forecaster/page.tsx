@@ -2593,7 +2593,7 @@ function DecoderContent() {
                         if (applyUrlLower.includes("tes.com") || (selectedOpportunity.sourceUrls && (selectedOpportunity.sourceUrls["TES"] || selectedOpportunity.sourceUrls["tes"])) || rawSources.some((s: any) => String(s || "").toUpperCase() === "TES")) {
                           sMap.set("TES", "TES");
                         }
-                        if (applyUrlLower.includes("careers.nordangliaeducation.com") || applyUrlLower.includes("nordangliaeducation.com")) {
+                        if (applyUrlLower.includes("careers.nordanglia.com") || applyUrlLower.includes("careers.nordangliaeducation.com") || applyUrlLower.includes("nordangliaeducation.com")) {
                           sMap.set("NORD ANGLIA", "Nord Anglia");
                         }
                         if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
@@ -2715,7 +2715,7 @@ function DecoderContent() {
                             if (!foundUrl) {
                               const rawUrl = selectedOpportunity.applyUrl;
                               if (srcUpper.includes("NORD ANGLIA") && (applyUrlLower.includes("nordanglia") || activeSchool?.careersPageUrl?.includes("nordanglia"))) {
-                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://careers.nordangliaeducation.com";
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://careers.nordanglia.com";
                               } else if (srcUpper.includes("COGNITA")) {
                                 foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://www.cognita.com/careers/";
                               } else if (srcUpper.includes("INSPIRED")) {

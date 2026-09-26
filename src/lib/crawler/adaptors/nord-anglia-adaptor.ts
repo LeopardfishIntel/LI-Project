@@ -11,7 +11,7 @@ import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { sanitizeUrl } from "../urlResolver";
 
-const NAE_CAREERS_BASE = "https://careers.nordangliaeducation.com";
+const NAE_CAREERS_BASE = "https://careers.nordanglia.com";
 
 /**
  * 🎯 ENFORCES SHORT JOB TITLE ONLY (Capped at 60 Characters Maximum)

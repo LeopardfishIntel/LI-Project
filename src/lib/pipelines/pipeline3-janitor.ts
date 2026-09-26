@@ -241,7 +241,7 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
       const applyUrlLower = String(cacheDoc.applyUrl || cacheDoc.source_url || '').toLowerCase();
 
       const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
-      const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
+      const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordanglia.com') || applyUrlLower.includes('nordangliaeducation.com');
       const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
       const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
       const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');

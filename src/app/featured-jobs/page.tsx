@@ -131,7 +131,7 @@ const getGroupPortalUrl = (groupName: string): string => {
   const gUpper = String(groupName || "").toUpperCase();
   if (gUpper.includes("INSPIRED")) return "https://jobs.inspirededu.com";
   if (gUpper.includes("COGNITA")) return "https://cognitapeople.csod.com";
-  if (gUpper.includes("NORD ANGLIA")) return "https://careers.nordangliaeducation.com";
+  if (gUpper.includes("NORD ANGLIA")) return "https://careers.nordanglia.com";
   if (gUpper.includes("TEACH AWAY")) return "https://www.teachaway.com/teaching-jobs-abroad";
   if (gUpper.includes("ALDAR")) return "https://www.aldareducation.com";
   if (gUpper.includes("TAALEEM")) return "https://careers.taaleem.ae/en/job-search-results/";
@@ -816,7 +816,7 @@ export default function FeaturedJobsPage() {
         const sourceUpper = String(cacheDoc.source || '').toUpperCase();
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
         const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
-        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
+        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordanglia.com') || applyUrlLower.includes('nordangliaeducation.com');
         const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
         const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
         const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
@@ -990,7 +990,7 @@ export default function FeaturedJobsPage() {
             }
 
             const isMatchingGroupUrl = cacheDoc.applyUrl && (
-              (gUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordangliaeducation.com")) ||
+              (gUpper.includes("NORD ANGLIA") && (applyUrlLower.includes("nordanglia.com") || applyUrlLower.includes("nordangliaeducation.com"))) ||
               (gUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu.com")) ||
               (gUpper.includes("COGNITA") && applyUrlLower.includes("cognitapeople.csod.com")) ||
               ((gUpper.includes("TAYLOR") || gUpper.includes("TENBY")) && (applyUrlLower.includes("taylors.edu.my") || applyUrlLower.includes("tenby.edu.my"))) ||
@@ -1000,7 +1000,7 @@ export default function FeaturedJobsPage() {
               (gUpper.includes("GLOBE") && applyUrlLower.includes("globeducate")) ||
               (gUpper.includes("ISP") && applyUrlLower.includes("internationalschools")) ||
               (gUpper.includes("UWC") && applyUrlLower.includes("uwc.org"))
-            ) && !applyUrlLower.endsWith("/careers") && cacheDoc.applyUrl !== "https://careers.nordangliaeducation.com";
+            ) && !applyUrlLower.endsWith("/careers") && cacheDoc.applyUrl !== "https://careers.nordangliaeducation.com" && cacheDoc.applyUrl !== "https://careers.nordanglia.com";
 
             if (isMatchingGroupUrl && !isTaaleemJob) {
               if (!sourcesList.includes(groupLabel)) {
@@ -2174,7 +2174,7 @@ export default function FeaturedJobsPage() {
                               if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates"))) {
                                 sMap.set("TES", "TES");
                               }
-                              if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
+                              if (applyUrlLower.includes("careers.nordanglia.com") || applyUrlLower.includes("careers.nordangliaeducation.com")) {
                                 sMap.set("NORD ANGLIA", "Nord Anglia");
                               }
                               if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
@@ -2277,6 +2277,7 @@ export default function FeaturedJobsPage() {
                                     if (!u || u === "#") return true;
                                     const norm = u.toLowerCase().trim().replace(/\/+$/, "");
                                     return (
+                                      norm === "https://careers.nordanglia.com" ||
                                       norm === "https://careers.nordangliaeducation.com" ||
                                       norm === "https://www.nordangliaeducation.com/careers" ||
                                       norm === "https://jobs.inspirededu.com" ||
