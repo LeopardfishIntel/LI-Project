@@ -753,9 +753,9 @@
     "website": "https://www.tts.edu.sg",
     "careersPageUrl": "https://www.tts.edu.sg/working-with-us/current-vacancies",
     "careersUrl": "https://www.tts.edu.sg/working-with-us/current-vacancies",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0010",
@@ -818,9 +818,9 @@
     "last_benchmark_update": "2026-09-25T08:09:37.269Z",
     "salary_scale_5yr_net": 41500,
     "website": "https://www.gtcollege.edu.hk",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 6,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0011",
@@ -1873,8 +1873,6 @@
     "agency": "Qatar Foundation Career Portal, Teach Away, Search Associates",
     "careersPageUrl": "https://www.qf.org.qa/careers",
     "name": "Qatar Academy",
-    "tesOrganizationId": "1071381",
-    "tesEmployerSlug": "qatar-foundation-1071381",
     "housingBenefit": "Provided",
     "revalidationCompletedAt": {
       "_nanoseconds": 281000000,
@@ -1899,9 +1897,13 @@
     "last_benchmark_update": "2026-09-25T07:25:58.677Z",
     "salary_scale_5yr_net": 16667,
     "website": "https://www.qf.org.qa",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0026",
@@ -1983,7 +1985,7 @@
     "careersPageUrl": "https://www.gemseducation.com/careers",
     "careersUrl": "https://www.gemseducation.com/careers",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 9
   },
   {
@@ -6648,7 +6650,7 @@
     "salary_scale_5yr_net": 2900,
     "website": "https://www.asbarcelona.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 1
   },
   {
@@ -7381,7 +7383,7 @@
     "salary_scale_5yr_net": 2750,
     "website": "https://www.stgeorgesschool.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -7831,7 +7833,7 @@
     "careersPageUrl": "https://www.stjulians.com/work-with-us",
     "careersUrl": "https://www.stjulians.com/work-with-us",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -8236,9 +8238,7 @@
     "isRevalidating": true,
     "revalidationStatus": "success",
     "name": "Danube International School Vienna",
-    "tesOrganizationId": "1057637",
     "schoolname": "Danube International School Vienna",
-    "tesEmployerSlug": "danube-international-school-vienna-1057637",
     "housingBenefit": "No housing allowance provided (local market rentals)",
     "pensionBenefit": "Austrian state pension & social security fund",
     "tuitionBenefit": "100% fee remission for staff children",
@@ -8478,7 +8478,11 @@
     "lastSweptAtMillis": 1790336065958,
     "lastCountersSyncedAt": 1790337468362,
     "openJobsCount": 2,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0089",
@@ -8703,7 +8707,7 @@
     "salary_scale_5yr_net": 17917,
     "website": "https://www.bisr.com.sa",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 4
   },
   {
@@ -9524,7 +9528,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -9598,7 +9602,7 @@
     "salary_scale_5yr_net": 16500,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 9
   },
   {
@@ -9670,7 +9674,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.cranleigh.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 6
   },
   {
@@ -9749,7 +9753,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.brightoncollege.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 17
   },
   {
@@ -9947,7 +9951,7 @@
     "salary_scale_5yr_net": 16000,
     "website": "https://www.taaleem.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 14
   },
   {
@@ -10026,7 +10030,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.dubaicollege.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 6
   },
   {
@@ -10107,7 +10111,7 @@
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 20
   },
   {
@@ -10179,7 +10183,7 @@
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 22
   },
   {
@@ -10253,7 +10257,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 14
   },
   {
@@ -10334,7 +10338,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.680Z",
     "salary_scale_5yr_net": 17000,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 5
   },
   {
@@ -10589,7 +10593,7 @@
     "lastSweptDate": "2026-09-25T11:35:46.969Z",
     "lastSweptAtMillis": 1790336146969,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 8
   },
   {
@@ -10670,7 +10674,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "website": "https://www.reptondubai.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 5
   },
   {
@@ -10747,7 +10751,7 @@
     },
     "website": "https://hisdubai.ae",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 3
   },
   {
@@ -10828,7 +10832,7 @@
     "salary_scale_5yr_net": 14167,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 5
   },
   {
@@ -10901,7 +10905,7 @@
     "salary_scale_5yr_net": 13500,
     "website": "https://www.nordangliaeducation.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 11
   },
   {
@@ -10930,7 +10934,6 @@
     "isRevalidating": true,
     "revalidationStatus": "success",
     "agency": "Nord Anglia Career Portal, Teach Away",
-    "tesOrganizationId": "1057365",
     "techEcosystemTags": {
       "devices": [],
       "suite": [
@@ -10972,7 +10975,6 @@
     "totalscore": "9.3",
     "currency": "KWD",
     "isTaxFree": true,
-    "tesEmployerSlug": "the-british-school-of-kuwait-1057282",
     "schoolId": "FLIS0114",
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
@@ -10982,8 +10984,12 @@
     "salary_scale_5yr_net": 1042,
     "website": "https://www.bsk.edu.kw",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 7
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0115",
@@ -11147,7 +11153,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.681Z",
     "salary_scale_5yr_net": 1708,
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 11
   },
   {
@@ -11223,9 +11229,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:14:16.426Z",
     "salary_scale_5yr_net": 1600,
-    "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
-    "openJobsCount": 7,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0117",
@@ -11394,7 +11400,7 @@
     "salary_scale_5yr_net": 3200,
     "website": "https://www.bisc.edu.eg",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -11429,8 +11435,6 @@
     "revalidationStatus": "success",
     "agency": "Malvern College Int'l Portal, Teach Away",
     "careersPageUrl": "https://malverncollege.edu.eg/careers/",
-    "tesOrganizationId": "1077433",
-    "tesEmployerSlug": "malvern-college-egypt-1077433",
     "ownership": "Malvern College Family of Schools",
     "updatedAtMillis": 1788187151122,
     "group": "Malvern College",
@@ -11474,7 +11478,11 @@
     "website": "https://malverncollege.edu.eg",
     "lastCountersSyncedAt": 1790337468362,
     "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0120",
@@ -11554,7 +11562,7 @@
     "salary_scale_5yr_net": 2800,
     "website": "https://www.alsson.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 3
   },
   {
@@ -11637,7 +11645,7 @@
     "salary_scale_5yr_net": 4000,
     "website": "https://www.isk.ac.ke",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 5
   },
   {
@@ -11716,7 +11724,7 @@
     "salary_scale_5yr_net": 320000,
     "website": "https://www.brookhouse.ac.ke",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 8
   },
   {
@@ -11870,7 +11878,7 @@
     "salary_scale_5yr_net": 40000,
     "website": "https://www.isct.co.za",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 5
   },
   {
@@ -11953,7 +11961,7 @@
     "salary_scale_5yr_net": 52000,
     "website": "https://www.aisj-jhb.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 6
   },
   {
@@ -12032,7 +12040,7 @@
     "salary_scale_5yr_net": 43000,
     "website": "https://www.aisct.org",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 12
   },
   {
@@ -12538,7 +12546,7 @@
     "salary_scale_5yr_net": 3833,
     "website": "https://www.ishcmc.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 3
   },
   {
@@ -12575,7 +12583,6 @@
     "rating": "Prestigious",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "marlborough-college-malaysia-1039864",
     "staffstudentratio": "1:8",
     "approvals": "HMC / FOBISIA / COBIS / BSA / IB World School",
     "isLocked": true,
@@ -12590,7 +12597,6 @@
     "housingprovision": "Provided On-Campus Housing",
     "citysafety": "8.7",
     "curriculum": "British / IGCSE / IB DP",
-    "tesOrganizationId": "1039864",
     "staffcount": "110",
     "schoolname": "Marlborough College Malaysia",
     "worklifescore": "8.3",
@@ -12620,7 +12626,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.381Z",
     "salary_scale_5yr_net": 15000,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0132",
@@ -12779,9 +12789,9 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 13500,
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0134",
@@ -13080,7 +13090,7 @@
     "salary_scale_5yr_net": 108000,
     "website": "https://www.standrews107.com",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -13153,7 +13163,7 @@
     "salary_scale_5yr_net": 112000,
     "website": "https://brightoncollege.ac.th",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 4
   },
   {
@@ -13228,7 +13238,7 @@
     "careersPageUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
     "careersUrl": "https://www.kingsbangkok.ac.th/en/work-with-us",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 7
   },
   {
@@ -13786,9 +13796,9 @@
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 2800,
     "website": "https://jakarta.acgedu.com",
-    "lastCountersSyncedAt": 1790337468362,
-    "openJobsCount": 7,
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0147",
@@ -14415,8 +14425,8 @@
     "salary_scale_5yr_net": 483333,
     "website": "https://www.malverncollegetokyo.jp",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 2
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0152",
@@ -14678,8 +14688,6 @@
     "agency": "Search Associates, ISS, LinkedIn",
     "careersPageUrl": "https://www.yis.ac.jp/careers",
     "name": "Yokohama International School",
-    "tesOrganizationId": "1058204",
-    "tesEmployerSlug": "yokohama-international-school-1058204",
     "techEcosystemTags": {
       "devices": [
         "Apple Mac"
@@ -14727,7 +14735,11 @@
     "last_benchmark_update": "2026-09-25T07:25:58.682Z",
     "salary_scale_5yr_net": 516667,
     "website": "https://www.yis.ac.jp",
-    "updatedAt": "2026-09-25T12:18:17.167Z"
+    "updatedAt": "2026-09-25T12:18:17.167Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0156",
@@ -14879,7 +14891,7 @@
     "careersPageUrl": "https://www.seoulforeign.org/employment",
     "careersUrl": "https://www.seoulforeign.org/employment",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 8
   },
   {
@@ -15324,9 +15336,9 @@
     "last_benchmark_update": "2026-09-25T08:15:19.382Z",
     "salary_scale_5yr_net": 14583,
     "website": "https://www.nordangliaeducation.com",
-    "lastCountersSyncedAt": "2026-09-25T12:07:24.373Z",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "openJobsCount": 1
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0164",
@@ -15397,8 +15409,8 @@
     "salary_scale_5yr_net": 15500,
     "website": "https://akademeia.edu.pl",
     "updatedAt": "2026-09-25T12:18:17.167Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 2
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0165",
@@ -15900,7 +15912,7 @@
     "salary_scale_5yr_net": 36667,
     "website": "https://www.intsch.se",
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -17836,7 +17848,7 @@
     "salary_scale_5yr_net": 3333,
     "website": "https://www.markham.edu.pe",
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 3
   },
   {
@@ -20184,8 +20196,8 @@
     "last_benchmark_update": "2026-09-25T08:18:33.087Z",
     "salary_scale_5yr_net": 2150,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 4
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0207",
@@ -20397,7 +20409,6 @@
     "scrapedJobsCount": 0,
     "website": "https://st-chris.schoolrecruiter.com/",
     "agency": "SchoolRecruiter Portal, Search Associates, LinkedIn",
-    "tesOrganizationId": "1170107",
     "aliases": [],
     "schoolGroup": "",
     "group": "Direct",
@@ -20511,7 +20522,6 @@
     "totalscore": "9.7",
     "currency": "BHD",
     "isTaxFree": true,
-    "tesEmployerSlug": "st-christopher-s-school-1055852",
     "schoolId": "FLIS0209",
     "salary_source_year": "2025/2026",
     "net_salary": 1600,
@@ -20519,7 +20529,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 1600,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0210",
@@ -20830,7 +20844,7 @@
     "last_benchmark_update": "2026-09-25T08:18:33.088Z",
     "salary_scale_5yr_net": 2450,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 1
   },
   {
@@ -22150,8 +22164,6 @@
     "isCampusStub": false,
     "careersPageUrl": "https://www.tisa.az/careers",
     "officialDomain": "tisa.az",
-    "tesOrganizationId": "1057321",
-    "tesEmployerSlug": "tisa-1057321",
     "schoolId": "FLIS0226",
     "financescore": "8.8",
     "housing_status": "provided",
@@ -22199,7 +22211,11 @@
     "salary_scale_5yr_net": 5417,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
     "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0227",
@@ -23189,8 +23205,6 @@
       }
     ],
     "schooljp": "https://www.uwcea.org",
-    "tesEmployerSlug": "uwc-east-africa-1082531",
-    "tesOrganizationId": "1082531",
     "curriculum": "IB",
     "curriculumTier": "IB World School (PYP, MYP, DP)",
     "ibWorldSchool": true,
@@ -23296,7 +23310,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.230Z",
     "salary_scale_5yr_net": 2500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0233",
@@ -24743,7 +24761,6 @@
     "summary": "State-of-the-art waterfront campus in Tanjung Tokong sistered with Stonyhurst UK.",
     "website": "https://www.stonyhurstpenang.edu.my",
     "careersPageUrl": "https://www.stonyhurstpenang.edu.my/jointheteam/",
-    "tesEmployerSlug": "stonyhurst-international-school-penang",
     "isLocked": true,
     "isCampusStub": false,
     "scrapedJobsList": [],
@@ -24763,7 +24780,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 12800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0253",
@@ -24775,7 +24796,6 @@
     "rating": "Established",
     "totalscore": "8.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "nexus-international-school-malaysia-1061279",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
     "approvals": "CIS / WASC / FOBISIA / Apple Distinguished / IB World School",
@@ -24794,7 +24814,6 @@
     "housingprovision": "MYR 3,000–3,800/mo Allowance",
     "citysafety": "8.8",
     "curriculum": "Early Years / IPC / IGCSE / IB DP",
-    "tesOrganizationId": "1061279",
     "staffcount": "110",
     "schoolname": "Nexus International School Malaysia",
     "worklifescore": "8.5",
@@ -24856,7 +24875,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 13000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0254",
@@ -24964,7 +24987,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 15833,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -25096,7 +25119,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3000,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 1
   },
   {
@@ -25164,7 +25187,7 @@
     "last_benchmark_update": "2026-09-25T08:19:39.231Z",
     "salary_scale_5yr_net": 152000,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 4
   },
   {
@@ -25248,7 +25271,6 @@
       "IB DP"
     ],
     "schoolname": "British International School Bratislava",
-    "tesEmployerSlug": "british-international-school-bratislava",
     "websiteUrl": "https://www.nordangliaeducation.com/bis-bratislava",
     "healthcoverage": "Slovak National Health + Private Top-up",
     "name": "British International School Bratislava",
@@ -25264,7 +25286,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.313Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0262",
@@ -25318,7 +25344,6 @@
     "city": "Mexico City",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-foundation-mexico",
     "numericalstaff": "260",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -25334,7 +25359,6 @@
     "housingprovision": "Housing Allowance + Tax-Equalized Relocation Allowance",
     "citysafety": "8.2",
     "curriculum": "US Curriculum / IB Diploma / Mexican SEP Dual Diploma",
-    "tesOrganizationId": "1083920",
     "staffcount": "260",
     "schoolname": "The American School Foundation Mexico City",
     "worklifescore": "8.7",
@@ -25356,7 +25380,11 @@
     "lastSweptAtMillis": 1790336656514,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
     "openJobsCount": 0,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0264",
@@ -25367,7 +25395,6 @@
     "city": "Almaty",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "haileybury-almaty",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -25383,7 +25410,6 @@
     "housingprovision": "Provided Luxury Compound Housing + Utilities Paid",
     "citysafety": "9",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1019482",
     "staffcount": "140",
     "schoolname": "Haileybury Almaty",
     "worklifescore": "8.6",
@@ -25405,7 +25431,11 @@
     "aliases": [
       "FLIS0428"
     ],
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0265",
@@ -25415,7 +25445,6 @@
     "careersPageUrl": "https://www.ash.nl/careers",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-of-the-hague",
     "numericalstaff": "175",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -25431,7 +25460,6 @@
     "housingprovision": "Monthly Housing Allowance + 30% Tax Ruling Eligibility",
     "citysafety": "9.6",
     "curriculum": "US Curriculum / AP / IB Diploma",
-    "tesOrganizationId": "1028471",
     "staffcount": "175",
     "schoolname": "American School of The Hague",
     "worklifescore": "9.1",
@@ -25451,7 +25479,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 3300,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0266",
@@ -25462,7 +25494,6 @@
     "city": "Monterrey",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-foundation-monterrey",
     "numericalstaff": "220",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -25478,7 +25509,6 @@
     "housingprovision": "Housing Allowance + Tax-Equalized Relocation Stipend",
     "citysafety": "8.5",
     "curriculum": "US Curriculum / AP Capstone / Mexican Bachillerato",
-    "tesOrganizationId": "1083921",
     "staffcount": "220",
     "schoolname": "American School Foundation of Monterrey",
     "worklifescore": "8.8",
@@ -25497,7 +25527,11 @@
     "net_salary": 56667,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 56667,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0267",
@@ -25508,7 +25542,6 @@
     "city": "Mexico City",
     "totalscore": "8.9",
     "isCampusStub": false,
-    "tesEmployerSlug": "greengates-school",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -25524,7 +25557,6 @@
     "housingprovision": "Furnished Apartment Provided or Housing Stipend",
     "citysafety": "8.1",
     "curriculum": "British Curriculum / IGCSE / IB Diploma",
-    "tesOrganizationId": "1018230",
     "staffcount": "140",
     "schoolname": "Greengates School",
     "worklifescore": "8.5",
@@ -25548,7 +25580,11 @@
       "Greengates",
       "FLIS0449"
     ],
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0268",
@@ -25559,7 +25595,6 @@
     "city": "Guadalajara",
     "totalscore": "8.7",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-guadalajara",
     "numericalstaff": "180",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -25575,7 +25610,6 @@
     "housingprovision": "Monthly Housing Allowance + Relocation Support",
     "citysafety": "8.4",
     "curriculum": "US Common Core / AP / Mexican Bachillerato",
-    "tesOrganizationId": "1083922",
     "staffcount": "180",
     "schoolname": "The American School of Guadalajara",
     "worklifescore": "8.9",
@@ -25594,7 +25628,11 @@
     "net_salary": 48333,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 48333,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0269",
@@ -25605,7 +25643,6 @@
     "city": "Querétaro",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "john-f-kennedy-school-queretaro",
     "numericalstaff": "130",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -25621,7 +25658,6 @@
     "housingprovision": "Monthly Housing Stipend + Moving Allowance",
     "citysafety": "9.1",
     "curriculum": "US Curriculum / IB Diploma / Mexican Bachillerato",
-    "tesOrganizationId": "1083923",
     "staffcount": "130",
     "schoolname": "John F. Kennedy School Querétaro",
     "worklifescore": "9",
@@ -25640,7 +25676,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 38000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0270",
@@ -25651,7 +25691,6 @@
     "city": "Bogotá",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "colegio-nueva-granada",
     "numericalstaff": "210",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -25667,7 +25706,6 @@
     "housingprovision": "Housing Allowance + Relocation Support",
     "citysafety": "8.2",
     "curriculum": "US Curriculum / AP / Colombian Bachillerato",
-    "tesOrganizationId": "1048201",
     "staffcount": "210",
     "schoolname": "Colegio Nueva Granada",
     "worklifescore": "8.9",
@@ -25699,7 +25737,11 @@
     "currency": "USD",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3167,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0271",
@@ -25710,7 +25752,6 @@
     "city": "Cali",
     "totalscore": "8.9",
     "isCampusStub": false,
-    "tesEmployerSlug": "colegio-bolivar",
     "numericalstaff": "150",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -25726,7 +25767,6 @@
     "housingprovision": "Provided Apartment or Substantial Housing Allowance",
     "citysafety": "8",
     "curriculum": "US Curriculum / AP / Colombian Bachillerato",
-    "tesOrganizationId": "1048202",
     "staffcount": "150",
     "schoolname": "Colegio Bolívar",
     "worklifescore": "9.1",
@@ -25745,7 +25785,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 11500000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0272",
@@ -25756,7 +25800,6 @@
     "city": "Bogotá",
     "totalscore": "8.6",
     "isCampusStub": false,
-    "tesEmployerSlug": "the-english-school-bogota",
     "numericalstaff": "160",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -25772,7 +25815,6 @@
     "housingprovision": "Housing Allowance + Settling-In Allowance",
     "citysafety": "8.1",
     "curriculum": "IB Continuum (PYP, MYP, DP)",
-    "tesOrganizationId": "1048203",
     "staffcount": "160",
     "schoolname": "The English School Bogotá",
     "worklifescore": "8.7",
@@ -25791,7 +25833,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 10500000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0273",
@@ -25802,7 +25848,6 @@
     "city": "The Hague",
     "totalscore": "8.9",
     "isCampusStub": false,
-    "tesEmployerSlug": "international-school-of-the-hague",
     "numericalstaff": "210",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -25818,7 +25863,6 @@
     "housingprovision": "Housing Allowance + 30% Tax Ruling Support",
     "citysafety": "9.6",
     "curriculum": "IPC / IB MYP / IB Diploma",
-    "tesOrganizationId": "1009821",
     "staffcount": "210",
     "schoolname": "International School of The Hague",
     "worklifescore": "9",
@@ -25837,7 +25881,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 3050,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0274",
@@ -25848,7 +25896,6 @@
     "city": "Rotterdam",
     "totalscore": "8.7",
     "isCampusStub": false,
-    "tesEmployerSlug": "rotterdam-international-secondary-school",
     "numericalstaff": "95",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -25864,7 +25911,6 @@
     "housingprovision": "Relocation Allowance + Housing Search Assistance",
     "citysafety": "9.4",
     "curriculum": "IGCSE / IB Diploma",
-    "tesOrganizationId": "1009822",
     "staffcount": "95",
     "schoolname": "Rotterdam International Secondary School",
     "worklifescore": "8.9",
@@ -25883,7 +25929,11 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0275",
@@ -25894,7 +25944,6 @@
     "city": "Eindhoven",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "international-school-eindhoven",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -25910,7 +25959,6 @@
     "housingprovision": "Housing Relocation Support + 30% Tax Ruling Eligibility",
     "citysafety": "9.5",
     "curriculum": "IPC / IB MYP / IB Diploma",
-    "tesOrganizationId": "1009823",
     "staffcount": "110",
     "schoolname": "International School Eindhoven",
     "worklifescore": "9.1",
@@ -25929,7 +25977,11 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0276",
@@ -25940,7 +25992,6 @@
     "city": "Hawally",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-international-school-of-kuwait",
     "numericalstaff": "160",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -25956,7 +26007,6 @@
     "housingprovision": "Provided Furnished Apartment + Utilities Included",
     "citysafety": "9.2",
     "curriculum": "US Common Core / IB Diploma",
-    "tesOrganizationId": "1005112",
     "staffcount": "160",
     "schoolname": "American International School of Kuwait",
     "worklifescore": "8.2",
@@ -25975,7 +26025,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1125,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0277",
@@ -25986,7 +26040,6 @@
     "city": "Hawally",
     "totalscore": "8.6",
     "isCampusStub": false,
-    "tesEmployerSlug": "universal-american-school-kuwait",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:10",
@@ -26002,7 +26055,6 @@
     "housingprovision": "Provided Single/Couple Furnished Apartment",
     "citysafety": "9.2",
     "curriculum": "US Curriculum / AP",
-    "tesOrganizationId": "1005113",
     "staffcount": "140",
     "schoolname": "Universal American School Kuwait",
     "worklifescore": "8.1",
@@ -26021,7 +26073,11 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0278",
@@ -26032,7 +26088,6 @@
     "city": "Jabriya",
     "totalscore": "8.7",
     "isCampusStub": false,
-    "tesEmployerSlug": "new-english-school-kuwait",
     "numericalstaff": "150",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -26048,7 +26103,6 @@
     "housingprovision": "Provided Air-Conditioned Apartment + Utilities",
     "citysafety": "9.2",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1005114",
     "staffcount": "150",
     "schoolname": "New English School Kuwait",
     "worklifescore": "8",
@@ -26067,7 +26121,11 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0279",
@@ -26078,7 +26136,6 @@
     "city": "Doha",
     "totalscore": "9.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-of-doha",
     "numericalstaff": "260",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26094,7 +26151,6 @@
     "housingprovision": "Provided Luxury Compound Villa / Apartment or Allowance",
     "citysafety": "9.8",
     "curriculum": "US Curriculum (AERO) / AP / IB Diploma",
-    "tesOrganizationId": "1003201",
     "staffcount": "260",
     "schoolname": "American School of Doha",
     "worklifescore": "8.9",
@@ -26136,7 +26192,11 @@
     "net_salary": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0280",
@@ -26146,7 +26206,6 @@
     "careersPageUrl": "https://www.dohacollege.com/careers",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "doha-college",
     "numericalstaff": "210",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26162,7 +26221,6 @@
     "housingprovision": "Provided Furnished Apartment or Generous Allowance",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003202",
     "staffcount": "210",
     "schoolname": "Doha College",
     "worklifescore": "8.7",
@@ -26183,7 +26241,11 @@
     "city": "Doha",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17917,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0281",
@@ -26194,7 +26256,6 @@
     "city": "Doha",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "park-house-english-school",
     "numericalstaff": "130",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -26209,7 +26270,6 @@
     "citySafety": "9.8",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003203",
     "staffcount": "130",
     "schoolname": "Park House English School",
     "worklifescore": "8.5",
@@ -26239,7 +26299,11 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0282",
@@ -26250,7 +26314,6 @@
     "city": "Ho Chi Minh City",
     "totalscore": "9.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "saigon-south-international-school",
     "numericalstaff": "180",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26266,7 +26329,6 @@
     "housingprovision": "Provided Apartment or Generous Housing Stipend (,200/mo)",
     "citysafety": "9.2",
     "curriculum": "US Curriculum / AP / IB Diploma",
-    "tesOrganizationId": "1011021",
     "staffcount": "180",
     "schoolname": "Saigon South International School",
     "worklifescore": "9",
@@ -26285,7 +26347,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4167,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0283",
@@ -26296,7 +26362,6 @@
     "city": "Ho Chi Minh City",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "renaissance-international-school-saigon",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26312,7 +26377,6 @@
     "housingprovision": "Monthly Housing Allowance + Relocation Support",
     "citysafety": "9.1",
     "curriculum": "British Curriculum / IGCSE / IB Diploma",
-    "tesOrganizationId": "1011022",
     "staffcount": "110",
     "schoolname": "Renaissance International School Saigon",
     "worklifescore": "8.8",
@@ -26331,7 +26395,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 2917,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0284",
@@ -26342,7 +26410,6 @@
     "city": "Hanoi",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "concordia-international-school-hanoi",
     "numericalstaff": "90",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26358,7 +26425,6 @@
     "housingprovision": "Furnished Housing Provided + Flight Allowance",
     "citysafety": "9.3",
     "curriculum": "US Curriculum / AP Capstone",
-    "tesOrganizationId": "1011023",
     "staffcount": "90",
     "schoolname": "Concordia International School Hanoi",
     "worklifescore": "9",
@@ -26377,7 +26443,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3667,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0285",
@@ -26387,7 +26457,6 @@
     "careersPageUrl": "https://www.kis.or.kr/careers",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "korea-international-school",
     "numericalstaff": "210",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26403,7 +26472,6 @@
     "housingprovision": "Provided Modern Single/Couple Apartment + Utilities",
     "citysafety": "9.8",
     "curriculum": "US Curriculum / AP / Applied Capstone",
-    "tesOrganizationId": "1007201",
     "staffcount": "210",
     "schoolname": "Korea International School",
     "worklifescore": "8.6",
@@ -26423,7 +26491,11 @@
     "city": "Seoul",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4916667,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0286",
@@ -26434,7 +26506,6 @@
     "city": "Seoul",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "dwight-school-seoul",
     "numericalstaff": "120",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26450,7 +26521,6 @@
     "housingprovision": "Provided Apartment in Seoul or Housing Stipend",
     "citysafety": "9.8",
     "curriculum": "IB World School (PYP, MYP, DP)",
-    "tesOrganizationId": "1007202",
     "staffcount": "120",
     "schoolname": "Dwight School Seoul",
     "worklifescore": "8.7",
@@ -26469,7 +26539,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 4600000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0287",
@@ -26479,7 +26553,6 @@
     "careersPageUrl": "https://siskorea.org/careers",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "seoul-international-school",
     "numericalstaff": "160",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26495,7 +26568,6 @@
     "housingprovision": "Provided Furnished Apartment + Relocation Allowance",
     "citysafety": "9.8",
     "curriculum": "US Curriculum / AP",
-    "tesOrganizationId": "1007203",
     "staffcount": "160",
     "schoolname": "Seoul International School",
     "worklifescore": "8.5",
@@ -26515,7 +26587,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 4833333,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0288",
@@ -26526,7 +26602,6 @@
     "city": "Taipei",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "taipei-european-school",
     "numericalstaff": "280",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26542,7 +26617,6 @@
     "housingprovision": "Provided Furnished Apartment or Monthly Housing Allowance",
     "citysafety": "9.8",
     "curriculum": "British (IGCSE/A-Level), French (DNBF/BAC), German (Abitur), IB DP",
-    "tesOrganizationId": "1049282",
     "staffcount": "280",
     "schoolname": "Taipei European School",
     "worklifescore": "8.9",
@@ -26561,7 +26635,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 142000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0289",
@@ -26572,7 +26650,6 @@
     "city": "Istanbul",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "istanbul-international-community-school",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26588,7 +26665,6 @@
     "housingprovision": "Provided Furnished Apartment / Housing Allowance + Utilities",
     "citysafety": "8.8",
     "curriculum": "IB Continuum (PYP, MYP, DP)",
-    "tesOrganizationId": "1012801",
     "staffcount": "110",
     "schoolname": "Istanbul International Community School",
     "worklifescore": "9",
@@ -26608,7 +26684,11 @@
     "net_salary": 3500,
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0290",
@@ -26619,7 +26699,6 @@
     "city": "Astana",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "haileybury-astana",
     "numericalstaff": "120",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26635,7 +26714,6 @@
     "housingprovision": "Provided Luxury Compound Housing + Full Utilities Paid",
     "citysafety": "9.1",
     "curriculum": "British Curriculum / IGCSE / IB Diploma",
-    "tesOrganizationId": "1019483",
     "staffcount": "120",
     "schoolname": "Haileybury Astana",
     "worklifescore": "8.7",
@@ -26657,7 +26735,11 @@
     "aliases": [
       "FLIS0429"
     ],
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0291",
@@ -26667,7 +26749,6 @@
     "careersPageUrl": "https://www.asdubai.org/work-at-asd-link",
     "totalscore": "9.5",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-of-dubai",
     "numericalstaff": "220",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26683,7 +26764,6 @@
     "housingprovision": "Provided Furnished Villa/Apartment or Housing Allowance (AED 110,000/yr)",
     "citysafety": "9.8",
     "curriculum": "US Common Core / AP / AP Capstone",
-    "tesOrganizationId": "1004124",
     "staffcount": "220",
     "schoolname": "American School of Dubai",
     "worklifescore": "9",
@@ -26704,7 +26784,11 @@
     "salary_scale_5yr_net": 18500,
     "city": "Dubai",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0292",
@@ -26714,7 +26798,6 @@
     "careersPageUrl": "https://www.acs.sch.ae/join-us/careers",
     "totalscore": "9.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-community-school-of-abu-dhabi",
     "numericalstaff": "170",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -26730,7 +26813,6 @@
     "housingprovision": "Provided Furnished Apartment / Villa on Saadiyat or Allowance",
     "citysafety": "9.8",
     "curriculum": "US Curriculum / AP / IB Diploma",
-    "tesOrganizationId": "1004125",
     "staffcount": "170",
     "schoolname": "American Community School of Abu Dhabi",
     "worklifescore": "8.9",
@@ -26750,7 +26832,11 @@
     "salary_scale_5yr_net": 18000,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0293",
@@ -26760,7 +26846,6 @@
     "careersPageUrl": "https://www.descdubai.com/vacancies",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "dubai-english-speaking-college",
     "numericalstaff": "190",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -26776,7 +26861,6 @@
     "housingprovision": "Provided Furnished Accommodation or Generous Allowance",
     "citysafety": "9.7",
     "curriculum": "British Curriculum / IGCSE / A-Levels / BTEC",
-    "tesOrganizationId": "1004126",
     "staffcount": "190",
     "schoolname": "Dubai English Speaking College",
     "worklifescore": "8.8",
@@ -26796,7 +26880,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.685Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0294",
@@ -26807,7 +26895,6 @@
     "city": "Jeddah",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-international-school-jeddah",
     "numericalstaff": "120",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -26823,7 +26910,6 @@
     "housingprovision": "Provided Luxury Compound Housing + Full Utilities Paid",
     "citysafety": "8.8",
     "curriculum": "US Curriculum / AP",
-    "tesOrganizationId": "1006101",
     "staffcount": "120",
     "schoolname": "American International School Jeddah",
     "worklifescore": "8.7",
@@ -26842,7 +26928,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0295",
@@ -26852,7 +26942,6 @@
     "careersPageUrl": "https://www.isg.edu.sa/careers",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-school-dhahran",
     "numericalstaff": "150",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26868,7 +26957,6 @@
     "housingprovision": "Provided Furnished Compound Apartment/Villa + Utilities",
     "citysafety": "9.2",
     "curriculum": "US Curriculum / AP",
-    "tesOrganizationId": "1006103",
     "staffcount": "150",
     "schoolname": "American School Dhahran",
     "worklifescore": "8.8",
@@ -26888,7 +26976,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0296",
@@ -26898,7 +26990,6 @@
     "careersPageUrl": "https://www.isg.edu.sa/careers",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "british-school-dhahran",
     "numericalstaff": "130",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -26914,7 +27005,6 @@
     "housingprovision": "Provided Compound Housing + Utilities Included",
     "citysafety": "9.2",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1006104",
     "staffcount": "130",
     "schoolname": "British School Dhahran",
     "worklifescore": "8.8",
@@ -26935,7 +27025,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 17000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0297",
@@ -26945,7 +27039,6 @@
     "careersPageUrl": "https://www.cacegypt.org/index.php/working-at-cac",
     "totalscore": "9.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "cairo-american-college",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:6",
@@ -26961,7 +27054,6 @@
     "housingprovision": "Provided Furnished Apartment in Maadi or Generous USD Allowance",
     "citysafety": "8.6",
     "curriculum": "US Curriculum / IB Diploma",
-    "tesOrganizationId": "1013101",
     "staffcount": "140",
     "schoolname": "Cairo American College",
     "worklifescore": "9.1",
@@ -26984,7 +27076,11 @@
     "lastSweptAtMillis": 1790336727730,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
     "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0298",
@@ -26994,7 +27090,6 @@
     "careersPageUrl": "https://www.aisegypt.com/careers",
     "totalscore": "8.7",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-international-school-in-egypt",
     "numericalstaff": "180",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27010,7 +27105,6 @@
     "housingprovision": "Provided Furnished Apartment + Transportation",
     "citysafety": "8.6",
     "curriculum": "US Curriculum / IB Diploma",
-    "tesOrganizationId": "1013102",
     "staffcount": "180",
     "schoolname": "American International School in Egypt",
     "worklifescore": "8.4",
@@ -27030,7 +27124,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0299",
@@ -27040,7 +27138,6 @@
     "careersPageUrl": "https://www.kingsacademy.edu.jo/about-us/careers",
     "totalscore": "9.4",
     "isCampusStub": false,
-    "tesEmployerSlug": "kings-academy-jordan",
     "numericalstaff": "130",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:5",
@@ -27056,7 +27153,6 @@
     "housingprovision": "Provided On-Campus Faculty Housing + All Meals Included",
     "citysafety": "9.3",
     "curriculum": "US Curriculum / Advanced Placement (AP)",
-    "tesOrganizationId": "1014101",
     "staffcount": "130",
     "schoolname": "King's Academy",
     "worklifescore": "8.8",
@@ -27076,7 +27172,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2100,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0300",
@@ -27087,7 +27187,6 @@
     "city": "Amman",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-community-school-amman",
     "numericalstaff": "95",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -27103,7 +27202,6 @@
     "housingprovision": "Provided Apartment in Amman or Monthly Allowance",
     "citysafety": "9.2",
     "curriculum": "US Common Core / AP",
-    "tesOrganizationId": "1014102",
     "staffcount": "95",
     "schoolname": "American Community School Amman",
     "worklifescore": "9",
@@ -27135,7 +27233,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2200,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0301",
@@ -27146,7 +27248,6 @@
     "city": "Beirut",
     "totalscore": "8.9",
     "isCampusStub": false,
-    "tesEmployerSlug": "american-community-school-beirut",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:6",
@@ -27162,7 +27263,6 @@
     "housingprovision": "Provided Furnished Apartment in Beirut + Utilities",
     "citysafety": "7.5",
     "curriculum": "US Curriculum / AP / IB Diploma",
-    "tesOrganizationId": "1015101",
     "staffcount": "110",
     "schoolname": "American Community School Beirut",
     "worklifescore": "8.7",
@@ -27181,7 +27281,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0302",
@@ -27191,7 +27295,6 @@
     "careersPageUrl": "https://www.ic.edu.lb/careers",
     "totalscore": "8.9",
     "isCampusStub": false,
-    "tesEmployerSlug": "international-college-beirut",
     "numericalstaff": "230",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -27207,7 +27310,6 @@
     "housingprovision": "Provided Apartment Accommodation or Allowance",
     "citysafety": "7.5",
     "curriculum": "IB Diploma / French Baccalauréat / Lebanese Baccalaureate",
-    "tesOrganizationId": "1015102",
     "staffcount": "230",
     "schoolname": "International College Beirut",
     "worklifescore": "8.6",
@@ -27227,7 +27329,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0303",
@@ -27238,7 +27344,6 @@
     "city": "Mesaieed",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "mesaieed-international-school",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27254,7 +27359,6 @@
     "housingprovision": "Provided QatarEnergy Compound Housing + Free Utilities (Water & Electricity)",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003204",
     "staffcount": "140",
     "schoolname": "Mesaieed International School",
     "worklifescore": "8.9",
@@ -27273,7 +27377,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0304",
@@ -27284,7 +27392,6 @@
     "city": "Dukhan",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "dukhan-english-school",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -27300,7 +27407,6 @@
     "housingprovision": "Provided QatarEnergy Gated Beachfront Compound House + Free Utilities",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003205",
     "staffcount": "110",
     "schoolname": "Dukhan English School",
     "worklifescore": "9",
@@ -27320,7 +27426,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:22:43.314Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0305",
@@ -27330,7 +27440,6 @@
     "careersPageUrl": "https://oryxschool.qa/careers",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "oryx-international-school",
     "numericalstaff": "160",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27345,7 +27454,6 @@
     "citySafety": "9.8",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003206",
     "staffcount": "160",
     "schoolname": "Oryx International School",
     "worklifescore": "8.9",
@@ -27376,7 +27484,11 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0306",
@@ -27386,7 +27498,6 @@
     "careersPageUrl": "https://www.acs-schools.com/working-acs-doha",
     "totalscore": "9.3",
     "isCampusStub": false,
-    "tesEmployerSlug": "acs-international-school-doha",
     "numericalstaff": "150",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27401,7 +27512,6 @@
     "citySafety": "9.8",
     "citysafety": "9.8",
     "curriculum": "US Curriculum / AP / IB Diploma",
-    "tesOrganizationId": "1003207",
     "staffcount": "150",
     "schoolname": "ACS International School Doha",
     "worklifescore": "8.8",
@@ -27432,7 +27542,11 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0307",
@@ -27442,7 +27556,6 @@
     "careersPageUrl": "https://www.sherborneqatar.org/careers",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "sherborne-qatar",
     "numericalstaff": "180",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:9",
@@ -27457,7 +27570,6 @@
     "citySafety": "9.8",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003208",
     "staffcount": "180",
     "schoolname": "Sherborne Qatar",
     "worklifescore": "8.5",
@@ -27487,7 +27599,11 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0308",
@@ -27497,7 +27613,6 @@
     "careersPageUrl": "https://www.kingscollegedoha.com/careers",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "kings-college-doha",
     "numericalstaff": "120",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27513,7 +27628,6 @@
     "housingprovision": "Provided Modern Furnished Apartment + Relocation Support",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1003209",
     "staffcount": "120",
     "schoolname": "King's College Doha",
     "worklifescore": "8.6",
@@ -27533,7 +27647,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0309",
@@ -27543,7 +27661,6 @@
     "careersPageUrl": "https://www.sisq.qa/careers",
     "totalscore": "9.1",
     "isCampusStub": false,
-    "tesEmployerSlug": "swiss-international-school-qatar",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:7",
@@ -27559,7 +27676,6 @@
     "housingprovision": "Provided Furnished Accommodation or Housing Stipend",
     "citysafety": "9.8",
     "curriculum": "IB Continuum (PYP, MYP, DP) / Bilingual English & French",
-    "tesOrganizationId": "1003210",
     "staffcount": "110",
     "schoolname": "Swiss International School Qatar",
     "worklifescore": "8.7",
@@ -27579,7 +27695,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0310",
@@ -27589,7 +27709,6 @@
     "careersPageUrl": "https://www.islqatar.org/careers",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "international-school-of-london-qatar",
     "numericalstaff": "130",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27605,7 +27724,6 @@
     "housingprovision": "Provided Furnished Apartment or Housing Allowance",
     "citysafety": "9.8",
     "curriculum": "IB Continuum (PYP, MYP, DP)",
-    "tesOrganizationId": "1003211",
     "staffcount": "130",
     "schoolname": "International School of London Qatar",
     "worklifescore": "8.8",
@@ -27625,7 +27743,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 14583,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0311",
@@ -27635,7 +27757,6 @@
     "careersPageUrl": "https://www.britishschool.sch.ae/vacancies",
     "totalscore": "9.5",
     "isCampusStub": false,
-    "tesEmployerSlug": "the-british-school-al-khubairat",
     "numericalstaff": "190",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27651,7 +27772,6 @@
     "housingprovision": "Provided Accommodation or Generous Housing Allowance (AED 100,000+/yr)",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels / BTEC",
-    "tesOrganizationId": "1004128",
     "staffcount": "190",
     "schoolname": "The British School Al Khubairat",
     "worklifescore": "9.1",
@@ -27671,7 +27791,11 @@
     "salary_scale_5yr_net": 18200,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0312",
@@ -27682,7 +27806,6 @@
     "city": "Sharjah",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "sharjah-english-school",
     "numericalstaff": "110",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27698,7 +27821,6 @@
     "housingprovision": "Provided Furnished Compound Villa/Apartment + Covered Utilities",
     "citysafety": "9.6",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1004132",
     "staffcount": "110",
     "schoolname": "Sharjah English School",
     "worklifescore": "9",
@@ -27718,7 +27840,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0313",
@@ -27728,7 +27854,6 @@
     "careersPageUrl": "https://viss.ae/careers",
     "totalscore": "9",
     "isCampusStub": false,
-    "tesEmployerSlug": "victoria-international-school-of-sharjah",
     "numericalstaff": "150",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27744,7 +27869,6 @@
     "housingprovision": "Provided Furnished Compound Apartment or Housing Allowance",
     "citysafety": "9.6",
     "curriculum": "Victorian Curriculum (Australia) / IB Diploma",
-    "tesOrganizationId": "1004133",
     "staffcount": "150",
     "schoolname": "Victoria International School of Sharjah",
     "worklifescore": "8.8",
@@ -27765,7 +27889,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0314",
@@ -27775,7 +27903,6 @@
     "careersPageUrl": "https://rakacademy.org/careers",
     "totalscore": "8.8",
     "isCampusStub": false,
-    "tesEmployerSlug": "rak-academy",
     "numericalstaff": "170",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27791,7 +27918,6 @@
     "housingprovision": "Provided Furnished Villa / Apartment in Ras Al Khaimah + Utilities",
     "citysafety": "9.7",
     "curriculum": "British Curriculum (IGCSE/A-Level) / IB Primary (PYP)",
-    "tesOrganizationId": "1004134",
     "staffcount": "170",
     "schoolname": "RAK Academy",
     "worklifescore": "9",
@@ -27811,7 +27937,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 13800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0315",
@@ -27822,7 +27952,6 @@
     "city": "Fujairah",
     "totalscore": "8.6",
     "isCampusStub": false,
-    "tesEmployerSlug": "fujairah-private-academy",
     "numericalstaff": "90",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27838,7 +27967,6 @@
     "housingprovision": "Provided Furnished Accommodation in Fujairah + Utilities",
     "citysafety": "9.7",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1004135",
     "staffcount": "90",
     "schoolname": "Fujairah Private Academy",
     "worklifescore": "9.1",
@@ -27857,7 +27985,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0316",
@@ -27868,7 +28000,6 @@
     "city": "Ajman",
     "totalscore": "8.7",
     "isCampusStub": false,
-    "tesEmployerSlug": "ajman-academy",
     "numericalstaff": "100",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27884,7 +28015,6 @@
     "housingprovision": "Provided Furnished Apartment or Housing Allowance",
     "citysafety": "9.6",
     "curriculum": "IB PYP / British Secondary (IGCSE / A-Levels)",
-    "tesOrganizationId": "1004136",
     "staffcount": "100",
     "schoolname": "Ajman Academy",
     "worklifescore": "8.9",
@@ -27906,7 +28036,11 @@
     "lastSweptAtMillis": 1790336817196,
     "lastCountersSyncedAt": 1790337468362,
     "openJobsCount": 6,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0317",
@@ -27916,7 +28050,6 @@
     "careersPageUrl": "https://www.reptonabudhabi.org/careers",
     "totalscore": "9.2",
     "isCampusStub": false,
-    "tesEmployerSlug": "repton-school-abu-dhabi",
     "numericalstaff": "140",
     "scrapedJobsCount": 0,
     "staffstudentratio": "1:8",
@@ -27932,7 +28065,6 @@
     "housingprovision": "Provided Furnished Apartment on Reem Island or Allowance",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
-    "tesOrganizationId": "1004137",
     "staffcount": "140",
     "schoolname": "Repton School Abu Dhabi",
     "worklifescore": "8.6",
@@ -27952,7 +28084,11 @@
     "salary_scale_5yr_net": 16000,
     "city": "Abu Dhabi",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0318",
@@ -28335,7 +28471,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.6",
-    "tesEmployerSlug": "kings-school-dubai-1057077",
     "lastSync": "2026-09-23T13:28:32.970Z",
     "websiteUrl": "https://kings-edu.com/dubai",
     "currency": "AED",
@@ -28347,7 +28482,6 @@
     "housingprovision": "Provided or AED 7,500/mo allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057077",
     "intel": {
       "healthInsurance": "Comprehensive UAE Medical & Inpatient",
       "classSize": "20 - 22",
@@ -28383,7 +28517,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0324",
@@ -28398,7 +28536,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.5",
-    "tesEmployerSlug": "kings-school-al-barsha-1070851",
     "lastSync": "2026-09-23T13:28:32.970Z",
     "websiteUrl": "https://kings-edu.com/albarsha",
     "currency": "AED",
@@ -28410,7 +28547,6 @@
     "housingprovision": "Provided or AED 8,000/mo allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels / IB)",
     "isTaxFree": true,
-    "tesOrganizationId": "1070851",
     "intel": {
       "healthInsurance": "Comprehensive UAE Medical",
       "classSize": "22",
@@ -28446,7 +28582,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0325",
@@ -28461,7 +28601,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.3",
-    "tesEmployerSlug": "kings-school-nad-al-sheba-1070852",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://kings-edu.com/nadalsheba",
     "currency": "AED",
@@ -28473,7 +28612,6 @@
     "housingprovision": "Provided or AED 7,500/mo allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1070852",
     "intel": {
       "healthInsurance": "Comprehensive UAE Medical",
       "classSize": "20 - 22",
@@ -28509,7 +28647,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0326",
@@ -28524,7 +28666,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.5",
-    "tesEmployerSlug": "north-london-collegiate-school-dubai-1083411",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://nlcsdubai.ae",
     "currency": "AED",
@@ -28536,7 +28677,6 @@
     "housingprovision": "Provided luxury apartment or AED 9,000/mo allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1083411",
     "intel": {
       "healthInsurance": "Worldwide (excluding US)",
       "classSize": "18 - 20",
@@ -28573,7 +28713,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 18500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0327",
@@ -28654,7 +28798,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.2",
-    "tesEmployerSlug": "rgs-guildford-dubai-1215401",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://rgsgdubai.ae",
     "currency": "AED",
@@ -28666,7 +28809,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1215401",
     "intel": {
       "healthInsurance": "Worldwide Medical Coverage",
       "classSize": "20",
@@ -28702,7 +28844,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 17500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0329",
@@ -28783,7 +28929,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.1",
-    "tesEmployerSlug": "dubai-international-academy-1057183",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://diadubai.com",
     "currency": "AED",
@@ -28795,7 +28940,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057183",
     "intel": {
       "healthInsurance": "Comprehensive Medical Insurance",
       "classSize": "22",
@@ -28831,7 +28975,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0331",
@@ -28846,7 +28994,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.4",
-    "tesEmployerSlug": "gems-dubai-american-academy-1057211",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://gemsaa-dubai.com",
     "currency": "AED",
@@ -28858,7 +29005,6 @@
     "housingprovision": "Provided housing or AED 8,000/mo allowance",
     "curriculum": "American (AERO / AP) / IB DP",
     "isTaxFree": true,
-    "tesOrganizationId": "1057211",
     "intel": {
       "healthInsurance": "Global Medical Insurance",
       "classSize": "20 - 22",
@@ -28894,7 +29040,11 @@
     "salary_confidence": "High",
     "salary_scale_5yr_net": 17000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0332",
@@ -28909,7 +29059,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.4",
-    "tesEmployerSlug": "gems-wellington-international-school-1057214",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://wellingtoninternationalschool.com",
     "currency": "AED",
@@ -28921,7 +29070,6 @@
     "housingprovision": "Provided apartment or allowance",
     "curriculum": "British (NCfE / GCSE) / IB DP",
     "isTaxFree": true,
-    "tesOrganizationId": "1057214",
     "intel": {
       "healthInsurance": "Comprehensive UAE Medical",
       "classSize": "22",
@@ -28958,7 +29106,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0333",
@@ -28973,7 +29125,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.0",
-    "tesEmployerSlug": "gems-wellington-academy-silicon-oasis-1057212",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://wellingtonacademy-so.com",
     "currency": "AED",
@@ -28985,7 +29136,6 @@
     "housingprovision": "Provided apartment or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels / IB)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057212",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "24",
@@ -29021,7 +29171,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0334",
@@ -29036,7 +29190,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.4",
-    "tesEmployerSlug": "gems-jumeirah-primary-school-1057213",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://jumeirahprimaryschool.com",
     "currency": "AED",
@@ -29048,7 +29201,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057213",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29084,7 +29236,11 @@
     "net_salary": 16000,
     "salary_scale_5yr_net": 16000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0335",
@@ -29099,7 +29255,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.7",
-    "tesEmployerSlug": "gems-firstpoint-school-1083321",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://gemsfirstpointschool-thevilla.com",
     "currency": "AED",
@@ -29111,7 +29266,6 @@
     "housingprovision": "Provided apartment or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels / BTEC)",
     "isTaxFree": true,
-    "tesOrganizationId": "1083321",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "24",
@@ -29147,7 +29301,11 @@
     "net_salary": 14500,
     "salary_scale_5yr_net": 14500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0336",
@@ -29228,7 +29386,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.6",
-    "tesEmployerSlug": "gems-metropole-school-1070861",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://gemsmetropoleschool-motorcity.com",
     "currency": "AED",
@@ -29240,7 +29397,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1070861",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "25",
@@ -29276,7 +29432,11 @@
     "net_salary": 14200,
     "salary_scale_5yr_net": 14200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0338",
@@ -29291,7 +29451,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
-    "tesEmployerSlug": "gems-royal-dubai-school-1057210",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://royaldubaischool.com",
     "currency": "AED",
@@ -29303,7 +29462,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057210",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29339,7 +29497,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0339",
@@ -29354,7 +29516,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.2",
-    "tesEmployerSlug": "gems-winchester-school-dubai-1057215",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://thewinchesterschool-dubai.com",
     "currency": "AED",
@@ -29366,7 +29527,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057215",
     "intel": {
       "healthInsurance": "Standard Medical Insurance",
       "classSize": "26",
@@ -29402,7 +29562,11 @@
     "net_salary": 13000,
     "salary_scale_5yr_net": 13000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0340",
@@ -29417,7 +29581,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.5",
-    "tesEmployerSlug": "the-winchester-school-jebel-ali-1057216",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://winchesterschool.com",
     "currency": "AED",
@@ -29429,7 +29592,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057216",
     "intel": {
       "healthInsurance": "Standard Medical Insurance",
       "classSize": "25",
@@ -29465,7 +29627,11 @@
     "salary_scale_5yr_net": 13500,
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0341",
@@ -29480,7 +29646,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.4",
-    "tesEmployerSlug": "jebel-ali-school-1057220",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://jebelalischool.org",
     "currency": "AED",
@@ -29492,7 +29657,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057220",
     "intel": {
       "healthInsurance": "Comprehensive Medical Insurance",
       "classSize": "22",
@@ -29529,7 +29693,11 @@
     "salary_scale_5yr_net": 15500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0342",
@@ -29544,7 +29712,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
-    "tesEmployerSlug": "greenfield-international-school-1057222",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://gischool.ae",
     "currency": "AED",
@@ -29556,7 +29723,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP / IBCP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057222",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29593,7 +29759,11 @@
     "salary_scale_5yr_net": 14500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 6
+    "openJobsCount": 6,
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0343",
@@ -29608,7 +29778,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.0",
-    "tesEmployerSlug": "uptown-international-school-1057221",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://uis.ae",
     "currency": "AED",
@@ -29620,7 +29789,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057221",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29656,7 +29824,11 @@
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 4
   },
   {
@@ -29867,7 +30039,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.2",
-    "tesEmployerSlug": "safa-british-school-1060960",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://safabritishschool.com",
     "currency": "AED",
@@ -29879,7 +30050,6 @@
     "housingprovision": "Provided apartment or allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-3)",
     "isTaxFree": true,
-    "tesOrganizationId": "1060960",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29915,7 +30085,11 @@
     "net_salary": 14800,
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0348",
@@ -29930,7 +30104,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.1",
-    "tesEmployerSlug": "the-english-college-dubai-1057187",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://englishcollege.ac.ae",
     "currency": "AED",
@@ -29942,7 +30115,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057187",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -29978,7 +30150,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0349",
@@ -29993,7 +30169,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.5",
-    "tesEmployerSlug": "horizon-english-school-1057288",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://horizonenglishschool.com",
     "currency": "AED",
@@ -30005,7 +30180,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057288",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "20 - 22",
@@ -30041,7 +30215,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0350",
@@ -30056,7 +30234,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
-    "tesEmployerSlug": "regent-international-school-1057193",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://ris.ae",
     "currency": "AED",
@@ -30068,7 +30245,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057193",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30104,7 +30280,11 @@
     "salary_scale_5yr_net": 15500,
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0351",
@@ -30119,7 +30299,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.4",
-    "tesEmployerSlug": "victory-heights-primary-school-1070868",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://vhprimary.com",
     "currency": "AED",
@@ -30131,7 +30310,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
     "isTaxFree": true,
-    "tesOrganizationId": "1070868",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "21",
@@ -30167,7 +30345,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0352",
@@ -30182,7 +30364,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.3",
-    "tesEmployerSlug": "deira-international-school-1057176",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://disdubai.ae",
     "currency": "AED",
@@ -30194,7 +30375,6 @@
     "housingprovision": "Provided villa/apartment or allowance",
     "curriculum": "British (NCfE / IGCSE) / IB DP",
     "isTaxFree": true,
-    "tesOrganizationId": "1057176",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30230,7 +30410,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 16000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0353",
@@ -30245,7 +30429,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.1",
-    "tesEmployerSlug": "the-arbor-school-1188102",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://thearborschool.ae",
     "currency": "AED",
@@ -30257,7 +30440,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1188102",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "20",
@@ -30293,7 +30475,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0354",
@@ -30308,7 +30494,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "fairgreen-international-school-1188105",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://fairgreen.ae",
     "currency": "AED",
@@ -30320,7 +30505,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1188105",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30460,7 +30644,11 @@
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0355",
@@ -30475,7 +30663,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
-    "tesEmployerSlug": "the-aquila-school-1188101",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://theaquilaschool.com",
     "currency": "AED",
@@ -30487,7 +30674,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1188101",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30524,7 +30710,11 @@
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0356",
@@ -30539,7 +30729,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
-    "tesEmployerSlug": "durham-school-dubai-1250101",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://durhamdubai.com",
     "currency": "AED",
@@ -30551,7 +30740,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1250101",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "20",
@@ -30588,7 +30776,11 @@
     "salary_scale_5yr_net": 14500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0357",
@@ -30602,7 +30794,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "dwight-school-dubai-1188104",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://dwight.ae",
     "currency": "AED",
@@ -30614,7 +30805,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1188104",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "18 - 20",
@@ -30651,7 +30841,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 15500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0358",
@@ -30666,7 +30860,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.7",
-    "tesEmployerSlug": "collegiate-international-school-1057184",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://collegiate.ae",
     "currency": "AED",
@@ -30678,7 +30871,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "American (NY State Standards) / IB DP",
     "isTaxFree": true,
-    "tesOrganizationId": "1057184",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30714,7 +30906,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0359",
@@ -30729,7 +30925,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "raffles-world-academy-1057182",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://rwadubai.com",
     "currency": "AED",
@@ -30741,7 +30936,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057182",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30777,7 +30971,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0360",
@@ -30792,7 +30990,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "raffles-international-school-1057181",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://rafflesis.com",
     "currency": "AED",
@@ -30804,7 +31001,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057181",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "22",
@@ -30840,7 +31036,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0361",
@@ -30855,7 +31055,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.5",
-    "tesEmployerSlug": "dove-green-private-school-1070860",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://dovegreen-school.com",
     "currency": "AED",
@@ -30867,7 +31066,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "isTaxFree": true,
-    "tesOrganizationId": "1070860",
     "intel": {
       "healthInsurance": "Standard Medical Insurance",
       "classSize": "22",
@@ -30904,7 +31102,11 @@
     "salary_scale_5yr_net": 12500,
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
     "openJobsCount": 1,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0362",
@@ -30919,7 +31121,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "emirates-international-school-jumeirah-1057185",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://eischools.ae/jumeirah",
     "currency": "AED",
@@ -30931,7 +31132,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057185",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "24",
@@ -30967,7 +31167,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0363",
@@ -30982,7 +31186,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.8",
-    "tesEmployerSlug": "emirates-international-school-meadows-1057186",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://eischools.ae/meadows",
     "currency": "AED",
@@ -30994,7 +31197,6 @@
     "housingprovision": "Provided housing or allowance",
     "curriculum": "IB (PYP / MYP / DP)",
     "isTaxFree": true,
-    "tesOrganizationId": "1057186",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "24",
@@ -31030,7 +31232,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0364",
@@ -31045,7 +31251,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "9.0",
-    "tesEmployerSlug": "the-school-of-research-science-1057195",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://srs.ae",
     "currency": "AED",
@@ -31057,7 +31262,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "British (NCfE / GCSE / A-Levels) & MOE",
     "isTaxFree": true,
-    "tesOrganizationId": "1057195",
     "intel": {
       "healthInsurance": "Comprehensive Medical",
       "classSize": "24",
@@ -31093,7 +31297,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 14500,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0365",
@@ -31107,7 +31315,6 @@
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.6",
-    "tesEmployerSlug": "dar-al-marefa-private-school-1070858",
     "lastSync": "2026-09-23T13:28:32.971Z",
     "websiteUrl": "https://daralmarefa.ae",
     "currency": "AED",
@@ -31119,7 +31326,6 @@
     "housingprovision": "Provided accommodation or allowance",
     "curriculum": "IB (PYP / MYP / DP) Bilingual Arabic/English",
     "isTaxFree": true,
-    "tesOrganizationId": "1070858",
     "intel": {
       "healthInsurance": "Standard Medical Insurance",
       "classSize": "22",
@@ -31155,7 +31361,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 13800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0366",
@@ -31172,8 +31382,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "alyasminaacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
-    "tesEmployerSlug": "al-yasmina-academy-1057173",
-    "tesOrganizationId": "1057173",
     "group": "Aldar Academies",
     "salaryRange": "AED 14,000 - 18,500 / month",
     "currency": "AED",
@@ -31197,7 +31405,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 15000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0367",
@@ -31214,8 +31426,6 @@
     "phase": "Secondary only",
     "officialDomain": "albateenacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
-    "tesEmployerSlug": "al-bateen-academy-1057171",
-    "tesOrganizationId": "1057171",
     "group": "Aldar Academies",
     "salaryRange": "AED 14,000 - 18,000 / month",
     "currency": "AED",
@@ -31239,7 +31449,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15800,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0368",
@@ -31255,8 +31469,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "almamouraacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
-    "tesEmployerSlug": "al-mamoura-academy-1083322",
-    "tesOrganizationId": "1083322",
     "group": "Aldar Academies",
     "salaryRange": "AED 13,500 - 17,500 / month",
     "currency": "AED",
@@ -31280,7 +31492,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0369",
@@ -31296,8 +31512,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "brightoncollegealain.ae",
     "careersPageUrl": "https://www.brightoncollegealain.ae/about-us/vacancies",
-    "tesEmployerSlug": "brighton-college-al-ain-1057200",
-    "tesOrganizationId": "1057200",
     "group": "Brighton College International",
     "salaryRange": "AED 14,000 - 18,500 / month",
     "currency": "AED",
@@ -31321,7 +31535,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0370",
@@ -31337,8 +31555,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "bisj.com",
     "careersPageUrl": "https://www.bisj.com/vacancies",
-    "tesEmployerSlug": "british-international-school-of-jeddah-1057285",
-    "tesOrganizationId": "1057285",
     "group": "Independent / Non-profit",
     "salaryRange": "SAR 14,000 - 19,000 / month",
     "currency": "SAR",
@@ -31357,7 +31573,6 @@
       "_seconds": 1790186860,
       "_nanoseconds": 477000000
     },
-    "openJobsCount": 1,
     "schoolId": "FLIS0370",
     "lastSweptDate": "2026-09-24T16:53:46.496Z",
     "lastSweptAtMillis": 1790268826496,
@@ -31368,7 +31583,13 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 16250,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0371",
@@ -31384,8 +31605,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "kingscollegeriyadh.com",
     "careersPageUrl": "https://kingscollegeriyadh.com/careers",
-    "tesEmployerSlug": "kings-college-riyadh-1250102",
-    "tesOrganizationId": "1250102",
     "group": "King's College International",
     "salaryRange": "SAR 16,000 - 22,000 / month",
     "currency": "SAR",
@@ -31409,7 +31628,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:23:29.072Z",
     "salary_scale_5yr_net": 17500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0372",
@@ -31463,7 +31686,7 @@
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 17500,
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 2
   },
   {
@@ -31480,8 +31703,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "beechhallriyadh.com",
     "careersPageUrl": "https://beechhallriyadh.com/careers",
-    "tesEmployerSlug": "beech-hall-school-riyadh-1250104",
-    "tesOrganizationId": "1250104",
     "group": "Chatsworth Schools",
     "salaryRange": "SAR 15,000 - 20,000 / month",
     "currency": "SAR",
@@ -31514,7 +31735,11 @@
       },
       "packageType": "Full Expat Package + Provided Accommodation"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0374",
@@ -31588,7 +31813,7 @@
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 1
   },
   {
@@ -31605,8 +31830,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "singapore.dulwich.org",
     "careersPageUrl": "https://singapore.dulwich.org/careers",
-    "tesEmployerSlug": "dulwich-college-singapore-1070859",
-    "tesOrganizationId": "1070859",
     "group": "Dulwich College International",
     "salaryRange": "SGD 75,000 - 115,000 / year",
     "currency": "SGD",
@@ -31640,7 +31863,11 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0376",
@@ -31702,8 +31929,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "harrowschool.ac.th",
     "careersPageUrl": "https://www.harrowschool.ac.th/working-at-harrow",
-    "tesEmployerSlug": "harrow-international-school-bangkok-1057287",
-    "tesOrganizationId": "1057287",
     "group": "Harrow International",
     "salaryRange": "THB 130,000 - 195,000 / month",
     "isTaxFree": false,
@@ -31728,7 +31953,11 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 115,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 115000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0378",
@@ -31744,8 +31973,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "shrewsbury.ac.th/riverside",
     "careersPageUrl": "https://www.shrewsbury.ac.th/riverside/careers",
-    "tesEmployerSlug": "shrewsbury-international-school-bangkok-riverside-1057291",
-    "tesOrganizationId": "1057291",
     "group": "Shrewsbury International",
     "salaryRange": "THB 135,000 - 200,000 / month",
     "isTaxFree": false,
@@ -31770,7 +31997,11 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.656Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0379",
@@ -31786,8 +32017,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "alice-smith.edu.my",
     "careersPageUrl": "https://www.alice-smith.edu.my/work-with-us",
-    "tesEmployerSlug": "the-alice-smith-school-1055849",
-    "tesOrganizationId": "1055849",
     "group": "Non-profit Educational Foundation",
     "salaryRange": "MYR 16,000 - 24,000 / month",
     "isTaxFree": false,
@@ -31811,7 +32040,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 15200,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0380",
@@ -31827,8 +32060,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "nordangliaeducation.com/bis-kuala-lumpur",
     "careersPageUrl": "https://www.nordangliaeducation.com/bis-kuala-lumpur/careers",
-    "tesEmployerSlug": "the-british-international-school-of-kuala-lumpur-1057219",
-    "tesOrganizationId": "1057219",
     "group": "Nord Anglia Education",
     "salaryRange": "MYR 15,500 - 23,000 / month",
     "isTaxFree": false,
@@ -31854,7 +32085,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 14500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0381",
@@ -31918,7 +32153,7 @@
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
     "updatedAt": "2026-09-25T12:18:17.168Z",
-    "lastCountersSyncedAt": "2026-09-25T12:29:24.933Z",
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
     "openJobsCount": 1
   },
   {
@@ -31935,8 +32170,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "kellettschool.com",
     "careersPageUrl": "https://www.kellettschool.com/working-at-kellett",
-    "tesEmployerSlug": "kellett-school-the-british-international-school-in-hong-kong-1055855",
-    "tesOrganizationId": "1055855",
     "group": "Non-profit Educational Foundation",
     "salaryRange": "HKD 55,000 - 88,000 / month",
     "currency": "HKD",
@@ -31970,7 +32203,11 @@
       },
       "packageType": "Salary + Dedicated Cash Housing Allowance"
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0383",
@@ -32367,8 +32604,6 @@
     "phase": "Primary & Middle (K-8)",
     "officialDomain": "tes.edu.kw",
     "careersPageUrl": "https://tes.edu.kw/careers",
-    "tesEmployerSlug": "the-english-school-kuwait-1055857",
-    "tesOrganizationId": "1055857",
     "group": "Independent / Non-profit",
     "salaryRange": "KWD 1,100 - 1,600 / month",
     "currency": "KWD",
@@ -32392,7 +32627,11 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0392",
@@ -32407,8 +32646,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "kes.edu.kw",
     "careersPageUrl": "https://kes.edu.kw/work-at-kes",
-    "tesEmployerSlug": "kuwait-english-school-1057283",
-    "tesOrganizationId": "1057283",
     "group": "Independent",
     "salaryRange": "KWD 1,000 - 1,500 / month",
     "currency": "KWD",
@@ -32432,7 +32669,11 @@
     "net_salary": 1000,
     "last_benchmark_update": "2026-09-25T07:25:58.686Z",
     "salary_scale_5yr_net": 1000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0393",
@@ -32448,8 +32689,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "bisak.org",
     "careersPageUrl": "https://www.bisak.org/recruitment",
-    "tesEmployerSlug": "british-international-school-al-khobar-1057284",
-    "tesOrganizationId": "1057284",
     "group": "Independent / Non-profit",
     "salaryRange": "SAR 14,000 - 19,500 / month",
     "currency": "SAR",
@@ -32473,7 +32712,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 16500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0394",
@@ -32530,8 +32773,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "amityabudhabi.com",
     "careersPageUrl": "https://amityabudhabi.com/work-with-us",
-    "tesEmployerSlug": "amity-international-school-abu-dhabi-1070853",
-    "tesOrganizationId": "1070853",
     "group": "Amity Education",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "currency": "AED",
@@ -32555,7 +32796,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 15200,
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0396",
@@ -32571,8 +32816,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "seoul.dulwich.org",
     "careersPageUrl": "https://seoul.dulwich.org/careers",
-    "tesEmployerSlug": "dulwich-college-seoul-1070863",
-    "tesOrganizationId": "1070863",
     "group": "Dulwich College International",
     "salaryRange": "KRW 65,000,000 - 95,000,000 / year",
     "currency": "KRW",
@@ -32596,7 +32839,11 @@
     "net_salary": 5000000,
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 5000000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0397",
@@ -32874,8 +33121,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "nordangliaeducation.com/sta-bangkok",
     "careersPageUrl": "https://www.nordangliaeducation.com/sta-bangkok/careers",
-    "tesEmployerSlug": "st-andrews-international-school-bangkok-1057226",
-    "tesOrganizationId": "1057226",
     "group": "Nord Anglia Education",
     "salaryRange": "THB 130,000 - 190,000 / month",
     "currency": "THB",
@@ -32896,7 +33141,6 @@
       "_seconds": 1790187506,
       "_nanoseconds": 539000000
     },
-    "openJobsCount": 2,
     "schoolId": "FLIS0401",
     "isLocked": true,
     "salary_source_year": "2025/2026",
@@ -32906,7 +33150,13 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 125,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 125000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0402",
@@ -32922,8 +33172,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "sji-international.com.sg",
     "careersPageUrl": "https://www.sji-international.com.sg/join-us/careers",
-    "tesEmployerSlug": "st-joseph-s-institution-international-1070869",
-    "tesOrganizationId": "1070869",
     "group": "Lasallian / Non-profit",
     "salaryRange": "SGD 70,000 - 110,000 / year",
     "currency": "SGD",
@@ -32947,7 +33195,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 7400,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0403",
@@ -32963,8 +33215,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "nexus.edu.sg",
     "careersPageUrl": "https://www.nexus.edu.sg/careers",
-    "tesEmployerSlug": "nexus-international-school-singapore-1070870",
-    "tesOrganizationId": "1070870",
     "group": "Taylor's Schools",
     "salaryRange": "SGD 68,000 - 105,000 / year",
     "currency": "SGD",
@@ -32990,7 +33240,11 @@
     "salary_scale_5yr_net": 6833,
     "lastSweptDate": "2026-09-25T11:53:53.260Z",
     "lastSweptAtMillis": 1790337233260,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0404",
@@ -33006,8 +33260,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "sais.edu.sg",
     "careersPageUrl": "https://www.sais.edu.sg/careers",
-    "tesEmployerSlug": "stamford-american-international-school-1070871",
-    "tesOrganizationId": "1070871",
     "group": "Cognita Schools",
     "salaryRange": "SGD 70,000 - 108,000 / year",
     "currency": "SGD",
@@ -33031,7 +33283,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:25:58.687Z",
     "salary_scale_5yr_net": 7333,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0405",
@@ -33047,8 +33303,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "ktj.edu.my",
     "careersPageUrl": "https://www.ktj.edu.my/careers",
-    "tesEmployerSlug": "kolej-tuanku-ja-afar-1057229",
-    "tesOrganizationId": "1057229",
     "group": "Independent / Non-profit",
     "salaryRange": "MYR 15,000 - 22,000 / month",
     "currency": "MYR",
@@ -33072,7 +33326,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 12800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0406",
@@ -33088,8 +33346,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "stgeorge.school.it",
     "careersPageUrl": "https://www.stgeorge.school.it/join-us/vacancies",
-    "tesEmployerSlug": "st-george-s-british-international-school-1055859",
-    "tesOrganizationId": "1055859",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 45,000 - 68,000 / year",
     "currency": "EUR",
@@ -33113,7 +33369,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2450,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0407",
@@ -33170,8 +33430,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "britishschoolmilan.com",
     "careersPageUrl": "https://www.britishschoolmilan.com/working-with-us",
-    "tesEmployerSlug": "the-british-school-of-milan-1055864",
-    "tesOrganizationId": "1055864",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 46,000 - 70,000 / year",
     "currency": "EUR",
@@ -33195,7 +33453,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 3333,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0409",
@@ -33293,8 +33555,6 @@
     "phase": "Secondary Boarding (Grades 6-12)",
     "officialDomain": "nordangliaeducation.com/beau-soleil",
     "careersPageUrl": "https://www.nordangliaeducation.com/beau-soleil/careers",
-    "tesEmployerSlug": "college-alpin-beau-soleil-1070864",
-    "tesOrganizationId": "1070864",
     "group": "Nord Anglia Education",
     "salaryRange": "CHF 90,000 - 138,000 / year",
     "currency": "CHF",
@@ -33327,7 +33587,11 @@
         "type": "Self-Funded Private Lease / Conditional Boarding House Role"
       }
     },
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0412",
@@ -33434,8 +33698,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "britishschool.be",
     "careersPageUrl": "https://www.britishschool.be/careers",
-    "tesEmployerSlug": "the-british-school-of-brussels-1055866",
-    "tesOrganizationId": "1055866",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 50,000 - 76,000 / year",
     "currency": "EUR",
@@ -33459,7 +33721,11 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0415",
@@ -33475,8 +33741,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "bis-school.com",
     "careersPageUrl": "https://www.bis-school.com/community/careers",
-    "tesEmployerSlug": "bavarian-international-school-1057235",
-    "tesOrganizationId": "1057235",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 50,000 - 75,000 / year",
     "currency": "EUR",
@@ -33498,7 +33762,6 @@
     "schoolId": "FLIS0415",
     "lastSweptDate": "2026-09-24T17:00:27.787Z",
     "lastSweptAtMillis": 1790269227787,
-    "openJobsCount": 10,
     "isLocked": true,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
@@ -33506,7 +33769,13 @@
     "net_salary": 4000,
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 4000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0416",
@@ -33522,8 +33791,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "britishschoolbarcelona.com",
     "careersPageUrl": "https://www.britishschoolbarcelona.com/careers",
-    "tesEmployerSlug": "the-british-school-of-barcelona-1057237",
-    "tesOrganizationId": "1057237",
     "group": "Cognita Schools",
     "salaryRange": "EUR 38,000 - 55,000 / year",
     "currency": "EUR",
@@ -33547,7 +33814,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.261Z",
     "salary_scale_5yr_net": 2917,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0417",
@@ -33563,8 +33834,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "madrid-soto.kingscollegeschools.org",
     "careersPageUrl": "https://www.inspirededu.com/careers",
-    "tesEmployerSlug": "king-s-college-the-british-school-of-madrid-1057238",
-    "tesOrganizationId": "1057238",
     "group": "Inspired Education",
     "salaryRange": "EUR 38,000 - 56,000 / year",
     "currency": "EUR",
@@ -33588,7 +33857,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0418",
@@ -33802,8 +34075,6 @@
     "phase": "All-through (K-12)",
     "officialDomain": "jbschool.ae",
     "careersPageUrl": "https://www.taaleem.ae/careers",
-    "tesEmployerSlug": "jumeira-baccalaureate-school-1057224",
-    "tesOrganizationId": "1057224",
     "group": "Taaleem",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "currency": "AED",
@@ -33973,7 +34244,11 @@
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
     "lastCountersSyncedAt": "2026-09-25T12:06:09.708Z",
     "openJobsCount": 5,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0424",
@@ -33988,8 +34263,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "campion.edu.gr",
     "careersPageUrl": "https://www.campion.edu.gr/employment",
-    "tesEmployerSlug": "campion-school-1057280",
-    "tesOrganizationId": "1057280",
     "group": "Independent / Non-profit",
     "salaryRange": "EUR 32,000 - 48,000 / year",
     "currency": "EUR",
@@ -34013,7 +34286,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0425",
@@ -34131,7 +34408,6 @@
     "revalidationError": null,
     "revalidationStatus": "success",
     "schoolId": "FLIS0425",
-    "openJobsCount": 3,
     "isLocked": true,
     "salary_source_year": "2025/2026",
     "net_salary": 1900,
@@ -34143,7 +34419,9 @@
     "lastSweptAtMillis": 1790337254406,
     "updatedAt": "2026-09-25T12:18:17.168Z",
     "tesOrganizationId": "1065747",
-    "tesEmployerSlug": "st-catherine-s-british-school-1065747"
+    "tesEmployerSlug": "st-catherine-s-british-school-1065747",
+    "lastCountersSyncedAt": "2026-09-26T06:03:04.108Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0426",
@@ -34202,8 +34480,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "nordangliaeducation.com/bis-bratislava",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "tesEmployerSlug": "the-british-international-school-bratislava-1057289",
-    "tesOrganizationId": "1057289",
     "group": "Nord Anglia Education",
     "salaryRange": "EUR 32,000 - 46,000 / year",
     "currency": "EUR",
@@ -34227,7 +34503,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2050,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0430",
@@ -34239,8 +34519,6 @@
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
     "officialDomain": "nordangliaeducation.com/bst-tashkent",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "tesEmployerSlug": "the-british-school-of-tashkent-1188201",
-    "tesOrganizationId": "1188201",
     "group": "Nord Anglia Education",
     "salaryRange": "USD 42,000 - 60,000 / year",
     "currency": "USD",
@@ -34264,7 +34542,11 @@
     "salary_source_year": "2025/2026",
     "salary_scale_5yr_net": 2600,
     "last_benchmark_update": "2026-09-25T07:26:01.262Z",
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0431",
@@ -34279,8 +34561,6 @@
     "curriculum": "British (NCfE / GCSE / IB DP)",
     "officialDomain": "bisc.edu.eg",
     "careersPageUrl": "https://www.bisc.edu.eg/careers",
-    "tesEmployerSlug": "the-british-international-school-cairo-1057291",
-    "tesOrganizationId": "1057291",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 40,000 - 62,000 / year",
     "currency": "USD",
@@ -34304,7 +34584,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2900,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0432",
@@ -34319,8 +34603,6 @@
     "curriculum": "British (NCfE / GCSE / IB DP)",
     "officialDomain": "ncbis.co",
     "careersPageUrl": "https://www.ncbis.co/work-with-us",
-    "tesEmployerSlug": "new-cairo-british-international-school-1057292",
-    "tesOrganizationId": "1057292",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 38,000 - 58,000 / year",
     "currency": "USD",
@@ -34344,7 +34626,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0433",
@@ -34358,8 +34644,6 @@
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "officialDomain": "kingsschoolthecrown.com",
     "careersPageUrl": "https://www.inspirededu.com/careers",
-    "tesEmployerSlug": "kings-school-the-crown-1260101",
-    "tesOrganizationId": "1260101",
     "group": "Inspired Education",
     "salaryRange": "USD 38,000 - 58,000 / year",
     "currency": "USD",
@@ -34383,7 +34667,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2750,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0434",
@@ -34397,8 +34685,6 @@
     "curriculum": "British (NCfE / GCSE / A-Levels)",
     "officialDomain": "bsalex.net",
     "careersPageUrl": "https://www.bsalex.net/vacancies",
-    "tesEmployerSlug": "the-british-school-of-alexandria-1057293",
-    "tesOrganizationId": "1057293",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 35,000 - 52,000 / year",
     "currency": "USD",
@@ -34422,7 +34708,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:24:21.608Z",
     "salary_scale_5yr_net": 2650,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0435",
@@ -34436,8 +34726,6 @@
     "curriculum": "British (NCfE / GCSE / A-Levels / IB DP)",
     "officialDomain": "jerudonginternationalschool.com",
     "careersPageUrl": "https://www.jerudonginternationalschool.com/careers",
-    "tesEmployerSlug": "jerudong-international-school-1057295",
-    "tesOrganizationId": "1057295",
     "group": "Independent / Non-profit",
     "salaryRange": "BND 65,000 - 95,000 / year",
     "currency": "BND",
@@ -34461,7 +34749,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.426Z",
     "salary_scale_5yr_net": 5800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0436",
@@ -34475,8 +34767,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "isb.edu.bn",
     "careersPageUrl": "https://www.isb.edu.bn/careers",
-    "tesEmployerSlug": "international-school-brunei-1057296",
-    "tesOrganizationId": "1057296",
     "group": "Independent / Non-profit",
     "salaryRange": "BND 58,000 - 85,000 / year",
     "currency": "BND",
@@ -34500,7 +34790,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 5200,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0437",
@@ -34515,8 +34809,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "british-school.org",
     "careersPageUrl": "https://www.british-school.org/work-with-us",
-    "tesEmployerSlug": "the-british-school-new-delhi-1057298",
-    "tesOrganizationId": "1057298",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 48,000 - 75,000 / year",
     "isTaxFree": true,
@@ -34540,7 +34832,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 235000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0438",
@@ -34555,8 +34851,6 @@
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
     "officialDomain": "nordangliaeducation.com/bsg-guangzhou",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "tesEmployerSlug": "the-british-school-of-guangzhou-1057299",
-    "tesOrganizationId": "1057299",
     "group": "Nord Anglia Education",
     "salaryRange": "RMB 280,000 - 420,000 / year",
     "isTaxFree": true,
@@ -34580,7 +34874,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 26500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0439",
@@ -34595,8 +34893,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "suzhou.dulwich.org",
     "careersPageUrl": "https://www.dulwich.org/careers",
-    "tesEmployerSlug": "dulwich-college-suzhou-1057300",
-    "tesOrganizationId": "1057300",
     "group": "Dulwich College International",
     "salaryRange": "RMB 300,000 - 450,000 / year",
     "isTaxFree": true,
@@ -34620,7 +34916,11 @@
     "net_salary": 30000,
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 30000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0440",
@@ -34635,8 +34935,6 @@
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
     "officialDomain": "harrowshenzhen.org.cn",
     "careersPageUrl": "https://www.harrowschools.com/careers",
-    "tesEmployerSlug": "harrow-international-school-shenzhen-1230101",
-    "tesOrganizationId": "1230101",
     "group": "AISL Harrow",
     "salaryRange": "RMB 300,000 - 460,000 / year",
     "isTaxFree": true,
@@ -34660,7 +34958,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 28500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0441",
@@ -34674,8 +34976,6 @@
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
     "officialDomain": "wellingtoncollege.cn/tianjin",
     "careersPageUrl": "https://www.wellingtoncollege.cn/careers",
-    "tesEmployerSlug": "wellington-college-international-tianjin-1075101",
-    "tesOrganizationId": "1075101",
     "group": "Wellington College China",
     "salaryRange": "RMB 280,000 - 430,000 / year",
     "isTaxFree": true,
@@ -34737,7 +35037,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 27000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0442",
@@ -34752,8 +35056,6 @@
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
     "officialDomain": "brightoncollege.edu.vn",
     "careersPageUrl": "https://www.brightoncollege.edu.vn/careers",
-    "tesEmployerSlug": "brighton-college-vietnam-1270101",
-    "tesOrganizationId": "1270101",
     "group": "Brighton College International",
     "salaryRange": "USD 42,000 - 64,000 / year",
     "currency": "USD",
@@ -34777,7 +35079,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 3500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0443",
@@ -34792,8 +35098,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "reigategrammar.edu.vn",
     "careersPageUrl": "https://www.reigategrammar.edu.vn/careers",
-    "tesEmployerSlug": "reigate-grammar-school-vietnam-1220101",
-    "tesOrganizationId": "1220101",
     "group": "Cognita Schools",
     "salaryRange": "USD 38,000 - 58,000 / year",
     "currency": "USD",
@@ -34817,7 +35121,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 3100,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0444",
@@ -34831,8 +35139,6 @@
     "curriculum": "British Primary (NCfE / EYFS / Key Stage 1-2)",
     "officialDomain": "nordangliaeducation.com/bsb-sanlitun",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
-    "tesEmployerSlug": "the-british-school-of-beijing-sanlitun-1057303",
-    "tesOrganizationId": "1057303",
     "group": "Nord Anglia Education",
     "salaryRange": "RMB 270,000 - 400,000 / year",
     "isTaxFree": true,
@@ -34856,7 +35162,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 26500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0445",
@@ -34871,8 +35181,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "grange.cl",
     "careersPageUrl": "https://www.grange.cl/employment",
-    "tesEmployerSlug": "the-grange-school-1057305",
-    "tesOrganizationId": "1057305",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 40,000 - 62,000 / year",
     "isTaxFree": false,
@@ -34928,7 +35236,11 @@
     "net_salary": 2166667,
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 2166667,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0446",
@@ -34942,8 +35254,6 @@
     "curriculum": "IB Continuum (PYP / MYP / DP)",
     "officialDomain": "craighouse.cl",
     "careersPageUrl": "https://www.craighouse.cl/work-with-us",
-    "tesEmployerSlug": "craighouse-school-1057306",
-    "tesOrganizationId": "1057306",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 38,000 - 58,000 / year",
     "isTaxFree": false,
@@ -34999,7 +35309,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2400000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0447",
@@ -35014,8 +35328,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "british.edu.uy",
     "careersPageUrl": "https://www.british.edu.uy/work-with-us",
-    "tesEmployerSlug": "the-british-schools-montevideo-1057307",
-    "tesOrganizationId": "1057307",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 38,000 - 58,000 / year",
     "isTaxFree": false,
@@ -35039,7 +35351,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T07:26:01.264Z",
     "salary_scale_5yr_net": 120833,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0448",
@@ -35054,8 +35370,6 @@
     "curriculum": "British / IGCSE / IB DP",
     "officialDomain": "thebritishschool.ed.cr",
     "careersPageUrl": "https://www.thebritishschool.ed.cr/careers",
-    "tesEmployerSlug": "the-british-school-of-costa-rica-1057308",
-    "tesOrganizationId": "1057308",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 34,000 - 50,000 / year",
     "currency": "USD",
@@ -35079,7 +35393,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2350,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0450",
@@ -35094,8 +35412,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "tbsc.org.ve",
     "careersPageUrl": "https://www.tbsc.org.ve/vacancies",
-    "tesEmployerSlug": "the-british-school-of-caracas-1057310",
-    "tesOrganizationId": "1057310",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 36,000 - 54,000 / year",
     "currency": "USD",
@@ -35119,7 +35435,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2600,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0451",
@@ -35134,8 +35454,6 @@
     "curriculum": "British (NCfE / IGCSE / IB DP)",
     "officialDomain": "britishschool.g12.br",
     "careersPageUrl": "https://www.britishschool.g12.br/careers",
-    "tesEmployerSlug": "the-british-school-of-rio-de-janeiro-1057311",
-    "tesOrganizationId": "1057311",
     "group": "Independent / Non-profit",
     "salaryRange": "USD 42,000 - 64,000 / year",
     "isTaxFree": false,
@@ -35198,7 +35516,11 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 14,200/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 14200,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0452",
@@ -35210,7 +35532,6 @@
     "totalscore": "9.5",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "st-andrews-school-turi-1057316",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:51.577Z",
     "isLocked": true,
@@ -35225,7 +35546,6 @@
     "housingprovision": "Provided",
     "citysafety": "8.5",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057316",
     "staffcount": "120",
     "schoolname": "St. Andrew's School, Turi",
     "revalidationStatus": "success",
@@ -35246,7 +35566,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 360000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0453",
@@ -35258,7 +35582,6 @@
     "totalscore": "9.2",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "peponi-school-1057317",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:51.794Z",
     "isLocked": true,
@@ -35273,7 +35596,6 @@
     "housingprovision": "Provided",
     "citysafety": "7.8",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057317",
     "staffcount": "100",
     "schoolname": "Peponi School",
     "openJobsCount": 0,
@@ -35291,7 +35613,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 380000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0454",
@@ -35303,7 +35629,6 @@
     "totalscore": "9.1",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "st-francis-college-1057319",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:52.387Z",
     "isLocked": true,
@@ -35318,7 +35643,6 @@
     "housingprovision": "Provided",
     "citysafety": "7.0",
     "curriculum": "IB Continuum (PYP / MYP / DP)",
-    "tesOrganizationId": "1057319",
     "staffcount": "95",
     "schoolname": "St. Francis' College",
     "openJobsCount": 0,
@@ -35337,7 +35661,11 @@
     "notes": "[Calibrated to net take-home pay after Brazilian IRPF + INSS: BRL 13,800/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 13800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0455",
@@ -35349,7 +35677,6 @@
     "totalscore": "9.2",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "denla-british-school-1215101",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:53.087Z",
     "isLocked": true,
@@ -35364,7 +35691,6 @@
     "housingprovision": "Provided",
     "citysafety": "8.8",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1215101",
     "staffcount": "130",
     "schoolname": "Denla British School",
     "openJobsCount": 0,
@@ -35383,7 +35709,11 @@
     "notes": "[Calibrated to net take-home pay after Thai PIT progressive tax: THB 95,000/mo]",
     "last_benchmark_update": "2026-09-25T10:42:30.657Z",
     "salary_scale_5yr_net": 95000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0456",
@@ -35395,7 +35725,6 @@
     "totalscore": "9.3",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "discovery-bay-international-school-1057320",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:53.620Z",
     "isLocked": true,
@@ -35410,7 +35739,6 @@
     "housingprovision": "Allowance",
     "citysafety": "9.5",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057320",
     "staffcount": "140",
     "schoolname": "Discovery Bay International School",
     "openJobsCount": 0,
@@ -35428,7 +35756,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 42500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0457",
@@ -35440,7 +35772,6 @@
     "totalscore": "9.1",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "bvis-ho-chi-minh-city-1188202",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:53.897Z",
     "isLocked": true,
@@ -35455,7 +35786,6 @@
     "housingprovision": "Provided",
     "citysafety": "8.4",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1188202",
     "staffcount": "110",
     "schoolname": "British Vietnamese International School Ho Chi Minh City",
     "openJobsCount": 0,
@@ -35473,7 +35803,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.265Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0458",
@@ -35485,7 +35819,6 @@
     "totalscore": "9.1",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "bvis-hanoi-1188203",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:54.422Z",
     "isLocked": true,
@@ -35500,7 +35833,6 @@
     "housingprovision": "Provided",
     "citysafety": "8.5",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1188203",
     "staffcount": "105",
     "schoolname": "British Vietnamese International School Hanoi",
     "openJobsCount": 0,
@@ -35518,7 +35850,11 @@
     "salary_confidence": "Medium",
     "last_benchmark_update": "2026-09-25T07:26:01.265Z",
     "salary_scale_5yr_net": 3000,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0459",
@@ -35530,7 +35866,6 @@
     "totalscore": "9.0",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "the-british-international-school-of-tbilisi-1200101",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:54.745Z",
     "isLocked": true,
@@ -35545,7 +35880,6 @@
     "housingprovision": "Provided",
     "citysafety": "8.8",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1200101",
     "staffcount": "75",
     "schoolname": "The British International School of Tbilisi",
     "openJobsCount": 0,
@@ -35600,7 +35934,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2300,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0460",
@@ -35612,7 +35950,6 @@
     "totalscore": "8.9",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "st-georges-seville-1057322",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:55.259Z",
     "isLocked": true,
@@ -35627,7 +35964,6 @@
     "housingprovision": "Not Included",
     "citysafety": "9.2",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057322",
     "staffcount": "65",
     "schoolname": "St. George's British International School Seville",
     "openJobsCount": 0,
@@ -35645,7 +35981,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 1800,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0461",
@@ -35657,7 +35997,6 @@
     "totalscore": "9.1",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "al-khor-international-school-1057324",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:55.550Z",
     "isLocked": true,
@@ -35672,7 +36011,6 @@
     "housingprovision": "Provided",
     "citysafety": "9.8",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057324",
     "staffcount": "220",
     "schoolname": "Al Khor International School",
     "openJobsCount": 0,
@@ -35690,7 +36028,11 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 13500,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null
   },
   {
     "id": "FLIS0462",
@@ -35702,7 +36044,6 @@
     "totalscore": "9.0",
     "isCampusStub": false,
     "isRevalidating": true,
-    "tesEmployerSlug": "british-international-school-lagos-1057325",
     "scrapedJobsCount": 0,
     "lastSync": "2026-09-23T19:04:56.078Z",
     "isLocked": true,
@@ -35717,7 +36058,6 @@
     "housingprovision": "Provided",
     "citysafety": "7.2",
     "curriculum": "British (NCfE / IGCSE / A-Levels)",
-    "tesOrganizationId": "1057325",
     "staffcount": "90",
     "schoolname": "British International School of Lagos",
     "revalidationStatus": "success",
@@ -35729,8 +36069,6 @@
     "careersUrl": "https://www.bisnigeria.org/careers",
     "lastSweptDate": "2026-09-23T19:10:16.080Z",
     "lastSweptAtMillis": 1790190616080,
-    "lastCountersSyncedAt": 1790190620345,
-    "openJobsCount": 1,
     "currency": "USD",
     "salary_source_year": "2025/2026",
     "net_salary": 2700,
@@ -35738,6 +36076,12 @@
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-25T08:25:20.427Z",
     "salary_scale_5yr_net": 2700,
-    "updatedAt": "2026-09-25T12:18:17.168Z"
+    "updatedAt": "2026-09-25T12:18:17.168Z",
+    "tespage": null,
+    "tesnumber": null,
+    "tesOrganizationId": null,
+    "tesEmployerSlug": null,
+    "lastCountersSyncedAt": "2026-09-26T06:10:30.811Z",
+    "openJobsCount": 0
   }
 ]
