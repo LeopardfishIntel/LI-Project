@@ -63,7 +63,7 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
   let liveVerified = 0;
 
   const purgeList: Array<{ id: string; reason: string }> = [];
-  const candidateUrlChecks: Array<{ id: string; url: string; title: string; schoolName: string }> = [];
+  const candidateUrlChecks: Array<{ id: string; url: string; title: string; schoolName: string; schoolId?: string }> = [];
 
   const foreignCountryList = [
     "thailand", "china", "singapore", "japan", "spain", "italy", "france", "germany",
