@@ -120,9 +120,29 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
       }
     }
 
-    // Queue for Live Portal Banner / Dead Link Inspection (Taaleem, Nord Anglia, ATS, Direct)
-    if (url.includes("careers.taaleem.ae") || url.includes("tes.com") || url.includes("careers.nordanglia") || url.includes(".pdf")) {
-      candidateUrlChecks.push({ id: docId, url, title: job.title, schoolName: job.schoolName, schoolId: sId });
+    // Collect all candidate URLs attached to this job (applyUrl, source_url, sourceUrls map)
+    const allJobUrls = [
+      url,
+      String(job.applyUrl || "").trim(),
+      String(job.source_url || "").trim(),
+      ...(job.sourceUrls ? Object.values(job.sourceUrls).map(v => String(v).trim()) : [])
+    ].filter(u => Boolean(u) && u.startsWith("http"));
+
+    const uniqueJobUrls = Array.from(new Set(allJobUrls));
+    const targetCheckUrls = uniqueJobUrls.filter(u => 
+      u.includes("careers.taaleem.ae") || 
+      u.includes("tes.com") || 
+      u.includes("careers.nordanglia") || 
+      u.includes("careers.gemseducation.com") ||
+      u.includes("globeducate") ||
+      u.includes("workdayjobs") ||
+      u.includes(".pdf")
+    );
+
+    if (targetCheckUrls.length > 0) {
+      for (const tUrl of targetCheckUrls) {
+        candidateUrlChecks.push({ id: docId, url: tUrl, title: job.title, schoolName: job.schoolName, schoolId: sId });
+      }
     } else {
       liveVerified++;
     }
@@ -153,18 +173,25 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
               return;
             }
 
-            const bodyText = await page.evaluate(() => document.body.innerText || "");
+            const bodyLower = (await page.evaluate(() => document.body.innerText || "")).toLowerCase();
             
             // Check for Nord Anglia specific vacancy status & school mismatch
             if (item.url.includes("careers.nordanglia")) {
-              const hasActiveTokens = bodyText.includes("Apply now") || bodyText.includes("Job ID:") || bodyText.includes("Job Posting Date:");
-              if (!hasActiveTokens || bodyText.includes("Job Not Found") || bodyText.includes("This job posting is closed")) {
-                purgeList.push({ id: item.id, reason: `Nord Anglia expired/closed posting` });
+              const hasActiveTokens = bodyLower.includes("apply now") || bodyLower.includes("job id:") || bodyLower.includes("job posting date:");
+              const isClosedOrFilled = 
+                !hasActiveTokens || 
+                bodyLower.includes("job not found") || 
+                bodyLower.includes("this job posting is closed") || 
+                bodyLower.includes("position has been filled") || 
+                bodyLower.includes("opportunity is no longer available");
+
+              if (isClosedOrFilled) {
+                purgeList.push({ id: item.id, reason: `Nord Anglia expired/closed/filled posting` });
                 expiredBannersPurged++;
                 return;
               }
 
-              const resolved = resolveNordAngliaSchool(bodyText);
+              const resolved = resolveNordAngliaSchool(bodyLower);
               if (resolved && resolved.id !== item.schoolId) {
                 purgeList.push({ id: item.id, reason: `Nord Anglia school mismatch: assigned to ${item.schoolId} but page is for ${resolved.id} (${resolved.name})` });
                 geographicMismatchesPurged++;
@@ -176,14 +203,17 @@ export async function runDailyJobVerification(): Promise<VerificationReport> {
             }
 
             const isClosed =
-              bodyText.includes("Closed or Expired Job Posting") ||
-              bodyText.includes("is closed or has expired") ||
-              bodyText.includes("no longer open for applications") ||
-              bodyText.includes("Job Not Found") ||
-              bodyText.includes("This position has been filled");
+              bodyLower.includes("closed or expired job posting") ||
+              bodyLower.includes("is closed or has expired") ||
+              bodyLower.includes("no longer open for applications") ||
+              bodyLower.includes("job not found") ||
+              bodyLower.includes("position has been filled") ||
+              bodyLower.includes("sorry, this position has been filled") ||
+              bodyLower.includes("this job posting is closed") ||
+              bodyLower.includes("opportunity is no longer available");
 
             if (isClosed) {
-              purgeList.push({ id: item.id, reason: `Portal closed/expired banner detected` });
+              purgeList.push({ id: item.id, reason: `Portal closed/expired/filled banner detected` });
               expiredBannersPurged++;
             } else {
               liveVerified++;

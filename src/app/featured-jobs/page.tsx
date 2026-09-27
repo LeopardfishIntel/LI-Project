@@ -145,6 +145,42 @@ const getGroupPortalUrl = (groupName: string): string => {
 
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 
+// Smart query matcher: avoids false positive substring collisions (e.g. 'Oman' in 'Romania')
+const matchesJobSearchQuery = (job: { title?: string; schoolName?: string; city?: string; country?: string }, query: string): boolean => {
+  if (!query || !query.trim()) return true;
+  const qClean = query.trim().toLowerCase();
+  
+  const title = (job.title || '').toLowerCase();
+  const schoolName = (job.schoolName || '').toLowerCase();
+  
+  // Direct match on full title or school name
+  if (title.includes(qClean) || schoolName.includes(qClean)) return true;
+
+  const qTokens = qClean.split(/\s+/).filter(Boolean);
+  const city = (job.city || '').toLowerCase();
+  const country = (job.country || '').toLowerCase();
+  const cityWords = city.split(/[\s,/-]+/).filter(Boolean);
+  const countryWords = country.split(/[\s,/-]+/).filter(Boolean);
+
+  return qTokens.every(token => {
+    if (title.includes(token) || schoolName.includes(token)) return true;
+    
+    // Exact word or prefix match on city (e.g. "muscat" or "mus")
+    if (cityWords.some(w => w === token || (token.length >= 3 && w.startsWith(token)))) return true;
+    
+    // Exact word or prefix match on country (e.g. "oman", "vietnam")
+    if (countryWords.some(w => w === token || (token.length >= 4 && w.startsWith(token)))) return true;
+
+    // Common regional aliases
+    if (token === 'uae' && (country.includes('emirates') || country.includes('uae') || city.includes('dubai') || city.includes('abu dhabi'))) return true;
+    if (token === 'uk' && (country.includes('kingdom') || country.includes('uk') || country.includes('britain'))) return true;
+    if (token === 'usa' && (country.includes('states') || country.includes('usa') || country.includes('america'))) return true;
+
+    return false;
+  });
+};
+
+
 // A helper to parse salary numbers (e.g., "$4,150.00" -> 4150)
 const parseSalary = (val: any): number => {
   if (!val) return 0;
@@ -1286,13 +1322,9 @@ export default function FeaturedJobsPage() {
         if (job.schoolRating < minRating) return false;
       }
 
-      // Search text query (matches title, school, city, country)
-      const matchesQuery = 
-        normalize(job.title).includes(normalize(searchQuery)) ||
-        normalize(job.schoolName).includes(normalize(searchQuery)) ||
-        normalize(job.city).includes(normalize(searchQuery)) ||
-        normalize(job.country).includes(normalize(searchQuery));
-      if (!matchesQuery) return false;
+      // Search text query (matches title, school, city, country without false substring collisions)
+      if (!matchesJobSearchQuery(job, searchQuery)) return false;
+
 
       // Curriculum match (simplified individual multi-select)
       if (selectedCurriculums.length > 0) {
@@ -1958,12 +1990,11 @@ export default function FeaturedJobsPage() {
                 {/* Scan School for vacancies if they exist in DB but aren't scanned */}
                 {searchQuery.trim().length > 0 && schoolsData && (
                   (() => {
-                    const queryLower = searchQuery.toLowerCase();
                     const unscannedSchools = schoolsData.filter((school: any) => {
-                      const name = (school.schoolname || "").toLowerCase();
-                      const city = (school.city || "").toLowerCase();
-                      const country = (school.country || "").toLowerCase();
-                      const matches = name.includes(queryLower) || city.includes(queryLower) || country.includes(queryLower);
+                      const name = school.schoolname || "";
+                      const city = school.city || "";
+                      const country = school.country || "";
+                      const matches = matchesJobSearchQuery({ schoolName: name, city, country }, searchQuery);
                       
                       const hasJobs = Array.isArray(school.scrapedJobsList) && school.scrapedJobsList.length > 0;
                       return matches && !hasJobs;
