@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
-import { canonicalCountry, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
+import { canonicalCountry, isHousingProvided, getZoneLocationWeights, isGenuineSalaryRange } from '@/lib/calculations';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
@@ -1608,33 +1608,37 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const salaryVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
-    if (salaryVal) {
-      const str = String(salaryVal).trim();
-      const isUSD = str.includes("$") || str.toUpperCase().includes("USD") || activeSchool?.salaryCurrency === "USD" || Boolean(activeSchool?.startingSalaryUsd) || Boolean(activeSchool?.expectedSalaryNetUsd);
+    const rawVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
+    if (rawVal !== undefined && rawVal !== null && rawVal !== '') {
+      const schoolCurrency = activeSchool?.currency || activeSchool?.salaryCurrency || 'USD';
+      
+      let monthlyInSchoolCurrency = 0;
+      if (typeof rawVal === 'number' && rawVal > 0) {
+        monthlyInSchoolCurrency = rawVal;
+      } else {
+        const str = String(rawVal).trim();
+        const cleanRange = str
+          .replace(/,/g, '')
+          .replace(/\.\d+/g, '')
+          .replace(/(\d+)\s*k\b/gi, '$1000');
+        const range = cleanRange.match(/\d+/g);
+        const validNums = range ? range.map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0) : [];
+        const min = validNums.length > 0 ? validNums[0] : 0;
+        const max = validNums.length > 1 ? validNums[1] : min;
+        let median = Math.round((min + max) / 2);
 
-      const cleanRange = str
-        .replace(/,/g, '')
-        .replace(/\.\d+/g, '')
-        .replace(/(\d+)\s*k\b/gi, '$1000');
-      const range = cleanRange.match(/\d+/g);
-      const validNums = range ? range.map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0) : [];
-      const min = validNums.length > 0 ? validNums[0] : 0;
-      const max = validNums.length > 1 ? validNums[1] : min;
-      let median = Math.round((min + max) / 2);
-
-      const isExplicitMonthly = /month|monthly|\/mo/i.test(str);
-      // Annual to Monthly Conversion: if median >= 10,000 in major currencies or >= 120,000 in local currencies, divide by 12 unless explicitly marked /mo
-      const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR', 'AZN'].includes(currency) || isUSD;
-      const isAnnualVal = isHighValCurr ? median >= 10000 : median >= 120000;
-      if (isAnnualVal && !isExplicitMonthly) {
-        median = Math.round(median / 12);
+        if (/annum|annual|\/yr|year/i.test(str)) {
+          median = Math.round(median / 12);
+        }
+        monthlyInSchoolCurrency = median;
       }
 
-      // Convert from USD to local currency ONLY if original string was in USD and local currency is not USD
-      let monthlyLocal = median;
-      if (isUSD && currency !== "USD") {
-        monthlyLocal = Math.round(usdToLocal(median));
+      // Convert to local display currency (COL currency)
+      let monthlyLocal = monthlyInSchoolCurrency;
+      if (schoolCurrency !== currency) {
+        const rateSchool = currentRates[schoolCurrency] || 1.0;
+        const rateDisplay = currentRates[currency] || 1.0;
+        monthlyLocal = Math.round((monthlyInSchoolCurrency / rateSchool) * rateDisplay);
       }
 
       setBenchmarkSalary(monthlyLocal.toString());
@@ -1666,11 +1670,7 @@ function DecoderContent() {
     const countryIntel = SALARY_INTEL[sCountry] || null;
 
     const rawNetInput = safeParse(settings.netSalary);
-    const gbpRate = currentRates[currency] || 1.0;
-    const rawNetInGBP = rawNetInput / gbpRate;
-    // Normalized annual salary check: If salary converted to GBP equivalent is >= £18,000 net/yr, it's an annual salary input
-    const isConvertedFromAnnual = rawNetInGBP >= 18000;
-    const baseNet = isConvertedFromAnnual ? Math.round(rawNetInput / 12) : rawNetInput;
+    const baseNet = rawNetInput;
 
     const upliftFactor = (uplift13 ? 1 / 12 : 0) + (uplift14 ? 1 / 12 : 0);
     const amortizedBase = baseNet * (1 + upliftFactor);
@@ -1745,10 +1745,17 @@ function DecoderContent() {
     if (isProvided) {
       baseRentUSD = 0;
     } else if (overrideBedrooms === 0) {
-      const rent3brVal = safeParse(getF(activeCOL, ['rent3br']) || getF(activeCOL, ['rent2br']) || getF(activeCOL, ['rent1br']) || 0);
+      const rent3brVal = safeParse(getF(activeCOL, ['rent3br', 'monthlyrent3br', 'rent3bed']) || getF(activeCOL, ['rent2br', 'monthlyrent2br', 'rent2bed']) || getF(activeCOL, ['rent1br', 'monthlyrent1br', 'rent1bed']) || 0);
       baseRentUSD = rent3brVal / 3;
     } else {
-      baseRentUSD = safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br']) || 0);
+      const rentAliases: Record<string, string[]> = {
+        'rent1br': ['rent1br', 'monthlyrent1br', 'rent1bed'],
+        'rent2br': ['rent2br', 'monthlyrent2br', 'rent2bed'],
+        'rent3br': ['rent3br', 'monthlyrent3br', 'rent3bed']
+      };
+      const activeAliases = rentAliases[activeRentKey] || [activeRentKey];
+      const standardAliases = rentAliases[standardRentKey] || [standardRentKey];
+      baseRentUSD = safeParse(getF(activeCOL, activeAliases) || getF(activeCOL, standardAliases) || getF(activeCOL, ['rent1br', 'monthlyrent1br', 'rent1bed']) || 0);
     }
 
     // Apply subsidy discount if subsidized and not in 100% free provided mode
@@ -1765,12 +1772,12 @@ function DecoderContent() {
       }
     }
 
-    const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food']), pKey, scalar) * groceryMult);
-    const utilitiesCost = usdToLocal(getVal(getF(activeCOL, ['utilities', 'bills']), pKey, scalar * 0.8));
+    const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food', 'foodgroceries']), pKey, scalar) * groceryMult);
+    const utilitiesCost = usdToLocal(getVal(getF(activeCOL, ['utilities', 'bills', 'utilitiesmonthly']), pKey, scalar * 0.8));
 
     // Split connectivity Cost
-    const internetCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1));
-    const mobileCost = usdToLocal(getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount);
+    const internetCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity', 'internetmonthly']), pKey, 1));
+    const mobileCost = usdToLocal(getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone', 'mobilemonthly']), pKey, 1) * personCount);
     const connectivityCost = internetCost + mobileCost;
 
     // 🛰️ NESTED TRANSPORT PROTOCOL
@@ -1888,7 +1895,7 @@ function DecoderContent() {
       housingStatus: isProvided ? 'provided' : (isSubsidized ? 'subsidized' : 'custom'),
       housingSubsidyRate,
       isHousingProvidedByDefault,
-      isConvertedFromAnnual, rawNetInput, baseNet,
+      isConvertedFromAnnual: false, rawNetInput, baseNet,
       currency, reliability: activeCOL?.dataReliabilityScore,
       sCountry, activeSchool, countryIntel, uplift13, uplift14
     };
@@ -2293,43 +2300,76 @@ function DecoderContent() {
                   <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
                 </div>
 
-                {/* 🎯 COMPACT SINGLE-LINE 5-YEAR BENCHMARK & PROVENANCE ROW UNDERNEATH */}
-                <div className="mt-1.5 flex items-center justify-between gap-2 px-0.5 overflow-hidden">
-                  <div className="flex items-center gap-1.5 shrink-0">
+                {/* 🎯 COMPACT 5-YEAR BENCHMARK & PROVENANCE ROW UNDERNEATH WITH AUTO-WRAP */}
+                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 min-w-0">
                     <span className="text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wide whitespace-nowrap">
                       5-Yr Bench: <span className="text-white font-black">{currency} {benchmarkSalary && benchmarkSalary !== "0" ? parseFloat(benchmarkSalary).toLocaleString() : '—'}</span>
                     </span>
-                    {activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' ? (
+                    {activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('verified') ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help whitespace-nowrap">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help hover:bg-emerald-500/30 transition-colors whitespace-nowrap">
                             ✓ Verified Scale
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom" className="bg-[#0b1224] border-emerald-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
-                          Directly derived from a published or current school salary scale.
+                        <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-emerald-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                              <span className="font-extrabold text-emerald-400 uppercase tracking-wider text-[9px]">Verified Scale</span>
+                              <span className="text-[8.5px] font-bold text-slate-400">Step 5 Equivalent</span>
+                            </div>
+                            {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                              <div className="bg-emerald-950/40 border border-emerald-500/30 rounded p-1.5">
+                                <div className="text-[8px] text-slate-400 font-semibold uppercase">Published Scale / Band</div>
+                                <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                              </div>
+                            )}
+                          </div>
                         </TooltipContent>
                       </Tooltip>
-                    ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' ? (
+                    ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('market') || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('midpoint') ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help whitespace-nowrap">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help hover:bg-sky-500/30 transition-colors whitespace-nowrap">
                             ✦ Market Evidence
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom" className="bg-[#0b1224] border-sky-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
-                          Calibrated from credible teacher compensation evidence and active vacancy postings.
+                        <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-sky-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                              <span className="font-extrabold text-sky-400 uppercase tracking-wider text-[9px]">Market Evidence</span>
+                              <span className="text-[8.5px] font-bold text-slate-400">Range Midpoint</span>
+                            </div>
+                            {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                              <div className="bg-sky-950/40 border border-sky-500/30 rounded p-1.5">
+                                <div className="text-[8px] text-slate-400 font-semibold uppercase">Published Range</div>
+                                <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                              </div>
+                            )}
+                          </div>
                         </TooltipContent>
                       </Tooltip>
                     ) : (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help whitespace-nowrap">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help hover:bg-slate-500/30 transition-colors whitespace-nowrap">
                             ≈ LF Estimate
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom" className="bg-[#0b1224] border-slate-500/30 text-slate-300 text-[9px] p-2 max-w-xs shadow-xl z-50">
-                          Derived from comparable tier-1 schools, experience curves, and local tax frameworks.
+                        <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-slate-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                              <span className="font-extrabold text-slate-300 uppercase tracking-wider text-[9px]">Modelled Estimate</span>
+                              <span className="text-[8.5px] font-bold text-slate-400">Algorithmic Base</span>
+                            </div>
+                            {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                              <div className="bg-slate-900/60 border border-slate-700/40 rounded p-1.5">
+                                <div className="text-[8px] text-slate-400 font-semibold uppercase">Estimated Range</div>
+                                <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                              </div>
+                            )}
+                          </div>
                         </TooltipContent>
                       </Tooltip>
                     )}
@@ -3467,27 +3507,81 @@ function DecoderContent() {
                     <h3 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
                     <div className="space-y-5">
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex flex-wrap justify-between items-center gap-2 border-b border-white/5 pb-2">
+                        <div className="flex flex-wrap items-center gap-2 min-w-0">
                           <Coins className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex flex-wrap items-center gap-1.5">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
                             {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary ? (
-                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap">
                                 Your Offer
                               </span>
-                            ) : activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' ? (
-                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                Verified Scale
-                              </span>
-                            ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' ? (
-                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/30">
-                                Strong Market
-                              </span>
+                            ) : activeSchool?.salary_benchmark_category === 'VERIFIED_SCALE' || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('verified') ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-help hover:bg-emerald-500/30 transition-colors whitespace-nowrap">
+                                    ✓ Verified Scale
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-emerald-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                                      <span className="font-extrabold text-emerald-400 uppercase tracking-wider text-[9px]">Verified Scale</span>
+                                      <span className="text-[8.5px] font-bold text-slate-400">Step 5 Equivalent</span>
+                                    </div>
+                                    {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                                      <div className="bg-emerald-950/40 border border-emerald-500/30 rounded p-1.5">
+                                        <div className="text-[8px] text-slate-400 font-semibold uppercase">Published Scale / Band</div>
+                                        <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            ) : activeSchool?.salary_benchmark_category === 'STRONG_MARKET_EVIDENCE' || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('market') || String(activeSchool?.salary_benchmark_category || '').toLowerCase().includes('midpoint') ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40 cursor-help hover:bg-sky-500/30 transition-colors whitespace-nowrap">
+                                    ✦ Market Evidence
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-sky-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                                      <span className="font-extrabold text-sky-400 uppercase tracking-wider text-[9px]">Market Evidence</span>
+                                      <span className="text-[8.5px] font-bold text-slate-400">Range Midpoint</span>
+                                    </div>
+                                    {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                                      <div className="bg-sky-950/40 border border-sky-500/30 rounded p-1.5">
+                                        <div className="text-[8px] text-slate-400 font-semibold uppercase">Published Range</div>
+                                        <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
                             ) : (
-                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/30">
-                                Modelled
-                              </span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-500/40 cursor-help hover:bg-slate-500/30 transition-colors whitespace-nowrap">
+                                    ≈ LF Estimate
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" align="start" className="bg-[#0b1224]/95 backdrop-blur-md border border-slate-500/40 text-slate-200 text-[10px] p-2 max-w-xs shadow-2xl z-50 rounded-md">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center justify-between border-b border-white/10 pb-1">
+                                      <span className="font-extrabold text-slate-300 uppercase tracking-wider text-[9px]">Modelled Estimate</span>
+                                      <span className="text-[8.5px] font-bold text-slate-400">Algorithmic Base</span>
+                                    </div>
+                                    {isGenuineSalaryRange(activeSchool?.salaryRange || activeSchool?.salary_range) && (
+                                      <div className="bg-slate-900/60 border border-slate-700/40 rounded p-1.5">
+                                        <div className="text-[8px] text-slate-400 font-semibold uppercase">Estimated Range</div>
+                                        <div className="text-[11px] font-black text-white">{activeSchool?.salaryRange || activeSchool?.salary_range}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
                             )}
                           </div>
                         </div>

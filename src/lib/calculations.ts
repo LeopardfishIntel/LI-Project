@@ -131,12 +131,41 @@ export function isHousingProvided(housingProvision?: string | boolean, intelHous
     lower.includes('on campus housing') ||
     lower.includes('furnished housing') ||
     lower.includes('furnished accommodation') ||
+    lower.includes('furnished apartment') ||
+    lower.includes('furnished condo') ||
+    lower.includes('furnished villa') ||
     lower.includes('compound villa') ||
     lower.includes('compound house') ||
+    lower.includes('compound accommodation') ||
+    lower.includes('luxury compound') ||
     lower.startsWith('on-campus') ||
     lower.startsWith('on campus') ||
-    (lower.includes('provided') && !lower.includes('not provided') && !lower.includes('allowance'))
+    lower.includes('provided') ||
+    lower.includes('accommodation included') ||
+    lower.includes('housing included') ||
+    lower.includes('room & board') ||
+    lower.includes('boarding accommodation') ||
+    lower.includes('allowance included in base')
   );
+}
+
+/**
+ * 🎯 Helper to determine if a string is a genuine salary range (two distinct numbers) vs a single scalar value.
+ * Prevents single numbers (e.g. "$4,150.00") from falsely displaying as published ranges.
+ */
+export function isGenuineSalaryRange(val?: string | null): boolean {
+  if (!val) return false;
+  const str = String(val).trim();
+  const hasRangeSeparator = /[-–—~]|(\bto\b)/i.test(str);
+  if (!hasRangeSeparator) return false;
+
+  const clean = str.replace(/,/g, '').replace(/\.\d+/g, '').replace(/(\d+)\s*k\b/gi, '$1000');
+  const numbers = clean.match(/\d+/g);
+  if (!numbers || numbers.length < 2) return false;
+
+  const n1 = parseInt(numbers[0], 10);
+  const n2 = parseInt(numbers[1], 10);
+  return !isNaN(n1) && !isNaN(n2) && n1 !== n2 && n1 > 0 && n2 > 0;
 }
 
 /**
@@ -906,8 +935,15 @@ export function parseSalaryToMedianMonthlyUSD(
   countryName?: string,
   currencyCode?: string
 ): number {
-  if (typeof rawVal === 'number') {
-    return normalizeMenaSalaryUSD(rawVal, countryName);
+  if (typeof rawVal === 'number' && rawVal > 0) {
+    const cur = (currencyCode || 'USD').toUpperCase();
+    let monthly = rawVal;
+    if (cur !== 'USD' && RATES[cur]) {
+      const usdRate = RATES['USD'] || 1.27;
+      const localRate = RATES[cur] || 1.0;
+      monthly = Math.round((monthly / localRate) * usdRate);
+    }
+    return normalizeMenaSalaryUSD(monthly, countryName);
   }
   const str = String(rawVal || '').trim();
   if (!str || str === '—' || str === '0' || str === 'undefined' || str === 'null') {
