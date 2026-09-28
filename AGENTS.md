@@ -6,6 +6,7 @@
 - src/lib/crawler/adaptors/tes-adaptor.ts
 - scripts/sweep-tes-jobs-only.ts
 - src/lib/pipelines/pipeline1-ingestion.ts
+- src/lib/search/teachaway.ts
 
 # STRICT GEMS ENGINE RULES:
 1. DO NOT modify, refactor, or touch any files listed under FROZEN MODULES unless explicitly commanded by the prompt.
@@ -28,3 +29,12 @@
    - Destination Package: < $700/mo
 2. DO NOT alter the card footer layout, multi-engine source pill resolution, or evaluate opportunity CTA buttons in src/app/featured-jobs/page.tsx or src/app/financial-forecaster/page.tsx.
 3. Both desktop and mobile pill labels (shortLabel vs label) and tooltips must remain synchronized across the application.
+
+# STRICT TEACH AWAY ENGINE RULES:
+1. **Fragility Context**: Two-tier scraping engine (Hub Pagination -> Detail Page Inspection) with Cloudflare bot-challenge tripwires, 6-week rolling deadline caps, and school disambiguation.
+2. **Invariants**:
+   - DO NOT remove `includeNeedsReview` status gating. Unreviewed matches (`needs_review`) must never bypass staging into the public feed.
+   - DO NOT treat continuation page timeouts as fatal errors (always use `PAGINATION_TIMEOUT_MS = 8000`).
+   - DO NOT hardcode single-campus assignments to multi-school employer hubs (e.g. Taaleem, GEMS, Aldar, Bloom) without disambiguation.
+   - DO NOT alter `parseAbsoluteDate` or `parseJobDetail` without running and verifying `npx tsx src/lib/search/teachaway.test.ts`.
+   - Any modifications must be verified with `npm run test` and `npm run typecheck` before proposing commits.
