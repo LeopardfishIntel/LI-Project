@@ -6,7 +6,6 @@
  * filters non-teaching roles, and commits pre-scrubbed jobs directly to `featured_jobs_cache`.
  */
 
-import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { parseClosingDate } from "@/lib/crawler/dateParser";
 import { chromium } from "playwright";
@@ -24,6 +23,8 @@ export interface CognitaJobMatch {
   closingDate?: string | null;
   closingDateMillis?: number | null;
   isRollingDeadline?: boolean;
+  matchConfidence?: "high" | "medium" | "low";
+  reasons?: string[];
 }
 
 export interface CognitaCampusMeta {
@@ -222,8 +223,6 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
     await browser.close();
 
     const matchedResults: CognitaJobMatch[] = [];
-    const dbInstance = getAdminDb();
-    const batch = dbInstance && typeof dbInstance.batch === "function" ? dbInstance.batch() : null;
 
     for (const job of apiRequisitions) {
       const title = String(job.displayJobTitle || job.title || "").trim();
@@ -235,10 +234,13 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
       const fullText = `${title} ${location} ${description}`.toLowerCase();
 
       let matchedMeta: CognitaCampusMeta | null = null;
+      let matchedOnPrimaryName = false;
       for (const meta of Object.values(COGNITA_CAMPUS_MAP)) {
-        const isMatch = meta.matchers.some((m) => fullText.includes(m.toLowerCase()));
-        if (isMatch) {
+        const primaryMatch = fullText.includes(meta.matchers[0].toLowerCase());
+        const anyMatch = primaryMatch || meta.matchers.some((m) => fullText.includes(m.toLowerCase()));
+        if (anyMatch) {
           matchedMeta = meta;
+          matchedOnPrimaryName = primaryMatch;
           break;
         }
       }
@@ -273,45 +275,14 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
           closingDate: closingDateISO,
           closingDateMillis,
           isRollingDeadline: parsedDate.isRollingDeadline,
+          matchConfidence: matchedOnPrimaryName ? "high" : "medium",
+          reasons: matchedOnPrimaryName
+            ? []
+            : [`Matched via secondary keyword, not the school's primary name — verify city/campus before approving.`],
         };
 
         matchedResults.push(match);
-
-        if (dbInstance && batch) {
-          const docId = `fp_${matchedMeta.schoolId.toLowerCase()}_cognita_${reqId}`;
-          const cacheDoc = {
-            id: docId,
-            jobId: reqId,
-            title,
-            schoolId: matchedMeta.schoolId,
-            schoolName: matchedMeta.canonicalName,
-            city: matchedMeta.city,
-            country: matchedMeta.country,
-            applyUrl,
-            source: "Cognita",
-            sources: ["Cognita"],
-            sourceUrls: { Cognita: applyUrl },
-            group: "Cognita",
-            status: "pending_review",
-            date_listed: job.postingEffectiveDate ? String(job.postingEffectiveDate) : "Recently",
-            date_closing: closingDateISO || "Open Until Filled",
-            closingDate: closingDateISO,
-            closingDateMillis: closingDateMillis || Date.now() + 42 * 24 * 60 * 60 * 1000,
-            isRollingDeadline: parsedDate.isRollingDeadline,
-            savingsPotential: 2200,
-            savingsPotentialSingle: 2200,
-            scrapedAt: new Date().toISOString(),
-            ingestedAtMillis: Date.now(),
-          };
-
-          batch.set(dbInstance.collection("featured_jobs_cache").doc(docId), cacheDoc, { merge: true });
-        }
       }
-    }
-
-    if (batch) {
-      await batch.commit();
-      console.log(`✨ Committed ${matchedResults.length} live Cognita vacancies to featured_jobs_cache.`);
     }
 
     return matchedResults;
