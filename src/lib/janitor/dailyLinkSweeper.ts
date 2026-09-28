@@ -1,4 +1,5 @@
 import { getAdminDb } from '@/firebase/admin';
+import { getCurrentCognitaRequisitionIds } from '@/lib/search/cognita';
 
 export interface LinkSweepTelemetry {
   timestamp: string;
@@ -93,6 +94,26 @@ export async function runDailyLinkSweep(): Promise<LinkSweepTelemetry> {
 
   console.log(`🧹 Found ${docs.length} active cached job records to verify.`);
 
+  // 🛰️ SPA Catalog Pre-fetch: Cognita
+  let cognitaActiveIds: Set<string> | null = null;
+  const hasCognitaDocs = docs.some((d: any) => {
+    const data = d.data();
+    const sUpper = String(data.source || '').toUpperCase();
+    const sources = (data.sources || []).map((s: any) => String(s || '').toUpperCase());
+    const url = String(data.applyUrl || data.source_url || '').toLowerCase();
+    return sUpper.includes('COGNITA') || sources.some((s: string) => s.includes('COGNITA')) || url.includes('cognitapeople.csod.com');
+  });
+
+  if (hasCognitaDocs) {
+    console.log('🔍 [DAILY LINK SWEEPER] Pre-fetching Cognita active requisition catalog...');
+    cognitaActiveIds = await getCurrentCognitaRequisitionIds();
+    if (cognitaActiveIds === null) {
+      console.warn('⚠️ [DAILY LINK SWEEPER] Cognita catalog unavailable — failing safe (skipping Cognita takedowns this sweep).');
+    } else {
+      console.log(`✅ [DAILY LINK SWEEPER] Cognita catalog loaded: ${cognitaActiveIds.size} active requisitions.`);
+    }
+  }
+
   const takedownDocs: {
     docId: string;
     schoolId: string;
@@ -111,6 +132,39 @@ export async function runDailyLinkSweep(): Promise<LinkSweepTelemetry> {
       chunk.map(async (docSnap: any) => {
         const data = docSnap.data();
         const url = data.applyUrl || data.source_url || '';
+
+        // ── SPA Branch: Cognita CSOD Requisition Catalog Check ───────────────
+        const sUpper = String(data.source || '').toUpperCase();
+        const sources = (data.sources || []).map((s: any) => String(s || '').toUpperCase());
+        const urlLower = url.toLowerCase();
+        const isCognita = sUpper.includes('COGNITA') || sources.some((s: string) => s.includes('COGNITA')) || urlLower.includes('cognitapeople.csod.com');
+
+        if (isCognita) {
+          if (cognitaActiveIds === null) {
+            // Fail-safe: CSOD API was unreachable; assume live to prevent false takedowns
+            verifiedLiveCount++;
+            return;
+          }
+
+          const reqMatch = url.match(/\/requisition\/(\d+)/i);
+          const reqId = reqMatch ? reqMatch[1] : (data.jobId || data.requisitionId);
+
+          if (reqId && !cognitaActiveIds.has(String(reqId).trim())) {
+            takedownDocs.push({
+              docId: docSnap.id,
+              schoolId: data.schoolId || '',
+              schoolName: data.schoolName || '',
+              title: data.title || data.jobTitle || '',
+              url,
+              reason: `Cognita Requisition ${reqId} Delisted from Active Catalog`
+            });
+          } else {
+            verifiedLiveCount++;
+          }
+          return;
+        }
+
+        // ── Standard HTTP Static Check for Non-SPA Sources ───────────────────
         const statusCheck = await checkUrlLiveStatus(url);
 
         if (!statusCheck.isLive) {

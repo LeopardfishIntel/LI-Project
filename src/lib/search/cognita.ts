@@ -325,3 +325,83 @@ export async function syncCognitaNetworkToCache() {
   const jobs = await searchCognitaDbSchools();
   return { ingested: jobs.length };
 }
+
+/**
+ * Returns the set of requisition IDs Cognita currently lists as open — used by the daily
+ * takedown checker to detect removed listings, since Cognita's careers site is a JS app
+ * and a plain HTTP fetch to a job's own URL can never see its "closed" state.
+ * Returns null on failure (fail-safe: prevents false takedowns if CSOD API is unreachable).
+ */
+export async function getCurrentCognitaRequisitionIds(): Promise<Set<string> | null> {
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage();
+    const portalUrl = "https://cognitapeople.csod.com/ux/ats/careersite/1/home?c=cognitapeople";
+
+    let bearerToken = "";
+    page.on("request", (req) => {
+      if (req.url().includes("rec-job-search/external/jobs")) {
+        const authHeader = req.headers()["authorization"];
+        if (authHeader) bearerToken = authHeader;
+      }
+    });
+
+    await page.goto(portalUrl, { waitUntil: "networkidle", timeout: 35000 }).catch(() => {});
+    await page.waitForTimeout(2000);
+
+    if (!bearerToken) {
+      console.warn("⚠️ [COGNITA LIVE CHECK] Failed to capture bearer token from CSOD portal.");
+      await browser.close();
+      return null;
+    }
+
+    const requisitionIds: string[] = await page.evaluate(async (token) => {
+      const ids: string[] = [];
+      let pageNum = 1;
+      const pageSize = 200;
+      let totalCount = 0;
+
+      do {
+        const res = await fetch("https://uk.api.csod.com/rec-job-search/external/jobs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+            "csod-accept-language": "en-GB",
+          },
+          body: JSON.stringify({
+            careerSiteId: 1,
+            careerSitePageId: 1,
+            pageNumber: pageNum,
+            pageSize: pageSize,
+            cultureId: 2,
+            searchText: "",
+            cultureName: "en-GB",
+            states: [],
+            countryCodes: [],
+            cities: [],
+          }),
+        });
+        const json = await res.json();
+        const reqs = json.data?.requisitions || [];
+        totalCount = json.data?.totalCount || reqs.length;
+        for (const r of reqs) {
+          if (r.requisitionId) ids.push(String(r.requisitionId).trim());
+        }
+        if (reqs.length === 0 || ids.length >= totalCount) break;
+        pageNum++;
+      } while (pageNum <= 5);
+
+      return ids;
+    }, bearerToken);
+
+    await browser.close();
+    return new Set(requisitionIds);
+  } catch (err) {
+    console.error("⚠️ [COGNITA LIVE CHECK] Error fetching active requisitions:", err);
+    if (browser) await browser.close().catch(() => {});
+    return null;
+  }
+}
+
