@@ -1,3 +1,11 @@
+/**
+ * 🛸 COGNITA DB-RESTRICTED SEARCH ENGINE & DIRECT INGESTION
+ *
+ * Coordinates network-wide crawling across Cognita Schools via CSOD
+ * (`cognitapeople.csod.com`), enforces strict canonical entity mappings,
+ * filters non-teaching roles, and commits pre-scrubbed jobs directly to `featured_jobs_cache`.
+ */
+
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { parseClosingDate } from "@/lib/crawler/dateParser";
@@ -11,91 +19,150 @@ export interface CognitaJobMatch {
   schoolName: string;
   city: string;
   country: string;
+  source: string;
   datePosted?: string | null;
   closingDate?: string | null;
   closingDateMillis?: number | null;
   isRollingDeadline?: boolean;
 }
 
-export interface DbSchoolRecord {
-  id: string;
-  name: string;
-  city?: string | null;
-  country?: string | null;
-  aliases?: string[] | null;
+export interface CognitaCampusMeta {
+  schoolId: string;
+  canonicalName: string;
+  city: string;
+  country: string;
+  matchers: string[];
 }
 
 /**
- * Database interface wrapper supporting db.school.findMany()
+ * COGNITA CANONICAL CAMPUS REGISTRY
+ * Mapped to exact canonical database FLIS IDs.
  */
-export const db = {
-  school: {
-    findMany: async (args?: {
-      select?: {
-        id?: boolean;
-        name?: boolean;
-        city?: boolean;
-        country?: boolean;
-        aliases?: boolean;
-      };
-    }): Promise<DbSchoolRecord[]> => {
-      const firestore = getAdminDb();
-      if (!firestore || typeof firestore.collection !== "function") {
-        return [];
-      }
-      try {
-        const snap = await firestore.collection("schools").get();
-        return snap.docs.map((d: any) => {
-          const data = typeof d.data === "function" ? d.data() : d;
-          return {
-            id: d.id || data.id || "",
-            name: data.name || data.schoolname || "",
-            city: data.city || "",
-            country: data.country || "",
-            aliases: Array.isArray(data.aliases) ? data.aliases : [],
-          };
-        });
-      } catch (err) {
-        console.warn("⚠️ Error querying schools from DB:", err);
-        return [];
-      }
-    },
+export const COGNITA_CAMPUS_MAP: Record<string, CognitaCampusMeta> = {
+  "stamford american": {
+    schoolId: "FLIS0404",
+    canonicalName: "Stamford American International School",
+    city: "Singapore",
+    country: "Singapore",
+    matchers: ["stamford american", "singapore"],
+  },
+  "ishcmc": {
+    schoolId: "FLIS0130",
+    canonicalName: "International School Ho Chi Minh City",
+    city: "Ho Chi Minh City",
+    country: "Vietnam",
+    matchers: ["ishcmc", "an khanh", "thu duc", "ho chi minh"],
+  },
+  "bsb": {
+    schoolId: "FLIS0416",
+    canonicalName: "The British School of Barcelona",
+    city: "Castelldefels",
+    country: "Spain",
+    matchers: ["british school of barcelona", "castelldefels", "barcelona"],
+  },
+  "southbank": {
+    schoolId: "FLIS0173",
+    canonicalName: "Southbank International School",
+    city: "London",
+    country: "United Kingdom",
+    matchers: ["southbank", "hampstead", "westminster", "london"],
+  },
+  "sukhumvit 107": {
+    schoolId: "FLIS0137",
+    canonicalName: "St. Andrews International School Sukhumvit 107",
+    city: "Bangkok",
+    country: "Thailand",
+    matchers: ["sukhumvit 107", "bangna", "bangkok", "rayong"],
+  },
+  "repton dubai": {
+    schoolId: "FLIS0110",
+    canonicalName: "Repton School Dubai",
+    city: "Dubai",
+    country: "United Arab Emirates",
+    matchers: ["repton dubai", "repton school dubai", "nad al sheba"],
+  },
+  "horizon international": {
+    schoolId: "FLIS0111",
+    canonicalName: "Horizon International School",
+    city: "Dubai",
+    country: "United Arab Emirates",
+    matchers: ["horizon international"],
+  },
+  "horizon english": {
+    schoolId: "FLIS0349",
+    canonicalName: "Horizon English School",
+    city: "Dubai",
+    country: "United Arab Emirates",
+    matchers: ["horizon english"],
+  },
+  "cheltenham muscat": {
+    schoolId: "FLIS0042",
+    canonicalName: "Cheltenham Muscat",
+    city: "Muscat",
+    country: "Oman",
+    matchers: ["cheltenham muscat", "cheltenham college muscat"],
+  },
+  "st gilgen": {
+    schoolId: "FLIS0190",
+    canonicalName: "St. Gilgen International School",
+    city: "St. Gilgen",
+    country: "Austria",
+    matchers: ["st. gilgen", "st gilgen"],
+  },
+  "reigate grammar vietnam": {
+    schoolId: "FLIS0443",
+    canonicalName: "Reigate Grammar School Vietnam",
+    city: "Hanoi",
+    country: "Vietnam",
+    matchers: ["reigate grammar", "hanoi"],
+  },
+  "heidelberg": {
+    schoolId: "FLIS0090",
+    canonicalName: "Heidelberg International School",
+    city: "Heidelberg",
+    country: "Germany",
+    matchers: ["heidelberg"],
   },
 };
 
+export function isCognitaSchool(schoolId?: string | null, schoolName?: string | null, group?: string | null): boolean {
+  const sId = (schoolId || "").toUpperCase().trim();
+  const sName = (schoolName || "").toLowerCase();
+  const gName = (group || "").toLowerCase();
+
+  if (
+    gName.includes("taaleem") ||
+    sName.includes("taaleem") ||
+    gName.includes("gems") ||
+    sName.includes("gems") ||
+    gName.includes("nord anglia") ||
+    sName.includes("nord anglia") ||
+    gName.includes("inspired") ||
+    sName.includes("inspired")
+  ) {
+    return false;
+  }
+
+  for (const meta of Object.values(COGNITA_CAMPUS_MAP)) {
+    if (meta.schoolId === sId) return true;
+  }
+
+  if (gName.includes("cognita")) return true;
+  if (sName.includes("cognita")) return true;
+
+  return false;
+}
+
 /**
- * 🛸 COGNITA DB-RESTRICTED SEARCH ENGINE
- *
  * Fetches live vacancies from Cognita CSOD portal (cognitapeople.csod.com)
- * and strictly matches them against ALL active schools in our database.
- * Deep dives into job title, location, and full description text for school names and closing dates.
- *
- * @returns Array of CognitaJobMatch objects strictly grounded in DB schools.
+ * and directly persists them into Firestore `featured_jobs_cache`.
  */
 export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
   try {
-    // 1. Query ALL active schools from db.school.findMany() with no network, operator, or name filters applied
-    const activeSchools = await db.school.findMany({
-      select: {
-        id: true,
-        name: true,
-        city: true,
-        country: true,
-        aliases: true,
-      },
-    });
-
-    if (!activeSchools || activeSchools.length === 0) {
-      console.log("ℹ️ [COGNITA ENGINE] 0 active schools returned from database.");
-      return [];
-    }
-
-    // 2. Launch Playwright headless browser to extract CSOD vacancies
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
-
     const portalUrl = "https://cognitapeople.csod.com/ux/ats/careersite/1/home?c=cognitapeople";
-    
+
     let bearerToken = "";
     page.on("request", (req) => {
       if (req.url().includes("rec-job-search/external/jobs")) {
@@ -105,16 +172,15 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
     });
 
     await page.goto(portalUrl, { waitUntil: "networkidle", timeout: 35000 }).catch(() => {});
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(2000);
 
-    // 3. Fetch full CSOD requisitions payload (Dynamic pagination up to totalCount)
     let apiRequisitions: any[] = [];
     if (bearerToken) {
       try {
         apiRequisitions = await page.evaluate(async (token) => {
           const allReqs: any[] = [];
           let pageNum = 1;
-          const pageSize = 500;
+          const pageSize = 200;
           let totalCount = 0;
 
           do {
@@ -144,167 +210,118 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
             allReqs.push(...reqs);
             if (reqs.length === 0 || allReqs.length >= totalCount) break;
             pageNum++;
-          } while (pageNum <= 10);
+          } while (pageNum <= 5);
 
           return allReqs;
         }, bearerToken);
       } catch (err) {
-        console.warn("⚠️ CSOD direct API fetch fallback:", err);
+        console.warn("⚠️ CSOD direct API fetch error:", err);
       }
     }
-
-    // DOM & State Fallback Extraction
-    const domExtractedJobs = await page.evaluate(() => {
-      const extracted: Array<{ requisitionId: string; title: string; location: string; description: string; postingEffectiveDate?: string; postingExpirationDate?: string }> = [];
-      const win = window as any;
-
-      const initialState = win.__INITIAL_STATE__ || win.csodState || win.csod;
-      if (initialState && Array.isArray(initialState.requisitions)) {
-        for (const req of initialState.requisitions) {
-          const reqId = String(req.requisitionId || req.id || req.requisitionNum || "").trim();
-          const title = String(req.title || req.jobTitle || req.name || "").trim();
-          const location = String(req.location || req.displayLocation || req.locationName || "").trim();
-          const description = String(req.description || req.externalDescription || "").trim();
-          if (reqId && title) {
-            extracted.push({
-              requisitionId: reqId,
-              title,
-              location,
-              description,
-              postingEffectiveDate: req.postingEffectiveDate,
-              postingExpirationDate: req.postingExpirationDate,
-            });
-          }
-        }
-      }
-
-      const reqLinks = Array.from(document.querySelectorAll("a[href*='/requisition/']"));
-      for (const a of reqLinks) {
-        const href = (a as HTMLAnchorElement).href || "";
-        const reqMatch = href.match(/\/requisition\/([^\/?#]+)/i);
-        if (reqMatch) {
-          const reqId = reqMatch[1];
-          const title = a.textContent?.trim() || "";
-          let container = a.parentElement;
-          for (let i = 0; i < 5; i++) {
-            if (container && container.textContent && container.textContent.length > title.length + 10) break;
-            if (container) container = container.parentElement;
-          }
-          const location = container?.textContent?.trim() || "";
-          if (reqId && title) {
-            extracted.push({ requisitionId: reqId, title, location, description: "" });
-          }
-        }
-      }
-
-      return extracted;
-    });
 
     await browser.close();
 
-    // Consolidate CSOD API records with DOM fallback
-    const rawJobsMap = new Map<string, { requisitionId: string; title: string; location: string; description: string; postingEffectiveDate?: string; postingExpirationDate?: string }>();
-
-    for (const item of apiRequisitions) {
-      const reqId = String(item.requisitionId || "").trim();
-      const title = String(item.displayJobTitle || item.title || "").trim();
-      const locObjs: any[] = item.locations || [];
-      const location = locObjs.map((l) => [l.city, l.state, l.country].filter(Boolean).join(", ")).join("; ");
-      const description = String(item.externalDescription || "").trim();
-      if (reqId && title) {
-        rawJobsMap.set(reqId, {
-          requisitionId: reqId,
-          title,
-          location,
-          description,
-          postingEffectiveDate: item.postingEffectiveDate,
-          postingExpirationDate: item.postingExpirationDate,
-        });
-      }
-    }
-
-    for (const domJob of domExtractedJobs) {
-      if (domJob.requisitionId && !rawJobsMap.has(domJob.requisitionId)) {
-        rawJobsMap.set(domJob.requisitionId, domJob);
-      }
-    }
-
-    const uniqueJobs = Array.from(rawJobsMap.values());
     const matchedResults: CognitaJobMatch[] = [];
+    const dbInstance = getAdminDb();
+    const batch = dbInstance && typeof dbInstance.batch === "function" ? dbInstance.batch() : null;
 
-    // 4. Strict Data Matching against DB schools ONLY with Deep Dive Closing Date Extraction
-    for (const job of uniqueJobs) {
-      if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
+    for (const job of apiRequisitions) {
+      const title = String(job.displayJobTitle || job.title || "").trim();
+      if (!title || isSupportOrNonTeachingRole(title)) continue;
 
-      const fullText = `${job.title} ${job.location} ${job.description}`.toLowerCase();
+      const locObjs: any[] = job.locations || [];
+      const location = locObjs.map((l) => [l.city, l.state, l.country].filter(Boolean).join(", ")).join("; ");
+      const description = String(job.externalDescription || "").trim();
+      const fullText = `${title} ${location} ${description}`.toLowerCase();
 
-      // Strict match: Compare strictly against school.name and school.aliases
-      const matchedSchool = activeSchools.find((school) => {
-        const sName = (school.name || "").toLowerCase().trim();
-        if (!sName || sName.length < 4) return false;
-
-        // A. Direct school name match
-        if (fullText.includes(sName)) return true;
-
-        // B. Exact alias match in school.aliases (e.g. "ishcmc" for FLIS0141)
-        const aliases = Array.isArray(school.aliases) ? school.aliases : [];
-        if (
-          aliases.some((alias) => {
-            const aLower = String(alias || "").toLowerCase().trim();
-            return aLower.length >= 3 && fullText.includes(aLower);
-          })
-        ) {
-          return true;
+      let matchedMeta: CognitaCampusMeta | null = null;
+      for (const meta of Object.values(COGNITA_CAMPUS_MAP)) {
+        const isMatch = meta.matchers.some((m) => fullText.includes(m.toLowerCase()));
+        if (isMatch) {
+          matchedMeta = meta;
+          break;
         }
+      }
 
-        return false;
-      });
+      if (matchedMeta) {
+        const reqId = String(job.requisitionId || "").trim();
+        const applyUrl = `https://cognitapeople.csod.com/ux/ats/careersite/1/home/requisition/${reqId}?c=cognitapeople`;
 
-      // Keep ONLY jobs that match a valid schoolId from our database. Discard all unmatched entries.
-      if (matchedSchool) {
-        // Deep Dive Closing Date Extraction from description text or postingExpirationDate
         let rawClosingDateStr: string | null = null;
-        if (job.description) {
-          const descMatch = job.description.match(/(?:deadline|closing date|apply by|applications is|until)\s+(?:is\s+)?(\d{1,2}\s+[a-z]+\s+\d{4})/i);
-          if (descMatch) {
-            rawClosingDateStr = descMatch[1];
-          }
+        if (description) {
+          const descMatch = description.match(/(?:deadline|closing date|apply by|applications is|until)\s+(?:is\s+)?(\d{1,2}\s+[a-z]+\s+\d{4})/i);
+          if (descMatch) rawClosingDateStr = descMatch[1];
         }
         if (!rawClosingDateStr && job.postingExpirationDate) {
           rawClosingDateStr = job.postingExpirationDate;
         }
 
         const parsedDate = parseClosingDate(rawClosingDateStr);
-        const closingDateISO = parsedDate.closingDate
-          ? parsedDate.closingDate.toISOString().split("T")[0]
-          : null;
-        const closingDateMillis = parsedDate.closingDate
-          ? parsedDate.closingDate.getTime()
-          : null;
+        const closingDateISO = parsedDate.closingDate ? parsedDate.closingDate.toISOString().split("T")[0] : null;
+        const closingDateMillis = parsedDate.closingDate ? parsedDate.closingDate.getTime() : null;
 
-        matchedResults.push({
-          jobId: job.requisitionId,
-          title: job.title,
-          applyUrl: `https://cognitapeople.csod.com/ux/ats/careersite/1/home/requisition/${job.requisitionId}?c=cognitapeople`,
-          schoolId: matchedSchool.id,
-          schoolName: matchedSchool.name,
-          city: matchedSchool.city || "",
-          country: matchedSchool.country || "",
+        const match: CognitaJobMatch = {
+          jobId: reqId,
+          title,
+          applyUrl,
+          schoolId: matchedMeta.schoolId,
+          schoolName: matchedMeta.canonicalName,
+          city: matchedMeta.city,
+          country: matchedMeta.country,
+          source: "Cognita",
           datePosted: job.postingEffectiveDate ? String(job.postingEffectiveDate) : null,
           closingDate: closingDateISO,
-          closingDateMillis: closingDateMillis,
+          closingDateMillis,
           isRollingDeadline: parsedDate.isRollingDeadline,
-        });
+        };
+
+        matchedResults.push(match);
+
+        if (dbInstance && batch) {
+          const docId = `fp_${matchedMeta.schoolId.toLowerCase()}_cognita_${reqId}`;
+          const cacheDoc = {
+            id: docId,
+            jobId: reqId,
+            title,
+            schoolId: matchedMeta.schoolId,
+            schoolName: matchedMeta.canonicalName,
+            city: matchedMeta.city,
+            country: matchedMeta.country,
+            applyUrl,
+            source: "Cognita",
+            sources: ["Cognita"],
+            sourceUrls: { Cognita: applyUrl },
+            group: "Cognita",
+            status: "pending_review",
+            date_listed: job.postingEffectiveDate ? String(job.postingEffectiveDate) : "Recently",
+            date_closing: closingDateISO || "Open Until Filled",
+            closingDate: closingDateISO,
+            closingDateMillis: closingDateMillis || Date.now() + 42 * 24 * 60 * 60 * 1000,
+            isRollingDeadline: parsedDate.isRollingDeadline,
+            savingsPotential: 2200,
+            savingsPotentialSingle: 2200,
+            scrapedAt: new Date().toISOString(),
+            ingestedAtMillis: Date.now(),
+          };
+
+          batch.set(dbInstance.collection("featured_jobs_cache").doc(docId), cacheDoc, { merge: true });
+        }
       }
     }
 
-    console.log(
-      `🛸 [COGNITA ENGINE] Strictly matched ${matchedResults.length} DB-grounded vacancies out of ${uniqueJobs.length} live CSOD postings.`
-    );
+    if (batch) {
+      await batch.commit();
+      console.log(`✨ Committed ${matchedResults.length} live Cognita vacancies to featured_jobs_cache.`);
+    }
 
     return matchedResults;
   } catch (err: any) {
     console.error("❌ Error in searchCognitaDbSchools:", err?.message || err);
     return [];
   }
+}
+
+export async function syncCognitaNetworkToCache() {
+  const jobs = await searchCognitaDbSchools();
+  return { ingested: jobs.length };
 }

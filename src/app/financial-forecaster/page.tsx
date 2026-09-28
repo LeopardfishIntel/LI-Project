@@ -1960,18 +1960,27 @@ function DecoderContent() {
     };
   }, [overallRatingNum]);
 
-  // 🛰️ Telemetry: Flight Simulator Dial tracking (Evaluate Page)
+  // 🛰️ Telemetry: Forecaster Opened tracking on initial mount
   useEffect(() => {
-    if (!mounted || !activeSchool) return;
+    if (!mounted) return;
+    logTelemetryEvent('forecaster_opened', {
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
+    });
+  }, [mounted, user]);
+
+  useEffect(() => {
+    if (!mounted || !activeSchool || !settings.netSalary || settings.netSalary === "0") return;
 
     const timer = setTimeout(() => {
-      if (settings.netSalary === "0" && settings.partnerSalary === "0") return;
-
       const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
         ? 'Deficit'
         : (analysis?.rateOfSaving ?? 0) <= 10
           ? 'Limited Potential'
           : 'Thriving';
+
+      const salaryVal = Math.round((Number(settings.netSalary) || 0) / (currentRates[currency] || 1.0));
 
       logTelemetryEvent('simulator_dial_adjusted', {
         target_country: activeSchool.country || 'unknown',
@@ -1979,9 +1988,22 @@ function DecoderContent() {
         deployment_profile: settings.familyStatus,
         dial_modified: 'net_salary',
         previous_value: 0,
-        new_value: Math.round((Number(settings.netSalary) || 0) / (currentRates[currency] || 1.0)),
+        new_value: salaryVal,
         resulting_surplus_percentage: analysis?.rateOfSaving || 0,
         resulting_status: resultingStatus,
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest',
+        user_email: user?.email
+      });
+
+      // 🛰️ Milestone: Salary Changed
+      logTelemetryEvent('salary_changed', {
+        target_country: activeSchool.country || 'unknown',
+        target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+        deployment_profile: settings.familyStatus,
+        new_salary: salaryVal,
+        currency,
+        resulting_surplus_percentage: analysis?.rateOfSaving || 0,
         isAuthenticated: !!user,
         user_type: user ? 'authenticated' : 'guest',
         user_email: user?.email
@@ -1990,6 +2012,38 @@ function DecoderContent() {
 
     return () => clearTimeout(timer);
   }, [settings.netSalary, activeSchool, mounted, user, analysis?.rateOfSaving, settings.familyStatus, currency, currentRates]);
+
+  // 🛰️ Telemetry: Surplus calculation modelled after user interaction
+  useEffect(() => {
+    if (!mounted || !activeSchool || !analysis) return;
+    const timer = setTimeout(() => {
+      // 🛰️ Milestone: Surplus Modelled (Produced valid surplus after input)
+      logTelemetryEvent('surplus_modelled', {
+        target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+        target_country: activeSchool.country || 'unknown',
+        deployment_profile: settings.familyStatus,
+        monthly_surplus: Math.round(analysis.surplus || 0),
+        rate_of_saving: analysis.rateOfSaving || 0,
+        currency,
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest',
+        user_email: user?.email
+      });
+
+      logTelemetryEvent('surplus_viewed', {
+        target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+        target_country: activeSchool.country || 'unknown',
+        deployment_profile: settings.familyStatus,
+        monthly_surplus: Math.round(analysis.surplus || 0),
+        rate_of_saving: analysis.rateOfSaving || 0,
+        currency,
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest',
+        user_email: user?.email
+      });
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [activeSchool?.id, analysis?.surplus, analysis?.rateOfSaving, settings.familyStatus, currency, mounted, user]);
 
   useEffect(() => {
     if (!mounted || !activeSchool || !settings.partnerSalary || settings.partnerSalary === "0") return;
@@ -2043,13 +2097,22 @@ function DecoderContent() {
     });
   }, [overrideBedrooms, activeSchool, mounted, user, settings.familyStatus, analysis?.rateOfSaving, analysis?.standardRentKey]);
 
-  // 🛰️ Telemetry: School profile view tracking
+  // 🛰️ Telemetry: School profile view & selection tracking
   useEffect(() => {
     if (!mounted || !activeSchool) return;
 
     logTelemetryEvent('school_profile_viewed', {
       school_name: activeSchool.schoolname || activeSchool.name || 'unknown',
       country_name: activeSchool.country || 'unknown',
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
+    });
+
+    logTelemetryEvent('school_selected', {
+      school_name: activeSchool.schoolname || activeSchool.name || 'unknown',
+      country_name: activeSchool.country || 'unknown',
+      source_surface: 'financial_forecaster',
       isAuthenticated: !!user,
       user_type: user ? 'authenticated' : 'guest',
       user_email: user?.email

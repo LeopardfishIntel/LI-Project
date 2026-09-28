@@ -33,47 +33,92 @@ export interface GemsJobMatch {
 
 /**
  * 💎 GEMS CAREER ENGINE COMPLETE CAMPUS MAPPING
+ *
+ * CRITICAL: These FLIS IDs must match the canonical `schools` Firestore collection exactly.
+ * The GEMS ATS company name (value) is matched against the GEMS API `companyName` field.
+ * Only campuses that exist in our canonical registry are mapped here.
+ * Unregistered GEMS campuses are silently skipped (no false-positive assignment).
  */
 export const GEMS_SCHOOL_COMPANY_MAP: Record<string, string> = Object.freeze({
-  FLIS0027: "GEMS WORLD ACADEMY - DUBAI",
-  FLIS0110: "GEMS FOUNDERS SCHOOL - DUBAI",
-  FLIS0111: "GEMS WELLINGTON INTERNATIONAL SCHOOL - DUBAI",
-  FLIS0112: "GEMS DUBAI AMERICAN ACADEMY",
-  FLIS0113: "GEMS MODERN ACADEMY",
-  FLIS0114: "GEMS AMERICAN ACADEMY - ABU DHABI",
-  FLIS0115: "GEMS AMERICAN ACADEMY - QATAR",
-  FLIS0116: "GEMS FIRSTPOINT SCHOOL - THE VILLA - DUBAI",
-  FLIS0117: "GEMS INTERNATIONAL SCHOOL - DUBAI HILLS",
-  FLIS0118: "GEMS JUMEIRAH PRIMARY SCHOOL - DUBAI",
-  FLIS0119: "GEMS ROYAL DUBAI SCHOOL - DUBAI",
-  FLIS0120: "GEMS WELLINGTON - DUBAI HILLS",
-  FLIS0121: "GEMS WELLINGTON ACADEMY - SILICON OASIS",
-  FLIS0122: "GEMS WELLINGTON SCHOOL - QATAR",
-  FLIS0123: "GEMS WORLD ACADEMY - ABU DHABI",
-  FLIS0124: "JUMEIRAH COLLEGE - DUBAI",
-  FLIS0125: "GEMS CAMBRIDGE INTERNATIONAL SCHOOL - ABU DHABI",
-  FLIS0126: "GEMS METROPOLE SCHOOL - MOTOR CITY",
-  FLIS0127: "GEMS METROPOLE SCHOOL - AL WAHA",
-  FLIS0128: "GEMS WINCHESTER SCHOOL - DUBAI",
-  FLIS0129: "GEMS WINCHESTER SCHOOL - ABU DHABI",
-  FLIS0130: "GEMS WINCHESTER SCHOOL - FUJAIRAH",
-  FLIS0131: "GEMS WESTMINSTER SCHOOL - SHARJAH",
-  FLIS0132: "GEMS WESTMINSTER SCHOOL - RAK",
-  FLIS0133: "GEMS FOUNDERS SCHOOL- AL MIZHAR",
-  FLIS0134: "GEMS FOUNDERS SCHOOL - NAD AL HAMAR",
-  FLIS0135: "GEMS FOUNDERS SCHOOL - DUBAI SOUTH",
-  FLIS0136: "GEMS FOUNDERS SCHOOL – MASDAR CITY",
-  FLIS0137: "THE WESTMINSTER SCHOOL - DUBAI",
-  FLIS0138: "THE WINCHESTER SCHOOL - JEBEL ALI",
-  FLIS0139: "THE CAMBRIDGE HIGH SCHOOL - ABU DHABI",
-  FLIS0140: "THE MILLENNIUM SCHOOL - DUBAI",
-  FLIS0141: "OUR OWN ENGLISH HIGH SCHOOL - SHARJAH - GIRLS",
-  FLIS0142: "OUR OWN HIGH SCHOOL - AL WARQAA",
-  FLIS0143: "OUR OWN ENGLISH HIGH SCHOOL - AL AIN",
-  FLIS0144: "WESGREEN INTERNATIONAL SCHOOL - SHARJAH",
-  FLIS0145: "AL KHALEEJ INTERNATIONAL SCHOOL",
-  FLIS0146: "CAMBRIDGE INTERNATIONAL SCHOOL - DUBAI",
+  // ─── Canonical GEMS schools in our database ───
+  FLIS0026: "GEMS WORLD ACADEMY - DUBAI",
+  FLIS0329: "JUMEIRAH COLLEGE - DUBAI",
+  FLIS0331: "GEMS DUBAI AMERICAN ACADEMY",
+  FLIS0332: "GEMS WELLINGTON INTERNATIONAL SCHOOL - DUBAI",
+  FLIS0333: "GEMS WELLINGTON ACADEMY - SILICON OASIS",
+  FLIS0334: "GEMS JUMEIRAH PRIMARY SCHOOL - DUBAI",
+  FLIS0335: "GEMS FIRSTPOINT SCHOOL - THE VILLA - DUBAI",
+  FLIS0336: "GEMS FOUNDERS SCHOOL - DUBAI",
+  FLIS0337: "GEMS METROPOLE SCHOOL - MOTOR CITY",
+  FLIS0338: "GEMS ROYAL DUBAI SCHOOL - DUBAI",
+  FLIS0339: "GEMS WINCHESTER SCHOOL - DUBAI",
+  FLIS0340: "THE WINCHESTER SCHOOL - JEBEL ALI",
 }) as Readonly<Record<string, string>>;
+
+export function isGemsSchool(schoolId?: string | null, schoolName?: string | null, group?: string | null): boolean {
+  const sId = (schoolId || "").toUpperCase().trim();
+  const sName = (schoolName || "").toLowerCase();
+  const gName = (group || "").toLowerCase();
+
+  // Exclusions: Competitors are never GEMS
+  if (
+    gName.includes("taaleem") ||
+    sName.includes("taaleem") ||
+    gName.includes("nord anglia") ||
+    sName.includes("nord anglia") ||
+    gName.includes("cognita") ||
+    sName.includes("cognita") ||
+    gName.includes("inspired") ||
+    sName.includes("inspired") ||
+    sName.includes("sunmarke")
+  ) {
+    return false;
+  }
+
+  if (sId && sId in GEMS_SCHOOL_COMPANY_MAP) return true;
+  if (gName.includes("gems")) return true;
+  if (sName.startsWith("gems ") || sName.includes("gems world") || sName.includes("gems wellington") || sName.includes("gems founders") || sName.includes("gems royal") || sName.includes("gems firstpoint") || sName.includes("gems metropole") || sName.includes("gems winchester") || sName.includes("jumeirah college")) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * GEMS campuses that appear in their ATS but are NOT in our canonical school registry.
+ * Jobs from these campuses are silently skipped to prevent cross-contamination.
+ */
+export const GEMS_UNREGISTERED_CAMPUSES: ReadonlySet<string> = new Set([
+  "gems modern academy",
+  "gems american academy - abu dhabi",
+  "gems american academy - qatar",
+  "gems international school - dubai hills",
+  "gems wellington - dubai hills",
+  "gems wellington school - qatar",
+  "gems world academy - abu dhabi",
+  "gems cambridge international school - abu dhabi",
+  "gems metropole school - al waha",
+  "gems winchester school - abu dhabi",
+  "gems winchester school - fujairah",
+  "gems westminster school - sharjah",
+  "gems westminster school - rak",
+  "gems founders school- al mizhar",
+  "gems founders school - al mizhar",
+  "gems founders school - nad al hamar",
+  "gems founders school - dubai south",
+  "gems founders school – masdar city",
+  "gems founders school - masdar city",
+  "the westminster school - dubai",
+  "the cambridge high school - abu dhabi",
+  "the millennium school - dubai",
+  "our own english high school - sharjah - girls",
+  "our own english high school - sharjah (girls)",
+  "our own high school - al warqaa",
+  "our own english high school - al ain",
+  "wesgreen international school - sharjah",
+  "al khaleej international school",
+  "cambridge international school - dubai",
+]);
+
 
 /**
  * 💵 HARDENED SALARY & CURRENCY PARSER
@@ -196,10 +241,14 @@ export async function searchGemsDbSchools(query: string = ""): Promise<GemsJobMa
       const rawCompany = String(job.companyName || job.company_name || "").trim().toLowerCase();
       if (!rawCompany) continue;
 
+      // 🛡️ Skip unregistered GEMS campuses to prevent cross-contamination
+      if (GEMS_UNREGISTERED_CAMPUSES.has(rawCompany)) continue;
+
       let matchedSchool = companyToSchoolMap.get(rawCompany);
       if (!matchedSchool) {
+        // Only attempt substring match against REGISTERED campus names — never fuzzy match
         for (const [cName, sDoc] of companyToSchoolMap.entries()) {
-          if (cName.includes(rawCompany) || rawCompany.includes(cName)) {
+          if (cName === rawCompany || rawCompany === cName) {
             matchedSchool = sDoc;
             break;
           }

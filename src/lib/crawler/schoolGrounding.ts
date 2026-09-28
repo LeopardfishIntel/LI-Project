@@ -63,18 +63,21 @@ function normalizeTokens(str: string): string[] {
     .filter(t => t.length > 1 && !["school", "international", "college", "academy", "inst", "the"].includes(t));
 }
 
-function matchSchoolNameFuzzy(candidateName: string, targetName: string): boolean {
+function matchSchoolNameStrict(candidateName: string, targetName: string): boolean {
   const cNorm = (candidateName || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const tNorm = (targetName || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (cNorm === tNorm || cNorm.includes(tNorm) || tNorm.includes(cNorm)) return true;
+  if (!cNorm || !tNorm) return false;
+  if (cNorm === tNorm) return true;
 
   const cTokens = normalizeTokens(candidateName);
   const tTokens = normalizeTokens(targetName);
 
   if (cTokens.length === 0 || tTokens.length === 0) return false;
 
-  const intersection = cTokens.filter(t => tTokens.includes(t) || tTokens.some(tt => tt.includes(t) || t.includes(tt)));
-  return intersection.length >= Math.min(cTokens.length, tTokens.length);
+  // Strict: all distinctive tokens must match in exact sequence or identical set
+  const cJoined = cTokens.join(" ");
+  const tJoined = tTokens.join(" ");
+  return cJoined === tJoined;
 }
 
 /**
@@ -115,7 +118,7 @@ export async function loadAndGroundSchool(
           const sCity = (data.city || "").toLowerCase().trim();
 
           const cityMatches = !city || !sCity || sCity === city.toLowerCase().trim() || sCity.includes(city.toLowerCase().trim()) || city.toLowerCase().trim().includes(sCity);
-          const nameMatches = matchSchoolNameFuzzy(sName, targetName);
+          const nameMatches = matchSchoolNameStrict(sName, targetName);
 
           if (nameMatches && cityMatches) {
             schoolDocData = data;

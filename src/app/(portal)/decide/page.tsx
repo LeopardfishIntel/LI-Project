@@ -540,6 +540,21 @@ function DecideContent() {
             setNetSalaries(nextSalaries);
 
             const nextCountries = [...selectedCountries]; nextCountries[index] = school.country; setSelectedCountries(nextCountries);
+
+            // 🛰️ Telemetry: School selected & compare started
+            logTelemetryEvent('school_selected', {
+                school_name: school.schoolname,
+                country_name: school.country,
+                source_surface: 'decide_comparison',
+                user_email: user?.email
+            });
+
+            logTelemetryEvent('compare_started', {
+                school_index: index,
+                school_name: school.schoolname,
+                country_name: school.country,
+                user_email: user?.email
+            });
         }
         setIsUnlocked(false); // Relock on school change
     };
@@ -574,6 +589,15 @@ function DecideContent() {
 
             // 🛰️ ANALYTICS UPLINK: Increment comparison counter via Server Action
             logTelemetryEvent('comparison_made', {
+                benchmarkCurrency: benchmark,
+                familyStatus,
+                user_email: user?.email
+            });
+
+            // 🛰️ Milestone: Evaluation Completed
+            logTelemetryEvent('evaluation_completed', {
+                comparison_schools_count: activeData.length,
+                topPickId,
                 benchmarkCurrency: benchmark,
                 familyStatus,
                 user_email: user?.email

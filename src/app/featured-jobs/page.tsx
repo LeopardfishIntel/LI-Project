@@ -103,6 +103,41 @@ import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryU
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
+import { logTelemetryEvent } from '@/lib/telemetry';
+
+const GEMS_CANONICAL_IDS = new Set([
+  "FLIS0026", "FLIS0329", "FLIS0331", "FLIS0332", "FLIS0333",
+  "FLIS0334", "FLIS0335", "FLIS0336", "FLIS0337", "FLIS0338",
+  "FLIS0339", "FLIS0340"
+]);
+
+const isGemsSchool = (schoolId?: string | null, schoolName?: string | null, group?: string | null): boolean => {
+  const sId = (schoolId || "").toUpperCase().trim();
+  const sName = (schoolName || "").toLowerCase();
+  const gName = (group || "").toLowerCase();
+
+  // Exclusions: Competitors are never GEMS
+  if (
+    gName.includes("taaleem") ||
+    sName.includes("taaleem") ||
+    gName.includes("nord anglia") ||
+    sName.includes("nord anglia") ||
+    gName.includes("cognita") ||
+    sName.includes("cognita") ||
+    gName.includes("inspired") ||
+    sName.includes("inspired") ||
+    sName.includes("sunmarke")
+  ) {
+    return false;
+  }
+
+  if (sId && GEMS_CANONICAL_IDS.has(sId)) return true;
+  if (gName.includes("gems")) return true;
+  if (sName.startsWith("gems ") || sName.includes("gems world") || sName.includes("gems wellington") || sName.includes("gems founders") || sName.includes("gems royal") || sName.includes("gems firstpoint") || sName.includes("gems metropole") || sName.includes("gems winchester") || sName.includes("jumeirah college")) {
+    return true;
+  }
+  return false;
+};
 
 const cleanSchoolName = (raw: string): string => {
   if (!raw) return "";
@@ -369,6 +404,8 @@ interface StructuredJob {
   datePosted?: string | null;
   closesDateRaw?: Date | null;
   isRollingDeadline?: boolean;
+  matchConfidence?: "high" | "medium" | "low" | null;
+  verificationReasons?: string[] | null;
 }
 
 function parseTimestampRobust(val: any): number {
@@ -484,7 +521,11 @@ export default function FeaturedJobsPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    logTelemetryEvent('vacancy_viewed', {
+      source_surface: 'featured_jobs_hub',
+      user_email: user?.email
+    });
+  }, [user]);
 
   // Determine admin user state via token claims or teacher profile role
   useEffect(() => {
@@ -719,7 +760,7 @@ export default function FeaturedJobsPage() {
             cleanPayload[k] = v;
           }
         }
-        cleanPayload.status = 'APPROVED';
+        cleanPayload.status = 'approved';
         cleanPayload.reviewedAt = new Date().toISOString();
         cleanPayload.reviewedBy = user?.uid || "admin";
         cleanPayload.updatedAt = new Date().toISOString();
@@ -966,7 +1007,20 @@ export default function FeaturedJobsPage() {
         }
 
         const schoolObj = schoolsMap[cacheDoc.schoolId];
-        let schoolGroup = schoolObj?.ownership || schoolObj?.group || cacheDoc.group || cacheDoc.ownership || "";
+        let schoolGroup = schoolObj?.ownership || schoolObj?.group || "";
+
+        // Strictly ground canonical operator group with zero cross-operator contamination
+        const isTaaleemJob = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup);
+        const isGemsJob = !isTaaleemJob && isGemsSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup);
+        const isEsfJob = !isTaaleemJob && !isGemsJob && isEsfSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup, cacheDoc.applyUrl);
+
+        if (isTaaleemJob) {
+          schoolGroup = "Taaleem";
+        } else if (isGemsJob) {
+          schoolGroup = "GEMS Education";
+        } else if (isEsfJob) {
+          schoolGroup = "English Schools Foundation";
+        }
 
         const sourcesList = cacheDoc.sources ? [...cacheDoc.sources] : [cacheDoc.source || "Official Source"];
         const sourceUrlsMap: Record<string, string> = { ...((cacheDoc as any).sourceUrls || {}) };
@@ -976,8 +1030,6 @@ export default function FeaturedJobsPage() {
         }
 
         // System-Wide Dual-Portal Auto-Enrichment across all Search Engines
-        const isTaaleemJob = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup) || (schoolGroup || "").toUpperCase().includes("TAALEEM") || (cacheDoc.source || "").toUpperCase().includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
-
         if (schoolGroup || isTaaleemJob) {
           const effectiveGroup = schoolGroup || (isTaaleemJob ? "Taaleem" : "");
           const groupPortalUrl = getGroupPortalUrl(effectiveGroup);
@@ -1101,10 +1153,18 @@ export default function FeaturedJobsPage() {
       return jobsList;
     }
 
-    // ── ADMIN STAGING TAB: reads from subcollections (source of truth) ────────
-    if (!adminJobsData || adminJobsData.length === 0) return [];
+    // ── ADMIN STAGING TAB: reads from jobs collection and pending cache items ────────
+    const combinedPendingDocs = [
+      ...(adminJobsData || []),
+      ...(cacheData || []).filter((d: any) => {
+        const s = String(d.status || '').toLowerCase();
+        return s === 'pending_review' || s === 'pending';
+      })
+    ];
 
-    adminJobsData.forEach((jobDoc: any) => {
+    if (combinedPendingDocs.length === 0) return [];
+
+    combinedPendingDocs.forEach((jobDoc: any) => {
       const schoolId = jobDoc.schoolId || jobDoc.ref?.parent?.parent?.id || 'SEARCH_ASSOCIATES_HUB';
       const school = schoolsMap[schoolId] || schoolsMap[String(schoolId).toUpperCase()] || null;
 
@@ -1190,6 +1250,8 @@ export default function FeaturedJobsPage() {
         scrapedAtRaw: jobDoc.scrapedAt,
         closesDateRaw: closesDate,
         isRollingDeadline: jobDoc.isRollingDeadline ?? !closesDate,
+        matchConfidence: jobDoc.matchConfidence || null,
+        verificationReasons: jobDoc.verificationReasons || null,
       });
     });
 
@@ -1203,12 +1265,21 @@ export default function FeaturedJobsPage() {
   const publicJobsCount = allJobs.length;
 
   const pendingJobsCount = useMemo(() => {
-    if (!adminJobsData) return 0;
-    return adminJobsData.filter((jobDoc: any) => {
-      const rawStatus = String(jobDoc.status || '').toLowerCase();
-      return rawStatus === 'pending_review' || rawStatus === 'pending';
-    }).length;
-  }, [adminJobsData]);
+    let count = 0;
+    if (adminJobsData) {
+      count += adminJobsData.filter((jobDoc: any) => {
+        const rawStatus = String(jobDoc.status || '').toLowerCase();
+        return rawStatus === 'pending_review' || rawStatus === 'pending';
+      }).length;
+    }
+    if (cacheData) {
+      count += cacheData.filter((jobDoc: any) => {
+        const rawStatus = String(jobDoc.status || '').toLowerCase();
+        return rawStatus === 'pending_review' || rawStatus === 'pending';
+      }).length;
+    }
+    return count;
+  }, [adminJobsData, cacheData]);
 
   // Search Engine Protocol counts for header buttons
   const engineCounts = useMemo(() => {
@@ -1247,7 +1318,7 @@ export default function FeaturedJobsPage() {
       const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
       const schoolNameUpper = String((job as any).schoolName || (job as any).schoolname || (job as any).name || "").toUpperCase();
       const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => s.includes("COGNITA")) || applyUrlLower.includes("cognita");
-      const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => s.includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(job.schoolId);
+      const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => s.includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0119", "FLIS0151", "FLIS0234", "FLIS0235", "FLIS0236", "FLIS0237", "FLIS0238", "FLIS0239", "FLIS0240"].includes(job.schoolId);
       const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => s.includes("UWC")) || applyUrlLower.includes("uwc.org");
       const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || applyUrlLower.includes("internationalschools");
       const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
@@ -1371,7 +1442,7 @@ export default function FeaturedJobsPage() {
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
         const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
         const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || applyUrlLower.includes("cognita");
-        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(job.schoolId);
+        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0119", "FLIS0151", "FLIS0234", "FLIS0235", "FLIS0236", "FLIS0237", "FLIS0238", "FLIS0239", "FLIS0240"].includes(job.schoolId);
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || applyUrlLower.includes("uwc.org");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || applyUrlLower.includes("internationalschools");
         const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
@@ -2046,6 +2117,13 @@ export default function FeaturedJobsPage() {
                       const target = e.target as HTMLElement;
                       if (!target.closest("a") && !target.closest("button")) {
                         if (job.source_url) {
+                          logTelemetryEvent('job_application_link_clicked', {
+                            school_id: job.schoolId,
+                            school_name: job.schoolName,
+                            job_title: job.title,
+                            source: job.source,
+                            url: job.source_url
+                          });
                           window.open(job.source_url, "_blank", "noopener,noreferrer");
                         }
                       }
@@ -2094,9 +2172,35 @@ export default function FeaturedJobsPage() {
                                 </span>
                               )}
                               {activeTab === 'admin_staging' && (
-                                <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                                  Pending Review
-                                </span>
+                                <div className="inline-flex items-center gap-1.5 flex-wrap">
+                                  <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                                    Pending Review
+                                  </span>
+                                  {job.matchConfidence && (
+                                    <span 
+                                      className={cn(
+                                        "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border flex items-center gap-1",
+                                        job.matchConfidence === 'high' 
+                                          ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400" 
+                                          : job.matchConfidence === 'medium'
+                                          ? "bg-sky-500/15 border-sky-500/30 text-sky-400"
+                                          : "bg-rose-500/15 border-rose-500/30 text-rose-400"
+                                      )}
+                                      title={job.verificationReasons && job.verificationReasons.length > 0 ? `Reasons: ${job.verificationReasons.join(', ')}` : undefined}
+                                    >
+                                      {job.matchConfidence === 'high' ? '✓ High Match' : job.matchConfidence === 'medium' ? '⚡ Medium Match' : '⚠ Low Match'}
+                                    </span>
+                                  )}
+                                  {job.verificationReasons && job.verificationReasons.length > 0 && (
+                                    <span 
+                                      className="bg-slate-700/50 border border-slate-600/50 text-slate-300 px-1.5 py-0.5 text-[9px] font-medium rounded-sm max-w-[200px] truncate"
+                                      title={job.verificationReasons.join(' • ')}
+                                    >
+                                      {job.verificationReasons[0]}
+                                      {job.verificationReasons.length > 1 && ` (+${job.verificationReasons.length - 1})`}
+                                    </span>
+                                  )}
+                                </div>
                               )}
                             </h3>
 
@@ -2254,6 +2358,7 @@ export default function FeaturedJobsPage() {
                                 else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                                 else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
                                 else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
+                                else if (u.includes("TEACH AWAY") || u.includes("TEACHAWAY")) { key = "TEACH AWAY"; label = "Teach Away"; }
                                 else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
                                 else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
                                 else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
@@ -2276,6 +2381,47 @@ export default function FeaturedJobsPage() {
                               if (isTaaleemCard) {
                                 sMap.delete("DIRECT");
                               }
+
+                              // Strict Operator Mutual Exclusivity:
+                              // A school can belong to AT MOST ONE educational group. Competitor operator groups (GEMS, Taaleem, Nord Anglia, etc.) MUST NEVER be co-present.
+                              const OPERATOR_GROUPS = [
+                                "GEMS", "TAALEEM", "NORD ANGLIA", "COGNITA", "INSPIRED",
+                                "GLOBEDUCATE", "ISP", "ESF", "MALVERN", "ALDAR", "QATAR_FOUNDATION"
+                              ];
+
+                              const targetSchoolObj = schoolsMap[job.schoolId];
+                              const canonicalGroupUpper = String(targetSchoolObj?.ownership || targetSchoolObj?.group || (job as any).schoolGroup || "").toUpperCase();
+
+                              let allowedOperatorGroup: string | null = null;
+                              if (canonicalGroupUpper.includes("GEMS") || isGemsSchool(job.schoolId, job.schoolName)) {
+                                allowedOperatorGroup = "GEMS";
+                              } else if (canonicalGroupUpper.includes("TAALEEM") || isTaaleemSchool(job.schoolId, job.schoolName, canonicalGroupUpper)) {
+                                allowedOperatorGroup = "TAALEEM";
+                              } else if (canonicalGroupUpper.includes("NORD ANGLIA")) {
+                                allowedOperatorGroup = "NORD ANGLIA";
+                              } else if (canonicalGroupUpper.includes("COGNITA")) {
+                                allowedOperatorGroup = "COGNITA";
+                              } else if (canonicalGroupUpper.includes("INSPIRED")) {
+                                allowedOperatorGroup = "INSPIRED";
+                              } else if (canonicalGroupUpper.includes("GLOBE")) {
+                                allowedOperatorGroup = "GLOBEDUCATE";
+                              } else if (canonicalGroupUpper.includes("ISP")) {
+                                allowedOperatorGroup = "ISP";
+                              } else if (canonicalGroupUpper.includes("ESF") || isEsfSchool(job.schoolId, job.schoolName, canonicalGroupUpper, applyUrlLower)) {
+                                allowedOperatorGroup = "ESF";
+                              } else if (canonicalGroupUpper.includes("MALVERN")) {
+                                allowedOperatorGroup = "MALVERN";
+                              } else if (canonicalGroupUpper.includes("ALDAR")) {
+                                allowedOperatorGroup = "ALDAR";
+                              } else if (canonicalGroupUpper.includes("QATAR")) {
+                                allowedOperatorGroup = "QATAR_FOUNDATION";
+                              }
+
+                              OPERATOR_GROUPS.forEach(grp => {
+                                if (grp !== allowedOperatorGroup && sMap.has(grp)) {
+                                  sMap.delete(grp);
+                                }
+                              });
 
                               const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
                                 if (a === "DIRECT") return -1;
@@ -2419,6 +2565,15 @@ export default function FeaturedJobsPage() {
                                     href={url}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => {
+                                      logTelemetryEvent('job_application_link_clicked', {
+                                        school_id: job.schoolId,
+                                        school_name: job.schoolName,
+                                        job_title: job.title,
+                                        source: label,
+                                        url: url
+                                      });
+                                    }}
                                     className={cn(
                                       "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
                                       (srcUpper === "SEARCH ASSOCIATES" || srcUpper.includes("SEARCH"))
@@ -2443,6 +2598,8 @@ export default function FeaturedJobsPage() {
                                         ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
                                         : srcUpper === "GRC"
                                         ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                        : (srcUpper === "TEACH AWAY" || srcUpper.includes("TEACH AWAY"))
+                                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
                                         : srcUpper.includes("TAALEEM")
                                         ? "bg-teal-500/10 border-teal-500/30 text-teal-400 hover:bg-teal-500/20"
                                         : srcUpper === "GUARDIAN"

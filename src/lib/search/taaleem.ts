@@ -18,138 +18,132 @@ export interface TaaleemSchoolMeta {
   tesEmployerUrl?: string;
 }
 
+/**
+ * TAALEEM CAMPUS MAP
+ *
+ * CRITICAL: These FLIS IDs must match the canonical `schools` Firestore collection exactly.
+ * Taaleem campuses are in the FLIS0102, FLIS0104, FLIS0318-0344, FLIS0418-0423 range.
+ */
 export const TAALEEM_CAMPUS_MAP: Record<string, TaaleemSchoolMeta> = {
   "dubai british school jumeirah park": { 
-    schoolId: "FLIS0115_JUMEIRAH_PARK", 
-    canonicalName: "Dubai British School Jumeirah Park", 
-    city: "Dubai", 
+    schoolId: "FLIS0419", 
+    canonicalName: "Dubai British School (Dubai Jumeirah Park)", 
+    city: "Dubai Jumeirah Park", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-jumeirah-park-1081671"
   },
   "dubai british school emirates hills": { 
-    schoolId: "FLIS0115_EMIRATES_HILLS", 
-    canonicalName: "Dubai British School Emirates Hills", 
-    city: "Dubai", 
+    schoolId: "FLIS0104", 
+    canonicalName: "Dubai British School", 
+    city: "Dubai Emirates Hills", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-emirates-hills-1057169"
   },
   "dubai british school - mira": { 
-    schoolId: "FLIS0115_MIRA", 
-    canonicalName: "Dubai British School Mira", 
-    city: "Dubai", 
+    schoolId: "FLIS0420", 
+    canonicalName: "Dubai British School (Dubai Mira)", 
+    city: "Dubai Mira", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-mira-1255316"
   },
   "dubai british school - jumeira": { 
-    schoolId: "FLIS0115_JUMEIRA", 
-    canonicalName: "Dubai British School Jumeira", 
-    city: "Dubai", 
+    schoolId: "FLIS0418", 
+    canonicalName: "Dubai British School (Dubai Jumeira)", 
+    city: "Dubai Jumeira", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-jumeira-1265177"
   },
   "dubai british school": { 
-    schoolId: "FLIS0115", 
+    schoolId: "FLIS0104", 
     canonicalName: "Dubai British School", 
-    city: "Dubai", 
+    city: "Dubai Emirates Hills", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-emirates-hills-1057169"
   },
-  "dubai british foundation": { 
-    schoolId: "FLIS0115_DBF", 
-    canonicalName: "Dubai British Foundation", 
-    city: "Dubai", 
-    country: "United Arab Emirates" 
-  },
   "raha international school kcc": { 
-    schoolId: "FLIS0113", 
+    schoolId: "FLIS0102", 
     canonicalName: "Raha International School (Khalifa City)", 
     city: "Abu Dhabi", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
   },
   "raha international school gc": { 
-    schoolId: "FLIS0113", 
+    schoolId: "FLIS0102", 
     canonicalName: "Raha International School (Gardens Campus)", 
     city: "Abu Dhabi", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
   },
   "raha international school": { 
-    schoolId: "FLIS0113", 
+    schoolId: "FLIS0102", 
     canonicalName: "Raha International School", 
     city: "Abu Dhabi", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
   },
   "greenfield international school": { 
-    schoolId: "FLIS0116_GIS", 
+    schoolId: "FLIS0342", 
     canonicalName: "Greenfield International School", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "jumeira baccalaureate school": { 
-    schoolId: "FLIS0114_JBS", 
+    schoolId: "FLIS0423", 
     canonicalName: "Jumeira Baccalaureate School", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "uptown international school": { 
-    schoolId: "FLIS0117_UIS", 
+    schoolId: "FLIS0343", 
     canonicalName: "Uptown International School", 
     city: "Dubai", 
     country: "United Arab Emirates",
     tesEmployerUrl: "https://www.tes.com/jobs/employer/uptown-international-school-1081669"
   },
-  "dubai heights academy": { 
-    schoolId: "FLIS0118_DHA", 
-    canonicalName: "Dubai Heights Academy", 
-    city: "Dubai", 
-    country: "United Arab Emirates" 
-  },
   "jebel ali school": { 
-    schoolId: "FLIS0119_JAS", 
+    schoolId: "FLIS0341", 
     canonicalName: "Jebel Ali School", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "harrow international school-dubai": { 
-    schoolId: "FLIS0361", 
+    schoolId: "FLIS0344", 
     canonicalName: "Harrow International School Dubai", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "harrow international school abu dhabi": { 
-    schoolId: "FLIS0364", 
+    schoolId: "FLIS0320", 
     canonicalName: "Harrow International School Abu Dhabi", 
     city: "Abu Dhabi", 
     country: "United Arab Emirates" 
   },
   "dubai schools al barsha": { 
-    schoolId: "FLIS0362", 
+    schoolId: "FLIS0318", 
     canonicalName: "Dubai Schools Al Barsha", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "dubai schools al khawaneej": { 
-    schoolId: "FLIS0365", 
+    schoolId: "FLIS0321", 
     canonicalName: "Dubai Schools Al Khawaneej", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "dubai school nad al sheba": { 
-    schoolId: "FLIS0363", 
+    schoolId: "FLIS0319", 
     canonicalName: "Dubai School Nad Al Sheba", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "lycée libanais francophone privé meydan": { 
-    schoolId: "FLIS0366", 
+    schoolId: "FLIS0322", 
     canonicalName: "Lycée Libanais Francophone Privé Meydan", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "taaleem": { 
-    schoolId: "FLIS0115", 
+    schoolId: "FLIS0104", 
     canonicalName: "Taaleem Education", 
     city: "Dubai", 
     country: "United Arab Emirates" 
@@ -161,6 +155,7 @@ export function isTaaleemSchool(schoolId?: string | null, schoolName?: string | 
   const sName = (schoolName || "").toLowerCase();
   const gName = (group || "").toLowerCase();
 
+  // Exclusions: never classify competitor group schools as Taaleem
   if (
     gName.includes("gems") ||
     sName.includes("gems") ||
@@ -198,13 +193,23 @@ export function isTaaleemSchool(schoolId?: string | null, schoolName?: string | 
     return true;
   }
 
+  // Correct canonical Taaleem school IDs
   if (
-    sId.startsWith("FLIS0113") ||
-    sId.startsWith("FLIS0115") ||
-    sId.startsWith("FLIS0116") ||
-    sId.startsWith("FLIS0117") ||
-    sId.startsWith("FLIS0118") ||
-    sId.startsWith("FLIS0119_JAS")
+    sId === "FLIS0102" ||
+    sId === "FLIS0104" ||
+    sId.startsWith("FLIS0318") ||
+    sId.startsWith("FLIS0319") ||
+    sId.startsWith("FLIS0320") ||
+    sId.startsWith("FLIS0321") ||
+    sId.startsWith("FLIS0322") ||
+    sId === "FLIS0341" ||
+    sId === "FLIS0342" ||
+    sId === "FLIS0343" ||
+    sId === "FLIS0344" ||
+    sId.startsWith("FLIS0418") ||
+    sId.startsWith("FLIS0419") ||
+    sId.startsWith("FLIS0420") ||
+    sId === "FLIS0423"
   ) {
     return true;
   }

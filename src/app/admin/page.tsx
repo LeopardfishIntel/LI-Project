@@ -7,7 +7,10 @@ import {
   FileJson, Beaker, ShieldCheck, RefreshCw, Info, Terminal, 
   MapPin, Globe2, ServerCrash, Coins,
   Activity, Target, Map, MessageSquare, Compass,
-  Cpu, Clock, PlusCircle, MinusCircle, Layers, TrendingUp
+  Cpu, Clock, PlusCircle, MinusCircle, Layers, TrendingUp,
+  Users, UserCheck, Calculator, Building2, Sliders, Eye, 
+  GitCompare, FileCheck, FileText, ExternalLink, ArrowRight, Flame, Sparkles,
+  Search, Filter, Award, Mail, ShieldAlert
 } from 'lucide-react';
 import { 
   getCrawlLogsAction, type CrawlLogItem, getCoolingStatusesAction, type EngineCoolingItem, 
@@ -21,6 +24,8 @@ import {
   clearCountryIndexesAction,
   getIngestionConflictAlertsAction,
   resolveIngestionConflictAction,
+  getMembersDataAction,
+  type MemberAccountItem,
 
   type BulkEnrichState,
   type EcoActionState 
@@ -50,7 +55,7 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('col-data');
+  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'members' | 'ikea' | 'matrix' | 'transport'>('col-data');
 
   useEffect(() => {
     setMounted(true);
@@ -77,6 +82,10 @@ export default function AdminCommandPage() {
 
   const [telemetry, setTelemetry] = useState<any>(null);
   const [loadingTelemetry, setLoadingTelemetry] = useState(false);
+  const [members, setMembers] = useState<MemberAccountItem[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
+  const [memberSearchQuery, setMemberSearchQuery] = useState('');
+  const [memberTierFilter, setMemberTierFilter] = useState<'ALL' | 'free' | 'admin'>('ALL');
   const [crawlLogs, setCrawlLogs] = useState<CrawlLogItem[]>([]);
   const [loadingCrawlLogs, setLoadingCrawlLogs] = useState(false);
   const [selectedEngineFilter, setSelectedEngineFilter] = useState<string>("ALL");
@@ -92,6 +101,20 @@ export default function AdminCommandPage() {
   // Matrix AI State
   const [matrixCountryId, setMatrixCountryId] = useState('');
   const [matrixCountryName, setMatrixCountryName] = useState('');
+
+  async function loadMembers() {
+    setLoadingMembers(true);
+    try {
+      const res = await getMembersDataAction();
+      if (res.success && res.members) {
+        setMembers(res.members);
+      }
+    } catch (err) {
+      console.error("Failed loading members:", err);
+    } finally {
+      setLoadingMembers(false);
+    }
+  }
 
   async function loadConflictAlerts() {
     setLoadingConflictAlerts(true);
@@ -230,8 +253,17 @@ export default function AdminCommandPage() {
   }
 
   useEffect(() => {
-    if (activeTab === 'telemetry' && mounted) {
-      loadTelemetry();
+    if (mounted) {
+      if (activeTab === 'telemetry') {
+        loadTelemetry();
+      }
+      if (activeTab === 'members') {
+        loadMembers();
+      }
+      // Load members count in background on mount
+      if (members.length === 0) {
+        loadMembers();
+      }
     }
   }, [activeTab, mounted]);
 
@@ -291,9 +323,17 @@ export default function AdminCommandPage() {
 
             <button 
                 onClick={() => setActiveTab('telemetry')}
-                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'telemetry' ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm flex items-center gap-1.5", activeTab === 'telemetry' ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
             >
-                Telemetry
+                <Activity className="size-3.5" />
+                Daily Intelligence
+            </button>
+            <button 
+                onClick={() => setActiveTab('members')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm flex items-center gap-1.5", activeTab === 'members' ? "bg-emerald-600 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                <UserCheck className="size-3.5" />
+                Members ({members.length || '15'})
             </button>
             <button 
                 onClick={() => setActiveTab('matrix')}
@@ -656,6 +696,362 @@ export default function AdminCommandPage() {
                     const peakDay = telemetry.visitsTrend?.reduce((max: any, d: any) => d.count > max.count ? d : max, { count: 0 });
                     return (
                         <div className="space-y-8">
+                            {/* 🏛️ DAILY INTELLIGENCE SNAPSHOT & 3-TIER CONVERSION ENGINE */}
+                            {telemetry.funnel && (
+                                <div className="space-y-6">
+                                    {/* 07:00 PRAGUE SNAPSHOT HEADER BAR */}
+                                    <div className="bg-gradient-to-r from-purple-950/60 via-[#0b1224] to-slate-900 border border-purple-500/30 rounded-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-purple-500/20 rounded-sm border border-purple-500/40 text-purple-400">
+                                                <Activity className="size-5" />
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-purple-400">Morning Dispatch</span>
+                                                    <span className="size-1 rounded-full bg-slate-500" />
+                                                    <span className="text-[10px] font-mono text-slate-400">07:00 Europe/Prague Standard</span>
+                                                </div>
+                                                <h3 className="text-sm font-black uppercase text-white tracking-wider">
+                                                    Daily Intelligence Hub · Previous 24 Hours
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-mono font-bold text-slate-400 bg-black/50 border border-white/10 px-3 py-1.5 rounded-sm">
+                                                Live Grounded Ingestion
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* 🚀 WHAT CHANGED SINCE YESTERDAY DELTA RIBBON */}
+                                    {telemetry.funnel.whatChanged && (
+                                        <div className="bg-[#0b1224] border border-white/10 rounded-sm p-5 space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-2">
+                                                    <TrendingUp className="size-3.5" /> What Changed Since Yesterday (24H Delta)
+                                                </h4>
+                                                <span className="text-[9px] font-mono text-slate-500">Trailing 24h vs Previous 24h</span>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 font-mono">
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Visitors</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.visitorsDelta.includes('+') ? "text-emerald-400" : telemetry.funnel.whatChanged.visitorsDelta.includes('-') ? "text-rose-400" : "text-slate-300")}>
+                                                        {telemetry.funnel.whatChanged.visitorsDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Forecaster Users</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.forecasterDelta.includes('+') ? "text-amber-400" : telemetry.funnel.whatChanged.forecasterDelta.includes('-') ? "text-rose-400" : "text-slate-300")}>
+                                                        {telemetry.funnel.whatChanged.forecasterDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Schools Evaluated</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.schoolsEvaluatedDelta.includes('+') ? "text-sky-400" : telemetry.funnel.whatChanged.schoolsEvaluatedDelta.includes('-') ? "text-rose-400" : "text-slate-300")}>
+                                                        {telemetry.funnel.whatChanged.schoolsEvaluatedDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Salary Adjusters</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.salaryAdjustersDelta.includes('+') ? "text-purple-400" : telemetry.funnel.whatChanged.salaryAdjustersDelta.includes('-') ? "text-rose-400" : "text-slate-300")}>
+                                                        {telemetry.funnel.whatChanged.salaryAdjustersDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Registrations</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.registrationsDelta.includes('+') ? "text-emerald-400" : "text-slate-400")}>
+                                                        {telemetry.funnel.whatChanged.registrationsDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Briefings</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.briefingsDelta.includes('+') ? "text-sky-400" : "text-slate-400")}>
+                                                        {telemetry.funnel.whatChanged.briefingsDelta}
+                                                    </span>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 p-3 rounded">
+                                                    <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Job Apply Clicks</span>
+                                                    <span className={cn("text-base font-black truncate block", telemetry.funnel.whatChanged.jobClicksDelta.includes('+') ? "text-emerald-400" : "text-slate-400")}>
+                                                        {telemetry.funnel.whatChanged.jobClicksDelta}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 3-TIER CONVERSION FUNNEL CARD */}
+                                    <div className="bg-[#0b1224] border border-sky-500/30 rounded-sm p-6 space-y-6 shadow-2xl relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 blur-3xl pointer-events-none rounded-full" />
+                                        
+                                        {/* Funnel Header */}
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                                                        <Sparkles className="size-3" /> Core Conversion Funnel
+                                                    </span>
+                                                    <h3 className="text-lg font-black uppercase text-white tracking-wider">
+                                                        Platform Conversion Engine
+                                                    </h3>
+                                                </div>
+                                                <p className="text-xs text-slate-400 mt-1">
+                                                    Separating raw arrivals from active tool engagement and verified product conversions.
+                                                </p>
+                                            </div>
+
+                                            {/* Funnel Readout Badge */}
+                                            <div className="bg-black/60 border border-white/15 px-4 py-2.5 rounded-sm flex items-center gap-3">
+                                                <div className="text-[10px] font-mono font-black uppercase tracking-wider text-slate-400">
+                                                    Funnel Readout:
+                                                </div>
+                                                <div className="text-xs font-mono font-extrabold text-emerald-400 flex items-center gap-1.5 flex-wrap">
+                                                    <span>{telemetry.funnel.tier1.totalSessions} Sessions</span>
+                                                    <ArrowRight className="size-3 text-slate-500" />
+                                                    <span className="text-amber-300">{telemetry.funnel.tier2.uniqueEngagedVisitors} Engaged ({telemetry.funnel.tier2.engagementRate}%)</span>
+                                                    <ArrowRight className="size-3 text-slate-500" />
+                                                    <span className="text-sky-300">{telemetry.funnel.tier3.registeredEducators} Registered</span>
+                                                    <ArrowRight className="size-3 text-slate-500" />
+                                                    <span className="text-emerald-300">{telemetry.funnel.tier3.briefingsGenerated + telemetry.funnel.tier3.jobApplicationsClicked} Briefings & Jobs</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 3 High-Contrast Tier Cards */}
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            {/* Tier 1: Visitors */}
+                                            <div className="bg-slate-900/90 border border-sky-500/40 rounded-sm p-5 space-y-4 relative group hover:border-sky-400 transition-all">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2 text-sky-400">
+                                                        <Users className="size-5" />
+                                                        <span className="text-xs font-black uppercase tracking-wider">1. Visitors</span>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold uppercase text-slate-400 bg-sky-500/10 px-2 py-0.5 rounded">
+                                                        Top of Funnel
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-400 min-h-[32px]">
+                                                    {telemetry.funnel.tier1.description}
+                                                </p>
+                                                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5 font-mono">
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Total Sessions</span>
+                                                        <span className="text-xl font-black text-white">{telemetry.funnel.tier1.totalSessions}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Unique Visitors</span>
+                                                        <span className="text-xl font-black text-sky-400">{telemetry.funnel.tier1.uniqueVisitors}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Return Visitors</span>
+                                                        <span className="text-base font-bold text-slate-300">{telemetry.funnel.tier1.returnVisitors}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Return Rate</span>
+                                                        <span className="text-base font-bold text-emerald-400">{telemetry.funnel.tier1.returnVisitorRate}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Tier 2: Engaged Prospects */}
+                                            <div className="bg-slate-900/90 border border-amber-500/40 rounded-sm p-5 space-y-4 relative group hover:border-amber-400 transition-all">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2 text-amber-400">
+                                                        <Flame className="size-5" />
+                                                        <span className="text-xs font-black uppercase tracking-wider">2. Engaged Prospects</span>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold uppercase text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded">
+                                                        {telemetry.funnel.tier2.engagementRate}% Rate
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-400 min-h-[32px]">
+                                                    {telemetry.funnel.tier2.description}
+                                                </p>
+                                                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5 font-mono">
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Engaged Prospects</span>
+                                                        <span className="text-xl font-black text-amber-400">{telemetry.funnel.tier2.uniqueEngagedVisitors}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Engaged Sessions</span>
+                                                        <span className="text-xl font-black text-white">{telemetry.funnel.tier2.totalEngagedSessions}</span>
+                                                    </div>
+                                                    <div className="col-span-2 bg-amber-950/20 border border-amber-500/20 p-2.5 rounded flex items-center justify-between">
+                                                        <span className="text-[10px] uppercase font-bold text-amber-300">Visitor Engagement Ratio</span>
+                                                        <span className="text-sm font-black text-amber-400">{telemetry.funnel.tier2.engagementRate}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Tier 3: Conversions */}
+                                            <div className="bg-slate-900/90 border border-emerald-500/40 rounded-sm p-5 space-y-4 relative group hover:border-emerald-400 transition-all">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2 text-emerald-400">
+                                                        <UserCheck className="size-5" />
+                                                        <span className="text-xs font-black uppercase tracking-wider">3. Conversions</span>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold uppercase text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded">
+                                                        {telemetry.funnel.tier3.conversionRate}% Overall
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-400 min-h-[32px]">
+                                                    {telemetry.funnel.tier3.description}
+                                                </p>
+                                                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5 font-mono">
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Registered Educators</span>
+                                                        <span className="text-xl font-black text-emerald-400">{telemetry.funnel.tier3.registeredEducators}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Briefings Created</span>
+                                                        <span className="text-xl font-black text-sky-400">{telemetry.funnel.tier3.briefingsGenerated}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Job Clicks (Apply)</span>
+                                                        <span className="text-base font-bold text-purple-400">{telemetry.funnel.tier3.jobApplicationsClicked}</span>
+                                                    </div>
+                                                    <div className="bg-black/40 p-2.5 rounded">
+                                                        <span className="text-[9px] uppercase font-bold text-slate-500 block">Engaged Conversion</span>
+                                                        <span className="text-base font-bold text-emerald-400">{telemetry.funnel.tier3.engagedToConversionRate}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 10 Granular KPIs Breakdown Grid with Intensity: X educators / Y interactions */}
+                                        <div className="pt-4 border-t border-white/10 space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="text-xs font-black uppercase text-slate-300 tracking-wider flex items-center gap-2">
+                                                    <Activity className="size-4 text-sky-400" />
+                                                    10 Granular Interaction Milestones
+                                                </h4>
+                                                <span className="text-[10px] text-slate-400 font-mono">Format: <strong className="text-white">X educators / Y interactions</strong></span>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                                                {telemetry.funnel.kpis.map((kpi: any) => {
+                                                    const isTier3 = kpi.category.includes('Tier 3');
+                                                    const isTier2 = kpi.category.includes('Tier 2');
+                                                    return (
+                                                        <div 
+                                                            key={kpi.id}
+                                                            className={cn(
+                                                                "bg-black/50 border p-3.5 rounded-sm space-y-2.5 transition-all hover:bg-black/70",
+                                                                isTier3 ? "border-emerald-500/30 hover:border-emerald-500/60" :
+                                                                isTier2 ? "border-amber-500/30 hover:border-amber-500/60" :
+                                                                "border-sky-500/30 hover:border-sky-500/60"
+                                                            )}
+                                                        >
+                                                            <div className="flex items-center justify-between gap-1">
+                                                                <span className={cn(
+                                                                    "text-[8px] font-black uppercase px-1.5 py-0.5 rounded tracking-wider",
+                                                                    isTier3 ? "bg-emerald-500/20 text-emerald-400" :
+                                                                    isTier2 ? "bg-amber-500/20 text-amber-300" :
+                                                                    "bg-sky-500/20 text-sky-400"
+                                                                )}>
+                                                                    {kpi.category}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-bold text-slate-200 leading-tight">{kpi.title}</div>
+                                                                <div className="text-[10px] text-slate-500 mt-0.5 line-clamp-2">{kpi.description}</div>
+                                                            </div>
+                                                            <div className="pt-2 border-t border-white/5 font-mono">
+                                                                <div className="text-xs font-black text-white flex items-center justify-between">
+                                                                    <span className="text-emerald-400">{kpi.educators || 0} educators</span>
+                                                                    <span className="text-slate-500">/</span>
+                                                                    <span className="text-amber-300">{kpi.events || kpi.count || 0} interactions</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* 🔥 HIGH-INTENT EDUCATORS (SPOTLIGHT LIST) */}
+                                        {telemetry.funnel.highIntentEducators && telemetry.funnel.highIntentEducators.length > 0 && (
+                                            <div className="pt-4 border-t border-white/10 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <h4 className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
+                                                        <Flame className="size-4 text-amber-400" />
+                                                        High-Intent Educator Journeys (Spotlight)
+                                                    </h4>
+                                                    <span className="text-[10px] text-slate-500 font-mono">
+                                                        {telemetry.funnel.highIntentEducators.length} deeply active educator profiles
+                                                    </span>
+                                                </div>
+
+                                                <div className="overflow-x-auto border border-white/10 rounded-sm bg-black/40">
+                                                    <table className="w-full text-left text-[11px] font-sans">
+                                                        <thead className="bg-[#070d19] border-b border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                                                            <tr>
+                                                                <th className="py-2.5 px-4">Educator / Visitor</th>
+                                                                <th className="py-2.5 px-4">Location</th>
+                                                                <th className="py-2.5 px-4">Schools Investigated</th>
+                                                                <th className="py-2.5 px-4 text-center">Surplus Modelled</th>
+                                                                <th className="py-2.5 px-4 text-center">Briefing / Shootout</th>
+                                                                <th className="py-2.5 px-4 text-center">Apply Clicked</th>
+                                                                <th className="py-2.5 px-4 text-right">Total Actions</th>
+                                                                <th className="py-2.5 px-4 text-right">Last Active</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-white/5 font-mono text-[10px]">
+                                                            {telemetry.funnel.highIntentEducators.map((edu: any, idx: number) => (
+                                                                <tr key={idx} className="hover:bg-white/5 transition-all">
+                                                                    <td className="py-2.5 px-4 font-bold">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            {edu.isAuthenticated ? (
+                                                                                <span className="size-2 rounded-full bg-emerald-400" title="Authenticated User" />
+                                                                            ) : (
+                                                                                <span className="size-2 rounded-full bg-slate-500" title="Anonymous Visitor" />
+                                                                            )}
+                                                                            <span className="text-white">{edu.email || edu.visitorId.slice(0, 16)}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-slate-300 uppercase font-sans">
+                                                                        {edu.country}
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-slate-300 max-w-xs truncate font-sans" title={edu.schools?.join(', ')}>
+                                                                        {edu.schools && edu.schools.length > 0 ? edu.schools.join(', ') : <span className="text-slate-600">—</span>}
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-center">
+                                                                        {edu.modelledSurplus ? (
+                                                                            <span className="px-2 py-0.5 text-[8px] font-black uppercase rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                                                YES
+                                                                            </span>
+                                                                        ) : <span className="text-slate-600">—</span>}
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-center">
+                                                                        {edu.generatedBriefing || edu.completedEvaluation ? (
+                                                                            <span className="px-2 py-0.5 text-[8px] font-black uppercase rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                                                                                {edu.generatedBriefing ? 'BRIEFING' : 'SHOOTOUT'}
+                                                                            </span>
+                                                                        ) : <span className="text-slate-600">—</span>}
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-center">
+                                                                        {edu.jobClicked ? (
+                                                                            <span className="px-2 py-0.5 text-[8px] font-black uppercase rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                                                                                APPLY CLICK
+                                                                            </span>
+                                                                        ) : <span className="text-slate-600">—</span>}
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-right font-black text-amber-400">
+                                                                        {edu.actionsCount} actions
+                                                                    </td>
+                                                                    <td className="py-2.5 px-4 text-right text-slate-400 font-sans">
+                                                                        {edu.lastActiveFormatted}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* High Level Cards Grid */}
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                                 <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
@@ -1293,6 +1689,254 @@ export default function AdminCommandPage() {
                         </div>
                     );
                 })()}
+            </div>
+        )}
+
+        {/* TAB 7: MEMBERS DIRECTORY & REGISTRY */}
+        {activeTab === 'members' && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+                {/* MEMBERS OVERVIEW & METRICS */}
+                <div className="bg-[#0b1224] border border-emerald-500/30 rounded-sm p-6 space-y-6 shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 blur-3xl pointer-events-none rounded-full" />
+                    
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                    <UserCheck className="size-3" /> Grounded Member Ledger
+                                </span>
+                                <h2 className="text-xl font-black uppercase tracking-widest text-white italic">
+                                    Educator Membership Registry
+                                </h2>
+                            </div>
+                            <p className="text-xs text-slate-400">
+                                Real-time directory of all registered educator accounts, curriculum specialisms, license credentials, and intelligence allowances.
+                            </p>
+                        </div>
+                        <button 
+                            onClick={loadMembers} 
+                            disabled={loadingMembers}
+                            className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all flex items-center gap-2"
+                        >
+                            {loadingMembers ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+                            Refresh Members
+                        </button>
+                    </div>
+
+                    {/* MEMBER METRIC SUMMARY CARDS */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+                        <div className="bg-black/50 border border-white/10 p-4 rounded-sm">
+                            <div className="text-[9px] font-black uppercase text-slate-400 mb-1 flex items-center gap-1.5">
+                                <Users className="size-3.5 text-sky-400" /> Total Members
+                            </div>
+                            <div className="text-2xl font-black text-white">{members.length}</div>
+                            <div className="text-[9px] text-slate-500 mt-1 font-sans">Active Auth & Firestore profiles</div>
+                        </div>
+
+                        <div className="bg-black/50 border border-white/10 p-4 rounded-sm">
+                            <div className="text-[9px] font-black uppercase text-slate-400 mb-1 flex items-center gap-1.5">
+                                <Award className="size-3.5 text-emerald-400" /> Verified K-12 Licenses
+                            </div>
+                            <div className="text-2xl font-black text-emerald-400">
+                                {members.filter(m => m.hasLicense).length}
+                            </div>
+                            <div className="text-[9px] text-slate-500 mt-1 font-sans">
+                                {members.length > 0 ? Math.round((members.filter(m => m.hasLicense).length / members.length) * 100) : 0}% verification rate
+                            </div>
+                        </div>
+
+                        <div className="bg-black/50 border border-white/10 p-4 rounded-sm">
+                            <div className="text-[9px] font-black uppercase text-slate-400 mb-1 flex items-center gap-1.5">
+                                <ShieldCheck className="size-3.5 text-purple-400" /> Admin / Staff
+                            </div>
+                            <div className="text-2xl font-black text-purple-400">
+                                {members.filter(m => m.tier === 'admin').length}
+                            </div>
+                            <div className="text-[9px] text-slate-500 mt-1 font-sans">Elevated platform access</div>
+                        </div>
+
+                        <div className="bg-black/50 border border-white/10 p-4 rounded-sm">
+                            <div className="text-[9px] font-black uppercase text-slate-400 mb-1 flex items-center gap-1.5">
+                                <Sparkles className="size-3.5 text-amber-400" /> Shootouts Allocated
+                            </div>
+                            <div className="text-2xl font-black text-amber-400">
+                                {members.reduce((acc, m) => acc + (m.evaluationsAllowance || 20), 0)}
+                            </div>
+                            <div className="text-[9px] text-slate-500 mt-1 font-sans">
+                                {members.reduce((acc, m) => acc + (m.evaluationsUsed || 0), 0)} shootouts completed
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SEARCH AND FILTER BAR */}
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-2">
+                        <div className="relative w-full md:w-96">
+                            <Search className="size-4 text-slate-500 absolute left-3.5 top-3" />
+                            <input
+                                type="text"
+                                placeholder="Search teacher ID, name, email, curriculum, city..."
+                                value={memberSearchQuery}
+                                onChange={(e) => setMemberSearchQuery(e.target.value)}
+                                className="w-full bg-black/60 border border-white/10 pl-10 pr-4 h-10 rounded-sm text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/60"
+                            />
+                            {memberSearchQuery && (
+                                <button onClick={() => setMemberSearchQuery('')} className="absolute right-3 top-3 text-[9px] font-black uppercase text-slate-500 hover:text-white">
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-2 w-full md:w-auto">
+                            {(['ALL', 'free', 'admin'] as const).map((tier) => (
+                                <button
+                                    key={tier}
+                                    onClick={() => setMemberTierFilter(tier)}
+                                    className={cn(
+                                        "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all",
+                                        memberTierFilter === tier
+                                            ? "bg-emerald-600 border-emerald-500 text-white"
+                                            : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                                    )}
+                                >
+                                    {tier === 'ALL' ? 'All Tiers' : tier.toUpperCase()}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* MEMBERS DATA TABLE */}
+                    <div className="overflow-x-auto border border-white/10 rounded-sm bg-black/40">
+                        <table className="w-full text-left text-[11px] font-sans">
+                            <thead className="bg-[#070d19] border-b border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                                <tr>
+                                    <th className="py-3 px-4">Educator / Teacher ID</th>
+                                    <th className="py-3 px-4">Email</th>
+                                    <th className="py-3 px-4">Curriculum & Base</th>
+                                    <th className="py-3 px-4 text-center">License & Tier</th>
+                                    <th className="py-3 px-4 text-center">Shootout Allowance</th>
+                                    <th className="py-3 px-4 text-right">Date Joined</th>
+                                    <th className="py-3 px-4 text-right">Last Sign-in</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5 font-mono text-[10px]">
+                                {(() => {
+                                    const q = memberSearchQuery.toLowerCase().trim();
+                                    const filtered = members.filter((m) => {
+                                        const matchesTier = memberTierFilter === 'ALL' || m.tier === memberTierFilter;
+                                        if (!matchesTier) return false;
+                                        if (!q) return true;
+                                        return (
+                                            (m.teacherId && m.teacherId.toLowerCase().includes(q)) ||
+                                            (m.name && m.name.toLowerCase().includes(q)) ||
+                                            (m.email && m.email.toLowerCase().includes(q)) ||
+                                            (m.curriculum && m.curriculum.toLowerCase().includes(q)) ||
+                                            (m.city && m.city.toLowerCase().includes(q))
+                                        );
+                                    });
+
+                                    if (loadingMembers) {
+                                        return (
+                                            <tr>
+                                                <td colSpan={7} className="py-12 text-center text-slate-500 font-sans">
+                                                    <Loader2 className="size-5 animate-spin mx-auto mb-2 text-emerald-400" />
+                                                    <span className="text-xs uppercase font-bold tracking-wider">Loading Member Registry...</span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+
+                                    if (filtered.length === 0) {
+                                        return (
+                                            <tr>
+                                                <td colSpan={7} className="py-12 text-center text-slate-500 font-sans italic text-xs">
+                                                    No member accounts matched query "{memberSearchQuery}".
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+
+                                    return filtered.map((member) => (
+                                        <tr key={member.uid} className="hover:bg-white/5 transition-all">
+                                            {/* Educator / Teacher ID */}
+                                            <td className="py-3 px-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-emerald-950/60 border border-emerald-500/40 text-emerald-400">
+                                                        {member.teacherId || '—'}
+                                                    </span>
+                                                    <span className="font-bold text-white font-sans truncate max-w-[140px]" title={member.name}>
+                                                        {member.name}
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                            {/* Email */}
+                                            <td className="py-3 px-4 font-sans">
+                                                <span className="text-slate-300 truncate max-w-[180px] block" title={member.email}>
+                                                    {member.email}
+                                                </span>
+                                            </td>
+
+                                            {/* Curriculum & Base */}
+                                            <td className="py-3 px-4 font-sans">
+                                                <div className="space-y-0.5">
+                                                    <span className="text-white font-bold block">{member.curriculum}</span>
+                                                    <span className="text-slate-400 text-[10px] block">{member.city}</span>
+                                                </div>
+                                            </td>
+
+                                            {/* License & Tier */}
+                                            <td className="py-3 px-4 text-center">
+                                                <div className="flex flex-col items-center gap-1">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 text-[8px] font-black uppercase rounded tracking-wider",
+                                                        member.tier === 'admin' 
+                                                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30" 
+                                                            : "bg-sky-500/20 text-sky-300 border border-sky-500/30"
+                                                    )}>
+                                                        {member.tier}
+                                                    </span>
+                                                    <span className={cn(
+                                                        "text-[8px] font-bold uppercase",
+                                                        member.hasLicense ? "text-emerald-400" : "text-slate-500"
+                                                    )}>
+                                                        {member.hasLicense ? "✓ K-12 License" : "Self-Declared"}
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                            {/* Shootout Allowance */}
+                                            <td className="py-3 px-4 text-center font-sans">
+                                                <div className="space-y-1">
+                                                    <span className="text-xs font-mono font-black text-white">
+                                                        {member.evaluationsUsed} / {member.evaluationsAllowance}
+                                                    </span>
+                                                    <div className="w-16 h-1.5 bg-slate-800 rounded-full mx-auto overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-emerald-500" 
+                                                            style={{ 
+                                                                width: `${Math.min(100, (member.evaluationsUsed / (member.evaluationsAllowance || 20)) * 100)}%` 
+                                                            }} 
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            {/* Date Joined */}
+                                            <td className="py-3 px-4 text-right text-slate-300 font-sans">
+                                                {member.createdAtFormatted}
+                                            </td>
+
+                                            {/* Last Sign-in */}
+                                            <td className="py-3 px-4 text-right text-slate-400 font-sans">
+                                                {member.lastSignInFormatted}
+                                            </td>
+                                        </tr>
+                                    ));
+                                })()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         )}
       </div>

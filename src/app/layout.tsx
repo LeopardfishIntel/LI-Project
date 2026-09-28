@@ -78,6 +78,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://leopardfishintel.com",
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 const rootJsonLd = {

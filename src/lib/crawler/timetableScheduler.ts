@@ -26,6 +26,16 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     utcEndWindow: "01:30",
     targetDurationMinutes: 30
   },
+  GUARDIAN: {
+    engineKey: "GUARDIAN",
+    sourceName: "Guardian Jobs",
+    method: "Direct Education Feed & Cheerio Sweeper",
+    peakSchedule: "DAILY",
+    offPeakSchedule: "MWF",
+    utcStartWindow: "01:15",
+    utcEndWindow: "01:30",
+    targetDurationMinutes: 15
+  },
   ISP: {
     engineKey: "ISP",
     sourceName: "ISP",
@@ -39,7 +49,7 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
   NORD_ANGLIA: {
     engineKey: "NORD_ANGLIA",
     sourceName: "Nord Anglia",
-    method: "Workday CXS JSON API",
+    method: "SuccessFactors Portal (careers.nordanglia.com)",
     peakSchedule: "DAILY",
     offPeakSchedule: "MWF",
     utcStartWindow: "01:50",

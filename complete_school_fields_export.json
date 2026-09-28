@@ -17473,7 +17473,7 @@
   },
   {
     "id": "FLIS0173",
-    "financescore": "6.5",
+    "financescore": "7.8",
     "country": "UK",
     "classsize": "20",
     "city": "London",
@@ -17482,7 +17482,7 @@
     "staffstudentratio": "1:9",
     "approvals": "CIS/ISI",
     "academicscore": "8.8",
-    "salaryRange": "$4,350.00",
+    "salaryRange": "$6,180.00",
     "summary": "Elite London IB; cost of living impacts savings.",
     "techscore": "8.2",
     "citySafety": "8.5",
@@ -17537,11 +17537,11 @@
     "schoolId": "FLIS0173",
     "currency": "GBP",
     "salary_source_year": "2025/2026",
-    "net_salary": 2750,
+    "net_salary": 3905,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "last_benchmark_update": "2026-09-25T08:15:19.382Z",
-    "salary_scale_5yr_net": 2750,
+    "last_benchmark_update": "2026-09-27T15:37:00.410Z",
+    "salary_scale_5yr_net": 3905,
     "website": "https://www.southbank.org",
     "schoolGroup": "Cognita",
     "group": "Cognita",
@@ -17553,7 +17553,7 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.444Z"
+    "updatedAt": "2026-09-27T15:37:00.410Z"
   },
   {
     "id": "FLIS0174",
@@ -23664,7 +23664,7 @@
     "base_salary_dkk": null,
     "base_salary_aed": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.450Z"
+    "updatedAt": "2026-09-24T17:40:26.389Z"
   },
   {
     "id": "FLIS0223",
@@ -23909,7 +23909,7 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.450Z"
+    "updatedAt": "2026-09-24T17:40:57.524Z"
   },
   {
     "id": "FLIS0225",

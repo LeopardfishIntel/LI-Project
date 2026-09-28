@@ -158,8 +158,8 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
 
     if (!matchedMeta) {
       matchedMeta = companyToSchoolMap.get("taaleem") || {
-        id: "FLIS0115",
-        schoolId: "FLIS0115",
+        id: "FLIS0104",
+        schoolId: "FLIS0104",
         canonicalName: job.companyName || "Taaleem Education",
         city: "Dubai",
         country: "United Arab Emirates",
@@ -168,7 +168,7 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       };
     }
 
-    const schoolId = matchedMeta.schoolId || matchedMeta.id || "FLIS0115";
+    const schoolId = matchedMeta.schoolId || matchedMeta.id || "FLIS0104";
     const schoolName = matchedMeta.canonicalName || matchedMeta.schoolname || matchedMeta.name || "Taaleem School";
     const applyUrl = job.applyUrl;
     const cleanTitle = cleanTaaleemJobTitle(rawTitle);
@@ -240,7 +240,7 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       closingDate: closingDate,
       closingDateMillis: closingDateMillis,
       isRollingDeadline: !closingDate,
-      status: "APPROVED",
+      status: "pending_review",
       group: "Taaleem",
       ownership: "Taaleem",
       ingestedAtMillis: Date.now(),
@@ -266,17 +266,15 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
     const sId = (d.schoolId || "").toUpperCase();
     const directCandidates = [
       ...(directJobsBySchool.get(sId) || []),
-      ...(directJobsBySchool.get("FLIS0113") || []),
-      ...(directJobsBySchool.get("FLIS0115") || []),
-      ...(directJobsBySchool.get("FLIS0115_EMIRATES_HILLS") || []),
-      ...(directJobsBySchool.get("FLIS0115_JUMEIRAH_PARK") || []),
-      ...(directJobsBySchool.get("FLIS0115_MIRA") || []),
-      ...(directJobsBySchool.get("FLIS0115_JUMEIRA") || []),
-      ...(directJobsBySchool.get("FLIS0116_GIS") || []),
-      ...(directJobsBySchool.get("FLIS0114_JBS") || []),
-      ...(directJobsBySchool.get("FLIS0117_UIS") || []),
-      ...(directJobsBySchool.get("FLIS0118_DHA") || []),
-      ...(directJobsBySchool.get("FLIS0119_JAS") || []),
+      ...(directJobsBySchool.get("FLIS0102") || []),
+      ...(directJobsBySchool.get("FLIS0104") || []),
+      ...(directJobsBySchool.get("FLIS0418") || []),
+      ...(directJobsBySchool.get("FLIS0419") || []),
+      ...(directJobsBySchool.get("FLIS0420") || []),
+      ...(directJobsBySchool.get("FLIS0342") || []),
+      ...(directJobsBySchool.get("FLIS0423") || []),
+      ...(directJobsBySchool.get("FLIS0343") || []),
+      ...(directJobsBySchool.get("FLIS0341") || []),
     ];
 
     const dNorm = normalizeTitleKey(d.title || d.rawTitle || "");

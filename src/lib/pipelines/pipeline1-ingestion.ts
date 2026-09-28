@@ -66,6 +66,8 @@ export interface CacheJobDocument {
   paidInUSD?: boolean;
   startDate?: string | null;
   isMidYearReplacement?: boolean;
+  matchConfidence?: "high" | "medium" | "low" | null;
+  verificationReasons?: string[] | null;
 }
 
 function buildCacheDocument(
@@ -160,6 +162,34 @@ function buildCacheDocument(
     }
   }
 
+  // ── Nord Anglia Education group enrichment ──
+  const isNordAngliaGroup = (
+    (record as any).group?.toLowerCase().includes('nord anglia') ||
+    record.applyUrl?.includes('nordanglia.com') ||
+    record.applyUrl?.includes('nordangliaeducation.com') ||
+    (record.source || '').toUpperCase().includes('NORD ANGLIA')
+  );
+  if (isNordAngliaGroup) {
+    groupName = 'Nord Anglia Education';
+    if (!initialSources.includes('Nord Anglia')) {
+      initialSources.push('Nord Anglia');
+    }
+    const naDirectUrl = directUrl || record.applyUrl || '';
+    if (naDirectUrl.includes('nordanglia.com') && !srcUrls['Nord Anglia']) {
+      srcUrls['Nord Anglia'] = naDirectUrl;
+    }
+    // Preserve any TES URL for dual-pill display
+    if (record.applyUrl && record.applyUrl.includes('tes.com')) {
+      if (!initialSources.includes('TES')) initialSources.push('TES');
+      srcUrls['TES'] = record.applyUrl;
+    }
+    // If the record already carries TES sourceUrls from the crawler
+    if ((record as any).sourceUrls?.['TES']) {
+      if (!initialSources.includes('TES')) initialSources.push('TES');
+      srcUrls['TES'] = (record as any).sourceUrls['TES'];
+    }
+  }
+
   const rawSchoolIdLower = (record.schoolId || "").toLowerCase();
   if (rawSchoolIdLower === 'flis0224_primary' || rawSchoolIdLower.includes('flis0224_p')) {
     targetSchoolId = 'FLIS0224';
@@ -199,11 +229,13 @@ function buildCacheDocument(
     city: targetCity,
     country: record.country || "",
     campus,
-    status: 'approved',
+    status: 'pending_review',
     ingestedAtMillis: Date.now(),
     isRollingDeadline: closingDateMillis === null,
     isAgencyListing: false,
     agencyName: record.source || "TES",
+    matchConfidence: record.matchConfidence ?? null,
+    verificationReasons: record.verificationReasons ?? null,
   };
 }
 
@@ -212,7 +244,7 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
     const { getAdminDb } = await import("@/firebase/admin");
     const db = getAdminDb();
     if (db) {
-      const snap = await db.collection("featured_jobs_cache").get();
+      const snap = await db.collection("featured_jobs_cache").where("schoolId", "==", doc.schoolId).get();
       const normTitle = doc.title.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
       const existingDoc = snap.docs.find((d: any) => {
         const data = d.data();
@@ -258,7 +290,8 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
 
 export async function runIngestionPipeline(
   schoolId: string,
-  rawRecords: RawJobRecord[]
+  rawRecords: RawJobRecord[],
+  options?: { purgeTesVacancies?: boolean }
 ): Promise<IngestionResult> {
   if (!rawRecords || rawRecords.length === 0) {
     return { accepted: 0, rejected: 0, reasons: [], acceptedFingerprints: [], addedCount: 0, removedCount: 0 };
@@ -278,14 +311,14 @@ export async function runIngestionPipeline(
   for (const record of rawRecords) {
     // ── MULTI-ENGINE SOURCE GATE ──────────────────────────────────────────
     const srcUpper = (record.source || "").toUpperCase();
-    const isTes = srcUpper === "TES" && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
-    const isNordAnglia = srcUpper.includes("NORD ANGLIA") && record.applyUrl && (record.applyUrl.includes("careers.nordangliaeducation.com/job/") || record.applyUrl.includes("careers.nordanglia.com/job/"));
+    const isTes = (srcUpper === "TES" || srcUpper.includes("TES")) && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
+    const isNordAnglia = (srcUpper.includes("NORD ANGLIA") || srcUpper.includes("NORD_ANGLIA") || (record.applyUrl && (record.applyUrl.includes("nordangliaeducation.com") || record.applyUrl.includes("nordanglia.com"))));
     const isGrc = srcUpper === "GRC" && record.applyUrl && (record.applyUrl.includes("grcfair.org/job-details/") || record.applyUrl.includes("grcfair.org/job/"));
 
     const isInspired = (srcUpper.includes("INSPIRED") || (record.applyUrl && record.applyUrl.includes("inspirededu.com/job/")));
     const isTeachAway = (srcUpper.includes("TEACH AWAY") || (record.applyUrl && record.applyUrl.includes("teachaway.com/")));
     const isCognita = (srcUpper.includes("COGNITA") || (record.applyUrl && record.applyUrl.includes("cognitapeople.csod.com/")));
-    const isMalvern = (srcUpper.includes("MALVERN") || (record.applyUrl && record.applyUrl.includes("malverncollegefamily.org")) || targetSchoolName.toUpperCase().includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(schoolId));
+    const isMalvern = (srcUpper.includes("MALVERN") || (record.applyUrl && record.applyUrl.includes("malverncollegefamily.org")) || isMalvernCampus(schoolId, targetSchoolName));
     const isUwc = (srcUpper.includes("UWC") || srcUpper.includes("UNITED WORLD COLLEGE") || (record.applyUrl && (record.applyUrl.includes("uwc.org/career/") || record.applyUrl.includes("uwc.org/careers/"))));
     const isIsp = (srcUpper.includes("ISP") || srcUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || (record.applyUrl && record.applyUrl.includes("internationalschools.wd3.myworkdayjobs.com/")));
     const isGlobeducate = (srcUpper.includes("GLOBEDUCATE") || srcUpper.includes("GLOBE") || (record.applyUrl && (record.applyUrl.includes("globeducate.schoolrecruiter.com/") || record.applyUrl.includes("careers.globeducate.com/"))));
@@ -303,12 +336,14 @@ export async function runIngestionPipeline(
     }
 
     const cleanApplyUrl = (record.applyUrl || "").toLowerCase().trim();
-    if (seenUrls.has(cleanApplyUrl)) {
+    if (cleanApplyUrl && seenUrls.has(cleanApplyUrl)) {
       rejected++;
       reasons.push(`[DEDUP_URL] "${record.rawTitle}" (${record.applyUrl})`);
       continue;
     }
-    seenUrls.add(cleanApplyUrl);
+    if (cleanApplyUrl) {
+      seenUrls.add(cleanApplyUrl);
+    }
 
     // ── GATE 2: Role Classifier (Academic Teaching Roles Only) ───────────────
     if (!isStrictAcademicTeachingRole(record.rawTitle)) {
@@ -353,7 +388,9 @@ export async function runIngestionPipeline(
       city: record.city || "",
       country: record.country || "",
       jobFingerprint: fp,
-      status: "approved",
+      status: "pending_review",
+      matchConfidence: record.matchConfidence ?? null,
+      verificationReasons: record.verificationReasons ?? null,
     });
 
     cacheDocs.push(buildCacheDocument(record, fp, targetSchoolName));
@@ -379,21 +416,23 @@ export async function runIngestionPipeline(
 
   const cacheResults = await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
 
-  // 🧹 Auto-purge stale TES vacancies for this school
-  const activeTesUrls = new Set(
-    mappedJobs
-      .filter(j => (j.source || "").toUpperCase().includes("TES") && j.applyUrl)
-      .map(j => j.applyUrl)
-  );
-  if (activeTesUrls.size > 0) {
-    await purgeStaleTesVacancies(schoolId, activeTesUrls);
+  // 🧹 Auto-purge stale TES vacancies for this school ONLY when explicitly requested for full-school sweep
+  if (options?.purgeTesVacancies === true) {
+    const activeTesUrls = new Set(
+      mappedJobs
+        .filter(j => (j.source || "").toUpperCase().includes("TES") && j.applyUrl)
+        .map(j => j.applyUrl)
+    );
+    if (activeTesUrls.size > 0) {
+      await purgeStaleTesVacancies(schoolId, activeTesUrls);
+    }
   }
   const addedCount = cacheResults.filter(r => r.isNew).length;
   const removedCount = rejected;
 
   const accepted = mappedJobs.length;
   console.log(
-    `🛸 [PIPELINE 1 TES ONLY] schoolId=${schoolId} | accepted=${accepted} | rejected=${rejected}`
+    `🛸 [PIPELINE 1 INGESTION] schoolId=${schoolId} | accepted=${accepted} | rejected=${rejected}`
   );
 
   return { accepted, rejected, reasons, acceptedFingerprints, addedCount, removedCount };

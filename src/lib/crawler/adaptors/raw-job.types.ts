@@ -55,8 +55,17 @@ export interface RawJobRecord {
   /** Seniority / phase tier: 'Classroom Teacher' | 'Head of Department (HoD)' | 'SLT / Coordinator' */
   roleTier?: string;
 
+  /** School group name (e.g. 'Nord Anglia Education', 'Taaleem', 'ESF') */
+  group?: string;
+
   /** Sub-campus designation (e.g. Primary (Saar), Senior (Isa Town)) */
   campus?: string;
+
+  /** Verification confidence from source-specific adaptors (e.g. TeachAway's detail-page match) */
+  matchConfidence?: "high" | "medium" | "low";
+
+  /** Human-readable reasons the adaptor flagged this record for review, e.g. "closesAt unparsed" */
+  verificationReasons?: string[];
 }
 
 /**

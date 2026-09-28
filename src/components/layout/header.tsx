@@ -161,7 +161,7 @@ export default function Header() {
         const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
         const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
+        const isTaaleem = sId.startsWith("FLIS0318") || sId.startsWith("FLIS0319") || sId.startsWith("FLIS0320") || sId.startsWith("FLIS0321") || sId.startsWith("FLIS0322") || ["FLIS0102", "FLIS0104", "FLIS0341", "FLIS0342", "FLIS0343", "FLIS0344", "FLIS0418", "FLIS0419", "FLIS0420", "FLIS0423"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
         const isEureka = sourceUpper.includes("EUREKA");
         const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
@@ -309,7 +309,7 @@ export default function Header() {
         const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
         const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
+        const isTaaleem = sId.startsWith("FLIS0318") || sId.startsWith("FLIS0319") || sId.startsWith("FLIS0320") || sId.startsWith("FLIS0321") || sId.startsWith("FLIS0322") || ["FLIS0102", "FLIS0104", "FLIS0341", "FLIS0342", "FLIS0343", "FLIS0344", "FLIS0418", "FLIS0419", "FLIS0420", "FLIS0423"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
         const isEureka = sourceUpper.includes("EUREKA");
         const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 

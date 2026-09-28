@@ -11,6 +11,9 @@ import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
 import { searchGemsDbSchools } from "@/lib/search/gems";
 import { searchTaylorsDbSchools } from "@/lib/search/taylors";
 import { searchTeacherHorizonsDbSchools } from "@/lib/search/teacherhorizons";
+import { searchGrcDbSchools } from "@/lib/search/grc";
+import { searchGuardianDbSchools } from "@/lib/search/guardian";
+import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +37,8 @@ export async function GET(request: Request) {
     };
 
     const engineRunners: Record<string, () => Promise<any[]>> = {
+      GUARDIAN: searchGuardianDbSchools,
+      NORD_ANGLIA: searchNordAngliaDbSchools,
       ISP: searchIspDbSchools,
       GLOBEDUCATE: searchGlobeducateDbSchools,
       UWC: searchUwcDbSchools,
@@ -42,7 +47,8 @@ export async function GET(request: Request) {
       TEACH_AWAY: searchTeachAwayDbSchools,
       GEMS: searchGemsDbSchools,
       TAYLORS: searchTaylorsDbSchools,
-      TEACHER_HORIZONS: searchTeacherHorizonsDbSchools
+      TEACHER_HORIZONS: searchTeacherHorizonsDbSchools,
+      GRC: searchGrcDbSchools,
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
@@ -73,19 +79,37 @@ export async function GET(request: Request) {
       let addedCount = 0;
       let removedCount = 0;
 
+      // Group matches by schoolId so records are ingested in full school batches
+      const schoolGroups = new Map<string, any[]>();
       for (const m of matches) {
         if (!m.schoolId) continue;
-        const res = await runIngestionPipeline(m.schoolId, [{
+        const sId = m.schoolId.toUpperCase().trim();
+        if (!schoolGroups.has(sId)) {
+          schoolGroups.set(sId, []);
+        }
+        schoolGroups.get(sId)!.push({
           rawTitle: m.title,
           source: m.source || key,
+          sources: (m as any).sources || undefined,
+          sourceUrls: (m as any).sourceUrls || undefined,
+          directUrl: (m as any).directUrl || undefined,
+          group: (m as any).group || undefined,
           applyUrl: m.applyUrl,
           schoolId: m.schoolId,
           schoolName: m.schoolName,
           city: m.city,
           country: m.country,
           datePosted: m.datePosted || null,
-          closingDate: m.closingDate || null
-        }]);
+          closingDate: m.closingDate || null,
+          matchConfidence: (m as any).matchConfidence || undefined,
+          verificationReasons: (m as any).reasons || (m as any).verificationReasons || undefined
+        });
+      }
+
+      for (const [sId, records] of schoolGroups.entries()) {
+        const res = await runIngestionPipeline(sId, records, {
+          purgeTesVacancies: key === "TES"
+        });
 
         if (res?.accepted > 0) ingestedCount += res.accepted;
         if (res?.addedCount) addedCount += res.addedCount;

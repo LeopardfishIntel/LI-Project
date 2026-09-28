@@ -13,20 +13,20 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function main() {
-  console.log("Updating Northlands School Argentina (FLIS0199) careers URL & ingesting Business Management Teacher vacancy...");
+  console.log("Updating Northlands School Argentina (FLIS0185) careers URL & ingesting Business Management Teacher vacancy...");
 
   const careersUrl = "https://www.northlands.edu.ar/en/job-opportunities/";
 
-  // 1. Update FLIS0199 document URLs
-  const schoolRef = db.collection("schools").doc("FLIS0199");
+  // 1. Update FLIS0185 document URLs
+  const schoolRef = db.collection("schools").doc("FLIS0185");
   await schoolRef.set({
     website: careersUrl,
     careersPageUrl: careersUrl,
     schooljp: careersUrl
   }, { merge: true });
-  console.log("Updated FLIS0199 website, careersPageUrl, and schooljp fields in Firestore.");
+  console.log("Updated FLIS0185 website, careersPageUrl, and schooljp fields in Firestore.");
 
-  // 2. Add Business Management Teacher to schools/FLIS0199/jobs
+  // 2. Add Business Management Teacher to schools/FLIS0185/jobs
   const jobDocId = "official_northlands_bm_teacher";
   const jobData = {
     id: jobDocId,
@@ -36,7 +36,7 @@ async function main() {
     sourceName: "Official Website",
     applyUrl: careersUrl,
     source_url: careersUrl,
-    schoolId: "FLIS0199",
+    schoolId: "FLIS0185",
     schoolName: "Northlands School Argentina",
     city: "Buenos Aires",
     country: "Argentina",
@@ -50,10 +50,10 @@ async function main() {
   };
 
   await schoolRef.collection("jobs").doc(jobDocId).set(jobData, { merge: true });
-  console.log("Added Business Management Teacher to schools/FLIS0199/jobs collection.");
+  console.log("Added Business Management Teacher to schools/FLIS0185/jobs collection.");
 
   // 3. Write job to featured_jobs_cache
-  const cacheJobId = "fp_flis0199_official_bm_teacher";
+  const cacheJobId = "fp_flis0185_official_bm_teacher";
   const cacheData = {
     id: cacheJobId,
     title: "Business Management Teacher (Economics Desirable)",
@@ -68,7 +68,7 @@ async function main() {
     datePosted: new Date().toISOString(),
     closingDate: "2027-02-28T23:59:59.000Z",
     closingDateMillis: new Date("2027-02-28T23:59:59.000Z").getTime(),
-    schoolId: "FLIS0199",
+    schoolId: "FLIS0185",
     schoolName: "Northlands School Argentina",
     city: "Buenos Aires",
     country: "Argentina",
@@ -83,12 +83,12 @@ async function main() {
     savingsPotentialSingle: 850,
     searchTokens: [
       "business", "management", "teacher", "economics", "secondary", "school",
-      "northlands", "argentina", "buenos", "aires", "uk", "ib", "flis0199"
+      "northlands", "argentina", "buenos", "aires", "uk", "ib", "flis0185"
     ]
   };
 
   await db.collection("featured_jobs_cache").doc(cacheJobId).set(cacheData, { merge: true });
-  console.log("SUCCESS! Written Business Management Teacher to featured_jobs_cache linked to FLIS0199.");
+  console.log("SUCCESS! Written Business Management Teacher to featured_jobs_cache linked to FLIS0185.");
 }
 
 main().catch(err => {

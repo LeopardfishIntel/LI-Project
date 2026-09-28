@@ -19,14 +19,41 @@ export function AnalyticsTracker() {
       return;
     }
 
-    // Generate/Retrieve persistent anonymous Visitor ID from localStorage
+    // Generate/Retrieve persistent anonymous Visitor ID and visit counts from localStorage
     let visitorId = 'unknown';
+    let isReturnVisitor = false;
+    let visitCount = 1;
+
     if (typeof window !== 'undefined') {
       try {
         let storedId = localStorage.getItem('lfi_visitor_id');
+        let storedVisits = parseInt(localStorage.getItem('lfi_visit_count') || '0', 10);
+        let lastVisitDate = localStorage.getItem('lfi_last_visit_date');
+        const todayDate = new Date().toISOString().split('T')[0];
+
         if (!storedId) {
           storedId = `vis_${Math.random().toString(36).substring(2, 11)}${Date.now().toString(36)}`;
           localStorage.setItem('lfi_visitor_id', storedId);
+          localStorage.setItem('lfi_visit_count', '1');
+          localStorage.setItem('lfi_last_visit_date', todayDate);
+        } else {
+          isReturnVisitor = true;
+          if (lastVisitDate !== todayDate) {
+            visitCount = storedVisits + 1;
+            localStorage.setItem('lfi_visit_count', String(visitCount));
+            localStorage.setItem('lfi_last_visit_date', todayDate);
+            // Log dedicated return_visit event once per new return day
+            logTelemetryEvent('return_visit', {
+              path,
+              visitor_id: storedId,
+              visit_count: visitCount,
+              isAuthenticated: !!user,
+              user_type: user ? 'authenticated' : 'guest',
+              user_email: user?.email
+            });
+          } else {
+            visitCount = storedVisits || 1;
+          }
         }
         visitorId = storedId;
       } catch (err) {
@@ -40,6 +67,8 @@ export function AnalyticsTracker() {
       isAuthenticated: !!user,
       user_type: user ? 'authenticated' : 'guest',
       visitor_id: visitorId,
+      is_return_visitor: isReturnVisitor,
+      visit_count: visitCount,
       user_email: user?.email
     });
   }, [user, loading]);

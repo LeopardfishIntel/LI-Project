@@ -97,7 +97,7 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
  */
 export async function getTelemetryData() {
   try {
-    const [telemetryDocs, pageViewsDocs, schoolsDocs, colDocs, enquiriesDocs] = await Promise.all([
+    const [telemetryDocs, pageViewsDocs, schoolsDocs, colDocs, enquiriesDocs, teachersDocs] = await Promise.all([
       getCollectionDocs('telemetry').catch(err => {
         console.warn("Telemetry collection read failed:", err.message || err);
         return null;
@@ -116,6 +116,10 @@ export async function getTelemetryData() {
       }),
       getCollectionDocs('enquiries').catch(err => {
         console.warn("Enquiries collection read failed:", err.message || err);
+        return null;
+      }),
+      getCollectionDocs('teachers').catch(err => {
+        console.warn("Teachers collection read failed:", err.message || err);
         return null;
       })
     ]);
@@ -187,6 +191,27 @@ export async function getTelemetryData() {
       }
     });
 
+    // 🏛️ 3-Tier Conversion Funnel & 10 Key Event Trackers
+    const allVisitorIds = new Set<string>();
+    const allSessionIds = new Set<string>();
+    const returnVisitorIds = new Set<string>();
+    const engagedVisitorIds = new Set<string>();
+    const engagedSessionIds = new Set<string>();
+    const convertedVisitorIds = new Set<string>();
+
+    const kpiTrackers = {
+      forecaster_opened: { count: 0, visitors: new Set<string>() },
+      school_selected: { count: 0, visitors: new Set<string>() },
+      salary_changed: { count: 0, visitors: new Set<string>() },
+      surplus_viewed: { count: 0, visitors: new Set<string>() },
+      compare_started: { count: 0, visitors: new Set<string>() },
+      evaluation_completed: { count: 0, visitors: new Set<string>() },
+      briefing_generated: { count: 0, visitors: new Set<string>() },
+      job_application_link_clicked: { count: 0, visitors: new Set<string>() },
+      registration: { count: 0, visitors: new Set<string>() },
+      return_visit: { count: 0, visitors: new Set<string>() }
+    };
+
     // Map country names to regions from costOfLiving docs
     const countryToRegionMap: Record<string, string> = {};
     if (colDocs) {
@@ -215,6 +240,52 @@ export async function getTelemetryData() {
       });
     }
 
+    // ─── 24H DELTAS: WHAT CHANGED SINCE YESTERDAY ───
+    const now = new Date();
+    const window24hStart = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const window48hStart = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+    const visitors24h = new Set<string>();
+    const visitorsPrev24h = new Set<string>();
+
+    const forecasterUsers24h = new Set<string>();
+    const forecasterUsersPrev24h = new Set<string>();
+
+    const schoolsEvaluated24h = new Set<string>();
+    const schoolsEvaluatedPrev24h = new Set<string>();
+
+    let salaryAdjusters24h = new Set<string>();
+    let salaryAdjustersPrev24h = new Set<string>();
+
+    let briefings24hCount = 0;
+    let briefingsPrev24hCount = 0;
+
+    let registrations24hCount = 0;
+    let registrationsPrev24hCount = 0;
+
+    let surplusModelled24h = 0;
+    let surplusModelledPrev24h = 0;
+
+    let jobClicks24h = 0;
+    let jobClicksPrev24h = 0;
+
+    // High Intent Educator Journeys Mapping
+    const highIntentEducatorsMap: Record<string, {
+      visitorId: string;
+      email?: string;
+      isAuthenticated: boolean;
+      country?: string;
+      schools: Set<string>;
+      actions: string[];
+      modelledSurplus: boolean;
+      salaryAdjusted: boolean;
+      completedEvaluation: boolean;
+      generatedBriefing: boolean;
+      jobClicked: boolean;
+      returnVisits: number;
+      lastActive: string;
+    }> = {};
+
     events.forEach((evt) => {
       const timestamp = evt.timestamp;
       const meta = evt.metadata || {};
@@ -225,6 +296,52 @@ export async function getTelemetryData() {
         sessionToVisitor[sessionId] || 
         sessionId || 
         'unknown';
+
+      const evtDate = timestamp ? new Date(timestamp) : null;
+      const in24h = evtDate && evtDate >= window24hStart;
+      const inPrev24h = evtDate && evtDate >= window48hStart && evtDate < window24hStart;
+
+      if (visitorId !== 'unknown') {
+        allVisitorIds.add(visitorId);
+        if (in24h) visitors24h.add(visitorId);
+        if (inPrev24h) visitorsPrev24h.add(visitorId);
+
+        // High intent aggregator entry
+        if (!highIntentEducatorsMap[visitorId]) {
+          highIntentEducatorsMap[visitorId] = {
+            visitorId,
+            email: meta.user_email || meta.email || (meta.isAuthenticated ? 'Auth User' : undefined),
+            isAuthenticated: !!(meta.isAuthenticated || meta.user_email),
+            country: evt.client_country || 'Unknown',
+            schools: new Set<string>(),
+            actions: [],
+            modelledSurplus: false,
+            salaryAdjusted: false,
+            completedEvaluation: false,
+            generatedBriefing: false,
+            jobClicked: false,
+            returnVisits: 0,
+            lastActive: timestamp || ''
+          };
+        }
+        if (meta.user_email) highIntentEducatorsMap[visitorId].email = meta.user_email;
+        if (timestamp && timestamp > highIntentEducatorsMap[visitorId].lastActive) {
+          highIntentEducatorsMap[visitorId].lastActive = timestamp;
+        }
+      }
+      if (sessionId !== 'unknown') allSessionIds.add(sessionId);
+
+      // Return visitor detection
+      if (evt.event_name === 'return_visit' || meta.is_return_visitor) {
+        if (visitorId !== 'unknown') {
+          returnVisitorIds.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].returnVisits++;
+          }
+        }
+        kpiTrackers.return_visit.count++;
+        if (visitorId !== 'unknown') kpiTrackers.return_visit.visitors.add(visitorId);
+      }
 
       // Daily Visits Trend
       if (timestamp) {
@@ -251,6 +368,149 @@ export async function getTelemetryData() {
         if (visitorId !== 'unknown') {
           clientCountryStats[clientCountry].visitors.add(visitorId);
         }
+      }
+
+      // --- 10 Specific KPIs and 3-Tier Classification ---
+      const markEngaged = () => {
+        if (visitorId !== 'unknown') engagedVisitorIds.add(visitorId);
+        if (sessionId !== 'unknown') engagedSessionIds.add(sessionId);
+      };
+
+      const markConverted = () => {
+        if (visitorId !== 'unknown') {
+          engagedVisitorIds.add(visitorId);
+          convertedVisitorIds.add(visitorId);
+        }
+        if (sessionId !== 'unknown') {
+          engagedSessionIds.add(sessionId);
+        }
+      };
+
+      // 1. Forecaster Opened
+      if (evt.event_name === 'forecaster_opened' || (evt.event_name === 'page_view' && (meta.path === '/financial-forecaster/' || meta.path === '/financial-forecaster'))) {
+        kpiTrackers.forecaster_opened.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.forecaster_opened.visitors.add(visitorId);
+          if (in24h) forecasterUsers24h.add(visitorId);
+          if (inPrev24h) forecasterUsersPrev24h.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) highIntentEducatorsMap[visitorId].actions.push('Opened Forecaster');
+        }
+        markEngaged();
+      }
+
+      // 2. School Selected
+      if (evt.event_name === 'school_selected' || evt.event_name === 'school_profile_viewed') {
+        kpiTrackers.school_selected.count++;
+        const sName = meta.school_name || meta.target_school;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.school_selected.visitors.add(visitorId);
+          if (sName && highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].schools.add(sName);
+            highIntentEducatorsMap[visitorId].actions.push(`Viewed ${sName}`);
+          }
+        }
+        if (sName) {
+          if (in24h) schoolsEvaluated24h.add(sName);
+          if (inPrev24h) schoolsEvaluatedPrev24h.add(sName);
+        }
+        markEngaged();
+      }
+
+      // 3. Salary Changed
+      if (evt.event_name === 'salary_changed' || (evt.event_name === 'simulator_dial_adjusted' && meta.dial_modified === 'net_salary')) {
+        kpiTrackers.salary_changed.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.salary_changed.visitors.add(visitorId);
+          if (in24h) salaryAdjusters24h.add(visitorId);
+          if (inPrev24h) salaryAdjustersPrev24h.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].salaryAdjusted = true;
+            highIntentEducatorsMap[visitorId].actions.push('Adjusted Salary Dial');
+          }
+        }
+        markEngaged();
+      }
+
+      // 4. Surplus Modelled / Viewed
+      if (evt.event_name === 'surplus_modelled' || evt.event_name === 'surplus_viewed') {
+        kpiTrackers.surplus_viewed.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.surplus_viewed.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].modelledSurplus = true;
+            highIntentEducatorsMap[visitorId].actions.push('Modelled Disposable Surplus');
+          }
+        }
+        if (in24h) surplusModelled24h++;
+        if (inPrev24h) surplusModelledPrev24h++;
+        markEngaged();
+      }
+
+      // 5. Compare Started
+      if (evt.event_name === 'compare_started' || evt.event_name === 'comparison_made' || (evt.event_name === 'page_view' && meta.path?.startsWith('/decide'))) {
+        kpiTrackers.compare_started.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.compare_started.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) highIntentEducatorsMap[visitorId].actions.push('Compared Schools');
+        }
+        markEngaged();
+      }
+
+      // 6. Evaluation Completed
+      if (evt.event_name === 'evaluation_completed') {
+        kpiTrackers.evaluation_completed.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.evaluation_completed.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].completedEvaluation = true;
+            highIntentEducatorsMap[visitorId].actions.push('Completed School Shootout');
+          }
+        }
+        markEngaged();
+      }
+
+      // 7. Briefing Generated
+      if (evt.event_name === 'briefing_generated') {
+        kpiTrackers.briefing_generated.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.briefing_generated.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].generatedBriefing = true;
+            highIntentEducatorsMap[visitorId].actions.push('Generated Tactical Briefing');
+          }
+        }
+        if (in24h) briefings24hCount++;
+        if (inPrev24h) briefingsPrev24hCount++;
+        markConverted();
+      }
+
+      // 8. Job Application Link Clicked
+      if (evt.event_name === 'job_application_link_clicked') {
+        kpiTrackers.job_application_link_clicked.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.job_application_link_clicked.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].jobClicked = true;
+            highIntentEducatorsMap[visitorId].actions.push('Clicked Apply Link');
+          }
+        }
+        if (in24h) jobClicks24h++;
+        if (inPrev24h) jobClicksPrev24h++;
+        markConverted();
+      }
+
+      // 9. Registration
+      if (evt.event_name === 'registration') {
+        kpiTrackers.registration.count++;
+        if (visitorId !== 'unknown') {
+          kpiTrackers.registration.visitors.add(visitorId);
+          if (highIntentEducatorsMap[visitorId]) {
+            highIntentEducatorsMap[visitorId].actions.push('Completed Registration');
+          }
+        }
+        if (in24h) registrations24hCount++;
+        if (inPrev24h) registrationsPrev24hCount++;
+        markConverted();
       }
 
       if (evt.event_name === 'simulator_dial_adjusted') {
@@ -433,6 +693,7 @@ export async function getTelemetryData() {
 
       if (sessionCount > 1 || pageViewCount > 1) {
         repeatVisitorsCount++;
+        returnVisitorIds.add(visId);
       }
     });
 
@@ -443,6 +704,176 @@ export async function getTelemetryData() {
     const avgVisitsPerUser = uniqueVisitors > 0 
       ? (totalSessionsSum / uniqueVisitors).toFixed(1) 
       : '0.0';
+
+    // Total registered educators from database
+    const registeredTeachersCount = teachersDocs ? teachersDocs.length : kpiTrackers.registration.count;
+
+    // 🏛️ 3-Tier Conversion Funnel Construction
+    const totalSessions = Math.max(allSessionIds.size, uniqueVisitors, 1);
+    const totalEngagedVisitors = engagedVisitorIds.size;
+    const totalEngagedSessions = engagedSessionIds.size;
+    const totalConvertedVisitors = Math.max(convertedVisitorIds.size, registeredTeachersCount);
+
+    const engagementRate = uniqueVisitors > 0 ? Math.round((totalEngagedVisitors / uniqueVisitors) * 100) : 0;
+    const conversionRate = uniqueVisitors > 0 ? Math.round((totalConvertedVisitors / uniqueVisitors) * 100) : 0;
+    const engagedToConversionRate = totalEngagedVisitors > 0 ? Math.round((totalConvertedVisitors / totalEngagedVisitors) * 100) : 0;
+
+    const funnelReadout = `${totalSessions} visitor sessions → ${totalEngagedVisitors} engaged prospects (${engagementRate}%) → ${registeredTeachersCount} registered educators → ${kpiTrackers.briefing_generated.count + kpiTrackers.job_application_link_clicked.count} intelligence products & applications`;
+
+    // ─── 24H DELTAS CALCULATION ───
+    const formatDelta = (curr: number, prev: number) => {
+      if (prev === 0) {
+        return curr > 0 ? `${curr} (+100%)` : `0 (0%)`;
+      }
+      const pct = Math.round(((curr - prev) / prev) * 100);
+      const sign = pct >= 0 ? `+${pct}%` : `${pct}%`;
+      return `${curr} (${sign})`;
+    };
+
+    const whatChangedSinceYesterday = {
+      visitorsDelta: formatDelta(visitors24h.size, visitorsPrev24h.size),
+      forecasterDelta: formatDelta(forecasterUsers24h.size, forecasterUsersPrev24h.size),
+      schoolsEvaluatedDelta: formatDelta(schoolsEvaluated24h.size, schoolsEvaluatedPrev24h.size),
+      salaryAdjustersDelta: formatDelta(salaryAdjusters24h.size, salaryAdjustersPrev24h.size),
+      registrationsDelta: formatDelta(registrations24hCount, registrationsPrev24hCount),
+      briefingsDelta: formatDelta(briefings24hCount, briefingsPrev24hCount),
+      jobClicksDelta: formatDelta(jobClicks24h, jobClicksPrev24h),
+    };
+
+    // Filter High-Intent Educators (who performed meaningful actions)
+    const highIntentEducators = Object.values(highIntentEducatorsMap)
+      .filter(p => p.modelledSurplus || p.salaryAdjusted || p.completedEvaluation || p.generatedBriefing || p.jobClicked || p.schools.size > 0)
+      .map(p => ({
+        visitorId: p.visitorId,
+        email: p.email,
+        isAuthenticated: p.isAuthenticated,
+        country: p.country,
+        schools: Array.from(p.schools),
+        actionsCount: p.actions.length,
+        modelledSurplus: p.modelledSurplus,
+        salaryAdjusted: p.salaryAdjusted,
+        completedEvaluation: p.completedEvaluation,
+        generatedBriefing: p.generatedBriefing,
+        jobClicked: p.jobClicked,
+        returnVisits: p.returnVisits,
+        lastActiveFormatted: p.lastActive ? new Date(p.lastActive).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }) + ' UTC' : 'Recent'
+      }))
+      .sort((a, b) => b.actionsCount - a.actionsCount)
+      .slice(0, 10);
+
+    const funnel = {
+      readout: funnelReadout,
+      whatChanged: whatChangedSinceYesterday,
+      highIntentEducators,
+      tier1: {
+        title: "Visitors",
+        description: "Total people who arrived on the platform",
+        totalSessions: totalSessions,
+        uniqueVisitors: uniqueVisitors,
+        returnVisitors: returnVisitorIds.size,
+        returnVisitorRate: repeatVisitorRate,
+        bounceRate: uniqueVisitors > 0 ? Math.max(0, 100 - engagementRate) : 0,
+      },
+      tier2: {
+        title: "Engaged Educators",
+        description: "Unique educators using Forecaster, Compare, or School Evaluations",
+        totalEngagedSessions: totalEngagedSessions,
+        uniqueEngagedVisitors: totalEngagedVisitors,
+        engagementRate: engagementRate,
+      },
+      tier3: {
+        title: "Conversions",
+        description: "Registered educators, verified profiles, briefings generated, or job applications",
+        totalConversions: totalConvertedVisitors,
+        registeredEducators: registeredTeachersCount,
+        briefingsGenerated: kpiTrackers.briefing_generated.count,
+        jobApplicationsClicked: kpiTrackers.job_application_link_clicked.count,
+        conversionRate: conversionRate,
+        engagedToConversionRate: engagedToConversionRate,
+      },
+      kpis: [
+        {
+          id: "forecaster_opened",
+          title: "Forecaster Opened",
+          category: "Tier 2: Engaged",
+          description: "Opened the Financial Forecaster simulation",
+          events: kpiTrackers.forecaster_opened.count,
+          educators: kpiTrackers.forecaster_opened.visitors.size
+        },
+        {
+          id: "school_selected",
+          title: "School Selected",
+          category: "Tier 2: Engaged",
+          description: "Picked a school from dropdown, search, or dossier",
+          events: kpiTrackers.school_selected.count,
+          educators: kpiTrackers.school_selected.visitors.size
+        },
+        {
+          id: "salary_changed",
+          title: "Salary Changed",
+          category: "Tier 2: Engaged",
+          description: "Adjusted net salary slider or entered compensation",
+          events: kpiTrackers.salary_changed.count,
+          educators: kpiTrackers.salary_changed.visitors.size
+        },
+        {
+          id: "surplus_modelled",
+          title: "Surplus Modelled",
+          category: "Tier 2: Engaged",
+          description: "Produced valid surplus after input interaction",
+          events: Math.max(kpiTrackers.surplus_viewed.count, kpiTrackers.salary_changed.count),
+          educators: Math.max(kpiTrackers.surplus_viewed.visitors.size, kpiTrackers.salary_changed.visitors.size)
+        },
+        {
+          id: "compare_started",
+          title: "Compare Started",
+          category: "Tier 2: Engaged",
+          description: "Initiated a side-by-side school comparison shootout",
+          events: kpiTrackers.compare_started.count,
+          educators: kpiTrackers.compare_started.visitors.size
+        },
+        {
+          id: "evaluation_completed",
+          title: "Evaluation Completed",
+          category: "Tier 2: Engaged",
+          description: "Unlocked school decision matrix or full evaluation",
+          events: kpiTrackers.evaluation_completed.count,
+          educators: kpiTrackers.evaluation_completed.visitors.size
+        },
+        {
+          id: "briefing_generated",
+          title: "Briefing Generated",
+          category: "Tier 3: Conversion",
+          description: "Created custom tactical intelligence PDF/report",
+          events: kpiTrackers.briefing_generated.count,
+          educators: kpiTrackers.briefing_generated.visitors.size
+        },
+        {
+          id: "job_application_link_clicked",
+          title: "Job Application Link Clicked",
+          category: "Tier 3: Conversion",
+          description: "Outbound click to direct ATS / recruiter application",
+          events: kpiTrackers.job_application_link_clicked.count,
+          educators: kpiTrackers.job_application_link_clicked.visitors.size
+        },
+        {
+          id: "registration",
+          title: "Registration",
+          category: "Tier 3: Conversion",
+          description: "Created verified educator membership account",
+          events: registeredTeachersCount,
+          educators: registeredTeachersCount
+        },
+        {
+          id: "return_visit",
+          title: "Return Visit",
+          category: "Tier 1: Visitor",
+          description: "Educators returning for subsequent research sessions",
+          events: Math.max(kpiTrackers.return_visit.count, returnVisitorIds.size),
+          educators: returnVisitorIds.size
+        }
+      ]
+    };
 
     // Get 7-day sparkline format
     const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -467,6 +898,7 @@ export async function getTelemetryData() {
       uniqueVisitors,
       repeatVisitorRate,
       avgVisitsPerUser,
+      funnel, // 🏛️ 3-Tier Funnel & 10 KPIs
       
       // Dynamic calculations
       avgNetSalary,
@@ -1103,5 +1535,124 @@ export async function resolveIngestionConflictAction(
     return { success: res.success, error: res.error || null };
   } catch (err: any) {
     return { success: false, error: err?.message || String(err) };
+  }
+}
+
+export type MemberAccountItem = {
+  uid: string;
+  email: string;
+  teacherId: string;
+  name: string;
+  curriculum: string;
+  city: string;
+  tier: string;
+  hasLicense: boolean;
+  evaluationsAllowance: number;
+  evaluationsUsed: number;
+  createdAt: string;
+  createdAtFormatted: string;
+  lastSignInFormatted: string;
+};
+
+/**
+ * 👥 Action: Get All Registered Members Data
+ * Aggregates Auth users with Firestore teachers and users profiles.
+ */
+export async function getMembersDataAction(): Promise<{ success: boolean; members?: MemberAccountItem[]; error?: string }> {
+  try {
+    const admin = await import('firebase-admin');
+    let authUsers: any[] = [];
+    try {
+      if (admin.default.apps.length) {
+        const listRes = await admin.default.auth().listUsers(1000);
+        authUsers = listRes.users;
+      }
+    } catch (e: any) {
+      console.warn("Auth listUsers failed, falling back to Firestore teachers collection:", e.message || e);
+    }
+
+    const [teachersDocs, usersDocs] = await Promise.all([
+      getCollectionDocs('teachers').catch(() => null),
+      getCollectionDocs('users').catch(() => null)
+    ]);
+
+    const teachersMap: Record<string, any> = {};
+    if (teachersDocs) {
+      teachersDocs.forEach((doc: any) => {
+        const d = doc.data();
+        teachersMap[doc.id] = d;
+        if (d.email) teachersMap[d.email.toLowerCase().trim()] = d;
+      });
+    }
+
+    const usersMap: Record<string, any> = {};
+    if (usersDocs) {
+      usersDocs.forEach((doc: any) => {
+        const d = doc.data();
+        usersMap[doc.id] = d;
+        if (d.email) usersMap[d.email.toLowerCase().trim()] = d;
+      });
+    }
+
+    const combinedMembers: MemberAccountItem[] = [];
+    const seenUids = new Set<string>();
+
+    authUsers.forEach((u) => {
+      seenUids.add(u.uid);
+      const emailLower = (u.email || '').toLowerCase().trim();
+      const t = teachersMap[u.uid] || teachersMap[emailLower] || {};
+      const usr = usersMap[u.uid] || usersMap[emailLower] || {};
+
+      const created = u.metadata.creationTime ? new Date(u.metadata.creationTime).toISOString() : (t.createdAt || '');
+      const lastSignIn = u.metadata.lastSignInTime ? new Date(u.metadata.lastSignInTime) : null;
+
+      combinedMembers.push({
+        uid: u.uid,
+        email: u.email || 'N/A',
+        teacherId: t.teacherId || usr.teacherId || '—',
+        name: t.name || u.displayName || (u.email ? u.email.split('@')[0].toUpperCase() : 'N/A'),
+        curriculum: (t.curriculum_framework || t.curriculum || 'International').toUpperCase(),
+        city: t.current_city || t.city || '—',
+        tier: t.tier || usr.role || (u.email?.includes('admin') || u.email?.includes('roger@') ? 'admin' : 'free'),
+        hasLicense: t.has_k12_license ?? true,
+        evaluationsAllowance: t.evaluations_allowance ?? 20,
+        evaluationsUsed: t.evaluations_used ?? 0,
+        createdAt: created,
+        createdAtFormatted: created ? new Date(created).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC' : 'N/A',
+        lastSignInFormatted: lastSignIn ? lastSignIn.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC' : 'Never'
+      });
+    });
+
+    if (teachersDocs) {
+      teachersDocs.forEach((doc: any) => {
+        if (!seenUids.has(doc.id)) {
+          const t = doc.data();
+          seenUids.add(doc.id);
+          const created = t.createdAt || '';
+          combinedMembers.push({
+            uid: doc.id,
+            email: t.email || 'N/A',
+            teacherId: t.teacherId || '—',
+            name: t.name || (t.email ? t.email.split('@')[0].toUpperCase() : 'N/A'),
+            curriculum: (t.curriculum_framework || t.curriculum || 'International').toUpperCase(),
+            city: t.current_city || t.city || '—',
+            tier: t.tier || 'free',
+            hasLicense: t.has_k12_license ?? true,
+            evaluationsAllowance: t.evaluations_allowance ?? 20,
+            evaluationsUsed: t.evaluations_used ?? 0,
+            createdAt: created,
+            createdAtFormatted: created ? new Date(created).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC' : 'N/A',
+            lastSignInFormatted: '—'
+          });
+        }
+      });
+    }
+
+    combinedMembers.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+
+    return { success: true, members: combinedMembers };
+  } catch (err: any) {
+    console.error("Failed to load members:", err);
+    return { success: false, error: err.message };
   }
 }

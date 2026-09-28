@@ -449,6 +449,12 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         school_name: school.schoolname || school.name,
         user_email: user?.email
       });
+      logTelemetryEvent('school_selected', {
+        school_name: school.schoolname || school.name,
+        country_name: school.country,
+        source_surface: 'school_detail_page',
+        user_email: user?.email
+      });
     }
   }, [school, user]);
 

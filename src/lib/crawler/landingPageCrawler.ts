@@ -201,6 +201,53 @@ export async function crawlCareersLandingPage(
   const records: RawJobRecord[] = [];
   const seenUrls = new Set<string>();
 
+  // 0. Direct ATS API Detection (BambooHR, etc.)
+  const bambooMatch = (landingPageUrl + " " + (mainResult.html || "")).match(/([a-zA-Z0-9-]+)\.bamboohr\.com/i);
+  if (bambooMatch && bambooMatch[1]) {
+    const subdomain = bambooMatch[1].toLowerCase();
+    try {
+      console.log(`🌐 [LANDING PAGE CRAWLER] Detected BambooHR ATS (${subdomain}). Fetching direct JSON API vacancies...`);
+      const bambooRes = await fetch(`https://${subdomain}.bamboohr.com/careers/list`, {
+        headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(10000)
+      });
+      if (bambooRes.ok) {
+        const bambooData = await bambooRes.json();
+        const openings = Array.isArray(bambooData.result) ? bambooData.result : [];
+        for (const job of openings) {
+          let rawTitle = (job.jobOpeningName || '').trim();
+          if (/[\u2013\u2014]|\s+-\s+/.test(rawTitle)) {
+            const parts = rawTitle.split(/[\u2013\u2014]|\s+-\s+/);
+            if (parts[0] && parts[0].trim().length >= 5) {
+              rawTitle = parts[0].trim();
+            }
+          }
+          rawTitle = cleanExtractedTitle(rawTitle);
+
+          const jobApplyUrl = `https://${subdomain}.bamboohr.com/careers/${job.id}`;
+          if (rawTitle && !seenUrls.has(jobApplyUrl) && isStrictAcademicTeachingRole(rawTitle) && !isSupportOrNonTeachingRole(rawTitle)) {
+            seenUrls.add(jobApplyUrl);
+            records.push({
+              rawTitle,
+              applyUrl: jobApplyUrl,
+              source: 'School ATS Portal',
+              datePosted: null,
+              closingDate: null,
+              schoolId: input.schoolId,
+              schoolName: input.schoolName,
+              city: job.location?.city || input.city,
+              country: input.country,
+              status: 'approved',
+            });
+            console.log(`🎯 [LANDING PAGE CRAWLER] Ingested direct BambooHR vacancy: "${rawTitle}" -> ${jobApplyUrl}`);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`[LANDING PAGE CRAWLER] BambooHR API fetch failed for ${subdomain}:`, err);
+    }
+  }
+
   // 1. Inspect direct JSON-LD schema objects on main landing page
   if (mainResult.html) {
     const jsonLdPostings = extractJobPostingsFromHtml(mainResult.html);
@@ -304,7 +351,24 @@ export async function crawlCareersLandingPage(
   const contentLinks: { href: string; text: string }[] = [];
   $('a[href]').each((_, el) => {
     const rawHref = $(el).attr('href') || '';
-    const text = $(el).text().trim();
+    let text = $(el).text().trim();
+    
+    // If anchor text is generic ("Apply", "Apply Now", "View Job"), extract from card heading/container
+    if (!text || text.length < 5 || /^(apply|apply now|view job|view|details|click here|read more|more info)$/i.test(text)) {
+      const card = $(el).closest('.t-card, .t-col, .card, .vacancy-card, .job-card, article, li, div[class*="job"], div[class*="vacancy"], div[class*="card"]');
+      if (card.length > 0) {
+        const heading = card.find('h1, h2, h3, h4, h5, h6, strong, b, .t-title, .t-card__title, .job-title, .title').first().text().trim();
+        if (heading && heading.length >= 4) {
+          text = heading;
+        }
+      } else {
+        const prevHeading = $(el).prevAll('h1, h2, h3, h4, h5, h6, strong, b, p').first().text().trim();
+        if (prevHeading && prevHeading.length >= 4 && prevHeading.length <= 80) {
+          text = prevHeading;
+        }
+      }
+    }
+
     if (rawHref) {
       const fullUrl = resolveUrl(rawHref, landingPageUrl);
       if (fullUrl.startsWith('http')) {

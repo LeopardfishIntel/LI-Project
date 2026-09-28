@@ -8,15 +8,15 @@
 
 
 export const MALVERN_CAMPUS_IDS = new Set([
-  'FLIS0130', // Malvern College Egypt
-  'FLIS0164', // Malvern College Tokyo
-  'FLIS0251', // Malvern College Hong Kong
-  'FLIS0252', // Malvern College Pre-School HK (Island West)
-  'FLIS0253', // Malvern College Pre-School HK (Coronation Circle)
-  'FLIS0254', // Malvern College Qingdao
-  'FLIS0255', // Malvern College Chengdu
-  'FLIS0256', // Malvern College Riyadh
-  'FLIS0257', // Malvern College São Paulo
+  'FLIS0119', // Malvern College Egypt
+  'FLIS0151', // Malvern College Tokyo
+  'FLIS0234', // Malvern College Hong Kong
+  'FLIS0235', // Malvern College Pre-School HK (Island West)
+  'FLIS0236', // Malvern College Pre-School HK (Coronation Circle)
+  'FLIS0237', // Malvern College Qingdao
+  'FLIS0238', // Malvern College Chengdu
+  'FLIS0239', // Malvern College Riyadh
+  'FLIS0240', // Malvern College São Paulo
 ]);
 
 /**

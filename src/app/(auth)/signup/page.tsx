@@ -126,6 +126,23 @@ export default function SignupPage() {
         console.warn("Session cookie creation warning:", sessionErr);
       }
 
+      // 🛰️ Track Conversion: Registration
+      try {
+        const { logTelemetryEvent } = await import('@/lib/telemetry');
+        await logTelemetryEvent('registration', {
+          teacherId: newTeacherId,
+          email: user.email || email,
+          curriculum,
+          city: city.trim(),
+          hasLicense,
+          isAuthenticated: true,
+          user_type: 'authenticated',
+          user_email: user.email || email
+        });
+      } catch (telErr) {
+        console.warn("Registration telemetry logging failed:", telErr);
+      }
+
       router.push("/featured-jobs");
     } catch (err: any) {
       console.error("Signup error:", err);
