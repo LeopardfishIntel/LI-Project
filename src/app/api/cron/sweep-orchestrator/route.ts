@@ -15,7 +15,7 @@ import { searchGrcDbSchools } from "@/lib/search/grc";
 import { searchGuardianDbSchools } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools } from "@/lib/search/tes";
-import { searchTaaleemDbSchools } from "@/lib/search/taaleem";
+import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 
 export const dynamic = "force-dynamic";
