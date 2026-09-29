@@ -1316,7 +1316,13 @@ export default function FeaturedJobsPage() {
       const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => s.includes("TAYLOR")) || applyUrlLower.includes("taylors");
       const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
-      const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+      const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+      const hasTesUrl = applyUrlLower.includes("tes.com") || Boolean(String((job as any).sourceUrls?.TES || (job as any).sourceUrls?.tes || "").toLowerCase().includes("tes.com"));
+      // A job only counts as "TES" for the tab/filter when it both carries the
+      // TES tag AND has an actual resolvable tes.com URL — matching what the
+      // pill-rendering logic already requires before it draws a TES badge.
+      // This fixes the tab count/filter including jobs that show no TES pill.
+      const hasTes = hasTesTag && hasTesUrl;
       const hasNae = (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia")) && !applyUrlLower.includes("gemseducation") && !applyUrlLower.includes("gems.ae") && !jobSrcUpper.includes("GEMS");
       const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
       const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
@@ -1441,7 +1447,13 @@ export default function FeaturedJobsPage() {
         const applyUrlLower = String(job.source_url || "").toLowerCase();
 
         const hasSearchAssociates = jobSrcUpper.includes("SEARCH") || sourcesUpper.some((s) => s.includes("SEARCH")) || applyUrlLower.includes("searchassociates");
-        const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const hasTesUrl = applyUrlLower.includes("tes.com") || Boolean(String((job as any).sourceUrls?.TES || (job as any).sourceUrls?.tes || "").toLowerCase().includes("tes.com"));
+        // A job only counts as "TES" for the tab/filter when it both carries the
+        // TES tag AND has an actual resolvable tes.com URL — matching what the
+        // pill-rendering logic already requires before it draws a TES badge.
+        // This fixes the tab count/filter including jobs that show no TES pill.
+        const hasTes = hasTesTag && hasTesUrl;
         const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
         const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
