@@ -178,6 +178,17 @@ const getGroupPortalUrl = (groupName: string): string => {
   return "";
 };
 
+const isTesDomainUrl = (u?: string | null): boolean => {
+  if (!u || typeof u !== 'string') return false;
+  try {
+    const raw = u.trim();
+    const parsed = new URL(raw.startsWith('http') ? raw : `https://${raw}`);
+    return parsed.hostname === 'tes.com' || parsed.hostname.endsWith('.tes.com');
+  } catch {
+    return false;
+  }
+};
+
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 
 // Smart query matcher: avoids false positive substring collisions (e.g. 'Oman' in 'Romania')
@@ -892,7 +903,7 @@ export default function FeaturedJobsPage() {
         // MULTI-ENGINE SOURCE FILTER
         const sourceUpper = String(cacheDoc.source || '').toUpperCase();
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
+        const isTes = sourceUpper.includes('TES') || isTesDomainUrl(applyUrlLower);
         const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordanglia.com') || applyUrlLower.includes('nordangliaeducation.com');
         const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
         const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
@@ -1049,7 +1060,7 @@ export default function FeaturedJobsPage() {
             else if (gUpper.includes("GEMS")) groupLabel = "GEMS Education";
             else if (gUpper.includes("TAALEEM") || isTaaleemJob) groupLabel = "Taaleem";
 
-            if (cacheDoc.applyUrl && cacheDoc.applyUrl.includes("tes.com") && !sourcesList.includes("TES")) {
+            if (cacheDoc.applyUrl && isTesDomainUrl(cacheDoc.applyUrl) && !sourcesList.includes("TES")) {
               sourcesList.push("TES");
               sourceUrlsMap["TES"] = cacheDoc.applyUrl;
             }
@@ -1106,7 +1117,7 @@ export default function FeaturedJobsPage() {
         }
 
         const directCandidate = (cacheDoc as any).directUrl || (cacheDoc as any).direct_url || sourceUrlsMap['Direct'] || sourceUrlsMap['DIRECT'] || cacheDoc.schoolWebsite || schoolObj?.careersPageUrl || schoolObj?.careersUrl || (schoolObj?.website && schoolObj.website !== '#' ? schoolObj.website : undefined);
-        if (directCandidate && typeof directCandidate === 'string' && directCandidate.startsWith('http') && !directCandidate.includes('tes.com') && !directCandidate.includes('grcfair.org') && !directCandidate.includes('teachaway') && !directCandidate.includes('theguardian.com') && !directCandidate.includes('guardianjobs')) {
+        if (directCandidate && typeof directCandidate === 'string' && directCandidate.startsWith('http') && !isTesDomainUrl(directCandidate) && !directCandidate.includes('grcfair.org') && !directCandidate.includes('teachaway') && !directCandidate.includes('theguardian.com') && !directCandidate.includes('guardianjobs')) {
           if (!sourcesList.includes('Direct')) {
             sourcesList.push('Direct');
           }
@@ -1208,7 +1219,7 @@ export default function FeaturedJobsPage() {
       let docSource = jobDoc.sourceName || jobDoc.source || jobDoc.agency || '';
       if (!docSource || docSource === 'Official Source') {
         if (lowerSourceUrl.includes('searchassociates')) docSource = 'Search Associates';
-        else if (lowerSourceUrl.includes('tes.com')) docSource = 'TES';
+        else if (isTesDomainUrl(lowerSourceUrl)) docSource = 'TES';
         else if (lowerSourceUrl.includes('grcfair')) docSource = 'GRC';
         else if (lowerSourceUrl.includes('teachaway')) docSource = 'Teach Away';
         else if (lowerSourceUrl.includes('theguardian.com') || lowerSourceUrl.includes('guardianjobs')) docSource = 'Guardian Jobs';
@@ -1316,15 +1327,16 @@ export default function FeaturedJobsPage() {
       const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => s.includes("TAYLOR")) || applyUrlLower.includes("taylors");
       const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
-      const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
-      const hasTesUrl = applyUrlLower.includes("tes.com") || Boolean(String((job as any).sourceUrls?.TES || (job as any).sourceUrls?.tes || "").toLowerCase().includes("tes.com"));
+      const hasTesUrl = isTesDomainUrl(job.source_url) || isTesDomainUrl((job as any).applyUrl) ||
+        Object.entries((job as any).sourceUrls || {}).some(([k, v]) => k.toUpperCase().trim() === "TES" && isTesDomainUrl(v as string));
+      const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || isTesDomainUrl(job.source_url) || isTesDomainUrl((job as any).applyUrl);
       // A job only counts as "TES" for the tab/filter when it both carries the
       // TES tag AND has an actual resolvable tes.com URL — matching what the
       // pill-rendering logic already requires before it draws a TES badge.
       // This fixes the tab count/filter including jobs that show no TES pill.
       const hasTes = hasTesTag && hasTesUrl;
       const hasNae = (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia")) && !applyUrlLower.includes("gemseducation") && !applyUrlLower.includes("gems.ae") && !jobSrcUpper.includes("GEMS");
-      const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
+      const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !isTesDomainUrl(applyUrlLower);
       const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
       const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
       const schoolNameUpper = String((job as any).schoolName || (job as any).schoolname || (job as any).name || "").toUpperCase();
@@ -1447,15 +1459,16 @@ export default function FeaturedJobsPage() {
         const applyUrlLower = String(job.source_url || "").toLowerCase();
 
         const hasSearchAssociates = jobSrcUpper.includes("SEARCH") || sourcesUpper.some((s) => s.includes("SEARCH")) || applyUrlLower.includes("searchassociates");
-        const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
-        const hasTesUrl = applyUrlLower.includes("tes.com") || Boolean(String((job as any).sourceUrls?.TES || (job as any).sourceUrls?.tes || "").toLowerCase().includes("tes.com"));
+        const hasTesUrl = isTesDomainUrl(job.source_url) || isTesDomainUrl((job as any).applyUrl) ||
+          Object.entries((job as any).sourceUrls || {}).some(([k, v]) => k.toUpperCase().trim() === "TES" && isTesDomainUrl(v as string));
+        const hasTesTag = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || isTesDomainUrl(job.source_url) || isTesDomainUrl((job as any).applyUrl);
         // A job only counts as "TES" for the tab/filter when it both carries the
         // TES tag AND has an actual resolvable tes.com URL — matching what the
         // pill-rendering logic already requires before it draws a TES badge.
         // This fixes the tab count/filter including jobs that show no TES pill.
         const hasTes = hasTesTag && hasTesUrl;
         const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
-        const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
+        const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !isTesDomainUrl(applyUrlLower);
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
         const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
         const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || applyUrlLower.includes("cognita");
@@ -2323,7 +2336,7 @@ export default function FeaturedJobsPage() {
                               if (applyUrlLower.includes("searchassociates") || (job.sourceUrls && (job.sourceUrls["SEARCH ASSOCIATES"] || job.sourceUrls["Search Associates"])) || rawSources.some((s: any) => String(s || "").toUpperCase().includes("SEARCH"))) {
                                 sMap.set("SEARCH ASSOCIATES", "Search Associates");
                               }
-                              if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates"))) {
+                              if (isTesDomainUrl(applyUrlLower) || Object.entries(job.sourceUrls || {}).some(([k, v]) => k.toUpperCase().trim() === "TES" && isTesDomainUrl(v as string)) || (rawSources.some((s: any) => String(s || "").toUpperCase() === "TES") && !applyUrlLower.includes("searchassociates") && isTesDomainUrl(applyUrlLower))) {
                                 sMap.set("TES", "TES");
                               }
                               if (applyUrlLower.includes("careers.nordanglia.com") || applyUrlLower.includes("careers.nordangliaeducation.com")) {
@@ -2370,7 +2383,11 @@ export default function FeaturedJobsPage() {
                                 else if (u.includes("ESF") || u.includes("ENGLISH SCHOOLS FOUNDATION")) { key = "ESF"; label = "ESF"; }
                                 else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
                                 else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
-                                else if (u === "TES") { key = "TES"; label = "TES"; }
+                                else if (u === "TES") {
+                                  const hasAnyTesUrl = isTesDomainUrl(applyUrlLower) || Object.entries(job.sourceUrls || {}).some(([k, v]) => k.toUpperCase().trim() === "TES" && isTesDomainUrl(v as string));
+                                  if (hasAnyTesUrl) { key = "TES"; label = "TES"; }
+                                  else { return; }
+                                }
                                 else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
                                 else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                                 else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
@@ -2384,7 +2401,7 @@ export default function FeaturedJobsPage() {
                               });
 
                               // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                              const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("schrole");
+                              const isPureAggregator = isTesDomainUrl(applyUrlLower) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("schrole");
                               const hasExplicitDirect = Boolean((job as any).directUrl || (job.sourceUrls && (job.sourceUrls["DIRECT"] || job.sourceUrls["Direct"])));
                               if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL")) && !hasExplicitDirect) {
                                 sMap.delete("DIRECT");
@@ -2497,10 +2514,10 @@ export default function FeaturedJobsPage() {
 
                                   if (foundUrl) {
                                     const fUrl = String(foundUrl);
-                                    if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                                    if (srcUpper === "TES" && !isTesDomainUrl(fUrl)) foundUrl = undefined;
                                     if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
                                     if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates")) foundUrl = undefined;
-                                    if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org") || fUrl.includes("searchassociates"))) foundUrl = undefined;
+                                    if (srcUpper === "DIRECT" && (isTesDomainUrl(fUrl) || fUrl.includes("grcfair.org") || fUrl.includes("searchassociates"))) foundUrl = undefined;
                                   }
                                   if (!foundUrl) {
                                     const rawUrl = (job as any).applyUrl || job.source_url;
@@ -2524,7 +2541,7 @@ export default function FeaturedJobsPage() {
                                       foundUrl = rawUrl;
                                     } else if (srcUpper.includes("ISP") && applyUrlLower.includes("internationalschools") && !isGenericUrl(rawUrl)) {
                                       foundUrl = rawUrl;
-                                    } else if (srcUpper === "TES" && applyUrlLower.includes("tes.com")) {
+                                    } else if (srcUpper === "TES" && isTesDomainUrl(applyUrlLower)) {
                                       foundUrl = rawUrl;
                                     } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
                                       foundUrl = rawUrl;
