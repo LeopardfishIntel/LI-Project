@@ -13,6 +13,8 @@ export interface InspiredJobMatch {
   source: string;
   datePosted?: string | null;
   closingDate?: string | null;
+  matchConfidence?: "high" | "medium" | "low";
+  reasons?: string[];
 }
 
 export async function searchInspiredDbSchools(query: string = ""): Promise<InspiredJobMatch[]> {
@@ -113,16 +115,19 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
       const matchedSchool = dbSchools.find((s: any) => {
         const sName = (s.name || s.schoolname || "").toLowerCase().trim();
         if (!sName || sName.length < 3) return false;
-
         if (fullText.includes(sName)) return true;
-
         const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
         if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
           return true;
         }
-
         return false;
       });
+
+      let matchedViaAlias = false;
+      if (matchedSchool) {
+        const sName = (matchedSchool.name || matchedSchool.schoolname || "").toLowerCase().trim();
+        matchedViaAlias = !fullText.includes(sName);
+      }
 
       if (matchedSchool) {
         const seqMatch = job.href.match(/\/(\d+)\/?$/);
@@ -141,8 +146,12 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
           city: matchedSchool.city || "",
           country: matchedSchool.country || "",
           source: "Inspired Education",
-          datePosted: new Date().toISOString(),
+          datePosted: null,
           closingDate: closingDateRaw,
+          matchConfidence: matchedViaAlias ? "medium" : "high",
+          reasons: matchedViaAlias
+            ? [`Matched via school alias, not the canonical name — verify before approving.`]
+            : [],
         });
       }
     }

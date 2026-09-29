@@ -76,7 +76,7 @@ async function main() {
           schoolName: m.schoolName,
           city: m.city,
           country: m.country,
-          datePosted: m.datePosted || new Date().toISOString(),
+          datePosted: m.datePosted || null,
           closingDate: m.closingDate || null,
           matchConfidence: m.matchConfidence || undefined,
           verificationReasons: m.reasons || undefined
