@@ -183,8 +183,11 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
     const docId = idMatch ? `taaleem_${idMatch[1]}` : `taaleem_${Buffer.from(applyUrl).toString("base64url").slice(0, 20)}`;
 
     const schoolTesList = tesJobsBySchool.get(schoolId) || [];
-    const matchedTesUrl = findBestTesMatch(rawTitle, schoolTesList) || findBestTesMatch(cleanTitle, schoolTesList);
-    const finalTesUrl = matchedTesUrl || matchedMeta.tesEmployerUrl;
+    // Only use a TES URL when it resolves to a specific matched vacancy —
+    // never fall back to matchedMeta.tesEmployerUrl (the school's generic
+    // TES employer-hub page), which would send the "TES" pill to the
+    // school page instead of the job listing.
+    const finalTesUrl = findBestTesMatch(rawTitle, schoolTesList) || findBestTesMatch(cleanTitle, schoolTesList);
 
     const sources = ["Taaleem"];
     const sourceUrls: Record<string, string> = {

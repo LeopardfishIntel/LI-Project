@@ -2841,7 +2841,15 @@ function DecoderContent() {
                                 if (selectedOpportunity.applyUrl && selectedOpportunity.applyUrl.includes("taaleem.ae") && !selectedOpportunity.applyUrl.endsWith("/careers") && selectedOpportunity.applyUrl !== "https://careers.taaleem.ae/") {
                                   foundUrl = selectedOpportunity.applyUrl;
                                 } else {
-                                  foundUrl = resolveTaaleemDirectUrl(selectedOpportunity.jobTitle || "", activeSchool?.name || activeSchool?.schoolname || (selectedOpportunity as any).schoolName || "").canonicalUrl;
+                                  const resolved = resolveTaaleemDirectUrl(selectedOpportunity.jobTitle || "", activeSchool?.name || activeSchool?.schoolname || (selectedOpportunity as any).schoolName || "").canonicalUrl;
+                                  const isGenericTaaleemUrl = !resolved
+                                    || resolved === "https://careers.taaleem.ae/"
+                                    || resolved === "https://careers.taaleem.ae"
+                                    || resolved === "https://taaleem.ae"
+                                    || resolved === "https://www.taaleem.ae";
+                                  if (!isGenericTaaleemUrl) {
+                                    foundUrl = resolved;
+                                  }
                                 }
                               } else if (srcUpper === "DIRECT") {
                                 foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || rawUrl;

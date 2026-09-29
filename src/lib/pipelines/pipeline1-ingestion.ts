@@ -127,6 +127,12 @@ function buildCacheDocument(
       directUrl || record.applyUrl
     );
     const taaleemUrl = resolvedTaaleem.canonicalUrl;
+    // A job-specific Taaleem link is one that isn't the bare careers hub.
+    const isGenericTaaleemUrl = !taaleemUrl
+      || taaleemUrl === 'https://careers.taaleem.ae/'
+      || taaleemUrl === 'https://careers.taaleem.ae'
+      || taaleemUrl === 'https://taaleem.ae'
+      || taaleemUrl === 'https://www.taaleem.ae';
     if (resolvedTaaleem.campus && !campus) {
       campus = resolvedTaaleem.campus;
     }
@@ -134,15 +140,19 @@ function buildCacheDocument(
       if (!initialSources.includes('TES')) initialSources.push('TES');
       srcUrls['TES'] = record.applyUrl;
     }
-    if (!initialSources.includes('Taaleem')) {
-      initialSources.push('Taaleem');
-    }
-    if (taaleemUrl) {
+    // Only attach the Taaleem source/pill when we have a real, job-specific
+    // apply link — never for the generic careers hub fallback. A TES-only
+    // job at a Taaleem school should show just the TES pill, not a Taaleem
+    // pill pointing at the generic careers page.
+    if (!isGenericTaaleemUrl) {
+      if (!initialSources.includes('Taaleem')) {
+        initialSources.push('Taaleem');
+      }
       srcUrls['Taaleem'] = taaleemUrl;
       srcUrls['TAALEEM'] = taaleemUrl;
-    }
-    if (!directUrl || !directUrl.includes('taaleem.ae')) {
-      directUrl = taaleemUrl;
+      if (!directUrl || !directUrl.includes('taaleem.ae')) {
+        directUrl = taaleemUrl;
+      }
     }
   }
 

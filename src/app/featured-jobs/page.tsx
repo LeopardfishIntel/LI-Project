@@ -1055,15 +1055,20 @@ export default function FeaturedJobsPage() {
             }
 
             if (isTaaleemJob) {
-              if (!sourcesList.includes("Taaleem")) {
-                sourcesList.push("Taaleem");
-              }
               const existingTaaleemUrl = (cacheDoc as any).directUrl || sourceUrlsMap["Taaleem"] || sourceUrlsMap["TAALEEM"];
-              const finalTaaleemUrl = (existingTaaleemUrl && existingTaaleemUrl.includes("taaleem.ae") && !existingTaaleemUrl.endsWith("/careers") && existingTaaleemUrl !== "https://careers.taaleem.ae/" && existingTaaleemUrl !== "https://taaleem.ae")
-                ? existingTaaleemUrl
-                : resolveTaaleemDirectUrl(cacheDoc.title || (cacheDoc as any).jobTitle || "", cacheDoc.schoolName || "").canonicalUrl;
-              sourceUrlsMap["Taaleem"] = finalTaaleemUrl;
-              sourceUrlsMap["TAALEEM"] = finalTaaleemUrl;
+              const isSpecificTaaleemUrl = existingTaaleemUrl && existingTaaleemUrl.includes("taaleem.ae") && !existingTaaleemUrl.endsWith("/careers") && existingTaaleemUrl !== "https://careers.taaleem.ae/" && existingTaaleemUrl !== "https://taaleem.ae";
+              // Only surface the Taaleem pill when we already have a
+              // job-specific link. Do not fall back to
+              // resolveTaaleemDirectUrl's generic careers.taaleem.ae page —
+              // that produced a Taaleem pill that opened the school's
+              // careers page instead of the actual job.
+              if (isSpecificTaaleemUrl) {
+                if (!sourcesList.includes("Taaleem")) {
+                  sourcesList.push("Taaleem");
+                }
+                sourceUrlsMap["Taaleem"] = existingTaaleemUrl;
+                sourceUrlsMap["TAALEEM"] = existingTaaleemUrl;
+              }
             }
 
             const isEsfJob = isEsfSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup, cacheDoc.applyUrl);
@@ -2523,7 +2528,10 @@ export default function FeaturedJobsPage() {
                                       } else if (applyUrlLower.includes("taaleem.ae") && !isGenericUrl(rawUrl)) {
                                         foundUrl = rawUrl;
                                       } else {
-                                        foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
+                                        const resolved = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
+                                        if (!isGenericUrl(resolved)) {
+                                          foundUrl = resolved;
+                                        }
                                       }
                                     } else if (srcUpper === "ESF" || srcUpper.includes("ESF")) {
                                       if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
