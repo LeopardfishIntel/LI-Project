@@ -15,6 +15,7 @@ import { searchGrcDbSchools } from "@/lib/search/grc";
 import { searchGuardianDbSchools } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools } from "@/lib/search/tes";
+import { searchTaaleemDbSchools } from "@/lib/search/taaleem";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 
 export const dynamic = "force-dynamic";
@@ -51,6 +52,7 @@ export async function GET(request: Request) {
       TEACHER_HORIZONS: searchTeacherHorizonsDbSchools,
       GRC: searchGrcDbSchools,
       TES: searchTesDbSchools,
+      TAALEEM: searchTaaleemDbSchools,
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
