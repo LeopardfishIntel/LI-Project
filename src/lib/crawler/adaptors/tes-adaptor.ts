@@ -11,6 +11,7 @@ import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { sanitizeUrl } from "../urlResolver";
 import { sanitizeJobTitle } from "../titleSanitizer";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
+import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
 
@@ -126,6 +127,39 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
         return null;
       }
     }
+  }
+
+  // 🛡️ Gate 4: Hiring Organization Verification Gate
+  const hiringOrg = posting.hiringOrganization;
+  const hiringOrgName = (typeof hiringOrg === "string" ? hiringOrg : hiringOrg?.name || "").trim();
+  if (!hiringOrgName) {
+    console.warn(`🛑 [TES ADAPTOR] Rejected missing hiringOrganization data for ${input.schoolName} [${cleanUrl}]`);
+    return null;
+  }
+
+  const schoolEntity: SchoolEntity = {
+    id: input.schoolId,
+    name: input.schoolName,
+    schoolname: input.schoolName,
+    city: input.city || "",
+    country: input.country || "",
+    tesEmployerSlug: input.tesEmployerSlug,
+    tesOrganizationId: input.tesOrganizationId,
+  };
+
+  const orgMatch = matchSchoolEntity(
+    schoolEntity,
+    {
+      candidateText: hiringOrgName,
+      city: input.city,
+      country: input.country,
+    },
+    0.85
+  );
+
+  if (!orgMatch.isMatch || orgMatch.score < 0.85) {
+    console.warn(`🛑 [TES ADAPTOR] Rejected hiringOrganization mismatch for ${input.schoolName} (hiringOrg="${hiringOrgName}", score=${orgMatch.score.toFixed(2)}) [${cleanUrl}]`);
+    return null;
   }
 
   const closingDate = posting.validThrough || null;
