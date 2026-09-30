@@ -104,7 +104,7 @@ import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
 import { isMalvernCampus } from '@/lib/search/malvern';
-import { isCognitaSchool } from '@/lib/search/cognita';
+import { isCognitaSchool } from '@/lib/search/cognitaMatcher';
 import { logTelemetryEvent } from '@/lib/telemetry';
 
 const GEMS_CANONICAL_IDS = new Set([
