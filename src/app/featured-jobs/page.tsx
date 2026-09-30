@@ -1301,6 +1301,21 @@ export default function FeaturedJobsPage() {
 
   // Search Engine Protocol counts for header buttons
   const engineCounts = useMemo(() => {
+    // Tab/pill counts must come from the SAME guarded set that actually
+    // renders (filteredJobs applies this exact guard below), not the raw
+    // unfiltered list. Otherwise a tab can show a count for jobs that get
+    // silently dropped before display (e.g. missing schoolName), leaving
+    // the tab showing a number the page never actually renders.
+    const countableJobs = activeTab === 'admin_staging'
+      ? allJobs
+      : allJobs.filter(job =>
+          job.schoolName && job.schoolName.trim() &&
+          job.schoolId && job.schoolId.trim() &&
+          isValidJobTitle(job.title || '') &&
+          job.savingsPotential >= minSavings &&
+          job.schoolRating >= minRating
+        );
+
     let direct = 0;
     let tes = 0;
     let nae = 0;
@@ -1320,7 +1335,7 @@ export default function FeaturedJobsPage() {
     let qatarFoundation = 0;
     let searchAssociates = 0;
     let esf = 0;
-    allJobs.forEach(job => {
+    countableJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
       const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
@@ -1375,7 +1390,7 @@ export default function FeaturedJobsPage() {
       if (hasEsf) esf++;
     });
     return {
-      ALL: allJobs.length,
+      ALL: countableJobs.length,
       SEARCH_ASSOCIATES: searchAssociates,
       "SEARCH ASSOCIATES": searchAssociates,
       DIRECT: direct,
@@ -1400,7 +1415,7 @@ export default function FeaturedJobsPage() {
       "QATAR FOUNDATION": qatarFoundation,
       ESF: esf,
     };
-  }, [allJobs]);
+  }, [allJobs, activeTab, minSavings, minRating]);
 
 
 
@@ -2302,6 +2317,7 @@ export default function FeaturedJobsPage() {
                                           ? job.closesDateRaw.toISOString().substring(0, 10)
                                           : ""
                                       }
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
                                       className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                                     />
