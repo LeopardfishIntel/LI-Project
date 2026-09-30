@@ -142,7 +142,7 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
 
     if (subcollSnap.empty) return { promoted, errors };
 
-    const batch = db.batch();
+    let batch = db.batch();
     let batchSize = 0;
 
     for (const jobDoc of subcollSnap.docs) {
@@ -186,6 +186,7 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
         // Firestore batch limit is 500
         if (batchSize >= 490) {
           await batch.commit();
+          batch = db.batch();
           batchSize = 0;
         }
       } catch (err: any) {
