@@ -2442,6 +2442,7 @@ export default function FeaturedJobsPage() {
                                 else if (u.includes("TEACH AWAY") || u.includes("TEACHAWAY")) { key = "TEACH AWAY"; label = "Teach Away"; }
                                 else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
                                 else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
+                                else if (u.includes("GRC")) { key = "GRC"; label = "GRC"; }
                                 else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
                                 else { key = "DIRECT"; label = "Direct"; }
                                 sMap.set(key, label);
