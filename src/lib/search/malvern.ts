@@ -19,6 +19,16 @@ export const MALVERN_CAMPUS_IDS = new Set([
   'FLIS0240', // Malvern College São Paulo
 ]);
 
+// Canonical, verified campus careers pages. Used as a last-resort fallback
+// ONLY when neither the TES outbound link nor the school's own
+// careersPageUrl/schoolWebsite field (set in Firestore) resolves to a
+// usable direct link. Only add an entry here once the URL has actually
+// been confirmed live — an unverified guess is worse than showing no
+// Direct pill at all.
+export const MALVERN_CAMPUS_CAREERS_URLS: Record<string, string> = {
+  FLIS0151: 'https://www.malverncollegetokyo.jp/about-us/work-with-us/', // Malvern College Tokyo — confirmed 2026-09-30
+};
+
 /**
  * Checks whether a school entity belongs to the Malvern College international group.
  */
@@ -59,8 +69,18 @@ export async function enrichMalvernDirectUrl(
     return memoryFallbackUrl;
   }
 
-  // 3. Default fallback to TES listing URL if no direct link exists
-  return tesJobUrl;
+  // 3. Fall back to a verified canonical campus careers page, if we have one
+  const normId = (flisSchoolId || '').toUpperCase().trim();
+  if (normId && MALVERN_CAMPUS_CAREERS_URLS[normId]) {
+    return MALVERN_CAMPUS_CAREERS_URLS[normId];
+  }
+
+  // 4. No trustworthy direct link exists — return empty rather than the TES
+  // listing URL. A "Direct" pill that opens a TES page is worse than no
+  // Direct pill at all. The public render guard already treats a falsy
+  // directUrl as "no Direct pill" (confirmed: page.tsx skips any pill
+  // whose resolved URL is "#").
+  return '';
 }
 
 export interface MalvernJobMatch {
