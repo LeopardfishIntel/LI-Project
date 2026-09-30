@@ -9,6 +9,9 @@ node_modules/
 # Scratch & Local Temporary Files
 scratch/
 *.tsbuildinfo
+.sandbox-output/
+src/scripts/output/
+scripts/output/
 
 # Firebase Local Administrative Credentials
 service-account.json
