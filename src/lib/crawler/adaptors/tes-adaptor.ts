@@ -74,6 +74,41 @@ export function extractJobPostingsFromHtml(html: string): any[] {
   return results;
 }
 
+/**
+ * 🩹 FALLBACK: Parse a visible "Apply by: <date>" string out of raw job-detail
+ * HTML when the page's JSON-LD `validThrough` field is empty or missing.
+ *
+ * TES does not always populate `validThrough` in structured data even when
+ * the human-visible page clearly states a deadline (confirmed 2026-09-30 on
+ * two Cheltenham Muscat postings whose JSON-LD had no validThrough, but
+ * whose page text read "Apply by: 12 September 2026" / "17 September 2026").
+ * Without this, a job with a real, already-passed deadline gets silently
+ * treated as an undated "rolling deadline" listing and stays approvable
+ * indefinitely. This is used ONLY as a fallback — JSON-LD validThrough is
+ * always tried first, so this changes nothing for postings that already
+ * report a proper closing date.
+ */
+function extractApplyByFallbackDate(html: string): string | null {
+  // Matches "Apply by: 12 September 2026", "Apply by 12/09/2026", allowing
+  // for intervening HTML tags between the label and the date text.
+  const patterns = [
+    /Apply\s*by\s*:?\s*(?:<[^>]+>\s*)*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})/i,
+    /Apply\s*by\s*:?\s*(?:<[^>]+>\s*)*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{4})/i,
+    /Closing\s*date\s*:?\s*(?:<[^>]+>\s*)*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})/i,
+  ];
+
+  for (const re of patterns) {
+    const match = html.match(re);
+    if (match && match[1]) {
+      const parsed = new Date(match[1]);
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toISOString();
+      }
+    }
+  }
+  return null;
+}
+
 function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | null {
   const rawUrl = posting.url || posting.identifier || null;
   const cleanUrl = rawUrl ? sanitizeUrl(rawUrl) : null;
@@ -187,13 +222,17 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
     const postings = extractJobPostingsFromHtml(html);
     if (postings.length > 0) {
       const p = postings[0];
+      // 🩹 Prefer JSON-LD validThrough; fall back to the visible "Apply by"
+      // text on the page when TES's own structured data omits it.
+      const closingDate = p.validThrough || extractApplyByFallbackDate(html);
       return {
-        closingDate: p.validThrough || null,
+        closingDate,
         datePosted: p.datePosted || null,
         exactTitle: p.title || p.name || null
       };
     }
-    return { closingDate: null, datePosted: null, exactTitle: null };
+    // No JSON-LD JobPosting found at all — still try the visible-text fallback
+    return { closingDate: extractApplyByFallbackDate(html), datePosted: null, exactTitle: null };
   } catch {
     return { closingDate: null, datePosted: null, exactTitle: null };
   }
@@ -455,6 +494,26 @@ export async function runTesAdaptor(input: AdaptorInput): Promise<RawJobRecord[]
         for (const posting of jsonLdPostings) {
           const record = jobPostingToRecord(posting, input);
           if (record && record.rawTitle && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/")) {
+            // 🩹 Hub-level JSON-LD often omits validThrough even when the
+            // individual vacancy page has a real, human-visible "Apply by"
+            // date (confirmed 2026-09-30 — Cheltenham Muscat postings whose
+            // hub-page JSON-LD had no closing date at all, but whose own
+            // vacancy page did). Before accepting this as a genuine rolling
+            // deadline, do one deep fetch of that specific vacancy page and
+            // try again there (JSON-LD validThrough, then visible-text
+            // fallback). Only runs for records that would otherwise have no
+            // closing date, so this adds no extra requests for postings
+            // that already resolved a date from the hub page.
+            if (!record.closingDate) {
+              try {
+                const deep = await fetchDeepClosingDate(record.applyUrl);
+                if (deep.closingDate) {
+                  record.closingDate = deep.closingDate;
+                }
+              } catch {
+                // Leave as a rolling deadline if the deep fetch itself fails.
+              }
+            }
             if (isMalvernCampus(input.schoolId, input.schoolName)) {
               let outboundUrl: string | null = null;
               if (posting.directApplyUrl && typeof posting.directApplyUrl === 'string') {
