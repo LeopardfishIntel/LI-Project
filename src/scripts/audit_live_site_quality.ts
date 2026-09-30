@@ -117,7 +117,7 @@ async function main() {
   jobsSnap.docs.forEach((d) => {
     const j = { docId: d.id, ...d.data() } as any;
     const rawStatus = String(j.status || "").toUpperCase();
-    if (["EXPIRED", "CLOSED", "REJECTED", "PENDING_REVIEW", "PENDING"].includes(rawStatus)) return;
+    if (["EXPIRED", "CLOSED", "REJECTED", "PENDING_REVIEW", "PENDING", "MERGED"].includes(rawStatus)) return;
     // Match page.tsx's real visibility filter exactly, not just the status
     // guard — otherwise this reports on jobs the public can't actually see.
     const sIdCheck = String(j.schoolId || "").trim();
