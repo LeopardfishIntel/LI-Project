@@ -2472,7 +2472,7 @@ export default function FeaturedJobsPage() {
                               // A school can belong to AT MOST ONE educational group. Competitor operator groups (GEMS, Taaleem, Nord Anglia, etc.) MUST NEVER be co-present.
                               const OPERATOR_GROUPS = [
                                 "GEMS", "TAALEEM", "NORD ANGLIA", "COGNITA", "INSPIRED",
-                                "GLOBEDUCATE", "ISP", "ESF", "MALVERN", "ALDAR", "QATAR_FOUNDATION"
+                                "GLOBEDUCATE", "ISP", "ESF", "MALVERN", "ALDAR", "QATAR_FOUNDATION", "TAYLORS"
                               ];
 
                               const targetSchoolObj = schoolsMap[job.schoolId];
@@ -2501,6 +2501,8 @@ export default function FeaturedJobsPage() {
                                 allowedOperatorGroup = "ALDAR";
                               } else if (canonicalGroupUpper.includes("QATAR") || applyUrlLower.includes("qatar-foundation")) {
                                 allowedOperatorGroup = "QATAR_FOUNDATION";
+                              } else if (canonicalGroupUpper.includes("TAYLOR") || applyUrlLower.includes("taylors")) {
+                                allowedOperatorGroup = "TAYLORS";
                               }
 
                               OPERATOR_GROUPS.forEach(grp => {
@@ -2592,6 +2594,8 @@ export default function FeaturedJobsPage() {
                                     } else if ((srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE")) && applyUrlLower.includes("globeducate") && !isGenericUrl(rawUrl)) {
                                       foundUrl = rawUrl;
                                     } else if (srcUpper.includes("ISP") && applyUrlLower.includes("internationalschools") && !isGenericUrl(rawUrl)) {
+                                      foundUrl = rawUrl;
+                                    } else if (srcUpper.includes("TAYLOR") && applyUrlLower.includes("taylors") && !isGenericUrl(rawUrl)) {
                                       foundUrl = rawUrl;
                                     } else if (srcUpper === "TES" && isTesDomainUrl(applyUrlLower)) {
                                       foundUrl = rawUrl;
