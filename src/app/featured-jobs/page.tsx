@@ -2419,6 +2419,9 @@ export default function FeaturedJobsPage() {
                               if (applyUrlLower.includes("taylors.edu.my")) {
                                 sMap.set("TAYLORS", "Taylor's Education");
                               }
+                              if (isMalvernCampus(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group) || applyUrlLower.includes("malvern") || String((job as any).directUrl || "").toLowerCase().includes("malvern") || Boolean(job.sourceUrls && (job.sourceUrls["MALVERN"] || job.sourceUrls["Malvern"]))) {
+                                sMap.set("MALVERN", "Malvern");
+                              }
 
                               rawSources.forEach((s: any) => {
                                 if (!s) return;
@@ -2465,6 +2468,9 @@ export default function FeaturedJobsPage() {
                                 sMap.delete("DIRECT");
                               }
                               if (isTaaleemCard) {
+                                sMap.delete("DIRECT");
+                              }
+                              if (sMap.has("MALVERN")) {
                                 sMap.delete("DIRECT");
                               }
 
@@ -2583,8 +2589,14 @@ export default function FeaturedJobsPage() {
                                       } else if (rawUrl && !isGenericUrl(rawUrl)) {
                                         foundUrl = rawUrl;
                                       }
-                                    } else if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
-                                      foundUrl = (job as any).directUrl;
+                                    } else if (srcUpper.includes("MALVERN")) {
+                                      if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                        foundUrl = (job as any).directUrl;
+                                      } else if (job.sourceUrls && (job.sourceUrls["Malvern"] || job.sourceUrls["MALVERN"]) && !isGenericUrl(job.sourceUrls["Malvern"] || job.sourceUrls["MALVERN"])) {
+                                        foundUrl = job.sourceUrls["Malvern"] || job.sourceUrls["MALVERN"];
+                                      } else if (applyUrlLower.includes("malvern") && !isGenericUrl(rawUrl)) {
+                                        foundUrl = rawUrl;
+                                      }
                                     } else if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
                                       foundUrl = rawUrl;
                                     } else if (srcUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu") && !isGenericUrl(rawUrl)) {
