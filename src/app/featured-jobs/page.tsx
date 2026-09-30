@@ -1482,7 +1482,10 @@ export default function FeaturedJobsPage() {
         const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ESF") || String(s || "").toUpperCase().includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
         const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
         const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSearchAssociates && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
+        const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
+        const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
+        const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSearchAssociates && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian && !hasTaaleem && !hasAldar && !hasQatarFoundation;
 
         if ((selectedSourceEngine === "SEARCH_ASSOCIATES" || selectedSourceEngine === "SEARCH ASSOCIATES" || selectedSourceEngine === "SEARCH") && !hasSearchAssociates) return false;
         if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
@@ -1497,9 +1500,6 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
         if (selectedSourceEngine === "ISP" && !hasIsp) return false;
-        const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
-        const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
-        const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
 
         if ((selectedSourceEngine === "GLOBE" || selectedSourceEngine === "GLOBEDUCATE") && !hasGlobe) return false;
         if (selectedSourceEngine === "GUARDIAN" && !hasGuardian) return false;
