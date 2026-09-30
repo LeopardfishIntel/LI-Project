@@ -1656,3 +1656,244 @@ export async function getMembersDataAction(): Promise<{ success: boolean; member
     return { success: false, error: err.message };
   }
 }
+
+/**
+ * 🛡️ Action: Run Job Audit
+ *
+ * Report-only, zero writes. Re-implements the checks from
+ * src/scripts/audit_live_site_quality.ts as a server action so it can be
+ * triggered from a button on the Data Hub page instead of only from a
+ * terminal script. Checks every job that would currently show on the
+ * public site for: broken apply links, generic-only links (school
+ * homepage instead of the job page), stale/wrong school attribution,
+ * expired-but-still-live jobs, non-teaching titles, missing school
+ * records, duplicate postings, and jobs flagged unverifiable but still live.
+ */
+export interface JobAuditFlaggedItem {
+  docId: string;
+  title: string;
+  schoolId: string;
+  schoolName: string;
+  source: string;
+  issues: string[];
+  detail: string[];
+}
+
+export interface JobAuditResult {
+  success: boolean;
+  error: string | null;
+  generatedAt: string;
+  totalDocuments: number;
+  totalLive: number;
+  counts: Record<string, number>;
+  flagged: JobAuditFlaggedItem[];
+}
+
+const JOB_AUDIT_GENERIC_URLS = new Set([
+  "https://careers.nordanglia.com",
+  "https://careers.nordangliaeducation.com",
+  "https://www.nordangliaeducation.com/careers",
+  "https://jobs.inspirededu.com",
+  "https://cognitapeople.csod.com",
+  "https://www.teachaway.com/teaching-jobs-abroad",
+  "https://uwc.org/careers/vacancies",
+  "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers",
+  "https://careers.globeducate.com/work-with-us/opportunities-worldwide",
+  "https://careers.gemseducation.com",
+  "https://www.gemseducation.com",
+  "https://taaleem.ae",
+  "https://www.taaleem.ae",
+  "https://www.taaleem.ae/careers",
+  "https://careers.taaleem.ae",
+  "https://careers.taaleem.ae/en",
+]);
+
+function jobAuditNormalizeUrl(u?: string | null): string {
+  if (!u) return "";
+  return u.toLowerCase().trim().replace(/\/+$/, "");
+}
+
+function jobAuditIsGenericUrl(u?: string | null): boolean {
+  const norm = jobAuditNormalizeUrl(u);
+  if (!norm || norm === "#") return true;
+  return JOB_AUDIT_GENERIC_URLS.has(norm) || norm.includes("job-search-results") || norm.includes("keyword=");
+}
+
+function jobAuditNormalizeTitle(title: string): string {
+  return String(title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+export async function runJobAuditAction(): Promise<JobAuditResult> {
+  const empty: JobAuditResult = {
+    success: false,
+    error: null,
+    generatedAt: new Date().toISOString(),
+    totalDocuments: 0,
+    totalLive: 0,
+    counts: {},
+    flagged: [],
+  };
+
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const { matchSchoolEntity } = await import("@/lib/crawler/entityMatcher");
+    const { isValidJobTitle } = await import("@/lib/crawler/titleSanitizer");
+    const { isSupportOrNonTeachingRole } = await import("@/lib/crawler/roleClassifier");
+
+    const db = getAdminDb();
+    if (!db) return { ...empty, error: "Admin DB unavailable" };
+
+    const [jobsSnap, schoolsSnap] = await Promise.all([
+      db.collection("featured_jobs_cache").get(),
+      db.collection("schools").get(),
+    ]);
+
+    const allSchools = schoolsSnap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+    const schoolsById = new Map(allSchools.map((s: any) => [s.id, s]));
+
+    const todayMs = Date.now();
+    const liveJobs: any[] = [];
+
+    jobsSnap.docs.forEach((d: any) => {
+      const j = { docId: d.id, ...d.data() };
+      const rawStatus = String(j.status || "").toUpperCase();
+      if (["EXPIRED", "CLOSED", "REJECTED", "PENDING_REVIEW", "PENDING"].includes(rawStatus)) return;
+      liveJobs.push(j);
+    });
+
+    const flagged: JobAuditFlaggedItem[] = [];
+    const dupeKey = new Map<string, string[]>();
+
+    for (const j of liveJobs) {
+      const issues: string[] = [];
+      const detail: string[] = [];
+      const schoolId = j.schoolId || "";
+      const schoolName = j.schoolName || j.schoolname || "";
+      const title = j.title || "";
+      const source = j.source || (Array.isArray(j.sources) ? j.sources[0] : "") || "";
+
+      const candidateUrl = j.directUrl || j.applyUrl || j.source_url || j.schoolWebsite;
+      const hasAnyUsableUrl = Boolean(j.directUrl) && !jobAuditIsGenericUrl(j.directUrl)
+        ? true
+        : Boolean(j.applyUrl) && !jobAuditIsGenericUrl(j.applyUrl)
+        ? true
+        : Boolean(j.source_url) && !jobAuditIsGenericUrl(j.source_url)
+        ? true
+        : Boolean(j.schoolWebsite) && j.schoolWebsite !== "#";
+
+      if (!hasAnyUsableUrl || !candidateUrl) {
+        issues.push("BROKEN_LINK");
+        detail.push("No usable link found at all (directUrl, applyUrl, source_url, schoolWebsite all missing/blank/#).");
+      } else {
+        const specificUrl = (j.directUrl && !jobAuditIsGenericUrl(j.directUrl)) ? j.directUrl
+          : (j.applyUrl && !jobAuditIsGenericUrl(j.applyUrl)) ? j.applyUrl
+          : (j.source_url && !jobAuditIsGenericUrl(j.source_url)) ? j.source_url
+          : null;
+        if (!specificUrl) {
+          issues.push("GENERIC_LINK");
+          detail.push(`Only a generic link is available (e.g. school homepage): ${candidateUrl}`);
+        }
+      }
+
+      const school = schoolId ? schoolsById.get(schoolId) : null;
+      if (!school) {
+        issues.push("MISSING_SCHOOL");
+        detail.push(`schoolId "${schoolId}" does not exist in the schools collection.`);
+      } else {
+        const fullText = `${title} ${schoolName} ${j.city || ""} ${j.country || ""}`;
+        let bestScore = 0;
+        let bestSchoolId = "";
+        for (const s of allSchools as any[]) {
+          const entity = {
+            id: s.id,
+            name: s.name || s.schoolname,
+            schoolname: s.schoolname || s.name,
+            city: s.city,
+            country: s.country,
+            aliases: Array.isArray(s.aliases) ? s.aliases : [],
+            legalNames: Array.isArray(s.legalNames) ? s.legalNames : [],
+          };
+          const res = matchSchoolEntity(entity, { candidateText: fullText, city: j.city });
+          if (res.isMatch && res.score > bestScore) {
+            bestScore = res.score;
+            bestSchoolId = s.id;
+          }
+        }
+        if (bestSchoolId && bestSchoolId !== schoolId) {
+          issues.push("SCHOOL_MISMATCH");
+          detail.push(`Stored as ${schoolId} (${schoolName}), but text now best-matches ${bestSchoolId} (score ${bestScore}). Worth a manual look.`);
+        }
+      }
+
+      if (j.closingDateMillis && j.closingDateMillis < todayMs) {
+        issues.push("STALE_BUT_LIVE");
+        detail.push(`Closing date (${new Date(j.closingDateMillis).toISOString().slice(0, 10)}) has passed but the job is still marked live.`);
+      }
+
+      if (!title || !isValidJobTitle(title) || isSupportOrNonTeachingRole(title)) {
+        issues.push("BAD_TITLE");
+        detail.push(`Title "${title}" looks like a non-teaching/support role or is otherwise invalid.`);
+      }
+
+      if (j.unverifiableAttribution === true) {
+        issues.push("UNVERIFIED_LIVE");
+        detail.push("Flagged unverifiableAttribution:true but is still showing as live.");
+      }
+
+      const dk = `${schoolId}::${jobAuditNormalizeTitle(title)}`;
+      if (!dupeKey.has(dk)) dupeKey.set(dk, []);
+      dupeKey.get(dk)!.push(j.docId);
+
+      if (issues.length > 0) {
+        flagged.push({ docId: j.docId, title, schoolId, schoolName, source, issues, detail });
+      }
+    }
+
+    for (const [key, docIds] of dupeKey.entries()) {
+      if (docIds.length > 1) {
+        const [schoolId, normTitle] = key.split("::");
+        for (const docId of docIds) {
+          const existing = flagged.find((f) => f.docId === docId);
+          const msg = `Duplicate: ${docIds.length} live jobs share school ${schoolId} + title "${normTitle}" (${docIds.join(", ")}).`;
+          if (existing) {
+            existing.issues.push("DUPLICATE");
+            existing.detail.push(msg);
+          } else {
+            const j = liveJobs.find((x) => x.docId === docId);
+            flagged.push({
+              docId,
+              title: j?.title || "",
+              schoolId: j?.schoolId || "",
+              schoolName: j?.schoolName || "",
+              source: j?.source || "",
+              issues: ["DUPLICATE"],
+              detail: [msg],
+            });
+          }
+        }
+      }
+    }
+
+    const counts: Record<string, number> = {};
+    for (const f of flagged) {
+      for (const issue of f.issues) {
+        counts[issue] = (counts[issue] || 0) + 1;
+      }
+    }
+
+    flagged.sort((a, b) => b.issues.length - a.issues.length);
+
+    return {
+      success: true,
+      error: null,
+      generatedAt: new Date().toISOString(),
+      totalDocuments: jobsSnap.size,
+      totalLive: liveJobs.length,
+      counts,
+      flagged,
+    };
+  } catch (err: any) {
+    console.error("❌ Job audit failed:", err?.message || err);
+    return { ...empty, error: err?.message || String(err) };
+  }
+}

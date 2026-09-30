@@ -26,6 +26,8 @@ import {
   resolveIngestionConflictAction,
   getMembersDataAction,
   type MemberAccountItem,
+  runJobAuditAction,
+  type JobAuditResult,
 
   type BulkEnrichState,
   type EcoActionState 
@@ -55,7 +57,18 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'members' | 'ikea' | 'matrix' | 'transport'>('col-data');
+  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'members' | 'ikea' | 'matrix' | 'transport' | 'job-audit'>('col-data');
+  const [jobAuditResult, setJobAuditResult] = useState<JobAuditResult | null>(null);
+  const [loadingJobAudit, setLoadingJobAudit] = useState(false);
+  const runJobAudit = async () => {
+    setLoadingJobAudit(true);
+    try {
+      const res = await runJobAuditAction();
+      setJobAuditResult(res);
+    } finally {
+      setLoadingJobAudit(false);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -341,6 +354,13 @@ export default function AdminCommandPage() {
             >
                 Matrix AI
             </button>
+            <button
+                onClick={() => setActiveTab('job-audit')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm flex items-center gap-1.5", activeTab === 'job-audit' ? "bg-rose-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                <ShieldAlert className="size-3.5" />
+                Job Audit
+            </button>
         </div>
 
         {/* TAB 1: SCHOOLS DATA INJECTION */}
@@ -555,6 +575,116 @@ export default function AdminCommandPage() {
                         </div>
                     )}
                 </div>
+            </div>
+        )}
+
+        {/* TAB: JOB AUDIT — read-only quality assurance check over every live job */}
+        {activeTab === 'job-audit' && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                        <h2 className="text-xl font-black uppercase tracking-widest text-white italic">Job Audit</h2>
+                        <p className="text-[11px] text-slate-500 font-medium mt-1">
+                            Checks every job currently live on the public site for broken links, wrong schools, expired-but-live jobs, duplicates, and more. Read-only — makes no changes.
+                        </p>
+                    </div>
+                    <button
+                        onClick={runJobAudit}
+                        disabled={loadingJobAudit}
+                        className="h-12 px-6 bg-rose-500/10 border border-rose-500/50 text-rose-400 font-black uppercase italic tracking-widest hover:bg-rose-500 hover:text-white transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3"
+                    >
+                        {loadingJobAudit ? <Loader2 className="animate-spin size-5" /> : <ShieldAlert className="size-5" />}
+                        {loadingJobAudit ? 'Running…' : 'Run Job Audit'}
+                    </button>
+                </div>
+
+                {jobAuditResult && !jobAuditResult.success && (
+                    <div className="p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 bg-red-500/10 border-red-500/50 text-red-500">
+                        <AlertTriangle className="size-5" />
+                        <span className="tracking-widest">{jobAuditResult.error || 'Job audit failed'}</span>
+                    </div>
+                )}
+
+                {jobAuditResult && jobAuditResult.success && (
+                    <>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Live Jobs Checked</p>
+                                <p className="text-2xl font-black text-white mt-1">{jobAuditResult.totalLive}</p>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Total Documents</p>
+                                <p className="text-2xl font-black text-white mt-1">{jobAuditResult.totalDocuments}</p>
+                            </div>
+                            <div className="bg-[#0b1224] border border-rose-500/30 rounded-sm p-4">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Flagged Jobs</p>
+                                <p className="text-2xl font-black text-rose-400 mt-1">{jobAuditResult.flagged.length}</p>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Checked At</p>
+                                <p className="text-xs font-bold text-slate-300 mt-2">{new Date(jobAuditResult.generatedAt).toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            {[
+                                { key: 'BROKEN_LINK', label: 'Broken Link' },
+                                { key: 'GENERIC_LINK', label: 'Generic Link' },
+                                { key: 'SCHOOL_MISMATCH', label: 'Wrong School' },
+                                { key: 'STALE_BUT_LIVE', label: 'Expired, Still Live' },
+                                { key: 'BAD_TITLE', label: 'Bad Title' },
+                                { key: 'MISSING_SCHOOL', label: 'Missing School' },
+                                { key: 'DUPLICATE', label: 'Duplicate' },
+                                { key: 'UNVERIFIED_LIVE', label: 'Should Be Rejected' },
+                            ].map(({ key, label }) => (
+                                <div key={key} className="bg-black/30 border border-white/5 rounded-sm p-3">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{label}</p>
+                                    <p className="text-lg font-black text-amber-400 mt-1">{jobAuditResult.counts[key] || 0}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="bg-[#0b1224] border border-white/10 rounded-sm overflow-hidden">
+                            <div className="p-4 bg-black/20 border-b border-white/5">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Flagged Jobs ({jobAuditResult.flagged.length})</span>
+                            </div>
+                            <div className="max-h-[600px] overflow-y-auto divide-y divide-white/5">
+                                {jobAuditResult.flagged.length === 0 && (
+                                    <div className="p-8 text-center text-slate-500 text-sm font-bold">No issues found. 🎉</div>
+                                )}
+                                {jobAuditResult.flagged.map((f) => (
+                                    <div key={f.docId} className="p-4 hover:bg-white/[0.02] transition-colors">
+                                        <div className="flex items-start justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <p className="text-sm font-bold text-white">{f.title || '(no title)'}</p>
+                                                <p className="text-[11px] text-slate-500">{f.schoolName || '(no school)'} · {f.schoolId || '—'} · source: {f.source || '—'}</p>
+                                            </div>
+                                            <div className="flex gap-1.5 flex-wrap">
+                                                {f.issues.map((issue) => (
+                                                    <span key={issue} className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-sm">
+                                                        {issue}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <ul className="mt-2 space-y-1">
+                                            {f.detail.map((d, i) => (
+                                                <li key={i} className="text-[11px] text-slate-400">{d}</li>
+                                            ))}
+                                        </ul>
+                                        <p className="text-[10px] text-slate-600 mt-1 font-mono">{f.docId}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {!jobAuditResult && !loadingJobAudit && (
+                    <div className="p-8 text-center text-slate-500 text-sm font-bold bg-[#0b1224] border border-white/10 rounded-sm">
+                        Click "Run Job Audit" to check every live job on the site.
+                    </div>
+                )}
             </div>
         )}
 
