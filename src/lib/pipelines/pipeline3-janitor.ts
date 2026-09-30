@@ -20,6 +20,7 @@
 export interface JanitorRunResult {
   expired: number;
   promoted: number;
+  skippedProvenanceMismatch?: number;
   mirrorErrors: number;
   errors: string[];
   durationMs: number;
@@ -125,13 +126,14 @@ async function expireOverdueJobs(db: any, now: number): Promise<{ expired: numbe
 
 // ─── Step 3: Promote newly-approved subcollection jobs to cache ───────────────
 
-async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors: string[] }> {
+async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skippedProvenanceMismatch: number; errors: string[] }> {
   let promoted = 0;
+  let skippedProvenanceMismatch = 0;
   const errors: string[] = [];
 
   if (typeof db.collection !== 'function') {
     errors.push('Admin SDK not available for janitor promote step.');
-    return { promoted, errors };
+    return { promoted, skippedProvenanceMismatch, errors };
   }
 
   try {
@@ -140,7 +142,38 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
       .where('status', '==', 'approved')
       .get();
 
-    if (subcollSnap.empty) return { promoted, errors };
+    if (subcollSnap.empty) return { promoted, skippedProvenanceMismatch, errors };
+
+    // Preload canonical schools map to guard against orphaned/shifted subcollections
+    const schoolsSnap = await db.collection('schools').get();
+    const schoolMap = new Map<string, { id: string; name: string; tesEmployerSlug?: string | null }>();
+    const otherTesSlugs: Array<{ id: string; name: string; slugPrefix: string }> = [];
+
+    schoolsSnap.docs.forEach((doc: any) => {
+      const data = doc.data();
+      const id = doc.id;
+      const name = data.name || data.schoolname || data.schoolName || '';
+      const tesSlug = (data.tesEmployerSlug || '').toLowerCase().trim();
+      schoolMap.set(id.toUpperCase(), { id, name, tesEmployerSlug: tesSlug || null });
+
+      if (tesSlug && tesSlug.length > 5) {
+        const slugPrefix = tesSlug.replace(/-\d+$/, '');
+        if (slugPrefix.length > 6) {
+          otherTesSlugs.push({ id, name, slugPrefix });
+        }
+      }
+    });
+
+    const getTokens = (str: string): string[] => {
+      return str.toLowerCase().replace(/[^a-z0-9]/g, ' ').split(/\s+/).filter((w) => w.length >= 3);
+    };
+
+    const slugMatchesSchoolTokens = (slug: string, schoolName: string): boolean => {
+      const nameTokens = getTokens(schoolName);
+      if (nameTokens.length === 0) return false;
+      const sSet = new Set(getTokens(slug));
+      return nameTokens.every((t) => sSet.has(t));
+    };
 
     let batch = db.batch();
     let batchSize = 0;
@@ -150,9 +183,121 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
       const fp = jobData.jobFingerprint || jobData.id;
       if (!fp) continue;
 
+      const parentSchoolId = (jobDoc.ref.parent?.parent?.id || '').trim();
+      const parentSchool = schoolMap.get(parentSchoolId.toUpperCase());
+
+      // Guard 1: Verify parent school exists in canonical registry
+      if (!parentSchool) {
+        console.warn(`⚠️ [JANITOR GUARD] Skipping promotion for ${fp}: parent school '${parentSchoolId}' does not exist in canonical registry.`);
+        skippedProvenanceMismatch++;
+        continue;
+      }
+
+      // Guard 2: Stored schoolId check (if present on doc, must match parent)
+      if (jobData.schoolId && jobData.schoolId.toUpperCase() !== parentSchoolId.toUpperCase()) {
+        console.warn(`⚠️ [JANITOR GUARD] Skipping promotion for ${fp}: stored schoolId '${jobData.schoolId}' does not match path schoolId '${parentSchoolId}'.`);
+        skippedProvenanceMismatch++;
+        continue;
+      }
+
       try {
         const cacheRef = db.collection('featured_jobs_cache').doc(fp);
         const cacheSnap = await cacheRef.get();
+        const cacheData = cacheSnap.exists ? cacheSnap.data() : null;
+
+        // Collect all candidate URLs across primary fields and all sourceUrls
+        const urlCandidates: Array<{ label: string; url: string }> = [];
+        const addUrl = (label: string, u: any) => {
+          if (typeof u === 'string' && u.trim().length > 0) {
+            urlCandidates.push({ label, url: u.trim() });
+          }
+        };
+        addUrl('applyUrl', jobData.applyUrl);
+        addUrl('directUrl', jobData.directUrl);
+        addUrl('url', jobData.url);
+        addUrl('link', jobData.link);
+        addUrl('source_url', jobData.source_url);
+        if (jobData.sourceUrls && typeof jobData.sourceUrls === 'object') {
+          for (const [k, v] of Object.entries(jobData.sourceUrls)) {
+            addUrl(`sourceUrls.${k}`, v);
+          }
+        }
+        if (cacheData) {
+          addUrl('cache.applyUrl', cacheData.applyUrl);
+          addUrl('cache.directUrl', cacheData.directUrl);
+          if (cacheData.sourceUrls && typeof cacheData.sourceUrls === 'object') {
+            for (const [k, v] of Object.entries(cacheData.sourceUrls)) {
+              addUrl(`cache.sourceUrls.${k}`, v);
+            }
+          }
+        }
+
+        let provenanceMismatch = false;
+        for (const { label, url: rawUrl } of urlCandidates) {
+          const lowerUrl = rawUrl.toLowerCase();
+
+          // Guard 3: Synthetic domain mismatch
+          const synthMatch = lowerUrl.match(/^https?:\/\/(?:www\.)?([a-z0-9-]+)\.com\/?$/);
+          if (
+            synthMatch &&
+            !lowerUrl.includes('tes.com') &&
+            !lowerUrl.includes('teachaway.com') &&
+            !lowerUrl.includes('theguardian.com') &&
+            !lowerUrl.includes('grcfair.org')
+          ) {
+            const slug = synthMatch[1];
+            const pClean = parentSchool.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const cleanSlug = slug.replace(/[^a-z0-9]/g, '');
+            const isParentContiguous = pClean && (pClean.includes(cleanSlug) || cleanSlug.includes(pClean));
+            const isParentTokenMatch = slugMatchesSchoolTokens(slug, parentSchool.name);
+
+            if (!isParentContiguous && !isParentTokenMatch) {
+              let matchedOther: any = null;
+              for (const s of schoolMap.values()) {
+                const sName = s.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (sName && (sName.includes(cleanSlug) || cleanSlug.includes(sName))) {
+                  matchedOther = s;
+                  break;
+                }
+              }
+              if (matchedOther && matchedOther.id.toUpperCase() !== parentSchoolId.toUpperCase()) {
+                console.warn(`⚠️ [JANITOR GUARD] Skipping promotion for ${fp}: synthetic domain '${slug}' (from ${label}) belongs to ${matchedOther.id} (${matchedOther.name}), not parent school ${parentSchool.name}.`);
+                provenanceMismatch = true;
+                break;
+              }
+            }
+          }
+
+          // Guard 4: TES Vacancy URL slug mismatch
+          if (lowerUrl.includes('tes.com/jobs/vacancy/')) {
+            const parentSlug = parentSchool.tesEmployerSlug ? parentSchool.tesEmployerSlug.toLowerCase() : null;
+            const parentSlugPrefix = parentSlug ? parentSlug.replace(/-\d+$/, '') : null;
+            const matchesParent = parentSlugPrefix && parentSlugPrefix.length > 6 && lowerUrl.includes(parentSlugPrefix);
+
+            if (!matchesParent) {
+              let matchedOther: any = null;
+              for (const other of otherTesSlugs) {
+                if (other.id.toUpperCase() === parentSchoolId.toUpperCase()) continue;
+                if (parentSlugPrefix && other.slugPrefix === parentSlugPrefix) continue; // sister campus sharing slug
+
+                if (lowerUrl.includes(other.slugPrefix)) {
+                  matchedOther = other;
+                  break;
+                }
+              }
+              if (matchedOther) {
+                console.warn(`⚠️ [JANITOR GUARD] Skipping promotion for ${fp}: TES vacancy URL (from ${label}) belongs to ${matchedOther.id} (${matchedOther.name}, slug: ${matchedOther.slugPrefix}), not parent school ${parentSchool.name}.`);
+                provenanceMismatch = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (provenanceMismatch) {
+          skippedProvenanceMismatch++;
+          continue;
+        }
 
         if (!cacheSnap.exists) {
           // Cache doc doesn't exist — create a minimal one so the job appears in feed
@@ -164,8 +309,8 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
             datePosted: jobData.datePosted || null,
             closingDate: null,
             closingDateMillis: null,
-            schoolId: jobDoc.ref.parent?.parent?.id || '',
-            schoolName: jobData.schoolName || '',
+            schoolId: parentSchool.id,
+            schoolName: jobData.schoolName || parentSchool.name,
             city: jobData.city || jobData.analysisData?.city || '',
             country: jobData.country || jobData.analysisData?.country || '',
             status: 'approved',
@@ -198,12 +343,12 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
       await batch.commit();
     }
 
-    console.log(`🛸 [PIPELINE 3] Promoted ${promoted} jobs to approved in cache.`);
+    console.log(`🛸 [PIPELINE 3] Promoted ${promoted} jobs to approved in cache (${skippedProvenanceMismatch} skipped due to provenance mismatch).`);
   } catch (err: any) {
     errors.push(`promote_step: ${err?.message || String(err)}`);
   }
 
-  return { promoted, errors };
+  return { promoted, skippedProvenanceMismatch, errors };
 }
 
 // ─── Main Entry-Point ─────────────────────────────────────────────────────────
@@ -335,13 +480,14 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
   const result: JanitorRunResult = {
     expired: expireResult.expired,
     promoted: promoteResult.promoted,
+    skippedProvenanceMismatch: promoteResult.skippedProvenanceMismatch,
     mirrorErrors: expireResult.mirrorErrors,
     errors: [...expireResult.errors, ...promoteResult.errors, ...syncResult.errors],
     durationMs,
   };
 
   console.log(
-    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
+    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | skippedProvenance=${promoteResult.skippedProvenanceMismatch} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
   );
 
   return result;
