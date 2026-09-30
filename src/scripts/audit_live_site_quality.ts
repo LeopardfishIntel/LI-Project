@@ -109,7 +109,7 @@ async function main() {
   ]);
 
   const allSchools = schoolsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
-  const schoolsById = new Map(allSchools.map((s) => [s.id, s]));
+  const schoolsById = new Map(allSchools.map((s) => [String(s.id).toUpperCase(), s]));
 
   const todayMs = Date.now();
   const liveJobs: any[] = [];
@@ -165,7 +165,7 @@ async function main() {
     }
 
     // 6: missing school
-    const school = schoolId ? schoolsById.get(schoolId) : null;
+    const school = schoolId ? schoolsById.get(schoolId.toUpperCase()) : null;
     if (!school) {
       issues.push("MISSING_SCHOOL");
       detail.push(`schoolId "${schoolId}" does not exist in the schools collection.`);
@@ -192,7 +192,7 @@ async function main() {
           bestSchoolId = s.id;
         }
       }
-      if (bestSchoolId && bestSchoolId !== schoolId) {
+      if (bestSchoolId && bestSchoolId.toUpperCase() !== schoolId.toUpperCase()) {
         issues.push("SCHOOL_MISMATCH");
         detail.push(`Stored as ${schoolId} (${schoolName}), but text now best-matches ${bestSchoolId} (score ${bestScore}). Worth a manual look — may be a stale attribution or just an ambiguous title.`);
       }

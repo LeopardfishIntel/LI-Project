@@ -1753,7 +1753,7 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
     ]);
 
     const allSchools = schoolsSnap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
-    const schoolsById = new Map(allSchools.map((s: any) => [s.id, s]));
+    const schoolsById = new Map(allSchools.map((s: any) => [String(s.id).toUpperCase(), s]));
 
     const todayMs = Date.now();
     const liveJobs: any[] = [];
@@ -1804,7 +1804,7 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
         }
       }
 
-      const school = schoolId ? schoolsById.get(schoolId) : null;
+      const school = schoolId ? schoolsById.get(schoolId.toUpperCase()) : null;
       if (!school) {
         issues.push("MISSING_SCHOOL");
         detail.push(`schoolId "${schoolId}" does not exist in the schools collection.`);
@@ -1828,7 +1828,7 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
             bestSchoolId = s.id;
           }
         }
-        if (bestSchoolId && bestSchoolId !== schoolId) {
+        if (bestSchoolId && bestSchoolId.toUpperCase() !== schoolId.toUpperCase()) {
           issues.push("SCHOOL_MISMATCH");
           detail.push(`Stored as ${schoolId} (${schoolName}), but text now best-matches ${bestSchoolId} (score ${bestScore}). Worth a manual look.`);
         }
