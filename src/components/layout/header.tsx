@@ -314,7 +314,7 @@ export default function Header() {
         const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
         if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
-        if (!title || title.length < 3) return;
+        if (!title || title.length < 3 || !isValidJobTitle(title)) return;
 
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
         if (applyUrlLower) seenUrls.add(applyUrlLower);
