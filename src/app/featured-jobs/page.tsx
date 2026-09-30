@@ -2439,7 +2439,7 @@ export default function FeaturedJobsPage() {
                                 allowedOperatorGroup = "INSPIRED";
                               } else if (canonicalGroupUpper.includes("GLOBE")) {
                                 allowedOperatorGroup = "GLOBEDUCATE";
-                              } else if (canonicalGroupUpper.includes("ISP")) {
+                              } else if (canonicalGroupUpper.includes("ISP") || canonicalGroupUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) {
                                 allowedOperatorGroup = "ISP";
                               } else if (canonicalGroupUpper.includes("ESF") || isEsfSchool(job.schoolId, job.schoolName, canonicalGroupUpper, applyUrlLower)) {
                                 allowedOperatorGroup = "ESF";
