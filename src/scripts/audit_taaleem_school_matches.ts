@@ -50,6 +50,7 @@ async function auditTaaleemSchoolMatches() {
       city: data.city || '',
       country: data.country || '',
       aliases: Array.isArray(data.aliases) ? data.aliases : [],
+      legalNames: Array.isArray(data.legalNames) ? data.legalNames : (Array.isArray(data.legal_names) ? data.legal_names : []),
       tesEmployerSlug: data.tesEmployerSlug || data.tes_slug || '',
       tesOrganizationId: data.tesOrganizationId || '',
       schroleAccountId: data.schroleAccountId || '',

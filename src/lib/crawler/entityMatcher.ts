@@ -13,6 +13,7 @@ export interface SchoolEntity {
   city?: string;
   country?: string;
   aliases?: string[];
+  legalNames?: string[];
   tesOrganizationId?: string;
   schroleAccountId?: string;
   tesEmployerSlug?: string;
@@ -23,7 +24,7 @@ export interface SchoolEntity {
 export interface EntityMatchResult {
   isMatch: boolean;
   score: number;
-  matchType: "platform_id" | "exact" | "alias" | "fuzzy" | "acronym" | "none";
+  matchType: "platform_id" | "exact" | "alias" | "legal_name" | "fuzzy" | "acronym" | "none";
   matchedText?: string;
   confidence: "high" | "medium" | "low";
   reason?: string;
@@ -293,6 +294,23 @@ export function matchSchoolEntity(
         matchedText: alias,
         confidence: "high",
         reason: `Direct match with configured alias "${alias}"`
+      };
+    }
+  }
+
+  // 3b. Legal Name / Corporate Entity match
+  const legalNames = Array.isArray(school.legalNames) ? school.legalNames : [];
+  for (const legal of legalNames) {
+    if (!legal || typeof legal !== "string") continue;
+    const lLower = legal.toLowerCase().trim();
+    if (lLower.length >= 3 && (candidateLower === lLower || (lLower.length >= 6 && candidateLower.includes(lLower)) || (candidateLower.length >= 6 && lLower.includes(candidateLower)))) {
+      return {
+        isMatch: true,
+        score: 0.98,
+        matchType: "legal_name",
+        matchedText: legal,
+        confidence: "high",
+        reason: `Direct match with configured legal entity name "${legal}"`
       };
     }
   }

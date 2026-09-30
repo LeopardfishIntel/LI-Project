@@ -1,5 +1,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { matchSchoolEntity, SchoolEntity } from "@/lib/crawler/entityMatcher";
+import { extractJobPostingsFromHtml } from "@/lib/crawler/adaptors/tes-adaptor";
 
 export interface IspJobMatch {
   jobId: string;
@@ -14,6 +16,48 @@ export interface IspJobMatch {
   closingDate?: string | null;
 }
 
+const STEALTH_HEADERS: Record<string, string> = {
+  "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Cache-Control": "no-cache",
+};
+
+const BATCH_SIZE = 5;
+const REQUEST_TIMEOUT_MS = 10000;
+
+async function fetchVacancyJsonLd(applyUrl: string): Promise<{
+  hiringOrgName: string | null;
+  datePosted: string | null;
+  validThrough: string | null;
+}> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(applyUrl, { headers: STEALTH_HEADERS, signal: controller.signal });
+    if (!res.ok) {
+      return { hiringOrgName: null, datePosted: null, validThrough: null };
+    }
+    const html = await res.text();
+    const postings = extractJobPostingsFromHtml(html);
+    if (!postings || postings.length === 0) {
+      return { hiringOrgName: null, datePosted: null, validThrough: null };
+    }
+    const posting = postings[0];
+    const org = posting.hiringOrganization;
+    const hiringOrgName = typeof org === "string" ? org : org?.name || null;
+    const datePosted = posting.datePosted ? String(posting.datePosted) : null;
+    const validThrough = posting.validThrough ? String(posting.validThrough) : null;
+
+    return { hiringOrgName, datePosted, validThrough };
+  } catch {
+    return { hiringOrgName: null, datePosted: null, validThrough: null };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatch[]> {
   try {
     const db = getAdminDb();
@@ -22,9 +66,21 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
       return [];
     }
 
-    // 1. Fetch active schools from DB
+    // 1. Fetch active schools from DB & map to SchoolEntity
     const snap = await db.collection("schools").get();
-    const dbSchools = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+    const dbSchools: SchoolEntity[] = snap.docs.map((d: any) => {
+      const data = d.data();
+      return {
+        id: d.id,
+        name: data.name || data.schoolname || "",
+        schoolname: data.schoolname || data.name || "",
+        city: data.city || "",
+        country: data.country || "",
+        aliases: Array.isArray(data.aliases) ? data.aliases : [],
+        legalNames: Array.isArray(data.legalNames) ? data.legalNames : (Array.isArray(data.legal_names) ? data.legal_names : []),
+        group: data.group || data.schoolGroup || data.ownership || "",
+      } as any;
+    });
 
     if (dbSchools.length === 0) {
       console.log("ℹ️ No schools found in DB for ISP matching.");
@@ -84,53 +140,76 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
 
     console.log(`🛸 [ISP WORKDAY ENGINE] Fetched ${allPostings.length} unique postings across ${totalCount} total positions.`);
 
-    // 3. Ground strictly against DB schools
+    // 3. Filter teaching roles
+    const teachingJobs = allPostings.filter((job) => {
+      const title = job.title || "";
+      return title && !isSupportOrNonTeachingRole(title);
+    });
+
+    console.log(`🛸 [ISP WORKDAY ENGINE] Inspecting ${teachingJobs.length} teaching roles with verified hiringOrganization & dates...`);
+
+    // 4. Inspect vacancy pages in batches to extract verified hiringOrganization & dates
     const matches: IspJobMatch[] = [];
 
-    for (const job of allPostings) {
-      const title = job.title || "";
-      if (!title || isSupportOrNonTeachingRole(title)) continue;
+    for (let i = 0; i < teachingJobs.length; i += BATCH_SIZE) {
+      const chunk = teachingJobs.slice(i, i + BATCH_SIZE);
+      const chunkResults = await Promise.all(
+        chunk.map(async (job) => {
+          const title = job.title || "";
+          const extPath = job.externalPath || "";
+          const slugMatch = extPath.split("/").pop();
+          const jobId = slugMatch ? `isp_${slugMatch}` : `isp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+          const applyUrl = `https://internationalschools.wd3.myworkdayjobs.com/en-US/ISPCareers${extPath}`;
 
-      const locationsText = job.locationsText || "";
-      const bulletFields = Array.isArray(job.bulletFields) ? job.bulletFields.join(" ") : "";
-      const fullText = `${title} ${locationsText} ${bulletFields}`.toLowerCase();
+          const { hiringOrgName, datePosted, validThrough } = await fetchVacancyJsonLd(applyUrl);
+          if (!hiringOrgName || !hiringOrgName.trim()) {
+            return null;
+          }
 
-      const matchedSchool = dbSchools.find((s: any) => {
-        const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 3) return false;
+          // Cross-check hiringOrganization against all DB schools
+          let bestSchool: SchoolEntity | null = null;
+          let bestScore = 0;
 
-        if (fullText.includes(sName)) return true;
+          for (const school of dbSchools) {
+            const matchRes = matchSchoolEntity(
+              school,
+              {
+                candidateText: hiringOrgName,
+              },
+              0.85
+            );
 
-        const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
-        if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
-          return true;
-        }
+            if (matchRes.isMatch && matchRes.score > bestScore) {
+              bestScore = matchRes.score;
+              bestSchool = school;
+            }
+          }
 
-        return false;
-      });
+          if (bestSchool && bestScore >= 0.85) {
+            return {
+              jobId,
+              title,
+              applyUrl,
+              schoolId: bestSchool.id || "",
+              schoolName: bestSchool.name || bestSchool.schoolname || "",
+              city: bestSchool.city || "",
+              country: bestSchool.country || "",
+              source: "ISP",
+              datePosted: datePosted || null,
+              closingDate: validThrough || null,
+            };
+          }
 
-      if (matchedSchool) {
-        const extPath = job.externalPath || "";
-        const slugMatch = extPath.split("/").pop();
-        const jobId = slugMatch ? `isp_${slugMatch}` : `isp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-        const applyUrl = `https://internationalschools.wd3.myworkdayjobs.com/en-US/ISPCareers${extPath}`;
+          return null;
+        })
+      );
 
-        matches.push({
-          jobId,
-          title,
-          applyUrl,
-          schoolId: matchedSchool.id,
-          schoolName: matchedSchool.name || matchedSchool.schoolname,
-          city: matchedSchool.city || "",
-          country: matchedSchool.country || "",
-          source: "ISP",
-          datePosted: new Date().toISOString(),
-          closingDate: null
-        });
+      for (const m of chunkResults) {
+        if (m) matches.push(m);
       }
     }
 
-    console.log(`🛸 [ISP WORKDAY ENGINE] Found ${matches.length} DB-grounded vacancies across ISP schools.`);
+    console.log(`🛸 [ISP WORKDAY ENGINE] Grounded ${matches.length} strictly verified vacancies across DB schools.`);
     return matches;
   } catch (err: any) {
     console.error("❌ Error in searchIspDbSchools:", err?.message || err);

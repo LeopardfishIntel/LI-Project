@@ -129,6 +129,7 @@ async function main() {
       city: d.city || "",
       country: d.country || "",
       aliases: Array.isArray(d.aliases) ? d.aliases : [],
+      legalNames: Array.isArray(d.legalNames) ? d.legalNames : (Array.isArray(d.legal_names) ? d.legal_names : []),
       tesEmployerSlug: d.tesEmployerSlug || d.tes_slug || "",
       tesOrganizationId: d.tesOrganizationId || "",
     } as any);
