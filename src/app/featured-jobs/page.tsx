@@ -1319,6 +1319,7 @@ export default function FeaturedJobsPage() {
     let aldar = 0;
     let qatarFoundation = 0;
     let searchAssociates = 0;
+    let esf = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
@@ -1371,6 +1372,7 @@ export default function FeaturedJobsPage() {
       if (hasTaaleem) taaleem++;
       if (hasAldar) aldar++;
       if (hasQatarFoundation) qatarFoundation++;
+      if (hasEsf) esf++;
     });
     return {
       ALL: allJobs.length,
@@ -1396,6 +1398,7 @@ export default function FeaturedJobsPage() {
       ALDAR: aldar,
       QATAR_FOUNDATION: qatarFoundation,
       "QATAR FOUNDATION": qatarFoundation,
+      ESF: esf,
     };
   }, [allJobs]);
 
@@ -1506,6 +1509,7 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "TAALEEM" && !hasTaaleem) return false;
         if (selectedSourceEngine === "ALDAR" && !hasAldar) return false;
         if ((selectedSourceEngine === "QATAR_FOUNDATION" || selectedSourceEngine === "QATAR FOUNDATION") && !hasQatarFoundation) return false;
+        if (selectedSourceEngine === "ESF" && !hasEsf) return false;
       }
 
       return true;
@@ -1586,6 +1590,7 @@ export default function FeaturedJobsPage() {
       "GUARDIAN": "Guardian Jobs",
       "GUARDIAN JOBS": "Guardian Jobs",
       "TAALEEM": "Taaleem",
+      "ESF": "English Schools Foundation (ESF)",
     };
 
     const name = engineDisplayNames[engineId] || engineId;
@@ -2079,6 +2084,7 @@ export default function FeaturedJobsPage() {
                                 "TEACHAWAY": "Teach Away",
                                 "MALVERN": "Malvern College International",
                                 "UWC": "United World Colleges (UWC)",
+                                "ESF": "English Schools Foundation (ESF)",
                               }[selectedSourceEngine] || selectedSourceEngine
                             }</strong> vacancies listed matching your search criteria.
                           </>

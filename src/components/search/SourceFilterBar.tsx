@@ -34,6 +34,7 @@ export type SourceEngineKey =
   | "ALDAR"
   | "QATAR_FOUNDATION"
   | "UWC"
+  | "ESF"
   | "DIRECT";
 
 export const ALL_SOURCES: SourceMeta[] = [
@@ -57,6 +58,7 @@ export const ALL_SOURCES: SourceMeta[] = [
   { key: "ALDAR", label: "ALDAR", category: "GROUPS" },
   { key: "QATAR_FOUNDATION", label: "QATAR FOUNDATION", category: "GROUPS" },
   { key: "UWC", label: "UWC", category: "GROUPS" },
+  { key: "ESF", label: "ESF", category: "GROUPS" },
 
   // Direct Links
   { key: "DIRECT", label: "DIRECT", category: "DIRECT" },
