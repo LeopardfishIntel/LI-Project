@@ -447,7 +447,9 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
       const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
       const isTitleMatch = normKey === existingNorm || (normKey.length > 10 && existingNorm.length > 10 && (normKey.includes(existingNorm) || existingNorm.includes(normKey)));
 
-      if (isTitleMatch && (job.recruitmentCycle === existing.recruitmentCycle || year === existingYear || normKey === existingNorm)) {
+      // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season) —
+      // kept in sync with the same rule in src/app/api/stability/stream/route.ts
+      if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && isTitleMatch) {
         isDuplicate = true;
         const newPriority = getSourcePriority(job.source) + (job.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (job.status === "OPEN" ? 2 : 0);
         const oldPriority = getSourcePriority(existing.source) + (existing.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (existing.status === "OPEN" ? 2 : 0);

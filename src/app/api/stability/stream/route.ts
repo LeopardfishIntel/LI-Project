@@ -829,12 +829,13 @@ You MUST run search queries with the school name enclosed in escaped double quot
             const existingNorm = getNormalizedComparisonKey(existing.title);
             const year = getYearFromDate(job.date_listed || job.date_closing);
             const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
-
-            // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season)
-            if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
+            // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season) —
+            // kept in sync with the same rule in src/app/financial-forecaster/actions.ts
+            const isTitleMatch = normKey === existingNorm || (normKey.length > 10 && existingNorm.length > 10 && (normKey.includes(existingNorm) || existingNorm.includes(normKey)));
+            if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && isTitleMatch) {
               isDuplicate = true;
-              const newPriority = getSourcePriority(job.source);
-              const oldPriority = getSourcePriority(existing.source);
+              const newPriority = getSourcePriority(job.source) + (job.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (job.status === "OPEN" ? 2 : 0);
+              const oldPriority = getSourcePriority(existing.source) + (existing.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (existing.status === "OPEN" ? 2 : 0);
               if (newPriority > oldPriority) {
                 duplicateIdx = i;
               }
