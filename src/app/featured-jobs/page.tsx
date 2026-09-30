@@ -191,6 +191,25 @@ const isTesDomainUrl = (u?: string | null): boolean => {
   }
 };
 
+// A URL only identifies ONE specific vacancy if it has a real path beyond
+// the bare domain or a generic careers/jobs hub page. Two different jobs
+// at the same school legitimately share a homepage/careers URL — only a
+// specific vacancy URL means "this is genuinely the same posting."
+const GENERIC_APPLY_PATH_SEGMENTS = new Set(["", "careers", "jobs", "vacancies", "vacancy", "employment", "work-with-us", "join-us"]);
+const isSpecificVacancyUrl = (u?: string | null): boolean => {
+  if (!u) return false;
+  try {
+    const raw = u.trim();
+    const parsed = new URL(raw.startsWith('http') ? raw : `https://${raw}`);
+    const segments = parsed.pathname.split('/').filter(Boolean);
+    if (segments.length === 0) return false;
+    if (segments.length === 1 && GENERIC_APPLY_PATH_SEGMENTS.has(segments[0].toLowerCase())) return false;
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 
 // Smart query matcher: avoids false positive substring collisions (e.g. 'Oman' in 'Romania')
@@ -939,8 +958,12 @@ export default function FeaturedJobsPage() {
         if (!isValidJobTitle(cacheDoc.title || (cacheDoc as any).jobTitle || '')) return;
 
         // Deduplication by unique applyUrl & title + schoolId
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
-        if (applyUrlLower) seenUrls.add(applyUrlLower);
+        // Only a SPECIFIC vacancy URL means "genuinely the same posting" —
+        // a generic homepage/careers URL is shared by many unrelated jobs
+        // at the same school, so it falls through to the schoolId+title
+        // check below instead of silently discarding real vacancies.
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower) && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower)) seenUrls.add(applyUrlLower);
 
         const jobKey = `${(cacheDoc.schoolId || '').toLowerCase().trim()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
         const newSrc = cacheDoc.source || "Official Source";
