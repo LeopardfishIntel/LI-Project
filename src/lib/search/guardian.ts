@@ -1,6 +1,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { matchSchoolEntity } from "@/lib/crawler/entityMatcher";
+import { parseRelativeDate } from "@/lib/crawler/dateParser";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
@@ -174,7 +175,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
           city: matchedSchool.city || item.location || "",
           country: matchedSchool.country || "",
           source: "Guardian Jobs",
-          datePosted: new Date().toISOString(),
+          datePosted: item.dateText ? parseRelativeDate(item.dateText) : new Date().toISOString(),
           closingDate: null,
           salaryRange: item.salary || null
         });

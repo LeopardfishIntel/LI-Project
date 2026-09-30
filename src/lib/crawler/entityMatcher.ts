@@ -174,18 +174,31 @@ export function matchSchoolEntity(
     return { isMatch: false, score: 0, matchType: "none", confidence: "low" };
   }
 
+  const gate = (result: EntityMatchResult): EntityMatchResult => {
+    if (result.isMatch && result.score < threshold) {
+      return {
+        isMatch: false,
+        score: result.score,
+        matchType: "none",
+        confidence: "low",
+        reason: `Score ${result.score.toFixed(2)} does not meet required threshold of ${threshold.toFixed(2)} (matched via ${result.matchType}: ${result.reason || ""})`
+      };
+    }
+    return result;
+  };
+
   // 0. Platform ID / Slug Match (Highest Confidence URL Lock)
   if (candidatePayload.sourceUrl) {
     const urlLower = candidatePayload.sourceUrl.toLowerCase();
     if (school.tesEmployerSlug && urlLower.includes(school.tesEmployerSlug.toLowerCase())) {
-      return {
+      return gate({
         isMatch: true,
         score: 1.0,
         matchType: "platform_id",
         matchedText: school.tesEmployerSlug,
         confidence: "high",
         reason: "TES Employer Slug matches source URL"
-      };
+      });
     }
   }
 
@@ -257,25 +270,25 @@ export function matchSchoolEntity(
   const normCanonical = normalizeEntityString(canonicalName);
 
   if (candidateLower === canonicalName.toLowerCase() || normCandidate === normCanonical) {
-    return {
+    return gate({
       isMatch: true,
       score: 1.0,
       matchType: "exact",
       matchedText: canonicalName,
       confidence: "high",
       reason: "Exact canonical name match"
-    };
+    });
   }
 
   if (canonicalName.length >= 6 && candidateLower.includes(canonicalName.toLowerCase())) {
-    return {
+    return gate({
       isMatch: true,
       score: 1.0,
       matchType: "exact",
       matchedText: canonicalName,
       confidence: "high",
       reason: "Exact canonical substring match"
-    };
+    });
   }
 
   // 3. Alias & Group Array match
@@ -287,14 +300,14 @@ export function matchSchoolEntity(
   for (const alias of aliases) {
     const aLower = alias.toLowerCase().trim();
     if (candidateLower === aLower || (aLower.length >= 6 && candidateLower.includes(aLower))) {
-      return {
+      return gate({
         isMatch: true,
         score: 0.98,
         matchType: "alias",
         matchedText: alias,
         confidence: "high",
         reason: `Direct match with configured alias "${alias}"`
-      };
+      });
     }
   }
 
@@ -304,14 +317,14 @@ export function matchSchoolEntity(
     if (!legal || typeof legal !== "string") continue;
     const lLower = legal.toLowerCase().trim();
     if (lLower.length >= 3 && (candidateLower === lLower || (lLower.length >= 6 && candidateLower.includes(lLower)) || (candidateLower.length >= 6 && lLower.includes(candidateLower)))) {
-      return {
+      return gate({
         isMatch: true,
         score: 0.98,
         matchType: "legal_name",
         matchedText: legal,
         confidence: "high",
         reason: `Direct match with configured legal entity name "${legal}"`
-      };
+      });
     }
   }
 
@@ -327,14 +340,14 @@ export function matchSchoolEntity(
           const countryMatches = Boolean(school.country && candidateLower.includes(school.country.toLowerCase()));
 
           if (cityMatches || countryMatches || !school.city) {
-            return {
+            return gate({
               isMatch: true,
               score: 0.92,
               matchType: "acronym",
               matchedText: acronym,
               confidence: "high",
               reason: "Acronym matched with verified geographic context"
-            };
+            });
           }
         }
       }
@@ -350,14 +363,14 @@ export function matchSchoolEntity(
   }
 
   if (coreCanonical === coreCandidate) {
-    return {
+    return gate({
       isMatch: true,
       score: 0.95,
       matchType: "fuzzy",
       matchedText: canonicalName,
       confidence: "high",
       reason: "Exact core brand name match"
-    };
+    });
   }
 
   // NO FUZZY MATCHING ALLOWED. Hardcoded exact matches, aliases, platform IDs, and core token equality ONLY.
