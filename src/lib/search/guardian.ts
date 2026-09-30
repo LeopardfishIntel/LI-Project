@@ -53,6 +53,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
       city: d.data().city || "",
       country: d.data().country || "",
       aliases: d.data().aliases || [],
+      legalNames: d.data().legalNames || d.data().legal_names || [],
       group: d.data().group || d.data().schoolGroup || "",
     }));
 

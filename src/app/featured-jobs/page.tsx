@@ -103,6 +103,8 @@ import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryU
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
+import { isMalvernCampus } from '@/lib/search/malvern';
+import { isCognitaSchool } from '@/lib/search/cognita';
 import { logTelemetryEvent } from '@/lib/telemetry';
 
 const GEMS_CANONICAL_IDS = new Set([
@@ -2431,23 +2433,23 @@ export default function FeaturedJobsPage() {
                                 allowedOperatorGroup = "GEMS";
                               } else if (canonicalGroupUpper.includes("TAALEEM") || isTaaleemSchool(job.schoolId, job.schoolName, canonicalGroupUpper)) {
                                 allowedOperatorGroup = "TAALEEM";
-                              } else if (canonicalGroupUpper.includes("NORD ANGLIA")) {
+                              } else if (canonicalGroupUpper.includes("NORD ANGLIA") || applyUrlLower.includes("careers.nordanglia.com")) {
                                 allowedOperatorGroup = "NORD ANGLIA";
-                              } else if (canonicalGroupUpper.includes("COGNITA")) {
+                              } else if (canonicalGroupUpper.includes("COGNITA") || isCognitaSchool(job.schoolId, job.schoolName, canonicalGroupUpper) || applyUrlLower.includes("cognitapeople.csod.com")) {
                                 allowedOperatorGroup = "COGNITA";
-                              } else if (canonicalGroupUpper.includes("INSPIRED")) {
+                              } else if (canonicalGroupUpper.includes("INSPIRED") || applyUrlLower.includes("jobs.inspirededu.com")) {
                                 allowedOperatorGroup = "INSPIRED";
-                              } else if (canonicalGroupUpper.includes("GLOBE")) {
+                              } else if (canonicalGroupUpper.includes("GLOBE") || applyUrlLower.includes("careers.globeducate.com")) {
                                 allowedOperatorGroup = "GLOBEDUCATE";
                               } else if (canonicalGroupUpper.includes("ISP") || canonicalGroupUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools")) {
                                 allowedOperatorGroup = "ISP";
                               } else if (canonicalGroupUpper.includes("ESF") || isEsfSchool(job.schoolId, job.schoolName, canonicalGroupUpper, applyUrlLower)) {
                                 allowedOperatorGroup = "ESF";
-                              } else if (canonicalGroupUpper.includes("MALVERN")) {
+                              } else if (canonicalGroupUpper.includes("MALVERN") || isMalvernCampus(job.schoolId, job.schoolName, canonicalGroupUpper)) {
                                 allowedOperatorGroup = "MALVERN";
-                              } else if (canonicalGroupUpper.includes("ALDAR")) {
+                              } else if (canonicalGroupUpper.includes("ALDAR") || applyUrlLower.includes("aldar-education")) {
                                 allowedOperatorGroup = "ALDAR";
-                              } else if (canonicalGroupUpper.includes("QATAR")) {
+                              } else if (canonicalGroupUpper.includes("QATAR") || applyUrlLower.includes("qatar-foundation")) {
                                 allowedOperatorGroup = "QATAR_FOUNDATION";
                               }
 

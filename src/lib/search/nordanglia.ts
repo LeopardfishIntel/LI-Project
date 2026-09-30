@@ -233,7 +233,7 @@ function resolveCanonicalNaSchool(portalSchool: string, portalCity: string, naSc
   for (const s of naSchools) {
     const schoolName = s.name || s.schoolname || "";
     const res = matchSchoolEntity(
-      { id: s.id, name: schoolName, schoolname: s.schoolname, city: s.city, country: s.country, aliases: s.aliases },
+      { id: s.id, name: schoolName, schoolname: s.schoolname, city: s.city, country: s.country, aliases: s.aliases, legalNames: s.legalNames || s.legal_names || [] },
       { candidateText: portalSchool, city: portalCity }
     );
     if (res.isMatch) return s;

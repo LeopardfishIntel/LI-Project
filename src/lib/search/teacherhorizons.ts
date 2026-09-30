@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { matchSchoolEntity } from "@/lib/crawler/entityMatcher";
 import { 
   isEngineCoolingDown, 
   tripEngineCoolingDown, 
@@ -128,7 +129,16 @@ export async function searchTeacherHorizonsDbSchools(query: string = ""): Promis
     if (!db || typeof db.collection !== "function") return [];
 
     const snap = await db.collection("schools").get();
-    const dbSchools = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+    const dbSchools = snap.docs.map((d: any) => ({
+      id: d.id,
+      name: d.data().name || d.data().schoolname,
+      schoolname: d.data().schoolname || d.data().name,
+      city: d.data().city || "",
+      country: d.data().country || "",
+      aliases: d.data().aliases || [],
+      legalNames: d.data().legalNames || d.data().legal_names || [],
+      ...d.data(),
+    }));
 
     if (dbSchools.length === 0) return [];
 
@@ -166,31 +176,50 @@ export async function searchTeacherHorizonsDbSchools(query: string = ""): Promis
 
     for (const job of newItems) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
-      const fullText = `${job.title} ${job.schoolStr}`.toLowerCase();
+      let bestSchool: any = null;
+      let bestScore = 0;
 
-      const matchedSchool = dbSchools.find((s: any) => {
-        const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 3) return false;
+      for (const school of dbSchools) {
+        const candidateText = job.schoolStr ? `${job.schoolStr} ${job.title}` : job.title;
+        const matchRes = matchSchoolEntity(
+          school,
+          {
+            candidateText,
+            sourceUrl: job.applyUrl,
+          },
+          0.85
+        );
 
-        if (fullText.includes(sName)) return true;
-
-        const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
-        if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
-          return true;
+        if (matchRes.isMatch && matchRes.score > bestScore) {
+          bestScore = matchRes.score;
+          bestSchool = school;
         }
 
-        return false;
-      });
+        if (job.schoolStr) {
+          const directMatch = matchSchoolEntity(
+            school,
+            {
+              candidateText: job.schoolStr,
+              sourceUrl: job.applyUrl,
+            },
+            0.85
+          );
+          if (directMatch.isMatch && directMatch.score > bestScore) {
+            bestScore = directMatch.score;
+            bestSchool = school;
+          }
+        }
+      }
 
-      if (matchedSchool) {
+      if (bestSchool && bestScore >= 0.85) {
         matches.push({
           jobId: job.jobId,
           title: job.title,
           applyUrl: job.applyUrl,
-          schoolId: matchedSchool.id,
-          schoolName: matchedSchool.name || matchedSchool.schoolname,
-          city: matchedSchool.city || "",
-          country: matchedSchool.country || "",
+          schoolId: bestSchool.id,
+          schoolName: bestSchool.name || bestSchool.schoolname,
+          city: bestSchool.city || "",
+          country: bestSchool.country || "",
           source: "Teacher Horizons",
           datePosted: new Date().toISOString(),
           closingDate: null

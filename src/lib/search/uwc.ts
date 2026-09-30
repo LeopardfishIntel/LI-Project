@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { matchSchoolEntity } from "@/lib/crawler/entityMatcher";
 import * as cheerio from "cheerio";
 
 export interface UwcJobMatch {
@@ -26,7 +27,16 @@ export async function searchUwcDbSchools(query: string = ""): Promise<UwcJobMatc
     // 1. Query all valid UWC / United World College schools from DB
     const snap = await db.collection("schools").get();
     const dbSchools = snap.docs
-      .map((d: any) => ({ id: d.id, ...d.data() }))
+      .map((d: any) => ({
+        id: d.id,
+        name: d.data().name || d.data().schoolname,
+        schoolname: d.data().schoolname || d.data().name,
+        city: d.data().city || "",
+        country: d.data().country || "",
+        aliases: d.data().aliases || [],
+        legalNames: d.data().legalNames || d.data().legal_names || [],
+        ...d.data(),
+      }))
       .filter((s: any) => {
         const str = JSON.stringify(s).toLowerCase();
         return str.includes("uwc") || str.includes("united world college");
@@ -88,34 +98,43 @@ export async function searchUwcDbSchools(query: string = ""): Promise<UwcJobMatc
     for (const job of uniqueRawJobs) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
 
-      const fullText = `${job.title} ${job.campus} ${job.text}`.toLowerCase();
+      const candidateText = job.campus ? `${job.campus} ${job.title}` : `${job.title} ${job.text}`;
 
-      const matchedSchool = dbSchools.find((s: any) => {
-        const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 3) return false;
+      let bestSchool: any = null;
+      let bestScore = 0;
 
-        if (fullText.includes(sName)) return true;
+      for (const school of dbSchools) {
+        const matchRes = matchSchoolEntity(
+          school,
+          {
+            candidateText,
+            sourceUrl: job.href,
+          },
+          0.85
+        );
 
-        // Check city or country match combined with "uwc"
-        const city = (s.city || "").toLowerCase().trim();
-        if (city && city.length >= 3 && fullText.includes(city) && fullText.includes("uwc")) {
-          return true;
+        if (matchRes.isMatch && matchRes.score > bestScore) {
+          bestScore = matchRes.score;
+          bestSchool = school;
         }
 
-        const country = (s.country || "").toLowerCase().trim();
-        if (country && country.length >= 3 && fullText.includes(country) && fullText.includes("uwc")) {
-          return true;
+        if (job.campus) {
+          const campusMatch = matchSchoolEntity(
+            school,
+            {
+              candidateText: job.campus,
+              sourceUrl: job.href,
+            },
+            0.85
+          );
+          if (campusMatch.isMatch && campusMatch.score > bestScore) {
+            bestScore = campusMatch.score;
+            bestSchool = school;
+          }
         }
+      }
 
-        const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
-        if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
-          return true;
-        }
-
-        return false;
-      });
-
-      if (matchedSchool) {
+      if (bestSchool && bestScore >= 0.85) {
         const slugMatch = job.href.match(/\/career\/([^\/]+)/);
         const jobId = slugMatch ? `uwc_${slugMatch[1]}` : `uwc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
@@ -123,10 +142,10 @@ export async function searchUwcDbSchools(query: string = ""): Promise<UwcJobMatc
           jobId,
           title: job.title,
           applyUrl: job.href,
-          schoolId: matchedSchool.id,
-          schoolName: matchedSchool.name || matchedSchool.schoolname,
-          city: matchedSchool.city || "",
-          country: matchedSchool.country || "",
+          schoolId: bestSchool.id,
+          schoolName: bestSchool.name || bestSchool.schoolname,
+          city: bestSchool.city || "",
+          country: bestSchool.country || "",
           source: "UWC",
           datePosted: new Date().toISOString(),
           closingDate: null,
