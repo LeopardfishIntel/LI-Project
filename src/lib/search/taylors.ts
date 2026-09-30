@@ -1,8 +1,8 @@
 import { getAdminDb } from "@/firebase/admin";
-import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { isStrictAcademicTeachingRole } from "@/lib/crawler/roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "@/lib/crawler/entityMatcher";
 import { isEngineCoolingDown, tripEngineCoolingDown, injectRequestJitter, twoPassDifferentialFilter } from "@/lib/crawler/safetyEngine";
-import * as cheerio from "cheerio";
+import { chromium } from "playwright";
 
 export interface TaylorsJobMatch {
   jobId: string;
@@ -13,6 +13,72 @@ export interface TaylorsJobMatch {
   city: string;
   country: string;
   source: string;
+}
+
+// The real Taylor's Education Group careers portal is an SAP SuccessFactors
+// portal at careers.taylors.edu.my/search/. It renders a paginated table of
+// positions across the whole Taylor's network (Taylor's University, Taylor's
+// International Schools, Garden International School, and Nexus International Schools).
+const TAYLORS_BASE_URL = "https://careers.taylors.edu.my";
+
+async function scrapeTaylorsPortal(): Promise<Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }>> {
+  const browser = await chromium.launch({ headless: true });
+  const candidateJobs: Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }> = [];
+
+  try {
+    const page = await browser.newPage();
+    const initialUrl = `${TAYLORS_BASE_URL}/search/?q=&startrow=0`;
+    await page.goto(initialUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForSelector("tr.data-row", { timeout: 15000 }).catch(() => {});
+
+    // Parse total job count from header (e.g., "Results 1 – 10 of 155")
+    const totalResults = await page.evaluate(() => {
+      const text = document.body.innerText;
+      const match = text.match(/Results\s+\d+\s+[–-]\s+\d+\s+of\s+(\d+)/i);
+      return match ? parseInt(match[1], 10) : 10;
+    });
+
+    const maxLimit = Math.min(totalResults, 250);
+    const seenUrls = new Set<string>();
+
+    for (let start = 0; start < maxLimit; start += 10) {
+      if (start > 0) {
+        const pageUrl = `${TAYLORS_BASE_URL}/search/?q=&startrow=${start}`;
+        await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 25000 }).catch(() => {});
+        await page.waitForSelector("tr.data-row", { timeout: 10000 }).catch(() => {});
+      }
+
+      const rows = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll("tr.data-row")).map((tr) => {
+          const a = tr.querySelector(".colTitle a");
+          const title = a?.textContent?.trim() || "";
+          const href = a?.getAttribute("href") || "";
+          const facility = tr.querySelector(".jobFacility")?.textContent?.trim() || "";
+          const location = tr.querySelector(".jobLocation")?.textContent?.trim() || "";
+          return { title, href, facility, location };
+        });
+      });
+
+      for (const r of rows) {
+        if (!r.href || !r.title) continue;
+        const fullHref = r.href.startsWith("http") ? r.href : `${TAYLORS_BASE_URL}${r.href}`;
+        if (seenUrls.has(fullHref)) continue;
+        seenUrls.add(fullHref);
+
+        const slugMatch = fullHref.split("/").filter(Boolean).pop() || `taylors_${Date.now()}`;
+        candidateJobs.push({
+          jobId: `taylors_${slugMatch}`,
+          title: r.title,
+          applyUrl: fullHref,
+          schoolStr: `${r.facility} ${r.location}`.trim(),
+        });
+      }
+    }
+  } finally {
+    await browser.close();
+  }
+
+  return candidateJobs;
 }
 
 export async function searchTaylorsDbSchools(query: string = ""): Promise<TaylorsJobMatch[]> {
@@ -31,61 +97,38 @@ export async function searchTaylorsDbSchools(query: string = ""): Promise<Taylor
       .map((d: any) => ({ id: d.id, ...d.data() }))
       .filter((s: any) => {
         const str = JSON.stringify(s).toLowerCase();
-        return str.includes("taylor") || str.includes("taylors") || str.includes("garden international");
+        return str.includes("taylor") || str.includes("taylors") || str.includes("garden international") || str.includes("nexus international");
       });
 
     if (dbSchools.length === 0) return [];
 
-    const targetUrl = "https://taylors.edu.my/careers";
     await injectRequestJitter(1500, 3500);
 
-    const res = await fetch(targetUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    let candidateJobs: Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }> = [];
+    try {
+      candidateJobs = await scrapeTaylorsPortal();
+    } catch (err: any) {
+      const msg = String(err?.message || err);
+      if (/429|403|forbidden|too many/i.test(msg)) {
+        await tripEngineCoolingDown(ENGINE_KEY, `Playwright fetch blocked: ${msg}`, 429);
       }
-    });
-
-    if (res.status === 429 || res.status === 403) {
-      await tripEngineCoolingDown(ENGINE_KEY, `HTTP ${res.status} Access Restricted`, res.status);
+      console.warn("⚠️ Taylor's portal scrape error:", msg);
       return [];
     }
 
-    if (res.status !== 200) return [];
-
-    const html = await res.text();
-    const $ = cheerio.load(html);
-
-    const candidateJobs: Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }> = [];
-
-    $("a[href*='job'], .job-item, article, tr, li").each((_: any, el: any) => {
-      const href = $(el).find("a").attr("href") || $(el).attr("href") || "";
-      if (!href || (!href.includes("job") && !href.includes("vacancy"))) return;
-
-      const cleanUrl = href.startsWith("http") ? href : `https://taylors.edu.my${href}`;
-      const title = $(el).find("h2, h3, h4, a").first().text().trim();
-      const text = $(el).text().replace(/\s+/g, " ").trim();
-
-      const slugMatch = cleanUrl.split("/").pop() || `taylors_${Date.now()}`;
-
-      candidateJobs.push({
-        jobId: `taylors_${slugMatch}`,
-        title,
-        applyUrl: cleanUrl,
-        schoolStr: text
-      });
-    });
+    if (candidateJobs.length === 0) return [];
 
     const { newItems } = await twoPassDifferentialFilter(ENGINE_KEY, candidateJobs);
 
     const matches: TaylorsJobMatch[] = [];
 
     for (const job of newItems) {
-      if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
-      const fullText = `${job.title} ${job.schoolStr}`;
+      if (!job.title || !isStrictAcademicTeachingRole(job.title)) continue;
 
-      // Ground strictly via matchSchoolEntity (aliases + legalNames + geographic isolation)
-      // instead of a bare canonical-name-only substring check with no aliases/legalNames
-      // coverage and no score.
+      // Normalise parentheses so "Nexus International School (Singapore)" maps cleanly to
+      // canonical "Nexus International School Singapore"
+      const cleanCandidate = `${job.title} ${job.schoolStr}`.replace(/[()]/g, " ").replace(/\s+/g, " ").trim();
+
       let matchedSchool: any = null;
       let bestScore = 0;
       for (const s of dbSchools) {
@@ -98,7 +141,7 @@ export async function searchTaylorsDbSchools(query: string = ""): Promise<Taylor
           aliases: Array.isArray(s.aliases) ? s.aliases : [],
           legalNames: Array.isArray(s.legalNames) ? s.legalNames : (Array.isArray(s.legal_names) ? s.legal_names : []),
         };
-        const res = matchSchoolEntity(schoolEntity, { candidateText: fullText });
+        const res = matchSchoolEntity(schoolEntity, { candidateText: cleanCandidate });
         if (res.isMatch && res.score > bestScore) {
           bestScore = res.score;
           matchedSchool = s;
