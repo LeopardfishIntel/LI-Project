@@ -2416,6 +2416,9 @@ export default function FeaturedJobsPage() {
                               if (applyUrlLower.includes("esf.wd102.myworkdayjobs.com") || applyUrlLower.includes("esf.edu.hk") || isEsfSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group, applyUrlLower)) {
                                 sMap.set("ESF", "ESF");
                               }
+                              if (applyUrlLower.includes("taylors.edu.my")) {
+                                sMap.set("TAYLORS", "Taylor's Education");
+                              }
 
                               rawSources.forEach((s: any) => {
                                 if (!s) return;

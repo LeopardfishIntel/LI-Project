@@ -28,8 +28,8 @@ async function scrapeTaylorsPortal(): Promise<Array<{ jobId: string; title: stri
   try {
     const page = await browser.newPage();
     const initialUrl = `${TAYLORS_BASE_URL}/search/?q=&startrow=0`;
-    await page.goto(initialUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-    await page.waitForSelector("tr.data-row", { timeout: 15000 }).catch(() => {});
+    await page.goto(initialUrl, { waitUntil: "commit", timeout: 45000 });
+    await page.waitForSelector("tr.data-row", { timeout: 25000 }).catch(() => {});
 
     // Parse total job count from header (e.g., "Results 1 – 10 of 155")
     const totalResults = await page.evaluate(() => {
@@ -44,8 +44,8 @@ async function scrapeTaylorsPortal(): Promise<Array<{ jobId: string; title: stri
     for (let start = 0; start < maxLimit; start += 10) {
       if (start > 0) {
         const pageUrl = `${TAYLORS_BASE_URL}/search/?q=&startrow=${start}`;
-        await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 25000 }).catch(() => {});
-        await page.waitForSelector("tr.data-row", { timeout: 10000 }).catch(() => {});
+        await page.goto(pageUrl, { waitUntil: "commit", timeout: 35000 }).catch(() => {});
+        await page.waitForSelector("tr.data-row", { timeout: 20000 }).catch(() => {});
       }
 
       const rows = await page.evaluate(() => {
