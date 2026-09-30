@@ -118,10 +118,11 @@ async function main() {
     const j = { docId: d.id, ...d.data() } as any;
     const rawStatus = String(j.status || "").toUpperCase();
     if (["EXPIRED", "CLOSED", "REJECTED", "PENDING_REVIEW", "PENDING"].includes(rawStatus)) return;
-    if (j.closingDateMillis && j.closingDateMillis < todayMs) {
-      // Will also be flagged as STALE_BUT_LIVE below — still counted as "live"
-      // because that's what the public site would currently do too.
-    }
+    // Match page.tsx's real visibility filter exactly, not just the status
+    // guard — otherwise this reports on jobs the public can't actually see.
+    const sIdCheck = String(j.schoolId || "").trim();
+    if (!sIdCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
+    if (!isValidJobTitle(j.title || (j as any).jobTitle || "")) return;
     liveJobs.push(j);
   });
 
@@ -203,10 +204,13 @@ async function main() {
       detail.push(`Closing date (${new Date(j.closingDateMillis).toISOString().slice(0, 10)}) has passed but the job is still marked live.`);
     }
 
-    // 5: bad title
-    if (!title || !isValidJobTitle(title) || isSupportOrNonTeachingRole(title)) {
+    // 5: bad title — isValidJobTitle() is already applied as a visibility
+    // filter above (matching page.tsx), so only isSupportOrNonTeachingRole()
+    // belongs here: page.tsx does NOT filter by role classifier, so a
+    // support/non-teaching title CAN still be live today. That's the real gap.
+    if (isSupportOrNonTeachingRole(title)) {
       issues.push("BAD_TITLE");
-      detail.push(`Title "${title}" looks like a non-teaching/support role or is otherwise invalid.`);
+      detail.push(`Title "${title}" looks like a non-teaching/support role.`);
     }
 
     // 8: unverified but live
@@ -215,7 +219,8 @@ async function main() {
       detail.push("Flagged unverifiableAttribution:true but is still showing as live — should have been rejected.");
     }
 
-    // 7: duplicate tracking (evaluated after the loop)
+    // Multi-engine card tracking — page.tsx merges same schoolId+title docs
+    // into one visible card by design, so this is informational, not a flag.
     const dk = `${schoolId}::${normalizeTitleForDupeCheck(title)}`;
     if (!dupeKey.has(dk)) dupeKey.set(dk, []);
     dupeKey.get(dk)!.push(j.docId);
@@ -225,35 +230,8 @@ async function main() {
     }
   }
 
-  // Resolve duplicates
-  let duplicateGroups = 0;
-  let duplicateJobs = 0;
-  for (const [key, docIds] of dupeKey.entries()) {
-    if (docIds.length > 1) {
-      duplicateGroups++;
-      duplicateJobs += docIds.length;
-      const [schoolId, normTitle] = key.split("::");
-      for (const docId of docIds) {
-        const existing = flagged.find((f) => f.docId === docId);
-        const msg = `Duplicate: ${docIds.length} live jobs share school ${schoolId} + title "${normTitle}" (${docIds.join(", ")}).`;
-        if (existing) {
-          existing.issues.push("DUPLICATE");
-          existing.detail.push(msg);
-        } else {
-          const j = liveJobs.find((x) => x.docId === docId);
-          flagged.push({
-            docId,
-            title: j?.title || "",
-            schoolId: j?.schoolId || "",
-            schoolName: j?.schoolName || "",
-            source: j?.source || "",
-            issues: ["DUPLICATE"],
-            detail: [msg],
-          });
-        }
-      }
-    }
-  }
+  const uniqueLiveCards = dupeKey.size;
+  const multiEngineGroups = Array.from(dupeKey.values()).filter((ids) => ids.length > 1).length;
 
   // Summary counts
   const counts: Record<string, number> = {};
@@ -264,8 +242,10 @@ async function main() {
   }
 
   console.log("================ SUMMARY ================");
-  console.log(`Live jobs checked:        ${liveJobs.length}`);
-  console.log(`Jobs with at least 1 issue: ${flagged.length} (${((flagged.length / Math.max(liveJobs.length, 1)) * 100).toFixed(1)}%)`);
+  console.log(`Live documents checked:     ${liveJobs.length}`);
+  console.log(`Unique live cards (after multi-engine merge, matching what visitors actually see): ${uniqueLiveCards}`);
+  console.log(`  (${multiEngineGroups} of those are posted by more than one engine — normal, not an issue)`);
+  console.log(`Jobs with at least 1 real issue: ${flagged.length} (${((flagged.length / Math.max(liveJobs.length, 1)) * 100).toFixed(1)}% of documents)`);
   console.log("");
   console.log("By issue type:");
   console.log(`  BROKEN_LINK      (no way to apply at all):        ${counts.BROKEN_LINK || 0}`);
@@ -274,7 +254,6 @@ async function main() {
   console.log(`  STALE_BUT_LIVE   (closing date passed, still up):  ${counts.STALE_BUT_LIVE || 0}`);
   console.log(`  BAD_TITLE        (non-teaching role slipped in):   ${counts.BAD_TITLE || 0}`);
   console.log(`  MISSING_SCHOOL   (schoolId not in DB):             ${counts.MISSING_SCHOOL || 0}`);
-  console.log(`  DUPLICATE        (same job posted more than once): ${counts.DUPLICATE || 0} (in ${duplicateGroups} groups)`);
   console.log(`  UNVERIFIED_LIVE  (should've been rejected):        ${counts.UNVERIFIED_LIVE || 0}`);
   console.log("==========================================\n");
 
@@ -292,7 +271,7 @@ async function main() {
   const outPath = path.join(outputDir, `live_site_quality_audit_${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
   fs.writeFileSync(
     outPath,
-    JSON.stringify({ generatedAt: new Date().toISOString(), totalLive: liveJobs.length, counts, flagged }, null, 2)
+    JSON.stringify({ generatedAt: new Date().toISOString(), totalLive: liveJobs.length, uniqueLiveCards, multiEngineGroups, counts, flagged }, null, 2)
   );
   console.log(`📄 Full report saved: ${outPath}`);
   console.log("\nThis script makes zero writes — it's safe to run any time.");

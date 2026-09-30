@@ -607,10 +607,16 @@ export default function AdminCommandPage() {
 
                 {jobAuditResult && jobAuditResult.success && (
                     <>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                             <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Live Jobs Checked</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Unique Live Cards</p>
+                                <p className="text-2xl font-black text-white mt-1">{jobAuditResult.uniqueLiveCards}</p>
+                                <p className="text-[9px] text-slate-600 mt-0.5">what visitors actually see</p>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Live Documents</p>
                                 <p className="text-2xl font-black text-white mt-1">{jobAuditResult.totalLive}</p>
+                                <p className="text-[9px] text-slate-600 mt-0.5">{jobAuditResult.multiEngineGroups} multi-engine groups</p>
                             </div>
                             <div className="bg-[#0b1224] border border-white/10 rounded-sm p-4">
                                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Total Documents</p>
@@ -626,7 +632,7 @@ export default function AdminCommandPage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             {[
                                 { key: 'BROKEN_LINK', label: 'Broken Link' },
                                 { key: 'GENERIC_LINK', label: 'Generic Link' },
@@ -634,7 +640,6 @@ export default function AdminCommandPage() {
                                 { key: 'STALE_BUT_LIVE', label: 'Expired, Still Live' },
                                 { key: 'BAD_TITLE', label: 'Bad Title' },
                                 { key: 'MISSING_SCHOOL', label: 'Missing School' },
-                                { key: 'DUPLICATE', label: 'Duplicate' },
                                 { key: 'UNVERIFIED_LIVE', label: 'Should Be Rejected' },
                             ].map(({ key, label }) => (
                                 <div key={key} className="bg-black/30 border border-white/5 rounded-sm p-3">

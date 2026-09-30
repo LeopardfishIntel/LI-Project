@@ -2573,14 +2573,17 @@ export default function FeaturedJobsPage() {
                                         foundUrl = ESF_PORTAL_URL;
                                       }
                                     } else if (srcUpper === "DIRECT") {
+                                      // Only a job-specific link earns the "Direct" pill now — never the
+                                      // school's general website (job.schoolWebsite) or a generic apply
+                                      // fallback. If neither of the two specific-link fields is set, no
+                                      // Direct pill is shown at all (srcUrl stays "#" and gets skipped
+                                      // below) rather than sending someone to the wrong page. Confirmed
+                                      // safe via audit_live_site_quality.ts: 0 live jobs currently rely
+                                      // on the removed fallbacks for their only link. 2026-09-30.
                                       if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
                                         foundUrl = (job as any).directUrl;
                                       } else if (job.sourceUrls && (job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"]) && !isGenericUrl(job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"])) {
                                         foundUrl = job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"];
-                                      } else if (job.schoolWebsite && job.schoolWebsite !== "#") {
-                                        foundUrl = job.schoolWebsite;
-                                      } else if (!isPureAggregator) {
-                                        foundUrl = rawUrl;
                                       }
                                     }
                                   }

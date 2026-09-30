@@ -1685,6 +1685,8 @@ export interface JobAuditResult {
   generatedAt: string;
   totalDocuments: number;
   totalLive: number;
+  uniqueLiveCards: number;
+  multiEngineGroups: number;
   counts: Record<string, number>;
   flagged: JobAuditFlaggedItem[];
 }
@@ -1730,6 +1732,8 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
     generatedAt: new Date().toISOString(),
     totalDocuments: 0,
     totalLive: 0,
+    uniqueLiveCards: 0,
+    multiEngineGroups: 0,
     counts: {},
     flagged: [],
   };
@@ -1754,10 +1758,15 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
     const todayMs = Date.now();
     const liveJobs: any[] = [];
 
+    // Matches page.tsx's real visibility filter exactly, not just the status
+    // guard — otherwise this reports on jobs the public can't actually see.
     jobsSnap.docs.forEach((d: any) => {
       const j = { docId: d.id, ...d.data() };
       const rawStatus = String(j.status || "").toUpperCase();
       if (["EXPIRED", "CLOSED", "REJECTED", "PENDING_REVIEW", "PENDING"].includes(rawStatus)) return;
+      const sIdCheck = String(j.schoolId || "").trim();
+      if (!sIdCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
+      if (!isValidJobTitle(j.title || j.jobTitle || "")) return;
       liveJobs.push(j);
     });
 
@@ -1830,9 +1839,13 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
         detail.push(`Closing date (${new Date(j.closingDateMillis).toISOString().slice(0, 10)}) has passed but the job is still marked live.`);
       }
 
-      if (!title || !isValidJobTitle(title) || isSupportOrNonTeachingRole(title)) {
+      // isValidJobTitle() is already applied as a visibility filter above
+      // (matching page.tsx), so only isSupportOrNonTeachingRole() belongs
+      // here — page.tsx does NOT filter by role classifier, so a support/
+      // non-teaching title can still be live today. That's the real gap.
+      if (isSupportOrNonTeachingRole(title)) {
         issues.push("BAD_TITLE");
-        detail.push(`Title "${title}" looks like a non-teaching/support role or is otherwise invalid.`);
+        detail.push(`Title "${title}" looks like a non-teaching/support role.`);
       }
 
       if (j.unverifiableAttribution === true) {
@@ -1840,6 +1853,8 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
         detail.push("Flagged unverifiableAttribution:true but is still showing as live.");
       }
 
+      // Multi-engine card tracking — page.tsx merges same schoolId+title docs
+      // into one visible card by design, so this is informational, not a flag.
       const dk = `${schoolId}::${jobAuditNormalizeTitle(title)}`;
       if (!dupeKey.has(dk)) dupeKey.set(dk, []);
       dupeKey.get(dk)!.push(j.docId);
@@ -1849,30 +1864,8 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
       }
     }
 
-    for (const [key, docIds] of dupeKey.entries()) {
-      if (docIds.length > 1) {
-        const [schoolId, normTitle] = key.split("::");
-        for (const docId of docIds) {
-          const existing = flagged.find((f) => f.docId === docId);
-          const msg = `Duplicate: ${docIds.length} live jobs share school ${schoolId} + title "${normTitle}" (${docIds.join(", ")}).`;
-          if (existing) {
-            existing.issues.push("DUPLICATE");
-            existing.detail.push(msg);
-          } else {
-            const j = liveJobs.find((x) => x.docId === docId);
-            flagged.push({
-              docId,
-              title: j?.title || "",
-              schoolId: j?.schoolId || "",
-              schoolName: j?.schoolName || "",
-              source: j?.source || "",
-              issues: ["DUPLICATE"],
-              detail: [msg],
-            });
-          }
-        }
-      }
-    }
+    const uniqueLiveCards = dupeKey.size;
+    const multiEngineGroups = Array.from(dupeKey.values()).filter((ids) => ids.length > 1).length;
 
     const counts: Record<string, number> = {};
     for (const f of flagged) {
@@ -1889,6 +1882,8 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
       generatedAt: new Date().toISOString(),
       totalDocuments: jobsSnap.size,
       totalLive: liveJobs.length,
+      uniqueLiveCards,
+      multiEngineGroups,
       counts,
       flagged,
     };
