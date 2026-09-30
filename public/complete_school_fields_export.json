@@ -40294,5 +40294,32 @@
     "savingspotential": null,
     "base_salary_cny": null,
     "updatedAt": "2026-09-27T07:21:30.451Z"
+  },
+  {
+    "id": "FLIS0463",
+    "schoolId": "FLIS0463",
+    "name": "Al Jazeera Academy",
+    "schoolname": "Al Jazeera Academy",
+    "city": "Doha",
+    "country": "Qatar",
+    "address": "PO Box 22250, Mesaimeer, Doha, Qatar",
+    "curriculum": "British",
+    "aliases": [
+      "Al Jazeera Academy Doha"
+    ],
+    "salaryRange": "QAR 145,000 - QAR 195,000 / year (Tax-Free)",
+    "net_salary": 13500,
+    "currency": "QAR",
+    "salary_benchmark_category": "MODELLED_ESTIMATE",
+    "salary_confidence": "Medium",
+    "salary_source_year": 2026,
+    "salary_source_note": "No dedicated research yet — modelled from comparable British-curriculum Doha schools (Park House, King's College Doha, Sherborne Qatar, Oryx International). Follow-up: verify directly with the school.",
+    "housingBenefit": "Provided Furnished Apartment or Housing Allowance",
+    "housingprovision": "Provided Furnished Apartment or Housing Allowance",
+    "healthcoverage": "Private Medical Insurance (assumed standard — unverified)",
+    "scrapedJobsCount": 9,
+    "openJobsCount": 9,
+    "isLocked": false,
+    "isCampusStub": false
   }
 ]
