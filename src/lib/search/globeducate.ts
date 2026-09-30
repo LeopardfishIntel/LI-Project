@@ -59,6 +59,7 @@ export async function searchGlobeducateDbSchools(query: string = ""): Promise<Gl
       href: string;
       portalSchool: string;
       portalCity: string;
+      portalCountry: string;
       fullText: string;
     }> = [];
     const seenUrls = new Set<string>();
@@ -104,12 +105,17 @@ export async function searchGlobeducateDbSchools(query: string = ""): Promise<Gl
           );
           const portalLoc = locMatch ? locMatch[1].trim() : "";
           const portalCity = portalLoc.split(",")[0].trim();
+          // Best-effort country signal: whatever follows the city in "Location" (e.g. "London, UK").
+          // Used below only to reject an outright country conflict, never to require a match —
+          // the portal doesn't always include it.
+          const portalCountry = portalLoc.split(",").slice(1).join(",").trim();
 
           rawJobs.push({
             title,
             href: cleanHref,
             portalSchool,
             portalCity,
+            portalCountry,
             fullText: text
           });
         });
@@ -132,14 +138,27 @@ export async function searchGlobeducateDbSchools(query: string = ""): Promise<Gl
       const normPortalSchool = job.portalSchool.toLowerCase().replace(/[’']/g, "'");
       const normPortalCity = job.portalCity.toLowerCase();
 
+      const normPortalCountry = (job.portalCountry || "").toLowerCase().trim();
+
       let bestMatch: any = null;
       let maxScore = 0;
 
       for (const cand of dbSchools) {
         const cName = (cand.schoolname || cand.name || "").toLowerCase().trim().replace(/[’']/g, "'");
         const cCity = (cand.city || "").toLowerCase().trim();
+        const cCountry = (cand.country || "").toLowerCase().trim();
         const aliases: string[] = (Array.isArray(cand.aliases) ? cand.aliases : []).map((a: any) => String(a).toLowerCase().trim().replace(/[’']/g, "'")
         );
+        const legalNames: string[] = (Array.isArray(cand.legalNames) ? cand.legalNames : Array.isArray(cand.legal_names) ? cand.legal_names : []).map(
+          (a: any) => String(a).toLowerCase().trim().replace(/[’']/g, "'")
+        );
+
+        // Reject outright on an explicit country conflict — mirrors matchSchoolEntity's
+        // geographic isolation so two similarly-named/aliased Globeducate schools in
+        // different countries can't cross-match.
+        if (normPortalCountry.length >= 3 && cCountry.length >= 3 && !normPortalCountry.includes(cCountry) && !cCountry.includes(normPortalCountry)) {
+          continue;
+        }
 
         let score = 0;
 
@@ -151,11 +170,15 @@ export async function searchGlobeducateDbSchools(query: string = ""): Promise<Gl
 
           if (aliases.some((a) => a.length >= 3 && (normPortalSchool.includes(a) || a.includes(normPortalSchool))))
             score += 85;
+
+          if (legalNames.some((l) => l.length >= 3 && (normPortalSchool.includes(l) || l.includes(normPortalSchool))))
+            score += 85;
         }
 
         // 2. Full text match on school name / aliases
         if (cName.length >= 6 && normText.includes(cName)) score += 70;
         if (aliases.some((a) => a.length >= 4 && normText.includes(a))) score += 65;
+        if (legalNames.some((l) => l.length >= 4 && normText.includes(l))) score += 65;
 
         // 3. City match bonus
         if (cCity && cCity.length >= 3 && (normPortalCity === cCity || normText.includes(cCity))) {

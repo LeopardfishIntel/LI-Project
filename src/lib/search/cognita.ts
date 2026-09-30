@@ -66,7 +66,7 @@ export const COGNITA_CAMPUS_MAP: Record<string, CognitaCampusMeta> = {
     canonicalName: "Southbank International School",
     city: "London",
     country: "United Kingdom",
-    matchers: ["southbank", "hampstead", "westminster", "london"],
+    matchers: ["southbank", "hampstead", "westminster"],
   },
   "sukhumvit 107": {
     schoolId: "FLIS0137",

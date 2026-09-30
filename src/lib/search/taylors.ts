@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { matchSchoolEntity, SchoolEntity } from "@/lib/crawler/entityMatcher";
 import { isEngineCoolingDown, tripEngineCoolingDown, injectRequestJitter, twoPassDifferentialFilter } from "@/lib/crawler/safetyEngine";
 import * as cheerio from "cheerio";
 
@@ -80,12 +81,29 @@ export async function searchTaylorsDbSchools(query: string = ""): Promise<Taylor
 
     for (const job of newItems) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
-      const fullText = `${job.title} ${job.schoolStr}`.toLowerCase();
+      const fullText = `${job.title} ${job.schoolStr}`;
 
-      const matchedSchool = dbSchools.find((s: any) => {
-        const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        return sName && sName.length >= 3 && fullText.includes(sName);
-      });
+      // Ground strictly via matchSchoolEntity (aliases + legalNames + geographic isolation)
+      // instead of a bare canonical-name-only substring check with no aliases/legalNames
+      // coverage and no score.
+      let matchedSchool: any = null;
+      let bestScore = 0;
+      for (const s of dbSchools) {
+        const schoolEntity: SchoolEntity = {
+          id: s.id,
+          name: s.name || s.schoolname,
+          schoolname: s.schoolname || s.name,
+          city: s.city,
+          country: s.country,
+          aliases: Array.isArray(s.aliases) ? s.aliases : [],
+          legalNames: Array.isArray(s.legalNames) ? s.legalNames : (Array.isArray(s.legal_names) ? s.legal_names : []),
+        };
+        const res = matchSchoolEntity(schoolEntity, { candidateText: fullText });
+        if (res.isMatch && res.score > bestScore) {
+          bestScore = res.score;
+          matchedSchool = s;
+        }
+      }
 
       if (matchedSchool) {
         matches.push({

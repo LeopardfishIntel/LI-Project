@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { matchSchoolEntity, SchoolEntity } from "@/lib/crawler/entityMatcher";
 import { chromium } from "playwright";
 
 export interface InspiredJobMatch {
@@ -110,24 +111,34 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
     for (const job of uniqueJobs) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
 
-      const fullText = `${job.title} ${job.schoolName} ${job.location} ${job.text}`.toLowerCase();
+      const fullText = `${job.title} ${job.schoolName} ${job.location} ${job.text}`;
 
-      const matchedSchool = dbSchools.find((s: any) => {
-        const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 3) return false;
-        if (fullText.includes(sName)) return true;
-        const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
-        if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
-          return true;
+      // Ground strictly via matchSchoolEntity (aliases + legalNames + geographic isolation)
+      // instead of "first school whose name/alias is a substring of the scraped text wins"
+      // with no score. bestMatchType feeds the existing high/medium confidence signal below
+      // (previously: "medium" if only an alias, not the canonical name, was present).
+      let matchedSchool: any = null;
+      let bestScore = 0;
+      let bestMatchType = "none";
+      for (const s of dbSchools) {
+        const schoolEntity: SchoolEntity = {
+          id: s.id,
+          name: s.name || s.schoolname,
+          schoolname: s.schoolname || s.name,
+          city: s.city,
+          country: s.country,
+          aliases: Array.isArray(s.aliases) ? s.aliases : [],
+          legalNames: Array.isArray(s.legalNames) ? s.legalNames : (Array.isArray(s.legal_names) ? s.legal_names : []),
+        };
+        const res = matchSchoolEntity(schoolEntity, { candidateText: fullText, city: job.location });
+        if (res.isMatch && res.score > bestScore) {
+          bestScore = res.score;
+          matchedSchool = s;
+          bestMatchType = res.matchType;
         }
-        return false;
-      });
-
-      let matchedViaAlias = false;
-      if (matchedSchool) {
-        const sName = (matchedSchool.name || matchedSchool.schoolname || "").toLowerCase().trim();
-        matchedViaAlias = !fullText.includes(sName);
       }
+
+      const matchedViaAlias = bestMatchType !== "exact" && bestMatchType !== "platform_id";
 
       if (matchedSchool) {
         const seqMatch = job.href.match(/\/(\d+)\/?$/);

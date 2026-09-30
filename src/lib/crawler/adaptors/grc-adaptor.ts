@@ -141,7 +141,7 @@ export async function runGrcAdaptor(input?: AdaptorInput): Promise<RawJobRecord[
         country: grcCountry || input?.country || "",
         datePosted: datePostedStr,
         closingDate: closingDateStr,
-        status: "approved",
+        status: "pending_review",
       });
     }
 

@@ -26,14 +26,14 @@ export function cleanTaaleemJobTitle(rawTitle: string): string {
     .trim();
 
   clean = clean
-    .replace(/[-,s]+$/, "")
+    .replace(/[-,\s]+$/, "")
     .replace(/\s+/g, " ")
     .trim();
 
   if (clean.length > 70) {
     clean = clean
       .substring(0, 70)
-      .replace(/[-,s]+$/, "")
+      .replace(/[-,\s]+$/, "")
       .trim();
   }
 

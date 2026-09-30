@@ -129,7 +129,7 @@ export async function runInspiredAdaptor(input: AdaptorInput): Promise<RawJobRec
         country: input.country,
         datePosted: null,
         closingDate: closingDate,
-        status: "approved",
+        status: "pending_review",
       });
     }
 
