@@ -352,7 +352,7 @@ export async function searchGemsDbSchools(query: string = ""): Promise<GemsJobMa
           applyUrl,
           source: "GEMS Education",
           source_url: applyUrl,
-          status: "approved",
+          status: "pending_review",
           date_listed: datePosted || "Recently",
           date_closing: rawExpDate || "Open Until Filled",
           closingDateMillis: rawExpDate ? new Date(rawExpDate).getTime() : Date.now() + 42 * 24 * 60 * 60 * 1000,
