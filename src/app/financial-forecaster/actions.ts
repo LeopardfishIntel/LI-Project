@@ -87,23 +87,34 @@ function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string, 
   });
 }
 
-function getSchoolBaseUrl(schoolId: string, schoolName: string, website?: string): string {
-  if (website && website.startsWith("http")) {
-    return website;
+async function getSchoolBaseUrl(schoolId: string, schoolName: string, website?: string): Promise<string> {
+  if (website && typeof website === 'string' && website.trim()) {
+    const trimmed = website.trim();
+    return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+  }
+  if (schoolId) {
+    try {
+      const { getDocument } = await import('@/firebase/admin');
+      const docResult = await getDocument('schools', schoolId);
+      const schoolDoc = docResult as any;
+      const registered = schoolDoc?.website || schoolDoc?.schoolwebsite;
+      if (registered && typeof registered === 'string' && registered.trim()) {
+        const trimmed = registered.trim();
+        return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+      }
+    } catch (e) {
+      console.warn("🛸 [STABILITY] Could not lookup school website in getSchoolBaseUrl:", e);
+    }
   }
   const lowerName = schoolName.toLowerCase();
   const lowerId = schoolId.toLowerCase();
-  if (lowerName.includes("english school") && (lowerName.includes("nicosia") || lowerName.includes("cyprus")) || lowerId === "flis0281") {
-    return "https://www.englishschool.ac.cy";
-  }
   if (lowerName.includes("parklane") || lowerId.includes("parklane") || lowerId === "flis0202") {
     return "https://www.parklane-is.cz";
   }
   if (lowerName.includes("riverside") || lowerId.includes("riverside") || lowerId === "flis0059") {
     return "https://www.riversideschool.cz";
   }
-  const slug = schoolName.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-  return `https://www.${slug}.com`;
+  return "";
 }
 
 export interface EvaluateOfferInput {
@@ -507,12 +518,12 @@ export async function enrichReportWithLeadership(schoolId: string, vacancies: Va
   };
 }
 
-const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolName: string) => {
+const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolName: string, website?: string) => {
     if (!report) return report;
     const vacancies = report.vacancies_discovered || [];
     
     // Reconstruct URLs programmatically to avoid dead links
-    const baseUrl = getSchoolBaseUrl(schoolId, schoolName);
+    const baseUrl = await getSchoolBaseUrl(schoolId, schoolName, website);
     for (const job of vacancies) {
       job.source_url = reconstructJobBoardUrl(job, baseUrl, schoolName);
     }
@@ -750,7 +761,7 @@ export async function getSchoolStabilityReport(input: {
                 cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
                     ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
                     : 0;
-                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName);
+                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName, data?.website || data?.schoolwebsite);
                 
                 if (isAlreadyRevalidating) {
                     console.log(`🛸 [STABILITY ENGINE] [SWR] SWR revalidation is ALREADY in progress for ${input.schoolName}. Safely skipping duplicate background thread.`);
@@ -861,7 +872,7 @@ export async function getSchoolStabilityReport(input: {
                             (freshReport as any).secondary_vacancies_count = fresh_secondary_vacancies_count_12;
                             (freshReport as any).primary_vacancies_count = fresh_primary_vacancies_count_12;
                             (freshReport as any).churn_implications_commentary = freshReport.leopardfishIntelAlert;
-                            await applyLeadershipEnrichment(freshReport, input.schoolId, input.schoolName);
+                            await applyLeadershipEnrichment(freshReport, input.schoolId, input.schoolName, data?.website || data?.schoolwebsite);
 
                             // Save locally and set isRevalidating = false
                             writeLocalCache(input.schoolId, {
@@ -1001,7 +1012,7 @@ export async function getSchoolStabilityReport(input: {
                 cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
                     ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
                     : 0;
-                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName);
+                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName, data?.website || data?.schoolwebsite);
                 stabilityMemoryCache.set(input.schoolId, cachedReport);
                 return { data: cachedReport, error: null };
             }
@@ -1145,7 +1156,7 @@ export async function getSchoolStabilityReport(input: {
             : `Leopardfish Multi-Engine Audit: Stable retention pattern with ${total_known_vacancies_12} active vacancies detected across TES, GRC Search, and official school portals.`
         };
         report.churn_implications_commentary = report.leopardfishIntelAlert;
-        await applyLeadershipEnrichment(report, input.schoolId, input.schoolName);
+        await applyLeadershipEnrichment(report, input.schoolId, input.schoolName, data?.website || data?.schoolwebsite);
 
         // 5. Update memory cache and local JSON cache immediately
         stabilityMemoryCache.set(input.schoolId, report);

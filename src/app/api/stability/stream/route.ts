@@ -247,7 +247,26 @@ export function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: s
   });
 }
 
-export function getSchoolBaseUrl(schoolId: string, schoolName: string): string {
+export async function getSchoolBaseUrl(schoolId: string, schoolName: string, website?: string): Promise<string> {
+  if (website && typeof website === 'string' && website.trim()) {
+    const trimmed = website.trim();
+    return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+  }
+  if (schoolId) {
+    try {
+      const docRef = doc(db, 'schools', schoolId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const registered = docSnap.data().website || docSnap.data().schoolwebsite;
+        if (registered && typeof registered === 'string' && registered.trim()) {
+          const trimmed = registered.trim();
+          return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+        }
+      }
+    } catch (e) {
+      console.warn("🛸 [STREAM SWEEP] Could not fetch school website in getSchoolBaseUrl:", e);
+    }
+  }
   const lowerName = schoolName.toLowerCase();
   const lowerId = schoolId.toLowerCase();
   if (lowerName.includes("parklane") || lowerId.includes("parklane") || lowerId === "flis0202") {
@@ -256,8 +275,7 @@ export function getSchoolBaseUrl(schoolId: string, schoolName: string): string {
   if (lowerName.includes("riverside") || lowerId.includes("riverside") || lowerId === "flis0059") {
     return "https://www.riversideschool.cz";
   }
-  const slug = schoolName.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-  return `https://www.${slug}.com`;
+  return "";
 }
 
 export function sanitizeVacancy(v: any): Vacancy {
@@ -639,8 +657,14 @@ To keep execution times low, token counts small, and eliminate text overflow:
 
         // 🛸 PHASE 1: Primary Authority Feed Discovery (TES, Schrole, Teacher Horizons, etc.)
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: [] });
-        const schoolDomainClean = getSchoolBaseUrl(schoolId, schoolName);
-        const p1Queries = buildTier1Queries(schoolName, schoolDomainClean);
+        const schoolDomainClean = await getSchoolBaseUrl(schoolId, schoolName, targetOfficialWebsite);
+        const p1Queries = schoolDomainClean
+          ? buildTier1Queries(schoolName, schoolDomainClean)
+          : [
+              `"${schoolName.replace(/^["']|["']$/g, "").trim()}" vacancies`,
+              `"${schoolName.replace(/^["']|["']$/g, "").trim()}" career`,
+              `"${schoolName.replace(/^["']|["']$/g, "").trim()}" jobs`,
+            ];
         const p1JobsAI = await runPhaseSweep(
           1,
           `Sweep TES, Schrole, and primary global networks for the school "${schoolName}".
@@ -851,7 +875,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
         }
 
         // Normalize departments and reconstruct URLs strictly
-        const baseUrl = getSchoolBaseUrl(schoolId, schoolName);
+        const baseUrl = await getSchoolBaseUrl(schoolId, schoolName, targetOfficialWebsite);
         for (const job of finalVacancies) {
           const lowerTitle = job.title.toLowerCase();
           
