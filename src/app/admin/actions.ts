@@ -10,6 +10,7 @@ import {
 } from '@/firebase/admin';
 import { invalidateDecideCache } from '@/lib/decide-cache';
 import { canonicalCountry } from '@/lib/calculations';
+import { validateAndCleanAliases } from '@/lib/aliasRules';
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
@@ -1104,6 +1105,16 @@ export async function uploadRegistryJsonAction(data: any[]) {
           .replace(/[^a-z0-9\s-]/g, '')
           .replace(/[\s-]+/g, '-')
           .replace(/^-+|-+$/g, '');
+      }
+
+      if (targetCol === 'schools' && (normalized.aliases || normalized.alias)) {
+        const rawAliases = normalized.aliases || normalized.alias;
+        const { validAliases, rejected } = validateAndCleanAliases(rawAliases);
+        normalized.aliases = validAliases;
+        delete normalized.alias;
+        if (rejected && rejected.length > 0) {
+          console.warn(`⚠️ [uploadRegistryJsonAction] School "${id}": filtered ${rejected.length} invalid aliases:`, rejected);
+        }
       }
 
       batch.set(targetCol, String(id), {

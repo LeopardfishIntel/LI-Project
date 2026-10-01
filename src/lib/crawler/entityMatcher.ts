@@ -68,6 +68,8 @@ export function extractCoreName(str: string): string {
   return tokens.filter(t => !GENERIC_SCHOOL_STOPWORDS.has(t)).join(" ");
 }
 
+import { GENERIC_GROUP_BRANDS, filterSchoolAliases } from '@/lib/aliasRules';
+
 export function extractAcronym(name: string): string {
   if (!name) return "";
   const clean = name.replace(/['"`]/g, "").trim();
@@ -291,13 +293,10 @@ export function matchSchoolEntity(
     });
   }
 
-  // 3. Alias & Group Array match
-  const aliases = Array.from(new Set([
-    ...(school.aliases || []),
-    ...((school as any).group ? [(school as any).group] : []),
-    ...((school as any).schoolGroup ? [(school as any).schoolGroup] : []),
-  ]));
-  for (const alias of aliases) {
+  // 3. Alias Array match (Skip short aliases <4 chars and generic brand names)
+  const validAliases = filterSchoolAliases(school.aliases);
+
+  for (const alias of validAliases) {
     const aLower = alias.toLowerCase().trim();
     if (candidateLower === aLower || (aLower.length >= 6 && candidateLower.includes(aLower))) {
       return gate({
@@ -316,7 +315,7 @@ export function matchSchoolEntity(
   for (const legal of legalNames) {
     if (!legal || typeof legal !== "string") continue;
     const lLower = legal.toLowerCase().trim();
-    if (lLower.length >= 3 && (candidateLower === lLower || (lLower.length >= 6 && candidateLower.includes(lLower)) || (candidateLower.length >= 6 && lLower.includes(candidateLower)))) {
+    if (lLower.length >= 4 && !GENERIC_GROUP_BRANDS.has(lLower) && (candidateLower === lLower || (lLower.length >= 6 && candidateLower.includes(lLower)) || (candidateLower.length >= 6 && lLower.includes(candidateLower)))) {
       return gate({
         isMatch: true,
         score: 0.98,
@@ -328,12 +327,12 @@ export function matchSchoolEntity(
     }
   }
 
-  // 4. Acronym Matching
+  // 4. Acronym Matching (Require length >= 4 and not generic group/brand)
   const acronym = extractAcronym(canonicalName);
-  if (acronym && acronym.length >= 3) {
+  if (acronym && acronym.length >= 4 && !GENERIC_GROUP_BRANDS.has(acronym.toLowerCase())) {
     try {
       const cleanAcronym = acronym.replace(/[^A-Za-z0-9]/g, "");
-      if (cleanAcronym.length >= 3) {
+      if (cleanAcronym.length >= 4 && !GENERIC_GROUP_BRANDS.has(cleanAcronym.toLowerCase())) {
         const acronymRegex = new RegExp("\\b" + cleanAcronym + "\\b", "i");
         if (acronymRegex.test(candidate)) {
           const cityMatches = Boolean(school.city && candidateLower.includes(school.city.toLowerCase()));

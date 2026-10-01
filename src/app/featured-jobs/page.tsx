@@ -103,6 +103,7 @@ import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryU
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
+import { resolvePillDeduplication } from '@/lib/featuredJobs/pillResolver';
 import { isMalvernCampus } from '@/lib/search/malvern';
 import { isCognitaSchool } from '@/lib/search/cognitaMatcher';
 import { logTelemetryEvent } from '@/lib/telemetry';
@@ -156,8 +157,30 @@ const cleanSchoolName = (raw: string): string => {
 // A helper to normalize strings for matching
 const formatDateCustom = (dateInput: any): string => {
   if (!dateInput) return "";
-  const dt = typeof dateInput === "object" && dateInput instanceof Date ? dateInput : new Date(dateInput);
-  if (isNaN(dt.getTime())) return String(dateInput);
+
+  let dt: Date | null = null;
+  if (dateInput instanceof Date) {
+    dt = dateInput;
+  } else if (typeof dateInput === "object" && typeof dateInput.toDate === "function") {
+    dt = dateInput.toDate();
+  } else if (typeof dateInput === "object" && typeof dateInput._seconds === "number") {
+    dt = new Date(dateInput._seconds * 1000);
+  } else if (typeof dateInput === "object" && typeof dateInput.seconds === "number") {
+    dt = new Date(dateInput.seconds * 1000);
+  } else if (typeof dateInput === "string" || typeof dateInput === "number") {
+    const parsed = new Date(dateInput);
+    if (!isNaN(parsed.getTime())) {
+      dt = parsed;
+    }
+  }
+
+  if (!dt || isNaN(dt.getTime())) {
+    if (typeof dateInput === "string" && !dateInput.includes("[object Object]")) {
+      return dateInput.trim();
+    }
+    return "";
+  }
+
   const day = dt.getDate();
   const month = dt.toLocaleDateString("en-GB", { month: "long" });
   const year = dt.getFullYear();
@@ -2522,9 +2545,7 @@ export default function FeaturedJobsPage() {
                                 return 0;
                               });
 
-                              const resolvedPills: { label: string; url: string; key: string }[] = [];
-                              const seenPillUrls = new Set<string>();
-                              const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
+                              const rawCandidatePills: { label: string; url: string; key: string }[] = [];
 
                               sortedEntries.forEach(([key, label]) => {
                                 const srcUpper = key;
@@ -2656,13 +2677,10 @@ export default function FeaturedJobsPage() {
                                 })();
 
                                 if (srcUrl === "#") return;
-
-                                const norm = normalizeUrl(srcUrl);
-                                if (seenPillUrls.has(norm)) return;
-                                seenPillUrls.add(norm);
-
-                                resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
+                                rawCandidatePills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
                               });
+
+                              const resolvedPills = resolvePillDeduplication(rawCandidatePills);
 
                               return resolvedPills.map(({ label, url, key }) => {
                                 const srcUpper = key;

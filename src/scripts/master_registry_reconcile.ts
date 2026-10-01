@@ -8,6 +8,8 @@ const serviceAccount = require('../../service-account.json');
 if (!getApps().length) initializeApp({ credential: cert(serviceAccount) });
 const db = getFirestore();
 
+import { filterSchoolAliases } from '../lib/aliasRules';
+
 // 1. Researched benchmarks table
 const researchedList = [
   // UAE
@@ -377,6 +379,10 @@ async function reconcileMasterRegistry() {
   let researchedMatchCount = 0;
 
   for (const school of cleanSchools) {
+    if (school.aliases) {
+      school.aliases = filterSchoolAliases(school.aliases);
+    }
+
     // 1. Ensure correct default official currency
     const defaultCurr = countryDefaultCurrency[school.country] || 'USD';
     school.currency = defaultCurr;

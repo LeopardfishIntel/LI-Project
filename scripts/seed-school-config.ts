@@ -4,6 +4,7 @@ dotenv.config({ path: '.env.local' });
 import * as fs from 'fs';
 import * as path from 'path';
 import { getAdminDb } from '../src/firebase/admin';
+import { filterSchoolAliases } from '../src/lib/aliasRules';
 
 interface SchoolConfigRow {
   schoolId: string;
@@ -61,9 +62,7 @@ function parseCsvContent(content: string): SchoolConfigRow[] {
 
     if (obj.schoolid || obj.schoolname) {
       const aliasesRaw = obj.aliases || obj.alias || '';
-      const aliasesList = typeof aliasesRaw === 'string'
-        ? aliasesRaw.split(/[,;]/).map(s => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean)
-        : Array.isArray(aliasesRaw) ? aliasesRaw : [];
+      const aliasesList = filterSchoolAliases(aliasesRaw);
 
       rows.push({
         schoolId: obj.schoolid || (obj.schoolname ? obj.schoolname.toLowerCase().replace(/\s+/g, '_') : `school_${i}`),

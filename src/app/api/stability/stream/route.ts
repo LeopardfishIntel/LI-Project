@@ -1,6 +1,7 @@
 import { triageVacancyLifecycle } from '@/lib/crawler/dateParser';
 import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
+import { isSchoolMatch } from '@/lib/crawler/schoolMatchWholeWord';
 import { NextRequest } from "next/server";
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";
@@ -1055,6 +1056,11 @@ You MUST run search queries with the school name enclosed in escaped double quot
             const rawClosing = v.date_closing || (v as any).closesDate || null;
             const triage = triageVacancyLifecycle(rawClosing);
             
+            // Whole-word school name verification: do not approve unless job text or URL names the school as a whole-word match
+            const jobTextAndUrl = `${v.title || ''} ${v.source_url || ''} ${(v as any).description || ''} ${(v as any).employer || ''}`;
+            const matchedSchool = isSchoolMatch(schoolName, jobTextAndUrl);
+            const finalStatus = matchedSchool ? triage.status : 'pending';
+
             const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
             return {
               id: jobId,
@@ -1063,7 +1069,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
               applyUrl: v.source_url || "",
               closingDate: triage.closingDate,
               isRollingDeadline: triage.isRollingDeadline,
-              status: triage.status
+              status: finalStatus
             };
           });
           (async () => {
