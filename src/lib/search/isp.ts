@@ -1,7 +1,8 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
-import { matchSchoolEntity, SchoolEntity } from "@/lib/crawler/entityMatcher";
+import { SchoolEntity } from "@/lib/crawler/entityMatcher";
 import { extractJobPostingsFromHtml } from "@/lib/crawler/adaptors/tes-adaptor";
+import { matchIspWorkdaySlug, extractIspWorkdaySchoolName } from "./ispSlugMatcher";
 
 export interface IspJobMatch {
   jobId: string;
@@ -12,6 +13,7 @@ export interface IspJobMatch {
   city: string;
   country: string;
   source: string;
+  status?: string;
   datePosted?: string | null;
   closingDate?: string | null;
 }
@@ -161,46 +163,42 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
           const jobId = slugMatch ? `isp_${slugMatch}` : `isp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
           const applyUrl = `https://internationalschools.wd3.myworkdayjobs.com/en-US/ISPCareers${extPath}`;
 
-          const { hiringOrgName, datePosted, validThrough } = await fetchVacancyJsonLd(applyUrl);
-          if (!hiringOrgName || !hiringOrgName.trim()) {
-            return null;
-          }
+          const { datePosted, validThrough } = await fetchVacancyJsonLd(applyUrl);
 
-          // Cross-check hiringOrganization against all DB schools
-          let bestSchool: SchoolEntity | null = null;
-          let bestScore = 0;
+          // Part 1: Ground Workday job strictly via the school name in the Workday link slug (whole-token match)
+          // Do NOT use hiringOrganization as the deciding signal.
+          const matchedSchool = matchIspWorkdaySlug(extPath || applyUrl, dbSchools);
+          const workdaySchoolName = extractIspWorkdaySchoolName(extPath || applyUrl);
 
-          for (const school of dbSchools) {
-            const matchRes = matchSchoolEntity(
-              school,
-              {
-                candidateText: hiringOrgName,
-              },
-              0.85
-            );
-
-            if (matchRes.isMatch && matchRes.score > bestScore) {
-              bestScore = matchRes.score;
-              bestSchool = school;
-            }
-          }
-
-          if (bestSchool && bestScore >= 0.85) {
+          if (matchedSchool) {
             return {
               jobId,
               title,
               applyUrl,
-              schoolId: bestSchool.id || "",
-              schoolName: bestSchool.name || bestSchool.schoolname || "",
-              city: bestSchool.city || "",
-              country: bestSchool.country || "",
+              schoolId: matchedSchool.id || "",
+              schoolName: matchedSchool.name || matchedSchool.schoolname || "",
+              city: matchedSchool.city || "",
+              country: matchedSchool.country || "",
               source: "ISP",
               datePosted: datePosted || null,
               closingDate: validThrough || null,
             };
           }
 
-          return null;
+          // If no school matches, do not attach to any school: save with status "pending", no schoolId, and the Workday school name in the slug
+          return {
+            jobId,
+            title,
+            applyUrl,
+            schoolId: "",
+            schoolName: workdaySchoolName,
+            city: "",
+            country: "",
+            source: "ISP",
+            status: "pending",
+            datePosted: datePosted || null,
+            closingDate: validThrough || null,
+          };
         })
       );
 
