@@ -362,6 +362,21 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skipped
 
 // ─── Step 4: Auto-sync school openJobsCount counters with active featured jobs ─
 
+const GENERIC_APPLY_PATH_SEGMENTS = new Set(["", "careers", "jobs", "vacancies", "vacancy", "employment", "work-with-us", "join-us"]);
+function isSpecificVacancyUrl(u?: string | null): boolean {
+  if (!u) return false;
+  try {
+    const raw = u.trim();
+    const parsed = new URL(raw.startsWith('http') ? raw : `https://${raw}`);
+    const segments = parsed.pathname.split('/').filter(Boolean);
+    if (segments.length === 0) return false;
+    if (segments.length === 1 && GENERIC_APPLY_PATH_SEGMENTS.has(segments[0].toLowerCase())) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ syncedSchools: number; totalActiveJobs: number; errors: string[] }> {
   let syncedSchools = 0;
   let totalActiveJobs = 0;
@@ -378,7 +393,7 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
     snap.docs.forEach((docSnap: any) => {
       const cacheDoc = docSnap.data();
       const rawStatus = String(cacheDoc.status || '').toUpperCase();
-      if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
+      if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING' || rawStatus === 'MERGED') return;
       if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < now) return;
 
       const title = String(cacheDoc.title || cacheDoc.job_title || '').trim();
@@ -411,11 +426,11 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
 
       if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
 
-      if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
-      if (applyUrlLower) seenUrls.add(applyUrlLower);
-
       const sIdRaw = (cacheDoc.schoolId || '').trim();
       if (!sIdRaw || sIdRaw.toUpperCase().startsWith('AGNT')) return;
+
+      if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower) && seenUrls.has(applyUrlLower)) return;
+      if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower)) seenUrls.add(applyUrlLower);
 
       const sId = sIdRaw.toLowerCase();
       const jobKey = `${sId}_${(cacheDoc.title || '').toLowerCase().trim()}`;
