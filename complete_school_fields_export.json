@@ -16717,7 +16717,7 @@
     "scrapedJobsCount": 0,
     "isRevalidating": true,
     "revalidationStatus": "success",
-    "agency": "LinkedIn, Praca.pl",
+    "agency": "ISP Workday Portal, LinkedIn, Praca.pl",
     "careersPageUrl": "https://akademeia.edu.pl/en/careers/",
     "name": "Akademeia High School",
     "tesOrganizationId": "1164028",
@@ -16761,7 +16761,9 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.444Z"
+    "updatedAt": "2026-10-01T17:54:07.602Z",
+    "agent": "ISP Workday Portal, LinkedIn",
+    "group": "ISP"
   },
   {
     "id": "FLIS0165",
@@ -21189,7 +21191,7 @@
     "inspect": "Britus Education",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "agency": "Britus Educational Portal, Gulf Talent, LinkedIn",
+    "agency": "ISP Workday Portal, Britus Educational Portal, Gulf Talent, LinkedIn",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "financescore": "7.9",
@@ -21670,7 +21672,8 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.450Z"
+    "updatedAt": "2026-10-01T17:54:07.603Z",
+    "agent": "ISP Workday Portal, Britus Educational Portal"
   },
   {
     "id": "FLIS0205",
@@ -21692,7 +21695,7 @@
     "scrapedJobsCount": 0,
     "isRevalidating": true,
     "revalidationStatus": "success",
-    "agency": "Teach Away, LinkedIn, Gulf Talent",
+    "agency": "ISP Workday Portal, Teach Away, LinkedIn, Gulf Talent",
     "financescore": "8.0",
     "aliases": [
       "Nibras International",
@@ -21764,7 +21767,8 @@
     "salary_benchmark_category": "Market Evidence — Range Midpoint",
     "salary_confidence": "High",
     "last_benchmark_update": "2026-09-27T07:09:31.926Z",
-    "updatedAt": "2026-09-27T07:21:30.450Z"
+    "updatedAt": "2026-10-01T17:54:07.603Z",
+    "agent": "ISP Workday Portal, Teach Away"
   },
   {
     "id": "FLIS0206",
@@ -28517,7 +28521,7 @@
     "summary": "Respected British international school in Doha with warm community feel, steady package, and tax-free savings.",
     "techscore": "8.7",
     "website": "https://parkhouseschool.com",
-    "agency": "TES, Direct Portal",
+    "agency": "ISP Workday Portal, TES, Direct Portal",
     "citySafety": "9.8",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
@@ -28561,7 +28565,9 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.450Z"
+    "updatedAt": "2026-10-01T17:54:07.603Z",
+    "agent": "ISP Workday Portal, TES, Direct Portal",
+    "group": "ISP"
   },
   {
     "id": "FLIS0282",
@@ -33181,7 +33187,9 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.451Z"
+    "updatedAt": "2026-10-01T17:54:07.603Z",
+    "agency": "ISP Workday Portal",
+    "agent": "ISP Workday Portal"
   },
   {
     "id": "FLIS0349",
@@ -33755,7 +33763,7 @@
       "Aquila Dubailand"
     ],
     "classsize": "22",
-    "careersPageUrl": "https://www.international-schools-partnership.com/careers",
+    "careersPageUrl": "https://theaquilaschool.com/careers",
     "city": "Dubai",
     "rating": "Good",
     "totalscore": "8.9",
@@ -33822,7 +33830,9 @@
     "base_salary_aed": null,
     "savingspotential": null,
     "base_salary_cny": null,
-    "updatedAt": "2026-09-27T07:21:30.451Z"
+    "updatedAt": "2026-10-01T17:54:07.603Z",
+    "agency": "ISP Workday Portal",
+    "agent": "ISP Workday Portal"
   },
   {
     "id": "FLIS0356",
