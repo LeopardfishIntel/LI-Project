@@ -81,10 +81,9 @@ async function main() {
     const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
     const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
     const isTaaleem = sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
-    const isEureka = sourceUpper.includes("EUREKA");
     const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
-    const recognized = isTes || isNae || isGrc || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobe || isTaylors || isEsf || isGems || isOfficial || isGuardian || isTaaleem || isEureka || isSearch;
+    const recognized = isTes || isNae || isGrc || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobe || isTaylors || isEsf || isGems || isOfficial || isGuardian || isTaaleem || isSearch;
 
     if (!recognized) {
       droppedByEngine++;

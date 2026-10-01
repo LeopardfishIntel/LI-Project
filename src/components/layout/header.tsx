@@ -162,10 +162,9 @@ export default function Header() {
         const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
         const isTaaleem = sId.startsWith("FLIS0318") || sId.startsWith("FLIS0319") || sId.startsWith("FLIS0320") || sId.startsWith("FLIS0321") || sId.startsWith("FLIS0322") || ["FLIS0102", "FLIS0104", "FLIS0341", "FLIS0342", "FLIS0343", "FLIS0344", "FLIS0418", "FLIS0419", "FLIS0420", "FLIS0423"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
-        const isEureka = sourceUpper.includes("EUREKA");
         const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) {
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isSearch) {
           return;
         }
 
@@ -310,10 +309,9 @@ export default function Header() {
         const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
         const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
         const isTaaleem = sId.startsWith("FLIS0318") || sId.startsWith("FLIS0319") || sId.startsWith("FLIS0320") || sId.startsWith("FLIS0321") || sId.startsWith("FLIS0322") || ["FLIS0102", "FLIS0104", "FLIS0341", "FLIS0342", "FLIS0343", "FLIS0344", "FLIS0418", "FLIS0419", "FLIS0420", "FLIS0423"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
-        const isEureka = sourceUpper.includes("EUREKA");
         const isSearch = sourceUpper.includes("SEARCH") || applyUrlLower.includes("searchassociates");
 
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka && !isSearch) return;
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isSearch) return;
         if (!title || title.length < 3 || !isValidJobTitle(title)) return;
 
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;

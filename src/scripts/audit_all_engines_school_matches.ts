@@ -73,7 +73,6 @@ function classifyEngine(docId: string, cacheDoc: any): string {
   const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae') || docIdLower.startsWith('gems_');
   const isTaaleem = docIdLower.startsWith('taaleem_') || isTaaleemSchool(sIdUpper, schoolNameUpper, schoolGroupUpper) || sourceUpper.includes('TAALEEM') || applyUrlLower.includes('taaleem.ae');
   const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
-  const isEureka = sourceUpper.includes('EUREKA');
   const isSearch = sourceUpper.includes('SEARCH') || applyUrlLower.includes('searchassociates') || sIdUpper === 'SEARCH_ASSOCIATES_HUB';
   const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
 
@@ -93,7 +92,6 @@ function classifyEngine(docId: string, cacheDoc: any): string {
   if (isEsf) return 'ESF';
   if (isMalvern) return 'Malvern';
   if (isUwc) return 'UWC';
-  if (isEureka) return 'Eureka';
   if (isOfficial) return 'Official / Direct';
 
   return 'Other / Unknown';
