@@ -20,6 +20,7 @@
 export interface JanitorRunResult {
   expired: number;
   promoted: number;
+  purgedFolderCopies?: number;
   skippedProvenanceMismatch?: number;
   mirrorErrors: number;
   errors: string[];
@@ -126,6 +127,70 @@ async function expireOverdueJobs(db: any, now: number): Promise<{ expired: numbe
 }
 
 // ─── Step 3: Promote newly-approved subcollection jobs to cache ───────────────
+
+// ─── Tidy rule: remove school-folder copies the board has turned down ─────────
+// A job saved in schools/{id}/jobs can stay "approved" there after the board
+// copy was rejected, or merged into another job with no approved twin. The
+// evaluate page reads the folder, so these show up as vacancies the board
+// does not list. The board copy is NEVER touched (it stops the crawler
+// re-creating the job). If the job is real, the next search brings it back.
+const PURGE_MAX_PER_RUN = 200;
+const purgeNorm = (t: any) =>
+  String(t || '').toLowerCase().replace(/\s*\([^)]*\)/g, '').replace(/[^a-z0-9]/g, '');
+
+async function purgeOrphanFolderCopies(db: any): Promise<{ purged: number; errors: string[] }> {
+  let purged = 0;
+  const errors: string[] = [];
+  if (typeof db.collection !== 'function') return { purged, errors };
+  try {
+    const folderSnap = await db.collectionGroup('jobs').where('status', '==', 'approved').get();
+    if (folderSnap.empty) return { purged, errors };
+
+    const cacheSnap = await db.collection('featured_jobs_cache').get();
+    const board = new Map<string, any>();
+    const approvedTitles = new Map<string, Set<string>>();
+    cacheSnap.docs.forEach((x: any) => {
+      const d = x.data() || {};
+      board.set(x.id, d);
+      if (String(d.status || '').toLowerCase() === 'approved') {
+        const sid = String(d.schoolId || '').trim();
+        if (!approvedTitles.has(sid)) approvedTitles.set(sid, new Set());
+        approvedTitles.get(sid)!.add(purgeNorm(d.title));
+      }
+    });
+
+    const doomed: any[] = [];
+    for (const x of folderSnap.docs) {
+      const m = String(x.ref.path).match(/^schools\/(FLIS\d{4})\/jobs\/(.+)$/);
+      if (!m) continue;
+      const b = board.get(m[2]);
+      if (!b) continue;
+      if (String(b.schoolId || '').trim() !== m[1]) continue;
+      const st = String(b.status || '').toLowerCase();
+      const j = x.data() || {};
+      if (st === 'rejected') doomed.push(x);
+      else if (st === 'merged') {
+        const twins = approvedTitles.get(m[1]);
+        if (!(twins && twins.has(purgeNorm(j.title)))) doomed.push(x);
+      }
+    }
+
+    const batchList = doomed.slice(0, PURGE_MAX_PER_RUN);
+    for (let i = 0; i < batchList.length; i += 400) {
+      const batch = db.batch();
+      batchList.slice(i, i + 400).forEach((x: any) => batch.delete(x.ref));
+      await batch.commit();
+    }
+    purged = batchList.length;
+    if (purged > 0) {
+      console.log(`🧹 [JANITOR] Removed ${purged} school-folder copies the board rejected/merged (${doomed.length} found, cap ${PURGE_MAX_PER_RUN}/run):`);
+      batchList.slice(0, 30).forEach((x: any) => console.log(`   - ${x.ref.path} | ${String((x.data() || {}).title || '').slice(0, 60)}`));
+    }
+  } catch (e: any) {
+    errors.push(`purgeOrphanFolderCopies: ${e?.message || e}`);
+  }
+  return { purged, errors };
+}
 
 async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skippedProvenanceMismatch: number; errors: string[] }> {
   let promoted = 0;
@@ -491,6 +556,8 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
   const db = await getDb();
   const now = Date.now();
 
+  const purgeResult = await purgeOrphanFolderCopies(db);
+
   const [expireResult, promoteResult] = await Promise.all([
     expireOverdueJobs(db, now),
     promoteApprovedJobs(db),
@@ -502,14 +569,15 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
   const result: JanitorRunResult = {
     expired: expireResult.expired,
     promoted: promoteResult.promoted,
+    purgedFolderCopies: purgeResult.purged,
     skippedProvenanceMismatch: promoteResult.skippedProvenanceMismatch,
     mirrorErrors: expireResult.mirrorErrors,
-    errors: [...expireResult.errors, ...promoteResult.errors, ...syncResult.errors],
+    errors: [...expireResult.errors, ...promoteResult.errors, ...purgeResult.errors, ...syncResult.errors],
     durationMs,
   };
 
   console.log(
-    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | skippedProvenance=${promoteResult.skippedProvenanceMismatch} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
+    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | purgedFolderCopies=${purgeResult.purged} | skippedProvenance=${promoteResult.skippedProvenanceMismatch} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
   );
 
   return result;
