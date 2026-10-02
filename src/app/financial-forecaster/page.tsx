@@ -975,7 +975,9 @@ function DecoderContent() {
       const isRolling = job.isRollingDeadline === true || job.isRolling === true;
       // rejected = never a real vacancy, skip entirely at filter stage
       const cacheStatus = job.status || 'approved';
-      const isExpired = !isRolling && closes !== null && (closes < today || cacheStatus === 'expired');
+      // 42-day rule: a rolling job (no real closing date) counts as closed once it is more than 42 days past its posted / first-seen date
+      const isStaleRolling = isRolling && (today.getTime() - scraped.getTime()) > 42 * 24 * 60 * 60 * 1000;
+      const isExpired = isStaleRolling || (!isRolling && closes !== null && (closes < today || cacheStatus === 'expired'));
       const twelveMonthsAgoCutoff = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
       const recruitmentCycle = (closes !== null && closes < twelveMonthsAgoCutoff) ? "HISTORIC_Y1" : "CURRENT";
 

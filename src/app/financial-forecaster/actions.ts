@@ -485,7 +485,30 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
   });
 };
 
-const stabilityMemoryCache = new Map<string, any>();
+// In-memory copy of each school's stability report. Entries expire after 10 minutes so an old report cannot linger on the server
+// after the saved report in Firestore has been cleaned or rebuilt.
+class TtlMap<V> {
+  private store = new Map<string, { at: number; value: V }>();
+  constructor(private ttlMs: number) {}
+  has(key: string): boolean {
+    const e = this.store.get(key);
+    if (!e) return false;
+    if (Date.now() - e.at > this.ttlMs) { this.store.delete(key); return false; }
+    return true;
+  }
+  get(key: string): V | undefined { return this.has(key) ? this.store.get(key)!.value : undefined; }
+  set(key: string, value: V): void { this.store.set(key, { at: Date.now(), value }); }
+  delete(key: string): void { this.store.delete(key); }
+}
+const stabilityMemoryCache = new TtlMap<any>(10 * 60 * 1000);
+
+// First-seen / posted date for the 42-day rolling rule. Returns undefined when the vacancy has no real date (for example "Recently").
+function postedDateForTriage(v: any): Date | undefined {
+  const raw = v?.date_listed || v?.datePosted || v?.postedDate;
+  if (!raw) return undefined;
+  const t = new Date(raw);
+  return isNaN(t.getTime()) ? undefined : t;
+}
 
 export interface Vacancy {
   title: string;
@@ -895,7 +918,7 @@ export async function getSchoolStabilityReport(input: {
                                         .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
                                         .map(v => {
                                             const rawClosing = v.closesDate || v.date_closing || null;
-                                            const triage = triageVacancyLifecycle(rawClosing);
+                                            const triage = triageVacancyLifecycle(rawClosing, postedDateForTriage(v));
                                             
                                             // Skip past expired vacancies
                                             if (triage.status === 'expired') return null;
@@ -930,7 +953,7 @@ export async function getSchoolStabilityReport(input: {
                                             .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
                                             .map(v => {
                                                 const rawClosing = v.closesDate || v.date_closing || null;
-                                                const triage = triageVacancyLifecycle(rawClosing);
+                                                const triage = triageVacancyLifecycle(rawClosing, postedDateForTriage(v));
                                                 const status: 'approved' | 'pending_review' = triage.isRollingDeadline ? 'pending_review' : 'approved';
                                                 return {
                                                     rawTitle: v.title,
@@ -1182,7 +1205,7 @@ export async function getSchoolStabilityReport(input: {
                         .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
                         .map(v => {
                             const rawClosing = v.closesDate || v.date_closing || null;
-                            const triage = triageVacancyLifecycle(rawClosing);
+                            const triage = triageVacancyLifecycle(rawClosing, postedDateForTriage(v));
                             
                             // Skip past expired vacancies
                             if (triage.status === 'expired') return null;
