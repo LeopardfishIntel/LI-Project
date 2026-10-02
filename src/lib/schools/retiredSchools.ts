@@ -28,6 +28,7 @@ export const RETIRED_SCHOOLS: Readonly<Record<string, RetiredSchool>> = Object.f
   FLIS0390: { mergedInto: "FLIS0050", retiredOn: "2026-10-02", note: "Frankfurt International School - duplicate of FLIS0050" },
   FLIS0426: { mergedInto: "FLIS0058", retiredOn: "2026-10-02", note: "St. George's International School Switzerland - duplicate of FLIS0058 (same TES ID 1057262)" },
   FLIS0427: { mergedInto: "FLIS0261", retiredOn: "2026-10-02", note: "The British International School Bratislava - duplicate of FLIS0261" },
+  FLIS0422: { mergedInto: "FLIS0209", retiredOn: "2026-10-02", note: "St. Christopher's School (Senior) - same school as FLIS0209 (St Christopher's, Isa Town)" },
 });
 
 /** True when the ID (any case, any surrounding spaces) is a retired school ID. */
