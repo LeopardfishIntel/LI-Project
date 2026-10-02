@@ -1035,6 +1035,7 @@ function DecoderContent() {
       postedDate: v.date_listed,
       closingDate: v.date_closing,
       status: v.status === 'OPEN' ? 'approved' : 'expired',
+      isRollingDeadline: !v.date_closing,
       department: v.department,
       applyUrl: v.source_url || ''
     }));

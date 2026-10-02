@@ -12,6 +12,8 @@ import type { RawJobRecord } from '../../lib/crawler/adaptors/raw-job.types';
 import { isRetiredSchool } from '../../lib/schools/retiredSchools';
 
 export interface SearchVacanciesInput {
+  /** FLIS ID of the school being searched. When given, the school is found by this exact ID only (never by name). */
+  schoolId?: string;
   schoolName: string;
   city?: string;
   country?: string;
@@ -46,16 +48,19 @@ export async function searchVacancies(input: SearchVacanciesInput): Promise<{
   const cleanCity = (input.city || '').toLowerCase().trim();
   const cleanCountry = (input.country || '').toLowerCase().trim();
 
+  const wantedId = input.schoolId ? String(input.schoolId).trim().toUpperCase() : '';
   for (const doc of snap.docs) {
     if (isRetiredSchool(doc.id)) continue;
+    // Exact FLIS ID match only: when a school ID is given, no other school may be picked by name.
+    if (wantedId && doc.id.toUpperCase() !== wantedId) continue;
     const data = doc.data();
     const sName = (data.schoolname || data.name || '').toLowerCase().trim();
     const sCity = (data.city || '').toLowerCase().trim();
     const sCountry = (data.country || '').toLowerCase().trim();
 
-    const isNameMatch = sName.includes(cleanSearchName) || cleanSearchName.includes(sName);
-    const isCityMatch = !cleanCity || !sCity || sCity === cleanCity;
-    const isCountryMatch = !cleanCountry || !sCountry || sCountry === cleanCountry;
+    const isNameMatch = wantedId ? true : (sName.includes(cleanSearchName) || cleanSearchName.includes(sName));
+    const isCityMatch = wantedId ? true : (!cleanCity || !sCity || sCity === cleanCity);
+    const isCountryMatch = wantedId ? true : (!cleanCountry || !sCountry || sCountry === cleanCountry);
 
     if (isNameMatch && isCityMatch && isCountryMatch) {
       const aliasesList = Array.isArray(data.aliases)
@@ -90,6 +95,11 @@ export async function searchVacancies(input: SearchVacanciesInput): Promise<{
       }
       break;
     }
+  }
+
+  if (!grounded && wantedId) {
+    console.warn(`⛔ [ORCHESTRATOR] School ID ${wantedId} not found (or retired). Returning no results rather than guessing by name.`);
+    return { scrapedJobsCount: 0, scrapedJobsList: [] };
   }
 
   if (!grounded) {

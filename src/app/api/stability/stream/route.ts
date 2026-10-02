@@ -9,6 +9,7 @@ import fs from "fs";
 import { db } from "@/firebase/server";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import path from "path";
+import { realDateOrNull } from "@/lib/crawler/firstSeen";
 
 // 📋 Zod schemas for validation and Gemini output structure
 const VacancySchema = z.object({
@@ -1054,7 +1055,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
           const { saveScrapedJobs, updateDocument } = await import("@/firebase/admin");
           const subcolJobs = finalVacancies.map(v => {
             const rawClosing = v.date_closing || (v as any).closesDate || null;
-            const triage = triageVacancyLifecycle(rawClosing, (() => { const raw = (v as any).date_listed || (v as any).datePosted || (v as any).postedDate; if (!raw) return undefined; const t = new Date(raw); return isNaN(t.getTime()) ? undefined : t; })());
+            const triage = triageVacancyLifecycle(rawClosing, realDateOrNull((v as any).date_listed || (v as any).datePosted || (v as any).postedDate) || undefined);
             
             // Whole-word school name verification: do not approve unless job text or URL names the school as a whole-word match
             const jobTextAndUrl = `${v.title || ''} ${v.source_url || ''} ${(v as any).description || ''} ${(v as any).employer || ''}`;

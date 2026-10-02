@@ -6,6 +6,7 @@ import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 import fs from 'fs';
 import path from 'path';
 
+import { applyFirstSeen, realDateOrNull } from '@/lib/crawler/firstSeen';
 const CACHE_FILE = path.join(process.cwd(), 'scratch/stability_cache.json');
 
 const readLocalCache = (): Record<string, any> => {
@@ -504,10 +505,7 @@ const stabilityMemoryCache = new TtlMap<any>(10 * 60 * 1000);
 
 // First-seen / posted date for the 42-day rolling rule. Returns undefined when the vacancy has no real date (for example "Recently").
 function postedDateForTriage(v: any): Date | undefined {
-  const raw = v?.date_listed || v?.datePosted || v?.postedDate;
-  if (!raw) return undefined;
-  const t = new Date(raw);
-  return isNaN(t.getTime()) ? undefined : t;
+  return realDateOrNull(v?.date_listed || v?.datePosted || v?.postedDate) || undefined;
 }
 
 export interface Vacancy {
@@ -766,7 +764,7 @@ export async function getSchoolStabilityReport(input: {
                     isUpdating: true
                 };
                 if (!cachedReport.vacancies_discovered || cachedReport.vacancies_discovered.length === 0) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city);
+                    cachedReport.vacancies_discovered = applyFirstSeen(reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city), (data as any)?.vacancyFirstSeen).vacancies;
                 }
                 const chinaLocs = ['shenzhen', 'hangzhou', 'chengdu', 'futian', 'nanshan', 'park lane harbour', 'guangzhou', 'beijing', 'shanghai'];
                 const isNonChina = (input.country || '').toLowerCase().trim() !== 'china';
@@ -812,6 +810,7 @@ export async function getSchoolStabilityReport(input: {
                         try {
                             const { searchVacancies } = await import('@/ai/flows/search-vacancies-flow');
                             const searchRes = await searchVacancies({
+                                schoolId: input.schoolId,
                                 schoolName: input.schoolName,
                                 city: input.city,
                                 country: input.country
@@ -823,7 +822,8 @@ export async function getSchoolStabilityReport(input: {
                             const freshJobsCount = freshJobsList.length;
                             const freshLastScrapedAt = new Date().toISOString();
 
-                            const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList, input.schoolName, input.city);
+                            const freshFirstSeen = applyFirstSeen(reconstructStructuredVacancies(freshJobsList, input.schoolName, input.city), (data as any)?.vacancyFirstSeen);
+                            const freshParsedVacancies = freshFirstSeen.vacancies;
                             const freshCurrentVacancies = freshParsedVacancies.filter(v => v.recruitmentCycle === "CURRENT");
                             const fresh_total_known_vacancies_12 = freshCurrentVacancies.length;
                             const fresh_leadership_vacancies_count_12 = freshCurrentVacancies.filter(v => v.department === "Leadership").length;
@@ -980,6 +980,7 @@ export async function getSchoolStabilityReport(input: {
                                     await updateDocument('schools', input.schoolId, {
                                         lastScrapedAt: freshLastScrapedAt,
                                         cachedStability: freshReport,
+                                        vacancyFirstSeen: freshFirstSeen.map,
                                         isRevalidating: false,
                                         revalidationStatus: 'success',
                                         revalidationError: null,
@@ -1026,7 +1027,7 @@ export async function getSchoolStabilityReport(input: {
                     lastScrapedAt
                 };
                 if (!cachedReport.vacancies_discovered || cachedReport.vacancies_discovered.length === 0) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city);
+                    cachedReport.vacancies_discovered = applyFirstSeen(reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city), (data as any)?.vacancyFirstSeen).vacancies;
                 }
                 if (!cachedReport.structured_vacancies || cachedReport.structured_vacancies.length === 0) {
                     cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
@@ -1084,7 +1085,8 @@ export async function getSchoolStabilityReport(input: {
         // 4. Compute fresh stability report using the AI Genkit Flow
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
         
-        const parsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
+        const firstSeenResult = applyFirstSeen(reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city), (data as any)?.vacancyFirstSeen);
+        const parsedVacancies = firstSeenResult.vacancies;
         const currentVacancies = parsedVacancies.filter(v => v.recruitmentCycle === "CURRENT");
         const total_known_vacancies_12 = currentVacancies.length;
         const leadership_vacancies_count_12 = currentVacancies.filter(v => v.department === "Leadership").length;
@@ -1228,6 +1230,7 @@ export async function getSchoolStabilityReport(input: {
                     await updateDocument('schools', input.schoolId, {
                         lastScrapedAt,
                         cachedStability: report,
+                        vacancyFirstSeen: firstSeenResult.map,
                         revalidationStatus: 'success',
                         revalidationError: null,
                         revalidationCompletedAt: admin.firestore.Timestamp.now()

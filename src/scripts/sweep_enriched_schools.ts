@@ -36,6 +36,7 @@ async function main() {
 
     try {
       const res = await searchVacancies({
+        schoolId: s.id,
         schoolName: s.name || s.schoolname,
         city: s.city,
         country: s.country,
