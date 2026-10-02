@@ -19,6 +19,15 @@ export interface RetiredSchool {
 
 export const RETIRED_SCHOOLS: Readonly<Record<string, RetiredSchool>> = Object.freeze({
   FLIS0425: { mergedInto: "FLIS0038", retiredOn: "2026-10-02", note: "St. Catherine's British School, Athens — duplicate of FLIS0038 (same school, same TES ID 1065747)" },
+  FLIS0439: { mergedInto: "FLIS0046", retiredOn: "2026-10-02", note: "Dulwich College Suzhou - duplicate of FLIS0046" },
+  FLIS0406: { mergedInto: "FLIS0052", retiredOn: "2026-10-02", note: "St George's British International School Rome - duplicate of FLIS0052" },
+  FLIS0387: { mergedInto: "FLIS0060", retiredOn: "2026-10-02", note: "Zurich International School - duplicate of FLIS0060" },
+  FLIS0412: { mergedInto: "FLIS0086", retiredOn: "2026-10-02", note: "TASIS The American School in Switzerland - duplicate of FLIS0086" },
+  FLIS0431: { mergedInto: "FLIS0118", retiredOn: "2026-10-02", note: "The British International School Cairo - duplicate of FLIS0118" },
+  FLIS0378: { mergedInto: "FLIS0135", retiredOn: "2026-10-02", note: "Shrewsbury International School Bangkok Riverside - duplicate of FLIS0135" },
+  FLIS0390: { mergedInto: "FLIS0050", retiredOn: "2026-10-02", note: "Frankfurt International School - duplicate of FLIS0050" },
+  FLIS0426: { mergedInto: "FLIS0058", retiredOn: "2026-10-02", note: "St. George's International School Switzerland - duplicate of FLIS0058 (same TES ID 1057262)" },
+  FLIS0427: { mergedInto: "FLIS0261", retiredOn: "2026-10-02", note: "The British International School Bratislava - duplicate of FLIS0261" },
 });
 
 /** True when the ID (any case, any surrounding spaces) is a retired school ID. */
