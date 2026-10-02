@@ -11,6 +11,7 @@
  */
 
 import { getAdminDb } from "@/firebase/admin";
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 
 export interface GroundedSchoolProfile {
   schoolId: string;
@@ -113,6 +114,7 @@ export async function loadAndGroundSchool(
 
         snap.docs.forEach((docSnap: any) => {
           if (schoolDocData) return;
+          if (isRetiredSchool(docSnap.id)) return;
           const data = docSnap.data();
           const sName = (data.schoolname || data.name || data.school || "").toLowerCase().trim();
           const sCity = (data.city || "").toLowerCase().trim();

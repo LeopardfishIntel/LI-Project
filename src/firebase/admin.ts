@@ -1,5 +1,6 @@
 import admin from 'firebase-admin';
 import { db as clientDb } from './server';
+import { isRetiredSchool } from '@/lib/schools/retiredSchools';
 import {
   collection,
   getDocs,
@@ -338,6 +339,7 @@ export function getTieredSweepTargets(schools: any[], maxDailyLimit: number = 20
 
   for (const s of schools) {
     const data = typeof s.data === 'function' ? s.data() : s;
+    if (isRetiredSchool(data.schoolId || data.id || s.id)) continue;
     let lastScraped: number | null = null;
     if (data.lastScrapedAt) {
       if (data.lastScrapedAt.seconds) {
@@ -1620,6 +1622,12 @@ export async function processRawIngestionPipeline(
     return { accepted: 0, rejected: 0, reasons: [] };
   }
 
+  // Retired (merged) school IDs never receive jobs
+  if (isRetiredSchool(schoolId)) {
+    console.warn(`⛔ [RETIRED SCHOOL] Refusing ${rawRecords.length} record(s) for retired school ID '${schoolId}'.`);
+    return { accepted: 0, rejected: rawRecords.length, reasons: [`[RETIRED_SCHOOL] ${schoolId}`] };
+  }
+
   const { isSupportOrNonTeachingRole } = await import('@/lib/crawler/roleClassifier');
   const { isBlockedContentUrl } = await import('@/lib/crawler/urlResolver');
 
@@ -1715,6 +1723,12 @@ export async function processRawIngestionPipeline(
 
 export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
   if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+    return;
+  }
+
+  // Retired (merged) school IDs never receive jobs
+  if (isRetiredSchool(schoolId)) {
+    console.warn(`⛔ [RETIRED SCHOOL] Refusing to save ${jobs.length} job(s) under retired school ID '${schoolId}'.`);
     return;
   }
 

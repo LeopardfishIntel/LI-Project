@@ -29,6 +29,7 @@ export interface JanitorRunResult {
 import { isPastAcademicIntake, triageVacancyLifecycle } from '@/lib/crawler/dateParser';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isMalvernCampus } from '@/lib/search/malvern';
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 
 // ─── Admin SDK helpers ────────────────────────────────────────────────────────
 
@@ -185,6 +186,13 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skipped
 
       const parentSchoolId = (jobDoc.ref.parent?.parent?.id || '').trim();
       const parentSchool = schoolMap.get(parentSchoolId.toUpperCase());
+
+      // Guard 0: retired (merged) schools are never promoted
+      if (isRetiredSchool(parentSchoolId)) {
+        console.warn(`⛔ [JANITOR GUARD] Skipping promotion for ${fp}: school '${parentSchoolId}' is retired.`);
+        skippedProvenanceMismatch++;
+        continue;
+      }
 
       // Guard 1: Verify parent school exists in canonical registry
       if (!parentSchool) {

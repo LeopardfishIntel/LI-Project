@@ -105,6 +105,7 @@ import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
 import { resolvePillDeduplication } from '@/lib/featuredJobs/pillResolver';
 import { isMalvernCampus } from '@/lib/search/malvern';
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 import { isCognitaSchool } from '@/lib/search/cognitaMatcher';
 import { logTelemetryEvent } from '@/lib/telemetry';
 
@@ -977,6 +978,7 @@ export default function FeaturedJobsPage() {
         const matchedSchool = schoolsMap[sIdCheck] || schoolsMap[sIdCheck.toUpperCase()] || null;
         const sNameCheck = (cacheDoc.schoolName || matchedSchool?.schoolname || matchedSchool?.name || '').trim();
         if (!sIdCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
+        if (isRetiredSchool(sIdCheck)) return;
         if (!isValidJobTitle(cacheDoc.title || (cacheDoc as any).jobTitle || '')) return;
 
         // Deduplication by unique applyUrl & title + schoolId

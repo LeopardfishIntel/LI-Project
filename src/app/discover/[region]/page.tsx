@@ -10,6 +10,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores, matchesRegion } from '@/lib/calculations';
 import { getLiveSecurityIntelligence } from '../actions';
 
@@ -203,7 +204,7 @@ function DossierContent() {
       const countryName = country.country || "";
       const countryNameLower = canonicalCountry(countryName);
       const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(countryName));
-      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(countryName) && !s.isCampusStub);
+      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(countryName) && !s.isCampusStub && !isRetiredSchool(s.id));
       const hasSchools = schools.length > 0;
       
       let fallbackSalary = 2500;

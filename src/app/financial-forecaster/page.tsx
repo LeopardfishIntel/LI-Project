@@ -32,6 +32,7 @@ import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import CoupleCountryAdvisoryPanel from '@/components/CoupleCountryAdvisory';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import { checkIsAdmin } from '@/lib/auth/admin';
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -1376,7 +1377,7 @@ function DecoderContent() {
   }, [activeSchool?.id, loadStabilityReport]);
 
   const handleCountrySelect = useCallback((newCountry: string) => {
-    const matchingSchools = allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(newCountry) && !s.isCampusStub) || [];
+    const matchingSchools = allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(newCountry) && !s.isCampusStub && !isRetiredSchool(s.id)) || [];
     const firstSchool = matchingSchools.length > 0 ? matchingSchools[0] : null;
     const newSchoolId = firstSchool ? firstSchool.id : "";
 
@@ -2278,7 +2279,7 @@ function DecoderContent() {
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase text-left [&>span]:text-left [&>span]:flex-1 [&>span]:text-start"><SelectValue placeholder="School" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(settings.country))
-                    .filter((s: any) => !s.isCampusStub)
+                    .filter((s: any) => !s.isCampusStub && !isRetiredSchool(s.id))
                     .filter((s: any, idx: number, arr: any[]) => {
                       const cleanName = (s.schoolname || s.name || '').toLowerCase().trim();
                       return arr.findIndex((item: any) => (item.schoolname || item.name || '').toLowerCase().trim() === cleanName) === idx;

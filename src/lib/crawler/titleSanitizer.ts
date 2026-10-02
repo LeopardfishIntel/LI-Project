@@ -61,6 +61,9 @@ export function sanitizeJobTitle(title: string, schoolName?: string): string {
 const TEACHING_ROLE_REGEX = /\b(teachers?|head\s*[-–/]?\s*(?:of|primary|secondary|school|department|faculty|eyfs|early\s*years|middle|high)?|director|principal|vice\s+principal|deputy\s+head|coordinator|counselor|counsellor|counseller|advisor|adviser|instructor|lecturer|professor|educator|assistant\s+principal|librarian|coach|tutor|specialist|leader|leadership|headmaster|headmistress|superintendent|intern|apprentice|practitioner|pathologist|therapist)\b/i;
 const ACADEMIC_SUBJECT_REGEX = /\b(maths?|mathematics|english|science|physics|chemistry|biology|history|geography|art|music|drama|pe|physical education|computing|computer science|design\s*technology|robotics|spanish|french|german|mandarin|chinese|humanities|economics|business|psychology|sociology)\b/i;
 
+// Added 2026-10-02 (owner-approved): Key Stage 1-5 / KS1-5, DP ESS, Examinations Officer, Pastoral Support Lead.
+const EXTRA_ALLOWED_TITLE_REGEX = /^(?:key\s*stage\s*[1-5]|ks\s*[1-5]|dp\s+ess|exams?\s+officer|examinations?\s+officer|pastoral\s+support\s+lead)\b/i;
+
 export function isValidJobTitle(title: string): boolean {
   if (!title || title.trim().length < 3 || title.trim().length > 120) return false;
   const titleLower = title.toLowerCase().trim();
@@ -90,6 +93,9 @@ export function isValidJobTitle(title: string): boolean {
   ];
 
   if (nonJobKeywords.some(kw => titleLower.includes(kw))) return false;
+
+  // Titles confirmed as real teaching / pastoral / exams roles that the regexes below do not recognise.
+  if (EXTRA_ALLOWED_TITLE_REGEX.test(titleLower)) return true;
 
   return TEACHING_ROLE_REGEX.test(titleLower) || ACADEMIC_SUBJECT_REGEX.test(titleLower);
 }

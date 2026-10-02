@@ -9,6 +9,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { extractCanonicalDomain } from "./schoolGrounding";
 import { matchSchoolEntity } from "./entityMatcher";
+import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 
 export interface WhitelistedSchoolInfo {
   schoolId: string;
@@ -49,6 +50,11 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
 
         // Exclude agency profiles (isAgency: true / type: school_agent) from job target whitelist
         if (d.isAgency === true || d.type === "school_agent" || schoolId.toUpperCase().startsWith("AGNT")) {
+          return;
+        }
+
+        // Retired (merged) school IDs are never targets
+        if (isRetiredSchool(schoolId)) {
           return;
         }
 

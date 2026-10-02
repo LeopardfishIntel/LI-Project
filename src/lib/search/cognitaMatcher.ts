@@ -46,13 +46,7 @@ export const COGNITA_CAMPUS_MAP: Record<string, CognitaCampusMeta> = {
     country: "United Kingdom",
     matchers: ["southbank", "hampstead", "westminster"],
   },
-  "sukhumvit 107": {
-    schoolId: "FLIS0137",
-    canonicalName: "St. Andrews International School Sukhumvit 107",
-    city: "Bangkok",
-    country: "Thailand",
-    matchers: ["sukhumvit 107", "bangna", "bangkok", "rayong"],
-  },
+  // FLIS0137 St Andrews Sukhumvit 107 removed 2026-10-02: sold by Cognita to Taylor's Schools (now handled by the Taylor's engine).
   "repton dubai": {
     schoolId: "FLIS0110",
     canonicalName: "Repton School Dubai",

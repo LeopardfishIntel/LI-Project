@@ -9,6 +9,7 @@ import { verifyJobUrlHttp } from '../../lib/crawler/urlResolver';
 import { assertPageDisambiguation } from '../../lib/crawler/searchDisambiguation';
 import { getInitialJobStatus } from '../../lib/crawler/allowedSourcesRegistry';
 import type { RawJobRecord } from '../../lib/crawler/adaptors/raw-job.types';
+import { isRetiredSchool } from '../../lib/schools/retiredSchools';
 
 export interface SearchVacanciesInput {
   schoolName: string;
@@ -46,6 +47,7 @@ export async function searchVacancies(input: SearchVacanciesInput): Promise<{
   const cleanCountry = (input.country || '').toLowerCase().trim();
 
   for (const doc of snap.docs) {
+    if (isRetiredSchool(doc.id)) continue;
     const data = doc.data();
     const sName = (data.schoolname || data.name || '').toLowerCase().trim();
     const sCity = (data.city || '').toLowerCase().trim();
