@@ -1,6 +1,7 @@
 import admin from 'firebase-admin';
 import { db as clientDb } from './server';
 import { isRetiredSchool } from '@/lib/schools/retiredSchools';
+import { realDateOrNull } from '@/lib/crawler/firstSeen';
 import {
   collection,
   getDocs,
@@ -1825,17 +1826,12 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
 
       let firestoreClosingDate: admin.firestore.Timestamp;
       if (isRolling) {
-        let targetRollingDate = defaultRollingDate;
-        if (existing?.lastVerifiedAt) {
-          const lastVerifiedMillis = existing.lastVerifiedAt.toMillis ? existing.lastVerifiedAt.toMillis() : (existing.lastVerifiedAt.seconds * 1000);
-          const daysElapsed = (Date.now() - lastVerifiedMillis) / (1000 * 60 * 60 * 24);
-          if (daysElapsed >= 14) {
-            targetRollingDate = defaultRollingDate;
-          } else if (existing.closingDate && existing.closingDate.toMillis() > Date.now()) {
-            targetRollingDate = existing.closingDate;
-          }
-        }
-        firestoreClosingDate = targetRollingDate;
+        // 42-day rule (Roger, 2026-10-03): a job with no closing date expires 42 days after its posted date,
+        // else the date we first saw it. Re-checking the job does NOT renew it.
+        const postedMs = realDateOrNull(rawJob.datePosted || rawJob.date_listed)?.getTime();
+        const seenMs = existing?.firstDiscoveredAt ? getMillis(existing.firstDiscoveredAt) : (rawJob.firstDiscoveredAt ? getMillis(rawJob.firstDiscoveredAt) : NaN);
+        const baseMs = postedMs ?? (Number.isFinite(seenMs) && seenMs > 0 ? seenMs : Date.now());
+        firestoreClosingDate = admin.firestore.Timestamp.fromMillis(baseMs + 42 * 24 * 60 * 60 * 1000);
       } else if (rawJob.closingDate instanceof admin.firestore.Timestamp) {
         firestoreClosingDate = rawJob.closingDate;
       } else {
@@ -2058,20 +2054,12 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
 
       let firestoreClosingDate: any;
       if (isRolling) {
-        let targetRollingDate = defaultRollingDate;
-        if (existing?.lastVerifiedAt) {
-          const lastVerifiedMillis = existing.lastVerifiedAt.toMillis ? existing.lastVerifiedAt.toMillis() : (existing.lastVerifiedAt.seconds * 1000);
-          const daysElapsed = (Date.now() - lastVerifiedMillis) / (1000 * 60 * 60 * 24);
-          if (daysElapsed >= 14) {
-            targetRollingDate = defaultRollingDate;
-          } else if (existing.closingDate) {
-            const existMillis = existing.closingDate.toMillis ? existing.closingDate.toMillis() : (existing.closingDate.seconds * 1000);
-            if (existMillis > Date.now()) {
-              targetRollingDate = existing.closingDate;
-            }
-          }
-        }
-        firestoreClosingDate = targetRollingDate;
+        // 42-day rule (Roger, 2026-10-03): a job with no closing date expires 42 days after its posted date,
+        // else the date we first saw it. Re-checking the job does NOT renew it.
+        const postedMs = realDateOrNull(rawJob.datePosted || rawJob.date_listed)?.getTime();
+        const seenMs = existing?.firstDiscoveredAt ? getMillis(existing.firstDiscoveredAt) : (rawJob.firstDiscoveredAt ? getMillis(rawJob.firstDiscoveredAt) : NaN);
+        const baseMs = postedMs ?? (Number.isFinite(seenMs) && seenMs > 0 ? seenMs : Date.now());
+        firestoreClosingDate = Timestamp.fromMillis(baseMs + 42 * 24 * 60 * 60 * 1000);
       } else if (rawJob.closingDate instanceof Timestamp) {
         firestoreClosingDate = rawJob.closingDate;
       } else {
