@@ -57,173 +57,6 @@ const writeLocalCache = (schoolId: string, data: any) => {
   }
 };
 
-// 🏁 Ground-Truth Datasets for Prague Schools
-const parklaneGroundTruth: Vacancy[] = [
-  {
-    title: "Secondary English as an Additional Language (EAL) specialist",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Secondary+English+as+an+Additional+Language",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "Primary PE Specialist Teacher",
-    department: "Primary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Primary+PE+Specialist+Teacher",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "University and Careers Advisor",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=University+and+Careers+Advisor",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "Teacher of Science",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Teacher+of+Science",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "Head of Middle School (Years 7–9)",
-    department: "Leadership",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Head+of+Middle+School",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "Key Stage One Primary School Class Teacher",
-    department: "Primary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Key+Stage+One+Primary+School+Class+Teacher",
-    date_listed: "21 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "KS3 / IGCSE Mathematics Teacher",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Mathematics+Teacher",
-    date_listed: "01 Dec 2025",
-    status: "CLOSED",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "School Nurse / Školní sestra",
-    department: "Primary",
-    source: "Jobs.cz",
-    source_url: "https://www.jobs.cz/",
-    date_listed: "10 Jan 2026",
-    status: "CLOSED"
-  },
-  {
-    title: "Teacher of Art & Design",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/search?keywords=Art+and+Design",
-    date_listed: "15 Oct 2025",
-    status: "CLOSED",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "Teacher of English (Secondary)",
-    department: "Secondary",
-    source: "TES Jobs Archive",
-    source_url: "https://www.tes.com/jobs/vacancy/teacher-of-english-prague-1888888",
-    date_listed: "01 Nov 2025",
-    status: "CLOSED",
-    tes_employer_slug: "parklane-international-school-1065604"
-  },
-  {
-    title: "School Principal",
-    department: "Leadership",
-    source: "Executive Agency",
-    source_url: "https://www.searchassociates.com/schools/czech-republic/park-lane-international-school-2/",
-    date_listed: "10 Oct 2025",
-    status: "CLOSED"
-  }
-];
-
-const riversideGroundTruth: Vacancy[] = [
-  {
-    title: "Secondary Mathematics Teacher",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/secondary-mathematics-teacher-prague-1999998",
-    date_listed: "10 Aug 2025",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Head of Student Support (SENCO)",
-    department: "Leadership",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/head-of-student-support-senco-prague-1999997",
-    date_listed: "15 Oct 2025",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Teacher of Innovation, Design and Technology",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/teacher-of-innovation-design-and-technology-prague-1999996",
-    date_listed: "15 Oct 2025",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Junior High Science Teacher",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/junior-high-science-teacher-prague-1999995",
-    date_listed: "15 Nov 2025",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Physical Education Teacher",
-    department: "Primary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/physical-education-teacher-prague-1999994",
-    date_listed: "10 Jan 2026",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Primary School Performing Arts Teacher",
-    department: "Primary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/primary-school-performing-arts-teacher-prague-1999993",
-    date_listed: "15 Apr 2026",
-    status: "CLOSED",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  },
-  {
-    title: "Secondary Mathematics Teacher",
-    department: "Secondary",
-    source: "TES",
-    source_url: "https://www.tes.com/jobs/vacancy/secondary-mathematics-teacher-prague-1999998",
-    date_listed: "18 May 2026",
-    status: "OPEN",
-    tes_employer_slug: "riverside-school-prague-1002599"
-  }
-];
-
 interface ScrapedVacancy {
   title: string;
   source: string;
@@ -386,8 +219,6 @@ export async function GET(req: NextRequest) {
       try {
         const ai = getAI();
         const lowerSchool = schoolName.toLowerCase();
-        const isPrague = city.toLowerCase() === "prague" || lowerSchool.includes("prague");
-        const hasGroundTruth = (lowerSchool.includes("riverside") || lowerSchool.includes("parklane")) && isPrague;
 
         let targetOfficialWebsite = "";
         try {
@@ -640,15 +471,6 @@ To keep execution times low, token counts small, and eliminate text overflow:
           siblingSchools.push("riverside school prague", "park lane international school", "prague british international school", "pbis", "the english college in prague", "ecp");
         }
 
-        const activeParklaneGround = parklaneGroundTruth.map(sanitizeVacancy).filter(isWithinLast24Months);
-        const activeRiversideGround = riversideGroundTruth.map(sanitizeVacancy).filter(isWithinLast24Months);
-
-        const getGroundTruthForPhase = (phaseVal: number): Vacancy[] => {
-          if (!hasGroundTruth) return [];
-          const list = lowerSchool.includes("parklane") ? activeParklaneGround : activeRiversideGround;
-          return list.filter(v => getVacancyPhase(v) === phaseVal);
-        };
-
         // 🛸 PHASE 1: Primary Authority Feed Discovery (TES, Teacher Horizons, etc.)
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: [] });
         const schoolDomainClean = await getSchoolBaseUrl(schoolId, schoolName, targetOfficialWebsite);
@@ -665,8 +487,7 @@ To keep execution times low, token counts small, and eliminate text overflow:
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
 ${p1Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
         );
-        const p1Ground = getGroundTruthForPhase(1);
-        const p1Jobs = [...p1JobsAI, ...p1Ground];
+        const p1Jobs = [...p1JobsAI];
         allDiscovered.push(...p1Jobs);
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: p1Jobs });
 
@@ -680,8 +501,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
 - "\\"${schoolName}\\" \\"Principal\\""
 - "\\"${schoolName}\\" \\"Director\\""`
         );
-        const p2Ground = getGroundTruthForPhase(2);
-        const p2Jobs = [...p2JobsAI, ...p2Ground].map(job => {
+        const p2Jobs = [...p2JobsAI].map(job => {
           const titleLower = job.title.toLowerCase();
           if (titleLower.includes("principal") || titleLower.includes("director") || titleLower.includes("head of school") || titleLower.includes("headmaster") || titleLower.includes("headmistress")) {
             return {
@@ -967,33 +787,14 @@ You MUST run search queries with the school name enclosed in escaped double quot
           hasInternalPromotionsLikely,
         });
 
-        if (hasGroundTruth) {
-          report.metrics.estimatedStaffBase = estimatedStaffBase;
-          report.metrics.averageYearlyTesAdverts = total_known_vacancies_12;
-          report.metrics.estimatedChurnRatePercent = estimatedChurnRatePercent_12;
-          
-          const leadershipVacancies = currentVacancies.filter(v => v.department === "Leadership");
-          const leadershipBase = lowerSchool.includes("parklane") ? 5 : 4;
-          const senior_leadership_churn_percentage = leadershipVacancies.length > 0
-            ? parseFloat(((leadershipVacancies.length / leadershipBase) * 100).toFixed(1))
-            : 0;
-          
-          (report as any).senior_leadership_churn_percentage = senior_leadership_churn_percentage;
-          report.metrics.leadershipChurnRatioPercent = senior_leadership_churn_percentage;
-          
-          if (lowerSchool.includes("parklane")) {
-            report.leopardfishIntelAlert = `Parklane seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with a couple of new headship and senior appointments over the last year. Across the rest of the school, we've spotted about seven secondary roles and two primary classroom positions advertised. With eleven vacancies in total, that's about a 13.8% turnover rate, which is completely normal for an international school as standard two-year contracts come to an end. It looks like they're mostly using TES to find their new classroom teachers.`;
-          } else {
-            report.leopardfishIntelAlert = `Riverside looks quite stable on the teaching front, with just one new role in the leadership team advertised over the past twelve months. Other than that, they've posted five secondary positions and one primary classroom role. That makes seven vacancies in total, giving them a very steady 14.0% turnover rate—mostly just standard contract cycles finishing up. They seem to be relying on TES to bring in their core teaching staff.`;
-          }
-        } else {
+        {
           const leadershipVacancies = currentVacancies.filter(v => v.department === "Leadership");
           const leadershipBase = Math.max(3, Math.round(estimatedStaffBase * 0.1));
-          const senior_leadership_churn_percentage = leadershipVacancies.length > 0
+          const leadershipChurnPct = leadershipVacancies.length > 0
             ? parseFloat(((leadershipVacancies.length / leadershipBase) * 100).toFixed(1))
             : 0;
-          (report as any).senior_leadership_churn_percentage = senior_leadership_churn_percentage;
-          report.metrics.leadershipChurnRatioPercent = senior_leadership_churn_percentage;
+          (report as any).senior_leadership_churn_percentage = leadershipChurnPct;
+          report.metrics.leadershipChurnRatioPercent = leadershipChurnPct;
         }
 
         // Map finalVacancies to the report output (making it backward compatible)
