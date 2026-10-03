@@ -130,7 +130,8 @@ async function expireOverdueJobs(db: any, now: number): Promise<{ expired: numbe
 
 // ─── Tidy rule: remove school-folder copies the board has turned down ─────────
 // A job saved in schools/{id}/jobs can stay "approved" there after the board
-// copy was rejected, or merged into another job with no approved twin. The
+// copy was rejected, merged into another job with no approved twin, or when the
+// board copy belongs to a different school (folder copy filed under the wrong school). The
 // evaluate page reads the folder, so these show up as vacancies the board
 // does not list. The board copy is NEVER touched (it stops the crawler
 // re-creating the job). If the job is real, the next search brings it back.
@@ -165,7 +166,10 @@ async function purgeOrphanFolderCopies(db: any): Promise<{ purged: number; error
       if (!m) continue;
       const b = board.get(m[2]);
       if (!b) continue;
-      if (String(b.schoolId || '').trim() !== m[1]) continue;
+      const bSid = String(b.schoolId || '').trim();
+      // Board copy carries a different (valid) school: the folder copy is filed under the wrong school. Board copy stays.
+      if (/^FLIS\d{4}$/.test(bSid) && bSid !== m[1]) { doomed.push(x); continue; }
+      if (bSid !== m[1]) continue;
       const st = String(b.status || '').toLowerCase();
       const j = x.data() || {};
       if (st === 'rejected') doomed.push(x);
