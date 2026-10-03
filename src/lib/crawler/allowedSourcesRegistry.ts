@@ -8,8 +8,8 @@
  *     - TES (tes.com)
  *     - Major International School ATS Portals (Lever, Greenhouse, Workday, BambooHR, SmartRecruiters, JobTrain, etc.)
  *     - Major International Recruitment Agencies & Platforms:
- *       Search Associates, Schrole, Teacher Horizons, ISS, Webber's Ed, Edvectus, Guardian Jobs,
- *       Teach Away, eTeach, LinkedIn, GaijinPot Jobs, Join.com, Euraxess, eChinaCareers, UN Job List.
+ *       Search Associates, Teacher Horizons, ISS, Webber's Ed, Edvectus, Guardian Jobs,
+ *       Teach Away, eTeach, eChinaCareers. (Excluded boards are listed in EXCLUDED_SOURCE_DOMAINS below.)
  *     - 43 Approved International School Group Portals
  */
 
@@ -47,7 +47,6 @@ export const TIER_1_PLATFORMS: Record<string, string> = {
   'tes.com': 'TES',
   'jobs.theguardian.com': 'Guardian Jobs',
   'guardianjobs.com': 'Guardian Jobs',
-  'schrole.com': 'Schrole',
   'teacherhorizons.com': 'Teacher Horizons',
   'iss.edu': 'ISS',
   'webbersed.com': "Webber's Ed",
@@ -55,12 +54,7 @@ export const TIER_1_PLATFORMS: Record<string, string> = {
   'edvectus.co.uk': 'Edvectus UK',
   'teachaway.com': 'Teach Away',
   'eteach.com': 'eTeach',
-  'linkedin.com': 'LinkedIn',
-  'gaijinpot.com': 'GaijinPot Jobs',
-  'join.com': 'Join.com',
-  'euraxess.ec.europa.eu': 'Euraxess',
   'echinacareers.com': 'eChinaCareers',
-  'unjoblist.org': 'UN Job List',
   // 🏢 Major School ATS Portals & Platforms
   'lever.co': 'Lever ATS',
   'jobs.lever.co': 'Lever ATS',
@@ -134,36 +128,30 @@ export const TIER_1_GROUP_PORTALS: Record<string, string> = {
   'wellingtoncollege.org.uk': 'Wellington College International',
 };
 
-// ─── TIER 2: SECONDARY REGIONAL BOARDS (FALLBACK ONLY) ──────────────────────
+// ─── TIER 2 / EXCLUDED BOARDS ────────────────────────────────────────────────
+// Roger (2026-10-03): regional and secondary boards, and several agency boards, are NOT used and are never linked.
+// They were removed from the allowed lists. A link on one of these hosts is never auto-approved.
+// Teacher Horizons, ISS and eTeach stay in TIER_1_PLATFORMS ("for future work").
 
-export const TIER_2_REGIONAL_BOARDS: Record<string, string> = {
-  'acsi.org': 'ACSI Jobs',
-  'montessori-ami.org': 'AMI Jobs',
-  'arbetsformedlingen.se': 'Arbetsförmedlingen',
-  'edb.gov.hk': 'Direct HK Gov Portal',
-  'finn.no': 'Finn.no',
-  'gulftalent.com': 'Gulf Talent',
-  'ibo.org': 'IB World Schools Board',
-  'infojobs.net': 'InfoJobs Spain',
-  'jobindex.dk': 'Jobindex Denmark',
-  'jobkey.jo': 'Jobkey Jordan',
-  'jobsdb.com': 'JobsDB Hong Kong',
-  'jobsearch.az': 'JobSearch.az',
-  'jobstreet.com': 'JobStreet',
-  'jobstreet.com.ph': 'JobStreet Philippines',
-  'jobstreet.com.sg': 'JobStreet Singapore',
-  'karriere.at': 'Karriere.at',
-  'naukri.com': 'Naukri.com',
-  'bildungsdirektion-ooe.at': 'Oberösterreich Bildungsdirektion',
-  'opetus.fi': 'Opetus.fi',
-  'praca.pl': 'Praca.pl',
-  'prace.cz': 'Prace.cz',
-  'jobs.cz': 'Jobs.cz',
-  'moe.gov.sg': 'Singapore MOE Portal',
-  'stepstone.de': 'StepStone Germany',
-  'tirol.gv.at': 'Tirol.gv.at Job Portal',
-  'vdab.be': 'VDAB Belgium',
-};
+export const TIER_2_REGIONAL_BOARDS: Record<string, string> = {};
+
+export const EXCLUDED_SOURCE_DOMAINS: string[] = [
+  // agency / aggregator boards
+  'schrole.com', 'linkedin.com', 'gaijinpot.com', 'join.com', 'euraxess.ec.europa.eu', 'unjoblist.org',
+  // international directories and association boards (CIS Directory and SGIS were never in this file)
+  'ibo.org', 'acsi.org', 'montessori-ami.org',
+  // regional / secondary boards (former Tier 2)
+  'arbetsformedlingen.se', 'edb.gov.hk', 'finn.no', 'gulftalent.com', 'infojobs.net', 'jobindex.dk', 'jobkey.jo',
+  'jobsdb.com', 'jobsearch.az', 'jobstreet.com', 'jobstreet.com.ph', 'jobstreet.com.sg', 'karriere.at', 'naukri.com',
+  'bildungsdirektion-ooe.at', 'opetus.fi', 'praca.pl', 'prace.cz', 'jobs.cz', 'moe.gov.sg', 'stepstone.de',
+  'tirol.gv.at', 'vdab.be',
+];
+
+export function isExcludedSourceDomain(urlStr: string): boolean {
+  const host = extractDomainHost(urlStr);
+  if (!host) return false;
+  return EXCLUDED_SOURCE_DOMAINS.some(d => host === d || host.endsWith('.' + d));
+}
 
 export function extractDomainHost(urlStr: string): string {
   if (!urlStr || typeof urlStr !== 'string') return '';
@@ -185,9 +173,6 @@ export function getAgencyEntity(source: string, url?: string): { agencyId: strin
   const host = extractDomainHost(url || '');
   const cleanSource = (source || '').toLowerCase();
 
-  if (host.includes('schrole.com') || cleanSource.includes('schrole')) {
-    return { agencyId: 'AGNT_schrole', agencyName: 'Schrole (Confidential Client)' };
-  }
   if (host.includes('teacherhorizons.com') || cleanSource.includes('teacher horizons')) {
     return { agencyId: 'AGNT_teacher_horizons', agencyName: 'Teacher Horizons (Client School)' };
   }
@@ -218,10 +203,7 @@ export function isWhitelistedSourceDomain(
   const host = extractDomainHost(urlStr);
   if (!host) return false;
 
-  if (host.includes('linkedin.com')) {
-    const lowerUrl = urlStr.toLowerCase();
-    return lowerUrl.includes('/company/') || lowerUrl.includes('/school/');
-  }
+  if (isExcludedSourceDomain(urlStr)) return false;
 
   if (officialDomain && (host === officialDomain || host.endsWith('.' + officialDomain))) return true;
   if (groupDomain && (host === groupDomain || host.endsWith('.' + groupDomain))) return true;
@@ -260,6 +242,7 @@ export function getInitialJobStatus(
   groupDomain?: string,
   customVacancyDomains?: string[]
 ): 'approved' | 'pending_review' {
+  if (isExcludedSourceDomain(urlStr)) return 'pending_review';
   const tier = getSourceTier(urlStr, officialDomain, groupDomain, customVacancyDomains);
   return tier === 2 ? 'pending_review' : 'approved';
 }
