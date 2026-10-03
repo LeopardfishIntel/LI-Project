@@ -1,7 +1,5 @@
-import { triageVacancyLifecycle } from '@/lib/crawler/dateParser';
 import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
-import { isSchoolMatch } from '@/lib/crawler/schoolMatchWholeWord';
 import { NextRequest } from "next/server";
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";
@@ -9,7 +7,6 @@ import fs from "fs";
 import { db } from "@/firebase/server";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import path from "path";
-import { realDateOrNull } from "@/lib/crawler/firstSeen";
 
 // 📋 Zod schemas for validation and Gemini output structure
 const VacancySchema = z.object({
@@ -317,8 +314,8 @@ Your primary execution challenges are:
 ---
 
 ### CRITICAL TIME CONTEXT
-- Current Date: 21 May 2026
-- Target Window (Last 12 Months): 21 May 2025 to 21 May 2026
+- Current Date: ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
+- Target Window (Last 12 Months): ${new Date(Date.now() - 365 * 86400000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })} to ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
 - Historical Buffer Window: Up to 500 days ago (used internally for cycle-matching and deduplication context).
 
 ---
@@ -382,8 +379,8 @@ To keep execution times low, token counts small, and eliminate text overflow:
 * **Date & Timeline Extraction Rules:**
     - You MUST scan the page text, search snippets, and metadata extremely carefully to locate and extract the most accurate **date_listed** (posted date) and **date_closing** (closing date / application deadline / apply by date) for every vacancy.
     - Keep both the listing date (\`date_listed\`) and closing date (\`date_closing\`) populated. Never suppress the listing date when a closing date is present.
-    - If a vacancy is OPEN but no explicit listing date is found, default \`date_listed\` to "21 May 2026".
-    - If a vacancy is OPEN but no explicit closing date/deadline is found, default \`date_closing\` to "18 Jun 2026" (4 weeks after listing date).`;
+    - If no explicit listing date is found, leave \`date_listed\` as an empty string. Never invent or estimate a date.
+    - If no explicit closing date/deadline is found, leave \`date_closing\` as an empty string. Never invent or estimate a date.`;
 
         const runPhaseSweep = async (phaseNum: number, prompt: string): Promise<Vacancy[]> => {
           console.log(`🛸 [STREAM SWEEP] Running Phase ${phaseNum} for ${schoolName}...`);
@@ -655,7 +652,43 @@ You MUST run search queries with the school name enclosed in escaped double quot
              return isWithinLast24Months(job);
           });
 
-        for (const job of temporalFilteredDiscovered) {
+        // Drop vacancies we already know are wrong (fail-open: if the board cannot be read, nothing is dropped):
+        //  1) the same title is rejected/merged on the board for THIS school and not approved there
+        //  2) the same specific TES vacancy link is filed on the board under ANOTHER school
+        let keptDiscovered = temporalFilteredDiscovered;
+        try {
+          const { getAdminDb } = await import("@/firebase/admin");
+          const adb = getAdminDb();
+          const schoolDocs = (await adb.collection("featured_jobs_cache").where("schoolId", "==", schoolId).get()).docs;
+          const approvedKeys = new Set<string>();
+          const badKeys = new Set<string>();
+          schoolDocs.forEach((d: any) => {
+            const j = d.data() || {};
+            const k = getNormalizedComparisonKey(String(j.title || ""));
+            if (!k) return;
+            const st = String(j.status || "").toLowerCase();
+            if (st === "approved") approvedKeys.add(k);
+            else if (st === "rejected" || st === "merged") badKeys.add(k);
+          });
+          const wrongSchoolUrl = new Set<string>();
+          await Promise.all(temporalFilteredDiscovered.map(async (job) => {
+            const u = job.source_url || "";
+            if (!u.includes("tes.com/jobs/vacancy")) return;
+            const snap = await adb.collection("featured_jobs_cache").where("applyUrl", "==", u).get();
+            if (snap.docs.some((d: any) => String((d.data() || {}).schoolId || "").toUpperCase().trim() !== schoolId.toUpperCase())) wrongSchoolUrl.add(u);
+          }));
+          keptDiscovered = temporalFilteredDiscovered.filter((job) => {
+            const k = getNormalizedComparisonKey(job.title);
+            if (k && badKeys.has(k) && !approvedKeys.has(k)) return false;
+            if (job.source_url && wrongSchoolUrl.has(job.source_url)) return false;
+            return true;
+          });
+          console.log(`[stability] ${schoolId}: dropped ${temporalFilteredDiscovered.length - keptDiscovered.length} known-wrong vacancies`);
+        } catch (e) {
+          console.warn("[stability] known-wrong filter skipped:", e);
+        }
+
+        for (const job of keptDiscovered) {
           const normKey = getNormalizedComparisonKey(job.title);
           if (!normKey) continue;
 
@@ -845,29 +878,9 @@ You MUST run search queries with the school name enclosed in escaped double quot
         });
 
         try {
-          const { saveScrapedJobs, updateDocument } = await import("@/firebase/admin");
-          const subcolJobs = finalVacancies.map(v => {
-            const rawClosing = v.date_closing || (v as any).closesDate || null;
-            const triage = triageVacancyLifecycle(rawClosing, realDateOrNull((v as any).date_listed || (v as any).datePosted || (v as any).postedDate) || undefined);
-            
-            // Whole-word school name verification: do not approve unless job text or URL names the school as a whole-word match
-            const jobTextAndUrl = `${v.title || ''} ${v.source_url || ''} ${(v as any).description || ''} ${(v as any).employer || ''}`;
-            const matchedSchool = isSchoolMatch(schoolName, jobTextAndUrl);
-            const finalStatus = matchedSchool ? triage.status : 'pending';
-
-            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
-            return {
-              id: jobId,
-              title: v.title,
-              sourceName: v.source,
-              applyUrl: v.source_url || "",
-              closingDate: triage.closingDate,
-              isRollingDeadline: triage.isRollingDeadline,
-              status: finalStatus
-            };
-          });
+          const { updateDocument } = await import("@/firebase/admin");
+          // Jobs are no longer written to the school folder from here: the board engines own job records.
           (async () => {
-              await saveScrapedJobs(schoolId, subcolJobs);
               await updateDocument("schools", schoolId, {
                 lastScrapedAt: report.lastScrapedAt,
                 cachedStability: reportWithStructured,

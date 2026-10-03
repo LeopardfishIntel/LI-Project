@@ -58,6 +58,22 @@ interface ParityState {
   conflictCount: number;
 }
 
+// Same rule as the nightly job (pipeline3-janitor.ts): only a specific vacancy link counts as a duplicate link.
+const GENERIC_APPLY_PATH_SEGMENTS = new Set(["", "careers", "jobs", "vacancies", "vacancy", "employment", "work-with-us", "join-us"]);
+function isSpecificVacancyUrl(u?: string | null): boolean {
+  if (!u) return false;
+  try {
+    const raw = u.trim();
+    const parsed = new URL(raw.startsWith("http") ? raw : `https://${raw}`);
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    if (segments.length === 0) return false;
+    if (segments.length === 1 && GENERIC_APPLY_PATH_SEGMENTS.has(segments[0].toLowerCase())) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -152,7 +168,7 @@ export default function Header() {
         const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
         const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
         const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
-        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege");
+        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege") || ["FLIS0119", "FLIS0151", "FLIS0234", "FLIS0235", "FLIS0236", "FLIS0237", "FLIS0238", "FLIS0239", "FLIS0240"].includes(sId);
         const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
         const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
         const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
@@ -168,7 +184,7 @@ export default function Header() {
           return;
         }
 
-        if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") {
+        if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING" || rawStatus === "MERGED") {
           schoolFlaggedJobs[sId].push({ id: d.id, title, reason: `Inactive status (${rawStatus})`, source, applyUrl });
           return;
         }
@@ -178,8 +194,8 @@ export default function Header() {
         }
         if (!title || title.length < 3 || !isValidJobTitle(title)) return;
 
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
-        if (applyUrlLower) seenUrls.add(applyUrlLower);
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower) && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower)) seenUrls.add(applyUrlLower);
 
         const jobKey = `${sId.toLowerCase()}_${title.toLowerCase()}`;
         if (seenJobKeys.has(jobKey)) return;
@@ -275,7 +291,7 @@ export default function Header() {
       featuredSnap.docs.forEach((d) => {
         const cacheDoc = d.data();
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
-        if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
+        if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING' || rawStatus === 'MERGED') return;
         if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) return;
 
         let sId = (cacheDoc.schoolId || "").toUpperCase().trim();
@@ -299,7 +315,7 @@ export default function Header() {
         const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
         const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
         const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
-        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege");
+        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege") || ["FLIS0119", "FLIS0151", "FLIS0234", "FLIS0235", "FLIS0236", "FLIS0237", "FLIS0238", "FLIS0239", "FLIS0240"].includes(sId);
         const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
         const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
         const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
@@ -314,8 +330,8 @@ export default function Header() {
         if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isSearch) return;
         if (!title || title.length < 3 || !isValidJobTitle(title)) return;
 
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
-        if (applyUrlLower) seenUrls.add(applyUrlLower);
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower) && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower && isSpecificVacancyUrl(applyUrlLower)) seenUrls.add(applyUrlLower);
 
         const jobKey = `${sId.toLowerCase()}_${title.toLowerCase()}`;
         if (seenJobKeys.has(jobKey)) return;
