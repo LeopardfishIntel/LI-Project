@@ -93,8 +93,7 @@ export function buildTier2JobBoardQueries(
 
   queries.push(
     formatGroundingSiteQuery(cleanSchoolName, "tes.com/jobs/vacancy"),
-    formatGroundingSiteQuery(cleanSchoolName, "tes.com/jobs/employer"),
-    formatGroundingSiteQuery(cleanSchoolName, "schrole.com")
+    formatGroundingSiteQuery(cleanSchoolName, "tes.com/jobs/employer")
   );
 
   if (location) {
@@ -132,7 +131,6 @@ export function buildTier3SchoolAgentQueries(schoolName: string): string[] {
   const cleanSchoolName = schoolName.replace(/^["\']|["\']$/g, "").trim();
   return [
     formatGroundingSiteQuery(cleanSchoolName, "edvectus.com"),
-    formatGroundingSiteQuery(cleanSchoolName, "schrole.com"),
     formatGroundingSiteQuery(cleanSchoolName, "teacherhorizons.com"),
     formatGroundingSiteQuery(cleanSchoolName, "iss.edu"),
     formatGroundingSiteQuery(cleanSchoolName, "iscresearch.com")

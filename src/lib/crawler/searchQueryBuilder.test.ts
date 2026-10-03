@@ -78,9 +78,9 @@ function runTests() {
     'Tier 2 includes site:tes.com "jobs/employer"'
   );
   assertEqual(
-    tier2.includes('"Vienna International School" site:schrole.com'),
-    true,
-    'Tier 2 includes site:schrole.com without path'
+    tier2.some(q => q.includes('schrole.com')),
+    false,
+    'Tier 2 no longer searches schrole.com (excluded board)'
   );
 
   // Test 7: Tier 3 Subject-Specific queries

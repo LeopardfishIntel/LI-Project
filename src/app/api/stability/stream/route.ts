@@ -149,14 +149,6 @@ const parklaneGroundTruth: Vacancy[] = [
     tes_employer_slug: "parklane-international-school-1065604"
   },
   {
-    title: "Early Years / Preschool Practitioner",
-    department: "Primary",
-    source: "Schrole",
-    source_url: "https://www.schrole.com/",
-    date_listed: "15 Jun 2025",
-    status: "CLOSED"
-  },
-  {
     title: "School Principal",
     department: "Leadership",
     source: "Executive Agency",
@@ -317,7 +309,7 @@ export function sanitizeVacancy(v: any): Vacancy {
   const sourceLower = source.toLowerCase();
   const urlLower = source_url.toLowerCase();
 
-  // Enforce primary authority feeds only. If a school website is detected, rewrite to TES or Schrole.
+  // Enforce primary authority feeds only. If a school website is detected, rewrite to TES.
   if (
     sourceLower.includes("school web") ||
     sourceLower.includes("website") ||
@@ -503,7 +495,7 @@ Your primary execution challenges are:
 ### 1. STREAMING, SPEED MAXIMIZATION & ASYMMETRIC SEARCH DEPTH
 To maximize execution speed, you MUST treat each phase as an isolated data chunk and stream them to the frontend instantly. Do not buffer or wait for deep queries to finish before outputting earlier segments.
 
-* **Phase 1 (Primary Authority Feed Discovery):** Sweep TES, Schrole, and primary global networks using the school's unique employer slug. Capture live posts and historical winter logs simultaneously. Emits phase: 1. Immediately output live matches to screen.
+* **Phase 1 (Primary Authority Feed Discovery):** Sweep TES and primary global networks using the school's unique employer slug. Capture live posts and historical winter logs simultaneously. Emits phase: 1. Immediately output live matches to screen.
 * **Phase 2 (Executive Search Sweep):** Target premium consultative networks (LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'. Emits phase: 2.
 * **Phase 3 (Regional Archive Cross-Reference - SPEED FOCUS):** Sweep local boards (e.g., jobs.cz, expats.cz, Indeed, Glassdoor). 
   - *SPEED CONSTRAINT:* SKIM ONLY. Do NOT read deep page text, follow links, or request secondary sub-pages. Extract parameters strictly from the primary header string and metadata date tag found in the initial surface fragment. Limit analysis to the TOP 3 relevant search result snippets per regional board to eliminate latency. Emits phase: 3.
@@ -513,7 +505,7 @@ To maximize execution speed, you MUST treat each phase as an isolated data chunk
 
 ### 2. STRICT PRE-PROCESSING DEDUPLICATION MANDATE (ANTI-SPIKE RULE)
 Before running calculations or exporting counts, you MUST execute a strict string-normalization sweep across all scraped records to collapse cross-posted roles.
-* **The Normalization Filter:** If a job title matches across multiple sources (e.g., "Teacher of English" found on both TES and Schrole), you MUST collapse them into one single unique entry. 
+* **The Normalization Filter:** If a job title matches across multiple sources (e.g., "Teacher of English" found on both TES and another board), you MUST collapse them into one single unique entry. 
 * **The Sourcing Priority:** Keep the entry from the primary authority channel (TES) and completely discard the duplicate aggregator copies. 
 * **The Counter Constraint:** Your absolute reported totals (total_tracked_vacancies) must reflect ONLY the post-deduplicated, settled count (e.g., 26). You are strictly forbidden from outputting intermediate raw spike numbers (e.g., 53) to the stream.
 
@@ -657,7 +649,7 @@ To keep execution times low, token counts small, and eliminate text overflow:
           return list.filter(v => getVacancyPhase(v) === phaseVal);
         };
 
-        // 🛸 PHASE 1: Primary Authority Feed Discovery (TES, Schrole, Teacher Horizons, etc.)
+        // 🛸 PHASE 1: Primary Authority Feed Discovery (TES, Teacher Horizons, etc.)
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: [] });
         const schoolDomainClean = await getSchoolBaseUrl(schoolId, schoolName, targetOfficialWebsite);
         const p1Queries = schoolDomainClean
@@ -669,7 +661,7 @@ To keep execution times low, token counts small, and eliminate text overflow:
             ];
         const p1JobsAI = await runPhaseSweep(
           1,
-          `Sweep TES, Schrole, and primary global networks for the school "${schoolName}".
+          `Sweep TES and primary global networks for the school "${schoolName}".
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
 ${p1Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
         );
