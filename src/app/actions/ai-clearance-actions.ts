@@ -114,40 +114,11 @@ export async function requestExpeditedClearanceAction(
     // ✅ APPROVAL GRANTED (+20 CREDITS)
     const bonusToGrant = 20;
 
-    if (adminDb) {
-      const db = adminDb;
-      const userRef = db.collection("teachers").doc(userId);
-      const userSnap = await userRef.get();
-      
-      const currentBonus = userSnap.exists ? (userSnap.data()?.bonus_credits || 0) : 0;
-      const currentAllowance = userSnap.exists ? (userSnap.data()?.evaluations_allowance || 20) : 20;
-      
-      // Total ceiling up to 40 max with uplift
-      const newBonus = Math.min(currentBonus + bonusToGrant, 20);
-      const newAllowance = Math.min(currentAllowance + bonusToGrant, 40);
-
-      await userRef.set({
-        bonus_credits: newBonus,
-        evaluations_allowance: newAllowance,
-        expedited_uplifts_count: FieldValue.increment(1),
-        last_uplift_at: FieldValue.serverTimestamp(),
-        last_uplift_reason: trimmedReason
-      }, { merge: true });
-
-      return {
-        approved: true,
-        message: "Expedited Clearance Approved! +20 evaluation credits have been added to your account.",
-        bonusCredits: bonusToGrant,
-        newTotalAllowance: newAllowance
-      };
-    }
-
-    // Client fallback response
+    // Approval only. Credits are added by claimRewardAction (signed-in, once a day) so they cannot be granted twice.
     return {
       approved: true,
-      message: "Expedited Clearance Approved! +20 bonus evaluation credits unlocked.",
+      message: "Expedited Clearance Approved! +20 evaluation credits are being added to your account.",
       bonusCredits: bonusToGrant,
-      newTotalAllowance: 40
     };
 
   } catch (error: any) {

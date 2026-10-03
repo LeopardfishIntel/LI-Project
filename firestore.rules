@@ -41,6 +41,34 @@ service cloud.firestore {
       return keys.hasAny(['role', 'isAdmin', 'customId', 'tier']);
     }
 
+    // Keys a normal user must never be able to mutate on their own teachers/{teacherId} document:
+    // Quotas, allowances, counters, tiers, and roles are strictly managed by Server Actions (Admin SDK).
+    function touchesPrivilegedTeacherKeys(keys) {
+      return keys.hasAny([
+        'tier',
+        'evaluations_allowance',
+        'evaluations_used',
+        'daily_evaluations_used',
+        'daily_base_quota',
+        'bonus_credits',
+        'last_quota_reset_date',
+        'tier_expires_at',
+        'role',
+        'isAdmin',
+        'isVerified',
+        'relocation_pass_active',
+        'relocation_pass_expires_at',
+        'domestic_baseline_submitted',
+        'expedited_uplifts_count',
+        'contributions_count',
+        'last_contribution_at',
+        'last_contribution_date',
+        'daily_contributions_count',
+        'last_evaluation_at',
+        'last_uplift_at'
+      ]);
+    }
+
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
       allow create: if isAdmin() || (isOwner(userId) && !touchesPrivilegedUserKeys(request.resource.data.keys()));
@@ -48,16 +76,30 @@ service cloud.firestore {
       allow delete: if isAdmin();
       
       match /teacherProfile/{profileId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.id == userId;
-        allow update: if isOwner(userId);
-        allow delete: if isOwner(userId);
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create: if isAdmin() || (isOwner(userId) && request.resource.data.id == userId && !touchesPrivilegedTeacherKeys(request.resource.data.keys()));
+        allow update: if isAdmin() || (isOwner(userId) && !touchesPrivilegedTeacherKeys(request.resource.data.diff(resource.data).affectedKeys()));
+        allow delete: if isOwner(userId) || isAdmin();
       }
     }
 
     match /teachers/{teacherId} {
       allow read: if isSignedIn();
-      allow write: if isOwner(teacherId) || isAdmin();
+      allow create: if isAdmin() || (
+        isOwner(teacherId) &&
+        (!request.resource.data.keys().hasAny(['role', 'isAdmin', 'isVerified', 'relocation_pass_active', 'relocation_pass_expires_at', 'domestic_baseline_submitted', 'tier_expires_at', 'contributions_count', 'daily_contributions_count', 'last_uplift_at']) &&
+         (!request.resource.data.keys().hasAny(['bonus_credits']) || request.resource.data.bonus_credits == 0) &&
+         (!request.resource.data.keys().hasAny(['expedited_uplifts_count']) || request.resource.data.expedited_uplifts_count == 0) &&
+         (!request.resource.data.keys().hasAny(['daily_base_quota']) || request.resource.data.daily_base_quota <= 20) &&
+         (!request.resource.data.keys().hasAny(['tier']) || request.resource.data.tier == 'free') &&
+         (!request.resource.data.keys().hasAny(['evaluations_allowance']) || request.resource.data.evaluations_allowance <= 25) &&
+         (!request.resource.data.keys().hasAny(['evaluations_used']) || request.resource.data.evaluations_used == 0) &&
+         (!request.resource.data.keys().hasAny(['daily_evaluations_used']) || request.resource.data.daily_evaluations_used == 0))
+      );
+      allow update: if isAdmin() || (
+        isOwner(teacherId) && !touchesPrivilegedTeacherKeys(request.resource.data.diff(resource.data).affectedKeys())
+      );
+      allow delete: if isAdmin();
     }
 
     // =====================================================================

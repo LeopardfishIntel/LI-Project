@@ -21,6 +21,7 @@ import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvide
 import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getInflationRate } from '@/lib/calculations';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import { checkIsAdmin } from '@/lib/auth/admin';
+import { consumeEvaluationQuotaAction } from '@/app/actions/user-allowance-actions';
 
 const RATES: Record<string, number> = {};
 Object.keys(BASE_RATES).forEach(k => {
@@ -367,20 +368,20 @@ function DecideContent() {
 
     const hasCountedInitialRef = useRef(false);
 
-    // Initial 3 schools consumption on first load
+    // Initial 3 schools consumption on first load via atomic server action
     useEffect(() => {
-        if (!hasCountedInitialRef.current && user && firestore && teacherProfile && !isPro) {
+        if (!hasCountedInitialRef.current && user && teacherProfile && !isPro) {
             const activeCount = selectedIds.filter(Boolean).length;
             if (activeCount > 0) {
                 hasCountedInitialRef.current = true;
-                const teacherDoc = doc(firestore, 'teachers', user.uid);
-                updateDoc(teacherDoc, {
-                    evaluations_used: increment(activeCount),
-                    daily_evaluations_used: increment(activeCount),
-                }).catch(err => console.warn('Could not increment decide initial load evaluations:', err));
+                user.getIdToken().then((idToken) => consumeEvaluationQuotaAction({
+                  idToken,
+                    count: activeCount,
+                    surface: 'decide_initial_load'
+                })).catch(err => console.warn('Could not consume decide initial load evaluations:', err));
             }
         }
-    }, [user, firestore, teacherProfile, selectedIds, isPro]);
+    }, [user, teacherProfile, selectedIds, isPro]);
 
     // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData / school selection arrival)
     useEffect(() => {
@@ -513,13 +514,14 @@ function DecideContent() {
 
         const nextIds = [...selectedIds]; nextIds[index] = val; setSelectedIds(nextIds);
 
-        // Deduct 1 point per school load/swap
-        if (user && firestore && !isPro) {
-            const teacherDoc = doc(firestore, 'teachers', user.uid);
-            updateDoc(teacherDoc, {
-                evaluations_used: increment(1),
-                daily_evaluations_used: increment(1),
-            }).catch(err => console.warn('Could not increment decide school selection evaluations:', err));
+        // Deduct 1 point per school load/swap via atomic server action
+        if (user && !isPro) {
+            user.getIdToken().then((idToken) => consumeEvaluationQuotaAction({
+              idToken,
+                count: 1,
+                schoolId: val,
+                surface: 'decide_slot_swap'
+            })).catch(err => console.warn('Could not consume decide slot swap evaluation:', err));
         }
 
         const school = schools?.find((s: any) => s.id === val);

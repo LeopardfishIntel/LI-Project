@@ -47,11 +47,12 @@ import {
   verifyInternationalSchoolAction 
 } from '@/app/actions/intelligence-actions';
 import { requestExpeditedClearanceAction } from '@/app/actions/ai-clearance-actions';
+import { claimRewardAction } from '@/app/actions/user-allowance-actions';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
 import { disambiguateSchool } from '@/ai/flows/disambiguate-school-flow';
 import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
 import { cn } from '@/lib/utils';
-import { collection, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 import type { School, TeacherProfile } from '@/lib/types';
 import { matchInternationalSchool } from '@/lib/utils/schoolMatcher';
 import { checkIsAdmin } from '@/lib/auth/admin';
@@ -125,10 +126,12 @@ export function FieldIntelligenceModal() {
   
   const today = getLocalDateString();
   const MAX_INTEL_PHASES = 2;
-  const isContributionToday = teacherProfile?.last_contribution_date === today;
+  // The server records contribution dates in UTC, so compare with the UTC date.
+  const utcToday = new Date().toISOString().split('T')[0];
+  const isContributionToday = teacherProfile?.last_contribution_date === utcToday;
   const dailyContributionsCount = isContributionToday ? (teacherProfile?.daily_contributions_count ?? 0) : 0;
   const hasCompletedAllIntelPhases = dailyContributionsCount >= MAX_INTEL_PHASES;
-  const isUpliftToday = teacherProfile?.last_contribution_date === today;
+  const isUpliftToday = teacherProfile?.last_contribution_date === utcToday;
   const hasUsedOneOffUplift = isUpliftToday && ((teacherProfile?.expedited_uplifts_count ?? 0) > 0);
 
   // Update midnight countdown clock
@@ -212,28 +215,29 @@ export function FieldIntelligenceModal() {
     setIsSubmittingDomestic(false);
   };
 
-  const grantInstantCreditReward = async (amount: number, reason: string, isIntelContribution = false) => {
-    if (user && firestore) {
+  const grantInstantCreditReward = async (amount: number, reason: string, kind: 'ai_clearance' | 'intel' = 'ai_clearance') => {
+    // Credits are granted only by the server, which checks who you are and applies daily limits.
+    let granted = false;
+    if (user) {
       try {
-        const currentDate = getLocalDateString();
-        const teacherDoc = doc(firestore, 'teachers', user.uid);
-        const updatePayload: Record<string, any> = {
-          evaluations_allowance: increment(amount),
-          bonus_credits: increment(amount),
-        };
-        if (isIntelContribution) {
-          updatePayload.contributions_count = increment(1);
-          updatePayload.daily_contributions_count = isContributionToday ? increment(1) : 1;
-          updatePayload.last_contribution_date = currentDate;
+        const idToken = await user.getIdToken();
+        const res = await claimRewardAction(idToken, kind);
+        if (!res.success) {
+          toast({ variant: 'destructive', title: 'Reward not added', description: res.message || 'Could not add the reward.' });
+          return false;
         }
-        await updateDoc(teacherDoc, updatePayload);
+        granted = true;
       } catch (dbErr) {
-        console.warn('Local allowance increment synced:', dbErr);
+        console.warn('Reward claim failed:', dbErr);
+        toast({ variant: 'destructive', title: 'Reward not added', description: 'Could not add the reward right now.' });
+        return false;
       }
     }
+    if (!granted) return false;
     window.dispatchEvent(new CustomEvent('lfi:allowance-unlocked', { detail: { added: amount } }));
     setSuccessMessage(`+${amount} Free Evaluations Unlocked (${reason})`);
     setIsDestructing(true);
+    return true;
   };
 
   // 🤖 AI EXPEDITED CLEARANCE HANDLER
@@ -279,7 +283,8 @@ export function FieldIntelligenceModal() {
         return;
       }
 
-      await grantInstantCreditReward(20, 'AI Expedited Clearance Approved');
+      const granted = await grantInstantCreditReward(20, 'AI Expedited Clearance Approved');
+      if (!granted) { setIsRequestingClearance(false); return; }
       toast({
         title: "⚡ AI Clearance Approved! (+20 Credits)",
         description: "Your 24h bonus uplift is active with rollover protection.",
@@ -465,7 +470,8 @@ export function FieldIntelligenceModal() {
         console.warn('Flow background sync completed:', flowErr);
       }
 
-      await grantInstantCreditReward(20, 'Anonymous School Intel Verified', true);
+      const granted = await grantInstantCreditReward(20, 'Anonymous School Intel Verified', 'intel');
+      if (!granted) { setIsSubmitting(false); return; }
       toast({
         title: "⚡ +20 Evaluations Unlocked!",
         description: "Your school report was anonymized and verified. +20 free evaluations added!",
@@ -529,23 +535,20 @@ export function FieldIntelligenceModal() {
         console.warn('Flow background sync completed:', flowErr);
       }
 
-      if (user && firestore) {
+      if (user) {
         try {
-          const currentDate = getLocalDateString();
-          const expirationDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-          const teacherDoc = doc(firestore, 'teachers', user.uid);
-          await updateDoc(teacherDoc, {
-            evaluations_allowance: 20,
-            daily_base_quota: 20,
-            relocation_pass_active: true,
-            relocation_pass_expires_at: expirationDate,
-            domestic_baseline_submitted: true,
-            contributions_count: increment(1),
-            daily_contributions_count: isContributionToday ? increment(1) : 1,
-            last_contribution_date: currentDate,
-          });
+          const idToken = await user.getIdToken();
+          const claim = await claimRewardAction(idToken, 'domestic');
+          if (!claim.success) {
+            toast({ variant: 'destructive', title: 'Pass not activated', description: claim.message || 'Could not activate the relocation pass.' });
+            setIsSubmittingDomestic(false);
+            return;
+          }
         } catch (dbErr) {
-          console.warn('Local allowance increment synced:', dbErr);
+          console.warn('Relocation pass claim failed:', dbErr);
+          toast({ variant: 'destructive', title: 'Pass not activated', description: 'Could not activate the relocation pass right now.' });
+          setIsSubmittingDomestic(false);
+          return;
         }
       }
 

@@ -18,6 +18,7 @@ import type { TeacherProfile } from '@/lib/types';
 import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
 import Link from 'next/link';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
+import { consumeEvaluationQuotaAction } from '@/app/actions/user-allowance-actions';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -476,23 +477,7 @@ function DecoderContent() {
   const [isGuestOverLimit, setIsGuestOverLimit] = useState<boolean>(false);
   const evaluatedSchoolsRef = useRef<Set<string>>(new Set());
 
-  // Auto-reset daily quota on new day arrival for logged in teachers
-  useEffect(() => {
-    if (user && firestore && teacherProfile) {
-      const today = getLocalDateString();
-      if (teacherProfile.last_quota_reset_date && teacherProfile.last_quota_reset_date !== today) {
-        const teacherDoc = doc(firestore, 'teachers', user.uid);
-        const bonusRollover = teacherProfile.bonus_credits || 0;
-        updateDoc(teacherDoc, {
-          daily_evaluations_used: 0,
-          evaluations_used: 0,
-          daily_base_quota: 20,
-          evaluations_allowance: 20 + bonusRollover,
-          last_quota_reset_date: today
-        }).catch(err => console.warn('Could not reset daily quota in forecaster:', err));
-      }
-    }
-  }, [user, firestore, teacherProfile]);
+  // Daily quota reset now happens on the server (consumeEvaluationQuotaAction); the browser may not write quota fields.
 
   const [lastSelectedOpportunity, setLastSelectedOpportunity] = useState<any>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<{
@@ -742,14 +727,15 @@ function DecoderContent() {
       }
     } else {
       setIsGuestOverLimit(false);
-      // Authenticated user view tracking
-      if (firestore && !evaluatedSchoolsRef.current.has(schoolKey) && !isOverLimit) {
+      // Authenticated user view tracking via atomic server action
+      if (user && !evaluatedSchoolsRef.current.has(schoolKey) && !isOverLimit) {
         evaluatedSchoolsRef.current.add(schoolKey);
-        const teacherDoc = doc(firestore, 'teachers', user.uid);
-        updateDoc(teacherDoc, {
-          evaluations_used: increment(1),
-          daily_evaluations_used: increment(1),
-        }).catch((err) => console.warn('Could not increment evaluations_used:', err));
+        user.getIdToken().then((idToken) => consumeEvaluationQuotaAction({
+          idToken,
+          count: 1,
+          schoolId: activeSchool?.id || settings.schoolId || schoolKey,
+          surface: 'financial_forecaster'
+        })).catch((err) => console.warn('Could not consume forecaster quota:', err));
       }
     }
   }, [mounted, activeSchool, user, firestore, isOverLimit, settings.schoolId]);

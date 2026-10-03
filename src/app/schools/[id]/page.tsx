@@ -55,6 +55,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
+import { consumeEvaluationQuotaAction } from '@/app/actions/user-allowance-actions';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import { calculateSurplus, normalizeMenaSalaryUSD, parseSalaryToMedianMonthlyUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
@@ -298,34 +299,22 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     }
   }, [user, mounted, school, id]);
 
-  // Auto-reset daily quota on new day arrival (preserving bonus credits rollover)
+  // 🛡️ Server-enforced evaluation quota tracking
   React.useEffect(() => {
-    if (user && db && teacherProfile) {
-      const today = getLocalDateString();
-      if (teacherProfile.last_quota_reset_date && teacherProfile.last_quota_reset_date !== today) {
-        const teacherDoc = doc(db, 'teachers', user.uid);
-        const bonusRollover = teacherProfile.bonus_credits || 0;
-        updateDoc(teacherDoc, {
-          daily_evaluations_used: 0,
-          evaluations_used: 0,
-          daily_base_quota: 20,
-          evaluations_allowance: 20 + bonusRollover,
-          last_quota_reset_date: today
-        }).catch(err => console.warn('Could not reset daily quota:', err));
-      }
-    }
-  }, [user, teacherProfile]);
-
-  React.useEffect(() => {
-    if (user && db && school && !hasCountedEvaluationRef.current && !isOverLimit) {
+    if (user && school && !hasCountedEvaluationRef.current && !isOverLimit) {
       hasCountedEvaluationRef.current = true;
-      const teacherDoc = doc(db, 'teachers', user.uid);
-      updateDoc(teacherDoc, {
-        evaluations_used: increment(1),
-        daily_evaluations_used: increment(1)
-      }).catch(err => console.warn('Could not increment evaluations_used:', err));
+      user.getIdToken().then((idToken) => consumeEvaluationQuotaAction({
+        idToken,
+        count: 1,
+        schoolId: (id as string) || school?.id,
+        surface: 'school_briefing'
+      })).then((res) => {
+        if (!res.success && res.reason === 'QUOTA_EXCEEDED') {
+          setIsGuestOverLimit(true);
+        }
+      }).catch(err => console.warn('Could not consume school evaluation quota:', err));
     }
-  }, [user, school, isOverLimit]);
+  }, [user, school, isOverLimit, id]);
 
   const handleOpenDataLock = () => {
     window.dispatchEvent(new CustomEvent('lfi:open-intel-modal', {

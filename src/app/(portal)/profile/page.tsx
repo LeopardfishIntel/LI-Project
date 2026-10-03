@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { getTimeUntilLocalMidnight } from '@/lib/utils/timeUtils';
 import { checkIsAdmin } from '@/lib/auth/admin';
+import { updateTeacherProfileSafeAction } from '@/app/actions/user-allowance-actions';
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
@@ -61,11 +62,18 @@ export default function ProfilePage() {
     }, []);
 
     const handleSave = async () => {
-        if (!customId) return;
+        const targetId = customId || user?.uid;
+        if (!targetId || !editBuffer) return;
         setIsSaving(true);
-        await setDocumentNonBlocking('teachers', customId, editBuffer);
-        setIsEditing(false);
-        setIsSaving(false);
+        try {
+            const idToken = await user!.getIdToken();
+            await updateTeacherProfileSafeAction(idToken, targetId, editBuffer);
+        } catch (err) {
+            console.error('Failed to update teacher profile:', err);
+        } finally {
+            setIsEditing(false);
+            setIsSaving(false);
+        }
     };
 
     // 🛰️ SECURITY: Dispatching the encrypted reset link
