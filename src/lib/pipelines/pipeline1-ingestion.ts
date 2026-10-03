@@ -317,6 +317,11 @@ export async function runIngestionPipeline(
   const mappedJobs: any[] = [];
   const cacheDocs: CacheJobDocument[] = [];
   const acceptedFingerprints: string[] = [];
+  // Each job belongs to the school its record names (record.schoolId). The folder copy and the board copy must sit under that SAME school,
+  // even when the sweep that found the job was run for a different school (Roger, 2026-10-03).
+  const ownerByFp = new Map<string, string>();
+  const ownerNameCache = new Map<string, string>();
+  const sweepSchoolUpper = String(schoolId || '').toUpperCase();
 
   for (const record of rawRecords) {
     // ── MULTI-ENGINE SOURCE GATE ──────────────────────────────────────────
@@ -376,7 +381,18 @@ export async function runIngestionPipeline(
     }
 
     // ── GATE 5: Composite Key Fingerprint Deduplication (Cross-Engine Unified) ──
-    const fp = generateJobFingerprint(schoolId, record.rawTitle, undefined, record.applyUrl, record.datePosted);
+    const recSid = String(record.schoolId || "").trim().toUpperCase();
+    const ownerId = /^FLIS\d{4}$/.test(recSid) ? recSid : sweepSchoolUpper;
+    let ownerName = targetSchoolName;
+    if (ownerId !== sweepSchoolUpper) {
+      if (!ownerNameCache.has(ownerId)) {
+        const w = await isWhitelistedSchool(undefined, undefined, ownerId);
+        ownerNameCache.set(ownerId, w ? w.schoolName : (record.schoolName || ownerId));
+      }
+      ownerName = ownerNameCache.get(ownerId) as string;
+    }
+    const fp = generateJobFingerprint(ownerId, record.rawTitle, undefined, record.applyUrl, record.datePosted);
+    ownerByFp.set(fp, ownerId);
 
     if (seenFingerprints.has(fp)) {
       rejected++;
@@ -403,11 +419,20 @@ export async function runIngestionPipeline(
       verificationReasons: record.verificationReasons ?? null,
     });
 
-    cacheDocs.push(buildCacheDocument(record, fp, targetSchoolName));
+    cacheDocs.push(buildCacheDocument(record, fp, ownerName));
   }
 
   if (mappedJobs.length > 0) {
-    await saveScrapedJobs(schoolId, mappedJobs);
+    const byOwner = new Map<string, any[]>();
+    for (const j of mappedJobs) {
+      const o = ownerByFp.get(j.id) || sweepSchoolUpper;
+      if (!byOwner.has(o)) byOwner.set(o, []);
+      byOwner.get(o)!.push(j);
+    }
+    for (const [ownerId, jobs] of byOwner) {
+      // Keep the caller's own spelling of the school id for the school being swept.
+      await saveScrapedJobs(ownerId === sweepSchoolUpper ? schoolId : ownerId, jobs);
+    }
   }
 
   // 🕒 Checkpoint school sweep timestamp in Firestore
@@ -430,6 +455,7 @@ export async function runIngestionPipeline(
   if (options?.purgeTesVacancies === true) {
     const activeTesUrls = new Set(
       mappedJobs
+        .filter(j => (ownerByFp.get(j.id) || sweepSchoolUpper) === sweepSchoolUpper)
         .filter(j => (j.source || "").toUpperCase().includes("TES") && j.applyUrl)
         .map(j => j.applyUrl)
     );
