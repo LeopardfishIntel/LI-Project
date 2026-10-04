@@ -18,7 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
-import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getInflationRate, getAnnualSalaryThreshold } from '@/lib/calculations';
+import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getAnnualSalaryThreshold } from '@/lib/calculations';
+import { formatInflation } from '@/lib/inflation';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import { checkIsAdmin } from '@/lib/auth/admin';
 import { consumeEvaluationQuotaAction } from '@/app/actions/user-allowance-actions';
@@ -321,6 +322,7 @@ function DecideContent() {
     const [apiLoading, setApiLoading] = useState(true);
 
     const { data: exchangeRates } = useDoc<any>(useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'exchange_rates') : null), [firestore, mounted]));
+    const { data: inflationTable } = useDoc<any>(useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'inflation_rates') : null), [firestore, mounted]));
 
     const teacherDocRef = useMemo(() => (user && firestore ? doc(firestore, 'teachers', user.uid) : null), [user, firestore]);
     const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
@@ -1215,7 +1217,7 @@ function DecideContent() {
                                         {/* 💱 Currency stability advisory to guide teachers through local currency quirks */}
                                         {(() => {
                                             const riskLevel = getMacroRiskTier(data.currency);
-                                            const infRate = getInflationRate(data.school?.country || data.school || data.currency);
+                                            const infRate = formatInflation(data.school?.country, inflationTable);
                                             switch (riskLevel) {
                                                 case 1:
                                                     return (
@@ -1377,7 +1379,7 @@ function DecideContent() {
                                                 <div className="flex items-center gap-2">
                                                     {(() => {
                                                         const riskLevel = getMacroRiskTier(item.currency);
-                                                        const infRate = getInflationRate(item.school?.country || item.school || item.currency);
+                                                        const infRate = formatInflation(item.school?.country, inflationTable);
                                                         if (riskLevel === 3) {
                                                             return (
                                                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-rose-500/15 border border-rose-500/30 rounded-full text-[8px] font-black uppercase text-rose-400 tracking-wider animate-pulse">
@@ -1390,7 +1392,7 @@ function DecideContent() {
                                                             return (
                                                                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-sky-500/10 border border-sky-500/20 rounded-full text-[8px] font-bold text-sky-400">
                                                                     <Lock className="size-2 text-sky-400 shrink-0" />
-                                                                    <span>USD Pegged ({infRate})</span>
+                                                                    <span>USD Pegged • Inflation {infRate}</span>
                                                                 </span>
                                                             );
                                                         }

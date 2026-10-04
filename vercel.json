@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/daily-link-sweep",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/update-inflation",
+      "schedule": "0 4 20 * *"
     }
   ]
 }
