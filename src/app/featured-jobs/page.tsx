@@ -1186,7 +1186,8 @@ export default function FeaturedJobsPage() {
           source_url: cacheDoc.applyUrl || '',
           date_listed: cacheDoc.datePosted
             ? formatDateCustom(cacheDoc.datePosted)
-            : formatDateCustom(cacheDoc.ingestedAtMillis || Date.now()),
+            // Never fall back to today's date: that made "Added" change every day. Use the first-loaded date; if none, show "Recently".
+            : formatDateCustom(cacheDoc.ingestedAtMillis || cacheDoc.createdAtMillis || cacheDoc.createdAt),
           date_closing: closesDate
             ? formatDateCustom(closesDate)
             : 'Rolling',

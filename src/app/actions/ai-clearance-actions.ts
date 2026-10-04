@@ -1,22 +1,5 @@
 'use server';
 
-import { initializeApp, getApps, getApp } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { credential } from 'firebase-admin';
-
-let adminDb: FirebaseFirestore.Firestore | null = null;
-try {
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    const app = getApps().length === 0 
-      ? initializeApp({ credential: credential.cert(serviceAccount) }, 'admin-clearance')
-      : getApp('admin-clearance');
-    adminDb = getFirestore(app);
-  }
-} catch (e) {
-  // Graceful fallback
-}
-
 export interface RequestClearanceInput {
   userId: string;
   userEmail?: string;

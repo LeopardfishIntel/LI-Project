@@ -21,7 +21,7 @@ export interface TaylorsJobMatch {
 // International Schools, Garden International School, and Nexus International Schools).
 const TAYLORS_BASE_URL = "https://careers.taylors.edu.my";
 
-async function scrapeTaylorsPortal(): Promise<Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }>> {
+export async function scrapeTaylorsPortal(): Promise<Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }>> {
   const browser = await chromium.launch({ headless: true });
   const candidateJobs: Array<{ jobId: string; title: string; applyUrl: string; schoolStr: string }> = [];
 
