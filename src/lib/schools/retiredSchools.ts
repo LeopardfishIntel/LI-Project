@@ -30,6 +30,11 @@ export const RETIRED_SCHOOLS: Readonly<Record<string, RetiredSchool>> = Object.f
   FLIS0427: { mergedInto: "FLIS0261", retiredOn: "2026-10-02", note: "The British International School Bratislava - duplicate of FLIS0261" },
   FLIS0422: { mergedInto: "FLIS0209", retiredOn: "2026-10-02", note: "St. Christopher's School (Senior) - same school as FLIS0209 (St Christopher's, Isa Town)" },
   FLIS0385: { mergedInto: "FLIS0068", retiredOn: "2026-10-04", note: "International School of Amsterdam - duplicate of FLIS0068 (IS Amsterdam, same school, same website isa.nl)" },
+  FLIS0397: { mergedInto: "FLIS0156", retiredOn: "2026-10-04", note: "Canadian Academy - duplicate of FLIS0156 (Canadian Academy Kobe, same school, canacad.ac.jp)" },
+  FLIS0402: { mergedInto: "FLIS0023", retiredOn: "2026-10-04", note: "St. Joseph's Institution International - duplicate of FLIS0023 (SJI International, same school, same website)" },
+  FLIS0411: { mergedInto: "FLIS0055", retiredOn: "2026-10-04", note: "College Alpin Beau Soleil - duplicate of FLIS0055 (Beau Soleil, Villars)" },
+  FLIS0451: { mergedInto: "FLIS0183", retiredOn: "2026-10-04", note: "The British School of Rio de Janeiro - duplicate of FLIS0183 (same school, britishschool.g12.br)" },
+  FLIS0414: { mergedInto: "FLIS0061", retiredOn: "2026-10-04", note: "The British School of Brussels (Tervuren) - duplicate of FLIS0061 (same school, britishschool.be, same TES id)" },
 });
 
 /** True when the ID (any case, any surrounding spaces) is a retired school ID. */
