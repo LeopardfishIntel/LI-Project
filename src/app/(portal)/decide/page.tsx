@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
-import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getAnnualSalaryThreshold } from '@/lib/calculations';
+import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { formatInflation } from '@/lib/inflation';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import { checkIsAdmin } from '@/lib/auth/admin';
@@ -148,84 +148,23 @@ function getSchoolField(school: any, keys: string[]) {
     return null;
 }
 
+// Compare and Evaluate always show a MONTHLY NET salary in the school's own currency.
+// It comes from salary_scale_5yr_net, then net_salary (both plain numbers on the school record). Nothing is guessed or divided.
 function getLocalSalaryForSchool(school: any, currency: string, currentRates: Record<string, number>): string {
     if (!school) return "0";
-    const rawVal = getSchoolField(school, [
-      'salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp',
-      'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'salaryrange', 'salaryRange',
-      'startingSalary', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd',
-      'startingSalaryBA', 'startingSalaryMA'
-    ]);
-    const raw = (rawVal && rawVal !== "undefined" && rawVal !== "null") ? String(rawVal).trim() : "";
-    
-    const fallbackUSD = 4200;
     const gbpRate = currentRates[currency] || 1.0;
     const usdRate = currentRates['USD'] || 1.27;
-    const fallbackLocal = Math.round((fallbackUSD / usdRate) * gbpRate);
-    
-    if (!raw || raw === "0") return fallbackLocal.toString();
+    const fallbackLocal = Math.round((4200 / usdRate) * gbpRate);
 
-    // If already a clean positive number
-    if (typeof rawVal === 'number' && rawVal > 0) {
-      const schoolCurrency = (school?.currency || school?.salaryCurrency || 'USD').toUpperCase();
-      let monthlyInSchoolCur = rawVal;
-      const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
-      if (monthlyInSchoolCur >= annualThreshold) {
-        monthlyInSchoolCur = Math.round(monthlyInSchoolCur / 12);
-      }
-      let monthlyInTargetCur = monthlyInSchoolCur;
-      if (schoolCurrency !== currency) {
-        const rateSchool = currentRates[schoolCurrency] || 1.0;
-        const rateTarget = currentRates[currency] || 1.0;
-        monthlyInTargetCur = Math.round((monthlyInSchoolCur / rateSchool) * rateTarget);
-      }
-      return monthlyInTargetCur.toString();
-    }
+    const raw = getSchoolField(school, ['salary_scale_5yr_net', 'net_salary']);
+    const monthlyInSchoolCur = Number(String(raw ?? '').replace(/,/g, ''));
+    if (!isFinite(monthlyInSchoolCur) || monthlyInSchoolCur <= 0) return fallbackLocal.toString();
 
-    // Sanitize commas, trailing decimal cents, and k notation
-    const cleanRaw = raw
-      .replace(/,/g, '')
-      .replace(/\.\d+/g, '')
-      .replace(/(\d+)\s*k\b/gi, '$1000');
-
-    const matches = cleanRaw.match(/\d+/g);
-    if (!matches || matches.length === 0) return fallbackLocal.toString();
-
-    // Filter out small auxiliary numbers like 14 in '14 times/year'
-    const numbers = matches.map(Number).filter(n => n > 50 || matches.length === 1);
-    if (numbers.length === 0) return fallbackLocal.toString();
-
-    const isSingleOrStarting = /starting|expected|5year|entry/i.test(
-      String(getSchoolField(school, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'startingSalaryBA', 'startingSalaryMA']) || '')
-    );
-    let med = (numbers.length > 1 && !isSingleOrStarting) ? (numbers[0] + numbers[1]) / 2 : numbers[0];
-    if (isNaN(med) || med <= 0) med = fallbackUSD;
-
-    const lower = raw.toLowerCase();
-    const isUSD = /\b(usd|us\$)\b|\$/i.test(raw) || school?.salaryCurrency === "USD" || Boolean(school?.startingSalaryUsd) || Boolean(school?.expectedSalaryNetUsd);
-
-    const isExplicitAnnual = /year|annual|\/yr|\/year|gross\/yr|\/annum|p\.a\.|times\/year|month payroll/i.test(lower);
-    const isExplicitMonthly = /month|monthly|\/\s*mo|\bmo\b/i.test(lower);
-    const is14Month = /14-month|14 times/i.test(lower);
-    const monthsPerYear = is14Month ? 14 : 12;
-
-    const schoolCurrency = (school?.currency || school?.salaryCurrency || (isUSD ? 'USD' : currency)).toUpperCase();
-    const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
-    const isAnnualVal = med >= annualThreshold;
-
-    let monthlyInSchoolCur = med;
-    if ((isExplicitAnnual || isAnnualVal) && !isExplicitMonthly) {
-        monthlyInSchoolCur = Math.round(monthlyInSchoolCur / monthsPerYear);
-    }
-
-    let monthlyInTargetCur = monthlyInSchoolCur;
-    if (schoolCurrency !== currency) {
-        const rateSchool = currentRates[schoolCurrency] || 1.0;
-        const rateTarget = currentRates[currency] || 1.0;
-        monthlyInTargetCur = Math.round((monthlyInSchoolCur / rateSchool) * rateTarget);
-    }
-
-    return monthlyInTargetCur.toString();
+    const schoolCurrency = String(school?.currency || 'USD').toUpperCase();
+    if (schoolCurrency === currency) return Math.round(monthlyInSchoolCur).toString();
+    const rateSchool = currentRates[schoolCurrency] || 1.0;
+    const rateTarget = currentRates[currency] || 1.0;
+    return Math.round((monthlyInSchoolCur / rateSchool) * rateTarget).toString();
 }
 
 

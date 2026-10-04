@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
-import { canonicalCountry, isHousingProvided, getZoneLocationWeights, isGenuineSalaryRange, getAnnualSalaryThreshold } from '@/lib/calculations';
+import { canonicalCountry, isHousingProvided, getZoneLocationWeights, isGenuineSalaryRange } from '@/lib/calculations';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
@@ -1598,51 +1598,22 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const rawVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'salaryrange', 'salaryRange', 'startingSalary', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
-    if (rawVal !== undefined && rawVal !== null && rawVal !== '') {
-      const schoolCurrency = (activeSchool?.currency || activeSchool?.salaryCurrency || 'USD').toUpperCase();
-      
-      let monthlyInSchoolCurrency = 0;
-      if (typeof rawVal === 'number' && rawVal > 0) {
-        monthlyInSchoolCurrency = rawVal;
-        const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
-        if (monthlyInSchoolCurrency >= annualThreshold) {
-          monthlyInSchoolCurrency = Math.round(monthlyInSchoolCurrency / 12);
-        }
-      } else {
-        const str = String(rawVal).trim();
-        const cleanRange = str
-          .replace(/,/g, '')
-          .replace(/\.\d+/g, '')
-          .replace(/(\d+)\s*k\b/gi, '$1000');
-        const range = cleanRange.match(/\d+/g);
-        const validNums = range ? range.map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0) : [];
-        const min = validNums.length > 0 ? validNums[0] : 0;
-        const max = validNums.length > 1 ? validNums[1] : min;
-        let median = Math.round((min + max) / 2);
+    // Compare and Evaluate always show a MONTHLY NET salary in the school's own currency.
+    // It comes from salary_scale_5yr_net, then net_salary (both plain numbers on the school record). Nothing is guessed or divided.
+    const raw = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary']);
+    const monthlyInSchoolCurrency = Number(String(raw ?? '').replace(/,/g, ''));
+    if (!isFinite(monthlyInSchoolCurrency) || monthlyInSchoolCurrency <= 0) return;
 
-        if (/annum|annual|\/yr|year/i.test(str)) {
-          median = Math.round(median / 12);
-        } else {
-          const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
-          if (median >= annualThreshold && !/month|monthly|\/\s*mo|\bmo\b/i.test(str)) {
-            median = Math.round(median / 12);
-          }
-        }
-        monthlyInSchoolCurrency = median;
-      }
-
-      // Convert to local display currency (COL currency)
-      let monthlyLocal = monthlyInSchoolCurrency;
-      if (schoolCurrency !== currency) {
-        const rateSchool = currentRates[schoolCurrency] || 1.0;
-        const rateDisplay = currentRates[currency] || 1.0;
-        monthlyLocal = Math.round((monthlyInSchoolCurrency / rateSchool) * rateDisplay);
-      }
-
-      setBenchmarkSalary(monthlyLocal.toString());
-      setSettings(prev => ({ ...prev, netSalary: monthlyLocal.toString() }));
+    const schoolCurrency = String(activeSchool?.currency || 'USD').toUpperCase();
+    let monthlyLocal = Math.round(monthlyInSchoolCurrency);
+    if (schoolCurrency !== currency) {
+      const rateSchool = currentRates[schoolCurrency] || 1.0;
+      const rateDisplay = currentRates[currency] || 1.0;
+      monthlyLocal = Math.round((monthlyInSchoolCurrency / rateSchool) * rateDisplay);
     }
+
+    setBenchmarkSalary(monthlyLocal.toString());
+    setSettings(prev => ({ ...prev, netSalary: monthlyLocal.toString() }));
   }, [settings.schoolId, activeSchool, currency, currentRates]);
 
   const analysis = useMemo(() => {
@@ -1729,10 +1700,15 @@ function DecoderContent() {
       ? `Sub (${Math.round(housingSubsidyRate * 100)}%)`
       : (propertyLabels[activeRentKey] || "Standard Residence");
 
+    // Looks the keys up in the ORDER GIVEN (first key in the list wins). Firestore returns fields A-Z, so the old "first match in the record" picked
+    // the local-currency *Monthly figure (e.g. mobileMonthly = 4000 JPY) before the dollar figure (mobilePhone = 35) and then converted it again.
     const getF = (data: any, keys: string[]) => {
-      const targetKeys = keys.map(k => k.toLowerCase().replace(/\s+/g, ''));
-      const foundKey = Object.keys(data || {}).find(k => targetKeys.includes(k.toLowerCase().replace(/\s+/g, '')));
-      return foundKey ? data[foundKey] : null;
+      const fields = Object.keys(data || {});
+      for (const want of keys.map(k => k.toLowerCase().replace(/\s+/g, ''))) {
+        const foundKey = fields.find(k => k.toLowerCase().replace(/\s+/g, '') === want);
+        if (foundKey !== undefined && data[foundKey] !== null && data[foundKey] !== undefined && data[foundKey] !== '') return data[foundKey];
+      }
+      return null;
     };
 
     const zoneWeights = getZoneLocationWeights(activeSchool || activeCOL?.city || activeCOL?.location);
