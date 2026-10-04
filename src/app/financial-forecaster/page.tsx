@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
-import { canonicalCountry, isHousingProvided, getZoneLocationWeights, isGenuineSalaryRange } from '@/lib/calculations';
+import { canonicalCountry, isHousingProvided, getZoneLocationWeights, isGenuineSalaryRange, getAnnualSalaryThreshold } from '@/lib/calculations';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
@@ -1598,13 +1598,17 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const rawVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
+    const rawVal = getSchoolField(activeSchool, ['salary_scale_5yr_net', 'net_salary', 'expectedSalary5Years', 'salary5YearsExp', 'salary_benchmark', 'benchmark_5yr_net', 'salary_5yr_net', 'salaryrange', 'salaryRange', 'startingSalary', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (rawVal !== undefined && rawVal !== null && rawVal !== '') {
-      const schoolCurrency = activeSchool?.currency || activeSchool?.salaryCurrency || 'USD';
+      const schoolCurrency = (activeSchool?.currency || activeSchool?.salaryCurrency || 'USD').toUpperCase();
       
       let monthlyInSchoolCurrency = 0;
       if (typeof rawVal === 'number' && rawVal > 0) {
         monthlyInSchoolCurrency = rawVal;
+        const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
+        if (monthlyInSchoolCurrency >= annualThreshold) {
+          monthlyInSchoolCurrency = Math.round(monthlyInSchoolCurrency / 12);
+        }
       } else {
         const str = String(rawVal).trim();
         const cleanRange = str
@@ -1619,6 +1623,11 @@ function DecoderContent() {
 
         if (/annum|annual|\/yr|year/i.test(str)) {
           median = Math.round(median / 12);
+        } else {
+          const annualThreshold = getAnnualSalaryThreshold(schoolCurrency);
+          if (median >= annualThreshold && !/month|monthly|\/\s*mo|\bmo\b/i.test(str)) {
+            median = Math.round(median / 12);
+          }
         }
         monthlyInSchoolCurrency = median;
       }

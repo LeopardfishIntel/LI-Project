@@ -926,6 +926,71 @@ export function calculateOutflows(
  * - 1,500 JOD in Jordan -> ~2,117 USD
  */
 /**
+ * Detects whether a salary figure in a given currency is annual based on realistic market scales.
+ * Prevents monthly Gulf (AED/SAR/QAR) or Asian salaries from being divided by 12.
+ */
+export function getAnnualSalaryThreshold(currency: string): number {
+  const cur = (currency || 'USD').toUpperCase().trim();
+  switch (cur) {
+    case 'KWD':
+      return 5000;
+    case 'BHD':
+    case 'OMR':
+    case 'JOD':
+      return 6000;
+    case 'USD':
+    case 'EUR':
+    case 'GBP':
+    case 'CHF':
+    case 'CAD':
+    case 'AUD':
+    case 'SGD':
+    case 'NZD':
+    case 'AZN':
+      return 18000;
+    case 'PLN':
+      return 40000;
+    case 'MYR':
+      return 45000;
+    case 'BRL':
+      return 50000;
+    case 'AED':
+    case 'SAR':
+    case 'QAR':
+      return 60000;
+    case 'CNY':
+    case 'RMB':
+      return 80000;
+    case 'HKD':
+      return 120000;
+    case 'ZAR':
+      return 150000;
+    case 'MXN':
+      return 180000;
+    case 'EGP':
+      return 200000;
+    case 'CZK':
+    case 'TRY':
+      return 250000;
+    case 'THB':
+    case 'PHP':
+      return 300000;
+    case 'INR':
+      return 500000;
+    case 'JPY':
+      return 1500000;
+    case 'KRW':
+      return 15000000;
+    case 'IDR':
+      return 120000000;
+    case 'VND':
+      return 200000000;
+    default:
+      return 60000;
+  }
+}
+
+/**
  * 🎯 PARSES SALARY STRING / RANGE INTO MONTHLY MEDIAN IN USD
  * Converts ranges (e.g. "$42,000 - $54,000 / year", "14,000 - 19,500 AED / month")
  * into a single unified 5-year experience median monthly USD figure.
@@ -943,7 +1008,7 @@ export function parseSalaryToMedianMonthlyUSD(
       const localRate = RATES[cur] || 1.0;
       monthly = Math.round((monthly / localRate) * usdRate);
     }
-    return normalizeMenaSalaryUSD(monthly, countryName);
+    return monthly;
   }
   const str = String(rawVal || '').trim();
   if (!str || str === '—' || str === '0' || str === 'undefined' || str === 'null') {
@@ -976,9 +1041,8 @@ export function parseSalaryToMedianMonthlyUSD(
   const monthsPerYear = is14Month ? 14 : 12;
 
   const cur = (currencyCode || (isUSD ? 'USD' : 'USD')).toUpperCase();
-  const highValCurrencies = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR', 'AZN'];
-  const isHighVal = highValCurrencies.includes(cur) || isUSD;
-  const isAnnualVal = isHighVal ? median >= 10000 : median >= 120000;
+  const annualThreshold = getAnnualSalaryThreshold(cur);
+  const isAnnualVal = median >= annualThreshold;
 
   let monthly = median;
   if ((isExplicitAnnual || isAnnualVal) && !isExplicitMonthly) {
@@ -992,7 +1056,7 @@ export function parseSalaryToMedianMonthlyUSD(
     monthly = Math.round((monthly / localRate) * usdRate);
   }
 
-  return normalizeMenaSalaryUSD(monthly, countryName);
+  return monthly;
 }
 
 export function normalizeMenaSalaryUSD(salary: number | string, countryName?: string): number {
@@ -1170,13 +1234,13 @@ export function matchesRegion(dbRegion: string, queryRegion: string, countryName
 export function getMacroRiskTier(currencyCode: string): 1 | 2 | 3 {
   const code = (currencyCode || '').toUpperCase().trim();
   
-  // Checking for currencies pegged directly to another major currency
-  if (['AED', 'SAR', 'QAR', 'BHD', 'KWD', 'JOD'].includes(code)) {
+  // Checking for currencies pegged directly to US Dollar or fixed peg basket
+  if (['AED', 'SAR', 'QAR', 'OMR', 'BHD', 'KWD', 'JOD', 'HKD', 'BND', 'PAB'].includes(code)) {
     return 2;
   }
   
   // Checking for currencies that suffer from high inflation or sudden devaluations
-  if (['ARS', 'TRY', 'EGP'].includes(code)) {
+  if (['ARS', 'TRY', 'EGP', 'NGN', 'COP', 'GHS', 'LKR'].includes(code)) {
     return 3;
   }
   
@@ -1198,6 +1262,8 @@ export const INFLATION_RATE_MAP: Record<string, string> = {
   'united states': '2.9%',
   'japan': '2.8%',
   'south korea': '2.6%',
+  'kuwait': '2.8%',
+  'kwd': '2.8%',
   'singapore': '2.4%',
   'united kingdom': '2.2%',
   'czech republic': '2.2%',
@@ -1216,8 +1282,14 @@ export const INFLATION_RATE_MAP: Record<string, string> = {
   'malaysia': '1.9%',
   'hong kong': '1.8%',
   'saudi arabia': '1.6%',
+  'jordan': '1.6%',
+  'jod': '1.6%',
   'switzerland': '1.3%',
+  'oman': '1.2%',
+  'omr': '1.2%',
   'qatar': '1.2%',
+  'bahrain': '1.0%',
+  'bhd': '1.0%',
   'thailand': '0.8%',
   'china': '0.5%',
 };
