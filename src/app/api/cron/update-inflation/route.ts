@@ -11,7 +11,7 @@ export const maxDuration = 60;
  * Countries the IMF has no data for are simply left out ("not reported").
  */
 export async function GET(request: Request) {
-  const denied = rejectUnlessCron(request);
+  const denied = await rejectUnlessCron(request);
   if (denied) return denied;
   try {
     const url =

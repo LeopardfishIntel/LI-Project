@@ -1,13 +1,40 @@
 import { timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
+import { getAdminDb } from "@/firebase/admin";
 
 /**
  * Password check for the scheduled (cron) endpoints.
- * The caller must send:  Authorization: Bearer <CRON_SECRET>
- * If CRON_SECRET is not set on the server, every call is refused (safe by default).
+ * The caller must send:  Authorization: Bearer <password>
+ *
+ * Where the password lives:
+ *   1. The server setting CRON_SECRET, if it is there (the hosting did not pass it on, so this is normally empty), else
+ *   2. The private database document  cron_private/auth  (field "secret").
+ *      Not in the database rules, so website visitors can never read it. Only the server's admin access can.
+ * If no password can be found anywhere, every call is refused (safe by default).
  */
-export function isAuthorizedCron(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
+
+let cached: { value: string; at: number } | null = null;
+const CACHE_MS = 5 * 60 * 1000;
+
+async function getServerPassword(): Promise<string> {
+  const fromEnv = process.env.CRON_SECRET;
+  if (fromEnv) return fromEnv;
+  if (cached && Date.now() - cached.at < CACHE_MS) return cached.value;
+  try {
+    const db = getAdminDb();
+    if (!db) return "";
+    const snap = await db.collection("cron_private").doc("auth").get();
+    const value = snap.exists ? String((snap.data() || {}).secret || "") : "";
+    cached = { value, at: Date.now() };
+    return value;
+  } catch (e) {
+    console.error("cronAuth: could not read the password document:", e);
+    return "";
+  }
+}
+
+export async function isAuthorizedCron(request: Request): Promise<boolean> {
+  const secret = await getServerPassword();
   if (!secret) return false;
   const header = request.headers.get("authorization") || "";
   const given = header.startsWith("Bearer ") ? header.slice(7) : "";
@@ -17,21 +44,20 @@ export function isAuthorizedCron(request: Request): boolean {
 }
 
 /** Returns a 401 answer when the call is not allowed, or null when it is fine to continue. */
-export function rejectUnlessCron(request: Request): NextResponse | null {
-  if (isAuthorizedCron(request)) return null;
-  // Temporary helper while setting up: says WHY the call was refused (yes/no facts only, never the password itself).
+export async function rejectUnlessCron(request: Request): Promise<NextResponse | null> {
+  if (await isAuthorizedCron(request)) return null;
+  const secret = await getServerPassword();
   const header = request.headers.get("authorization") || "";
+  // Temporary helper while setting up: yes/no facts and lengths only, never the password itself.
   return NextResponse.json(
     {
       status: "error",
       error: "Unauthorized",
       why: {
-        serverHasPassword: !!process.env.CRON_SECRET,
-        serverPasswordLength: (process.env.CRON_SECRET || "").length,
+        serverHasPassword: !!secret,
+        serverPasswordLength: secret.length,
         callHadBearerHeader: header.startsWith("Bearer "),
         callPasswordLength: header.startsWith("Bearer ") ? header.length - 7 : 0,
-        otherSecretsSeen: { RESEND_API_KEY: !!process.env.RESEND_API_KEY, GOOGLE_API_KEY: !!process.env.GOOGLE_API_KEY },
-        envNamesMatching: Object.keys(process.env).filter((k) => /CRON|SECRET/i.test(k)),
       },
     },
     { status: 401 }

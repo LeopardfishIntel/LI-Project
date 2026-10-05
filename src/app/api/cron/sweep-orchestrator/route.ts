@@ -25,7 +25,7 @@ import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const denied = rejectUnlessCron(request);
+  const denied = await rejectUnlessCron(request);
   if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
