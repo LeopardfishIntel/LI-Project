@@ -1231,6 +1231,7 @@ export async function getSchoolStabilityReport(input: {
                         lastScrapedAt,
                         cachedStability: report,
                         vacancyFirstSeen: firstSeenResult.map,
+                        isRevalidating: false, // the daily sweep sets this to true; without this reset it stayed on for ever
                         revalidationStatus: 'success',
                         revalidationError: null,
                         revalidationCompletedAt: admin.firestore.Timestamp.now()
