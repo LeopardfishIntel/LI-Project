@@ -1,0 +1,28 @@
+name: Leopardfish Direct Engine (schools' own careers pages)
+
+on:
+  schedule:
+    # Every day at 01:00 UTC. Reads up to 25 schools per call, longest-ago checked first.
+    # Pages that have not changed since the last visit skip the AI step, so most days are cheap.
+    - cron: '0 1 * * *'
+  workflow_dispatch: # manual run from the GitHub Actions tab
+
+jobs:
+  direct:
+    name: Run the Direct engine (jobs arrive as pending only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger the Direct engine route
+        run: |
+          APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
+          RESPONSE=$(curl -sS -L --max-time 540 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/direct-engine/")
+          echo "Response:"
+          echo "$RESPONSE"
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] && echo "$RESPONSE" | grep -q '"status":"success"'; then
+            echo "✅ Direct engine finished."
+          else
+            echo "❌ Direct engine run failed (HTTP status $HTTP_STATUS, or the answer did not say success)."
+            exit 1
+          fi

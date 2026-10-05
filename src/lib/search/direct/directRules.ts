@@ -161,3 +161,12 @@ export function toIsoDate(s: string | null | undefined): string | null {
   m = t.match(/([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})/); if (m && MONTHS[m[1].toLowerCase()]) return `${m[3]}-${pad(MONTHS[m[1].toLowerCase()])}-${pad(+m[2])}`;
   return null;
 }
+
+/** Which schools to read this time: never-checked first, then the longest-ago checked. At most `limit`. */
+export function pickRotation(ids: string[], lastCheckedAt: Record<string, number | undefined | null>, limit: number): string[] {
+  return [...ids]
+    .map((id, i) => ({ id, t: lastCheckedAt[id] || 0, i }))
+    .sort((a, b) => a.t - b.t || a.i - b.i)
+    .slice(0, Math.max(0, limit))
+    .map((x) => x.id);
+}

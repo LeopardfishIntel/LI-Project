@@ -107,6 +107,14 @@ check("Teach Away does not write to unmapped_discovered_schools", !/unmapped_dis
 check("ingestion matches existing board jobs with findBoardMatch", /findBoardMatch/.test(p1));
 check("a Direct job's own link never creates a Malvern pill", /doc\.directUrl && !incomingIsDirect/.test(p1));
 
+// 5f. The scheduled Direct run is password protected and only ever reads the pilot list
+const dRoute = src("src/app/api/cron/direct-engine/route.ts");
+check("Direct cron route is password protected", /rejectUnlessCron\(request\)/.test(dRoute) && /if \(denied\) return denied/.test(dRoute));
+check("Direct cron route reads at most 25 schools per call", /limit: 25/.test(dRoute));
+const dFlow = src(".github/workflows/direct-engine.yml");
+check("Direct workflow calls the route with the cron password", /api\/cron\/direct-engine/.test(dFlow) && /secrets\.CRON_SECRET/.test(dFlow));
+check("scheduled Direct run only picks from the pilot list", /pickRotation\(DIRECT_PILOT_IDS/.test(runner));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("board counts and filters still know the School Web (Direct) source", /SCHOOL WEB/.test(sort) && /DIRECT: direct/.test(sort));

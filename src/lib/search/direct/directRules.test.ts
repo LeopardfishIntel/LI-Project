@@ -1,6 +1,6 @@
 import {
   cleanTitle, sameTitle, titleKey, titleInText, chooseApplyUrl, makeUniqueUrls, isSoftHomepage, isHomepageUrl, toIsoDate, pagingInfo,
-  findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash,
+  findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash, pickRotation,
 } from "./directRules";
 
 let passed = 0, failed = 0;
@@ -75,6 +75,11 @@ check("repair: best candidate is the real careers page", ranked.length === 1 && 
 check("registrable domain", registrableDomain("careers.gsis.edu.hk") === "gsis.edu.hk" && registrableDomain("www.dulwich.org".replace("www.", "")) === "dulwich.org");
 check("blocked page detected", looksBlocked("Checking your browser before redirecting") && !looksBlocked("Current vacancies"));
 check("text hash ignores spacing and case", textHash("Teacher  of Math") === textHash("teacher of math"));
+
+const rot = pickRotation(["A", "B", "C", "D"], { A: 500, B: undefined, C: 100, D: 900 }, 3);
+check("rotation: never-checked first, then longest ago", rot.join(",") === "B,C,A");
+check("rotation: never more than the limit", pickRotation(["A", "B"], {}, 1).length === 1 && pickRotation(["A"], {}, 25).length === 1);
+check("rotation: same inputs give the same order", pickRotation(["A", "B", "C"], {}, 3).join(",") === "A,B,C");
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

@@ -4,6 +4,7 @@
  */
 import { getAdminDb } from "@/firebase/admin";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
+import { pickRotation } from "./directRules";
 import { runDirectForSchool, toRawRecords, DirectDeps, DirectResult, DirectSchool, DirectState } from "./directEngine";
 import { realDeps } from "./directIo";
 
@@ -24,13 +25,14 @@ export interface DirectSchoolOutcome {
   error?: string;
 }
 
-export async function runDirectBatch(opts: { ids?: string[]; write: boolean; deps?: DirectDeps; onSchool?: (o: DirectSchoolOutcome) => void }): Promise<DirectSchoolOutcome[]> {
+export async function runDirectBatch(opts: { ids?: string[]; write: boolean; deps?: DirectDeps; onSchool?: (o: DirectSchoolOutcome) => void; deadlineMs?: number }): Promise<DirectSchoolOutcome[]> {
   const db: any = getAdminDb();
   if (!db || typeof db.collection !== "function") throw new Error("database not available");
   const deps = opts.deps || realDeps;
   const out: DirectSchoolOutcome[] = [];
   const startMs = Date.now();
   for (const rawId of opts.ids || DIRECT_PILOT_IDS) {
+    if (opts.deadlineMs && Date.now() > opts.deadlineMs) break; // out of time: the rest wait for the next run (oldest-checked go first)
     const id = rawId.toUpperCase().trim();
     const snap = await db.collection("schools").doc(id).get();
     if (!snap.exists) continue;
@@ -94,4 +96,21 @@ export async function runDirectBatch(opts: { ids?: string[]; write: boolean; dep
     } catch (e: any) { console.warn("Direct: could not write the crawl log:", e?.message || e); }
   }
   return out;
+}
+
+/**
+ * The scheduled run: reads up to `limit` pilot schools, the ones checked longest ago first, and stops starting new schools after `budgetMs`.
+ * Jobs always arrive as pending (Direct is not signed off), so nothing goes live without Roger's review.
+ */
+export async function runDirectScheduled(opts?: { limit?: number; budgetMs?: number }): Promise<{ picked: string[]; outcomes: DirectSchoolOutcome[] }> {
+  const db: any = getAdminDb();
+  if (!db || typeof db.collection !== "function") throw new Error("database not available");
+  const last: Record<string, number | undefined> = {};
+  for (const id of DIRECT_PILOT_IDS) {
+    const st = await db.collection("direct_state").doc(id).get();
+    last[id] = st.exists ? (st.data() as any)?.lastCheckedAt : undefined;
+  }
+  const picked = pickRotation(DIRECT_PILOT_IDS, last, opts?.limit ?? 25);
+  const outcomes = await runDirectBatch({ ids: picked, write: true, deadlineMs: Date.now() + (opts?.budgetMs ?? 240000) });
+  return { picked, outcomes };
 }
