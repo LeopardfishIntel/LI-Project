@@ -21,6 +21,7 @@ import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 import { AUTO_APPROVE_SOURCES } from "@/lib/pipelines/jobGate";
 import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
 import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
+import { planRetireVanished, applyRetirePlan } from "@/lib/pipelines/retireVanished";
 
 export const dynamic = "force-dynamic";
 
@@ -143,7 +144,22 @@ export async function GET(request: Request) {
         if (drift.drifted) console.warn(`🚨 [DRIFT] Engine ${key} paused: ${drift.reason}`);
       }
 
+      // Jobs the engine no longer supplies are retired (only after a healthy run of a signed-off engine; see retireVanished.ts).
+      let retire: any = null;
+      if (AUTO_APPROVE_SOURCES.has(key) && !drift.drifted && key === "GRC") {
+        try {
+          const plan = await planRetireVanished({ engineLabel: "GRC", urlHint: "grcfair.org", liveUrls: matches.map((m: any) => m.applyUrl).filter(Boolean) });
+          const done = await applyRetirePlan(plan);
+          retire = { claims: plan.claims, wouldRetire: plan.items.length, ...done, skipped: plan.skipped };
+          if (plan.items.length) console.log(`🧹 [RETIRE] ${key}: ${plan.items.length} stale job(s):`, plan.items.map((i) => `${i.action} ${i.title} (${i.schoolId})`));
+          if (plan.skipped) console.warn(`🧹 [RETIRE] ${key}: ${plan.skipped}`);
+        } catch (e: any) {
+          retire = { error: String(e?.message || e) };
+        }
+      }
+
       telemetry.executedEngines.push({
+        retire,
         driftPaused: drift.drifted,
         driftReason: drift.reason,
         engineKey: key,
