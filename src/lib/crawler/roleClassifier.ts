@@ -33,6 +33,9 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
 
   // Standalone Sports Coaches (Non-PE Teachers)
   /\b(coach\s+padel|coach\s+basketball|hek\s+coach|volleyball\s+coach|rugby\s+coach)\b/i,
+  // Music instrument instructors (percussion, piano, guitar ...) are activity staff; a "Music Teacher" stays teaching
+  /\b((?:chinese\s+|western\s+)?(?:percussion|drums?|piano|guitar|violin|cello|flute|clarinet|saxophone|trumpet|trombone|harp|erhu|guzheng|pipa|vocal|singing|instrumental|band|orchestra|choir)\s+(?:instructors?|tutors?|coach(?:es)?|teachers?\s+\(?(?:part[-\s]?time|visiting|peripatetic)))\b/i,
+  /\b(?:peripatetic|visiting)\s+(?:music|instrumental|instrument)\s+(?:teachers?|instructors?|tutors?)\b/i,
   // Sport instructors and coaches for a single sport (squash, tennis, golf ...) are activity staff, not teachers
   /\b(squash|tennis|golf|badminton|table\s+tennis|padel|cricket|football|soccer|swimming|fencing|archery|martial\s+arts|karate|judo|taekwondo)\s+(instructors?|coach(es)?|trainers?)\b/i,
   /\b(instructors?|coach(es)?)\s*[-–:(,]?\s*(squash|tennis|golf|badminton|table\s+tennis|padel|cricket|football|soccer|swimming|fencing|archery|martial\s+arts|karate|judo|taekwondo)\b/i,

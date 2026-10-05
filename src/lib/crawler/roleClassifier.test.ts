@@ -16,6 +16,10 @@ function runTests() {
   }
 
   // Executive / Corporate / Support roles (MUST BE TRUE / EXCLUDED)
+  assert(isSupportOrNonTeachingRole("Chinese Percussion Instructor"), true, "Chinese Percussion Instructor is non-teaching");
+  assert(isSupportOrNonTeachingRole("Piano Tutor"), true, "Piano Tutor is non-teaching");
+  assert(isSupportOrNonTeachingRole("Music Teacher"), false, "Music Teacher stays teaching");
+  assert(isSupportOrNonTeachingRole("Head of Music"), false, "Head of Music stays teaching");
   assert(isSupportOrNonTeachingRole("Part-time Squash Instructor"), true, "Part-time Squash Instructor is non-teaching");
   assert(isSupportOrNonTeachingRole("Swimming Coach"), true, "Swimming Coach is non-teaching");
   assert(isSupportOrNonTeachingRole("Instructor - Squash"), true, "Instructor - Squash is non-teaching");
