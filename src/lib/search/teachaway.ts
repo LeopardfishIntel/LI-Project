@@ -930,32 +930,6 @@ function matchConfidence(
 }
 
 // ---------------------------------------------------------------------------
-// Unmapped-school staging (fixes: key/name used to be the WHOLE card text)
-// ---------------------------------------------------------------------------
-
-async function stageUnmapped(db: any, employerName: string, country: string | null, sample: { title: string; url: string }) {
-  const key = `${slugify(employerName)}__${slugify(country || "unknown")}`.slice(0, 140);
-  if (key.length < 5) return false;
-  const ref = db.collection("unmapped_discovered_schools").doc(key);
-  const existing = await ref.get();
-  const now = Date.now();
-  await ref.set(
-    {
-      rawEmployerName: employerName,
-      country: country || null,
-      sampleJobTitle: sample.title,
-      sampleUrl: sample.url,
-      source: "Teach Away",
-      lastSeenAtMillis: now,
-      ...(existing.exists ? {} : { discoveredAtMillis: now }),
-      updatedAt: new Date(now).toISOString(),
-    },
-    { merge: true }
-  );
-  return true;
-}
-
-// ---------------------------------------------------------------------------
 // Helper for the caller: which stored jobs should be closed?
 // ---------------------------------------------------------------------------
 
@@ -1003,7 +977,6 @@ export async function searchTeachAwayDbSchools(
     hubOffset = 0,
     maxPagesPerHub = DEFAULT_MAX_PAGES,
     deadlineMs = Date.now() + DEFAULT_RUN_BUDGET_MS,
-    maxUnmappedLookups = 25,
     onReport,
     includeNeedsReview = false,
     dryRun = false,
@@ -1081,7 +1054,6 @@ export async function searchTeachAwayDbSchools(
     const samples: Record<string, string[]> = {};
     let blocked = false;
     let unmappedStaged = 0;
-    let unmappedLookups = 0;
     let detailLookupsSkipped = 0;
     let matchedDetailFetches = 0;
 
@@ -1154,19 +1126,9 @@ export async function searchTeachAwayDbSchools(
           }))
           .filter((m) => m.res.isMatch);
 
-        // Not one of our schools: stage it (with a real employer name) and move on.
+        // Not one of our schools: skip it. (We used to save these employers in a staging collection; that was switched off on request.)
         if (matched.length === 0) {
-          if (unmappedLookups < maxUnmappedLookups) {
-            unmappedLookups++;
-            const d = await getDetail(href, "unmapped");
-            if (d.state === "ok" && d.employerName) {
-              if (dryRun || (await stageUnmapped(db, d.employerName, d.country || hub.country, { title, url: href }))) unmappedStaged++;
-            } else {
-              reject("unmapped_no_employer_name", title);
-            }
-          } else {
-            reject("unmapped_lookup_cap", title);
-          }
+          reject("unmapped_school", title);
           continue;
         }
 

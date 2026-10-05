@@ -100,6 +100,9 @@ const adminSrc = src("src/app/admin/page.tsx");
 check("admin crawl-log table lists the DIRECT engine", (adminSrc.match(/"TEACHER_HORIZONS", "DIRECT"\]/g) || []).length === 2);
 check("Direct runner writes a crawl log named DIRECT", /engine: "DIRECT"/.test(runner));
 
+// 5d. Teach Away no longer saves unmatched employers (collection unmapped_discovered_schools was deleted on request)
+check("Teach Away does not write to unmapped_discovered_schools", !/unmapped_discovered_schools/.test(src("src/lib/search/teachaway.ts")));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("board counts and filters still know the School Web (Direct) source", /SCHOOL WEB/.test(sort) && /DIRECT: direct/.test(sort));
