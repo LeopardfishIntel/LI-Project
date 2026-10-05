@@ -377,22 +377,40 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skipped
         }
 
         if (!cacheSnap.exists) {
-          // Cache doc doesn't exist — create a minimal one so the job appears in feed
+          // Cache doc doesn't exist — create one so the job appears in feed.
+          // The closing date comes from the school-folder job. If it has none, the 42-day rule applies
+          // (posted date, else first-seen date, else today, plus 42 days) and the job is marked as an imposed date.
+          const toMs = (x: any): number => {
+            if (!x) return NaN;
+            if (typeof x.toMillis === 'function') return x.toMillis();
+            if (typeof x === 'number') return x;
+            const t = new Date(x).getTime();
+            return isNaN(t) ? NaN : t;
+          };
+          let closeMs = toMs(jobData.closingDate);
+          const imposedDate = !Number.isFinite(closeMs) || closeMs <= 0;
+          if (imposedDate) {
+            const postedMs = toMs(jobData.datePosted);
+            const seenMs = toMs(jobData.firstDiscoveredAt);
+            const baseMs = Number.isFinite(postedMs) ? postedMs : (Number.isFinite(seenMs) ? seenMs : Date.now());
+            closeMs = baseMs + 42 * 24 * 60 * 60 * 1000;
+          }
+          if (closeMs < Date.now()) continue; // already past its closing date: never put it on the board
           batch.set(cacheRef, {
             id: fp,
             title: jobData.title || '',
             source: jobData.sourceName || jobData.source || '',
             applyUrl: jobData.applyUrl || jobData.source_url || '',
             datePosted: jobData.datePosted || null,
-            closingDate: null,
-            closingDateMillis: null,
+            closingDate: new Date(closeMs).toISOString().split('T')[0],
+            closingDateMillis: closeMs,
             schoolId: parentSchool.id,
             schoolName: jobData.schoolName || parentSchool.name,
             city: jobData.city || jobData.analysisData?.city || '',
             country: jobData.country || jobData.analysisData?.country || '',
             status: 'approved',
             ingestedAtMillis: Date.now(),
-            isRollingDeadline: true,
+            isRollingDeadline: imposedDate,
           });
           promoted++;
           batchSize++;
