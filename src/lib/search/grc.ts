@@ -20,6 +20,8 @@ export interface GrcJobMatch {
   source: string;
   datePosted?: string | null;
   closingDate?: string | null;
+  matchConfidence?: "high" | "medium" | "low";
+  verificationReasons?: string[];
 }
 
 export async function searchGrcDbSchools(query: string = ""): Promise<GrcJobMatch[]> {
@@ -51,6 +53,9 @@ export async function searchGrcDbSchools(query: string = ""): Promise<GrcJobMatc
         source: "GRC",
         datePosted: r.datePosted || null,
         closingDate: r.closingDate || null,
+        // Carry the school-match confidence through to the job gate (without it every job would go to pending).
+        matchConfidence: r.matchConfidence,
+        verificationReasons: r.verificationReasons,
       });
     }
 
