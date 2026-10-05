@@ -78,6 +78,12 @@ check("retire keeps the school-folder copy as expired history", /status: "expire
 check("retire has safety limits of 25 jobs / 25%", /maxCount \?\? 25/.test(rv) && /maxFraction \?\? 0\.25/.test(rv));
 check("retire does nothing when the engine returned no jobs", /liveUrls\.length/.test(rv));
 
+// 5b. The old per-school search steps stay switched off (the new Direct engine replaces the school-website one)
+const svf = src("src/ai/flows/search-vacancies-flow.ts");
+["tes-adaptor", "school-website-adaptor", "board-hub-adaptor", "czech-hub-adaptor"].forEach((n) =>
+  check("school refresh does not use the old adaptor: " + n, !new RegExp("adaptors/" + n).test(svf)));
+check("school refresh does not call the old search functions", !/runSchoolWebsiteAdaptor\(|runCzechHubAdaptor\(|runBoardHubAdaptor\(|runTesAdaptor\(/.test(svf));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("Most Recent sort uses first-added time first", /job\.ingestedAtMillis,\s*job\.createdAtMillis/.test(sort));

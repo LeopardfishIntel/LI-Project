@@ -1,8 +1,4 @@
 import { getAdminDb } from '../../firebase/admin';
-import { runTesAdaptor } from '../../lib/crawler/adaptors/tes-adaptor';
-import { runSchoolWebsiteAdaptor } from '../../lib/crawler/adaptors/school-website-adaptor';
-import { runBoardHubAdaptor } from '../../lib/crawler/adaptors/board-hub-adaptor';
-import { runCzechHubAdaptor } from '../../lib/crawler/adaptors/czech-hub-adaptor';
 import { runIngestionPipeline } from '../../lib/pipelines/pipeline1-ingestion';
 import { runEnrichmentPipeline } from '../../lib/pipelines/pipeline2-enrichment';
 import { verifyJobUrlHttp } from '../../lib/crawler/urlResolver';
@@ -131,53 +127,11 @@ export async function searchVacancies(input: SearchVacanciesInput): Promise<{
     aliases: grounded.aliases,
   };
 
-  const primaryRecords: RawJobRecord[] = [];
-
-  // Source 1.1: Czech Hub Adaptor (if Czech Republic)
-  if (grounded.country.toLowerCase().includes('czech')) {
-    console.log(`🛸 [ORCHESTRATOR] [Tier 1] Running Czech Hub Adaptor...`);
-    try {
-      const czechRecs = await runCzechHubAdaptor(adaptorInput);
-      primaryRecords.push(...czechRecs);
-    } catch (err) {
-      console.warn(`🛸 [ORCHESTRATOR] Czech Hub Adaptor failed:`, err);
-    }
-  }
-
-  // Source 1.2: TES Direct Hub Adaptor (Pure Extraction - Zero Fussy Filters)
-  if (grounded.tesSlug || grounded.tesOrgId) {
-    console.log(`🛸 [ORCHESTRATOR] [Tier 1] Running TES Direct Hub Adaptor...`);
-    try {
-      const tesRecs = await runTesAdaptor(adaptorInput);
-      primaryRecords.push(...tesRecs);
-    } catch (err) {
-      console.warn(`🛸 [ORCHESTRATOR] TES Adaptor failed:`, err);
-    }
-  }
-
-  // Source 1.3: School Website & ATS Adaptor
-  if (grounded.officialDomain || grounded.careersPageUrl) {
-    console.log(`🛸 [ORCHESTRATOR] [Tier 1] Running School Website Adaptor...`);
-    try {
-      const webRecs = await runSchoolWebsiteAdaptor(adaptorInput, false, false);
-      primaryRecords.push(...webRecs);
-    } catch (err) {
-      console.warn(`🛸 [ORCHESTRATOR] School Website Adaptor failed:`, err);
-    }
-  }
-
-  let candidateRecords = [...primaryRecords];
-
-  // ── Step 2.4: Tier 2 Secondary Regional Fallback Sweep (ONLY if 0 Primary Jobs Found)
-  if (candidateRecords.length === 0) {
-    console.log(`🛸 [ORCHESTRATOR] [Tier 2 Fallback] 0 primary jobs found. Running Board Hub secondary fallback sweep...`);
-    try {
-      const fallbackRecs = await runBoardHubAdaptor(adaptorInput);
-      candidateRecords.push(...fallbackRecs);
-    } catch (err) {
-      console.warn(`🛸 [ORCHESTRATOR] Board Hub Secondary Fallback failed:`, err);
-    }
-  }
+  // Roger, 2026-10-05: the old per-school search steps are switched off here on purpose:
+  //   Czech hub, TES per school (TES runs as its own engine), the school-website search (the old "Direct", replaced by the new Direct engine),
+  //   and the board-hub fallback. This function now only returns the jobs already saved for the school.
+  // Locked by src/lib/pipelines/lockIn.test.ts: these adaptors must not be imported here again.
+  const candidateRecords: RawJobRecord[] = [];
 
   console.log(`🛸 [ORCHESTRATOR] Extracted ${candidateRecords.length} raw candidate records across tiers.`);
 
