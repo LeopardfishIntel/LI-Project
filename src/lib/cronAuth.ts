@@ -30,6 +30,8 @@ export function rejectUnlessCron(request: Request): NextResponse | null {
         serverPasswordLength: (process.env.CRON_SECRET || "").length,
         callHadBearerHeader: header.startsWith("Bearer "),
         callPasswordLength: header.startsWith("Bearer ") ? header.length - 7 : 0,
+        otherSecretsSeen: { RESEND_API_KEY: !!process.env.RESEND_API_KEY, GOOGLE_API_KEY: !!process.env.GOOGLE_API_KEY },
+        envNamesMatching: Object.keys(process.env).filter((k) => /CRON|SECRET/i.test(k)),
       },
     },
     { status: 401 }
