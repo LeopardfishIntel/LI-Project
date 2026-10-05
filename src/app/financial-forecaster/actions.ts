@@ -1185,7 +1185,10 @@ export async function getSchoolStabilityReport(input: {
 
         // 5. Update memory cache and local JSON cache immediately
         stabilityMemoryCache.set(input.schoolId, report);
-        
+
+        // The save to Firestore below normally runs in the background. For a forced refresh (the daily sweep's scrape worker)
+        // we WAIT for it, because on the hosting a background save can be cut off once the request ends, so nothing was ever stored.
+        let persistPromise: Promise<void> | null = null;
         try {
             writeLocalCache(input.schoolId, {
                 scrapedJobsCount,
@@ -1195,9 +1198,9 @@ export async function getSchoolStabilityReport(input: {
             });
             console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report locally for ${input.schoolName}`);
             
-            // Try updating Firestore in background without awaiting it!
+            // Try updating Firestore in background (awaited below when this is a forced refresh)
             if (data) {
-                (async () => {
+                persistPromise = (async () => {
                     const { saveScrapedJobs, updateDocument, generateJobFingerprint } = await import('@/firebase/admin');
                     const admin = await import('firebase-admin');
                     const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
@@ -1240,6 +1243,10 @@ export async function getSchoolStabilityReport(input: {
             }
         } catch (writeErr: any) {
             console.warn(`🛸 [STABILITY ENGINE] Local caching failed:`, writeErr);
+        }
+
+        if (input.forceRefresh && persistPromise) {
+            await persistPromise;
         }
 
         return { data: report, error: null };
