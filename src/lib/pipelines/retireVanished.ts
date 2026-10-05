@@ -9,6 +9,7 @@
  * Safety: if this would retire a large share of the engine's jobs, nothing is changed (a half-empty source list must never wipe the board).
  */
 import { getAdminDb } from "@/firebase/admin";
+import { decideRetire, normUrl } from "./retireRules";
 
 export interface RetireItem {
   id: string;
@@ -29,8 +30,6 @@ export interface RetirePlan {
   skipped?: string;
 }
 
-const norm = (u: any) => String(u || "").trim().toLowerCase().replace(/\/+$/, "");
-const has = (arr: any, label: string) => Array.isArray(arr) && arr.some((s: any) => String(s).toUpperCase() === label.toUpperCase());
 
 export async function planRetireVanished(opts: {
   engineLabel: string; // e.g. "GRC" (the pill / source name)
@@ -44,35 +43,23 @@ export async function planRetireVanished(opts: {
   const db: any = getAdminDb();
   if (!db || typeof db.collection !== "function") { plan.skipped = "database not available"; return plan; }
   if (!opts.liveUrls.length) { plan.skipped = "engine returned no jobs, so nothing is retired"; return plan; }
-  const live = new Set(opts.liveUrls.map(norm));
+  const live = new Set(opts.liveUrls.map(normUrl));
 
   const snap = await db.collection("featured_jobs_cache").where("status", "==", "approved").get();
   for (const d of snap.docs) {
     const x: any = d.data() || {};
-    const claims = String(x.source || "").toUpperCase() === label.toUpperCase() || has(x.sources, label);
-    if (!claims) continue;
+    const verdict = decideRetire(x, label, opts.urlHint, live);
+    if (!verdict.claims) continue;
     plan.claims++;
-    const engineUrl = (x.sourceUrls && x.sourceUrls[label]) || (String(x.applyUrl || "").includes(opts.urlHint) ? x.applyUrl : "");
-    const isLive = engineUrl && live.has(norm(engineUrl));
-    if (isLive) continue;
+    if (!verdict.retire) continue;
 
-    const why = engineUrl ? "no longer in the source's list" : `claims ${label} but has no ${label} link`;
-    const remaining = Array.from(new Set([x.source, ...(Array.isArray(x.sources) ? x.sources : [])].filter((s: any) => s && String(s).toUpperCase() !== label.toUpperCase()).map(String)));
     const sid = String(x.schoolId || "").toUpperCase().trim();
     const folderPath = /^FLIS\d{4}$/.test(sid) ? `schools/${sid}/jobs/${d.id}` : null;
     let folderBefore: any = null;
     if (folderPath) { const f = await db.doc(folderPath).get(); if (f.exists) folderBefore = f.data() || {}; }
 
-    const item: RetireItem = { id: d.id, title: String(x.title || ""), schoolId: sid, schoolName: String(x.schoolName || ""), action: "delete", why, boardBefore: x, folderPath, folderBefore };
-    if (remaining.length > 0) {
-      const urls: Record<string, string> = { ...(x.sourceUrls || {}) };
-      delete urls[label];
-      const newApply = urls[remaining[0]] || (!String(x.applyUrl || "").includes(opts.urlHint) ? x.applyUrl : "");
-      if (newApply) {
-        item.action = "strip";
-        item.boardAfter = { source: remaining[0], sources: remaining, sourceUrls: urls, applyUrl: newApply };
-      }
-    }
+    const item: RetireItem = { id: d.id, title: String(x.title || ""), schoolId: sid, schoolName: String(x.schoolName || ""), action: verdict.action, why: verdict.why, boardBefore: x, folderPath, folderBefore };
+    if (verdict.action === "strip") item.boardAfter = verdict.boardAfter;
     plan.items.push(item);
   }
 
