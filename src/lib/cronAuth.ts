@@ -19,5 +19,19 @@ export function isAuthorizedCron(request: Request): boolean {
 /** Returns a 401 answer when the call is not allowed, or null when it is fine to continue. */
 export function rejectUnlessCron(request: Request): NextResponse | null {
   if (isAuthorizedCron(request)) return null;
-  return NextResponse.json({ status: "error", error: "Unauthorized" }, { status: 401 });
+  // Temporary helper while setting up: says WHY the call was refused (yes/no facts only, never the password itself).
+  const header = request.headers.get("authorization") || "";
+  return NextResponse.json(
+    {
+      status: "error",
+      error: "Unauthorized",
+      why: {
+        serverHasPassword: !!process.env.CRON_SECRET,
+        serverPasswordLength: (process.env.CRON_SECRET || "").length,
+        callHadBearerHeader: header.startsWith("Bearer "),
+        callPasswordLength: header.startsWith("Bearer ") ? header.length - 7 : 0,
+      },
+    },
+    { status: 401 }
+  );
 }
