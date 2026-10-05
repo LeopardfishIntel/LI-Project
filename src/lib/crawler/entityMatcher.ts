@@ -161,6 +161,21 @@ function normalizeCountryName(c: string): string {
   if (lower === "kr" || lower.includes("korea")) return "south korea";
   if (lower === "ph" || lower.includes("philippines")) return "philippines";
   if (lower === "id" || lower.includes("indonesia")) return "indonesia";
+  if (lower === "czech republic") return "czechia";
+  if (lower === "viet nam") return "vietnam";
+  // Two-letter country codes (as sent by job sources) -> the country name we store.
+  const ISO2: Record<string, string> = {
+    my: "malaysia", vn: "vietnam", qa: "qatar", th: "thailand", pe: "peru", tw: "taiwan", hu: "hungary", pa: "panama",
+    lv: "latvia", de: "germany", gb: "united kingdom", uk: "united kingdom", us: "united states", sg: "singapore",
+    jp: "japan", hk: "hong kong", bh: "bahrain", om: "oman", eg: "egypt", tr: "turkey", it: "italy", nl: "netherlands",
+    ch: "switzerland", at: "austria", cz: "czechia", pl: "poland", ro: "romania", kz: "kazakhstan", ng: "nigeria",
+    ke: "kenya", gh: "ghana", za: "south africa", mx: "mexico", co: "colombia", ar: "argentina", cl: "chile",
+    au: "australia", nz: "new zealand", ca: "canada", pk: "pakistan", bd: "bangladesh", lk: "sri lanka", np: "nepal",
+    kh: "cambodia", la: "laos", hn: "honduras", gr: "greece", pt: "portugal", ie: "ireland", se: "sweden", no: "norway",
+    dk: "denmark", fi: "finland", be: "belgium", ru: "russia", ge: "georgia", az: "azerbaijan", uz: "uzbekistan",
+    mn: "mongolia", mo: "macau", ma: "morocco", tn: "tunisia", tz: "tanzania", et: "ethiopia", ug: "uganda",
+  };
+  if (ISO2[lower]) return ISO2[lower];
   return lower;
 }
 

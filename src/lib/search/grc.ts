@@ -7,7 +7,7 @@
  */
 
 import { runGrcAdaptor } from "@/lib/crawler/adaptors/grc-adaptor";
-import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "@/lib/crawler/roleClassifier";
+import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 
 export interface GrcJobMatch {
   jobId: string;
@@ -34,7 +34,8 @@ export async function searchGrcDbSchools(query: string = ""): Promise<GrcJobMatc
         continue;
       }
 
-      if (!isStrictAcademicTeachingRole(r.rawTitle) || isSupportOrNonTeachingRole(r.rawTitle)) {
+      // Support staff are dropped here. A title that is not clearly teaching/leadership is kept: the job gate sends it to pending.
+      if (isSupportOrNonTeachingRole(r.rawTitle)) {
         continue;
       }
 

@@ -18,7 +18,7 @@ import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
-import { decideReviewStatus } from "./jobGate";
+import { decideReviewStatus, acceptsUnsureRoles } from "./jobGate";
 import { isMalvernCampus } from "../search/malvern";
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
 import { isEsfSchool, ESF_PORTAL_URL } from "../search/esf";
@@ -74,7 +74,8 @@ export interface CacheJobDocument {
 function buildCacheDocument(
   record: RawJobRecord,
   fingerprint: string,
-  fallbackSchoolName: string
+  fallbackSchoolName: string,
+  roleUnsure: boolean = false
 ): CacheJobDocument {
   const parsedDate = parseClosingDate(record.closingDate);
   const closingDateISO = parsedDate.closingDate
@@ -228,6 +229,7 @@ function buildCacheDocument(
     matchConfidence: record.matchConfidence,
     applyUrl: record.applyUrl,
     closingDateMillis,
+    roleUnsure,
   });
   const allReasons = [...(record.verificationReasons || []), ...gate.reasons.filter((r) => !(record.verificationReasons || []).includes(r))];
 
@@ -370,7 +372,10 @@ export async function runIngestionPipeline(
     }
 
     // ── GATE 2: Role Classifier (Academic Teaching Roles Only) ───────────────
-    if (!isStrictAcademicTeachingRole(record.rawTitle)) {
+    // Signed-off engines: a title that is not clearly teaching/leadership (but is not support staff) is kept and sent to pending.
+    const roleStrict = isStrictAcademicTeachingRole(record.rawTitle);
+    const roleUnsure = !roleStrict && acceptsUnsureRoles(record.source || "") && !isSupportOrNonTeachingRole(record.rawTitle);
+    if (!roleStrict && !roleUnsure) {
       rejected++;
       reasons.push(`[ROLE_FILTER_NON_ACADEMIC] "${record.rawTitle}"`);
       continue;
@@ -411,7 +416,7 @@ export async function runIngestionPipeline(
     seenFingerprints.add(fp);
     acceptedFingerprints.push(fp);
 
-    const cacheDoc = buildCacheDocument(record, fp, ownerName);
+    const cacheDoc = buildCacheDocument(record, fp, ownerName, roleUnsure);
 
     mappedJobs.push({
       id: fp,

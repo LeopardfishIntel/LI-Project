@@ -120,6 +120,23 @@ export async function isWhitelistedSchool(
     }
   }
 
+  // 2b. Second pass: the source gives a different city (e.g. a suburb) but the school NAME matches exactly.
+  // Accept only when exactly one school matches by exact name, alias or legal name. Marked "medium", so the job goes to pending.
+  if (organizationName && candidateCity) {
+    const cleanOrg = organizationName.trim().toLowerCase();
+    const hits: WhitelistedSchoolInfo[] = [];
+    for (const school of whitelist.values()) {
+      const match = matchSchoolEntity(
+        { name: school.schoolName, schoolname: school.schoolName, city: school.city, country: school.country, aliases: school.aliases, tesEmployerSlug: school.tesEmployerSlug } as any,
+        { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: undefined, country: candidateCountry }
+      );
+      if (match.isMatch && ["exact", "alias", "legal_name"].includes(match.matchType)) hits.push(school);
+    }
+    if (hits.length === 1) {
+      return { ...hits[0], matchConfidence: "medium", matchType: "name_match_city_differs" };
+    }
+  }
+
   // 3. Fallback: Direct Target School ID lookup ONLY if no org name or domain/url were provided
   if (targetSchoolId && !organizationName && !domainOrUrl) {
     const directMatch = whitelist.get(targetSchoolId.toLowerCase());
