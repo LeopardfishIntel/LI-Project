@@ -16,6 +16,11 @@ function runTests() {
   }
 
   // Executive / Corporate / Support roles (MUST BE TRUE / EXCLUDED)
+  assert(isSupportOrNonTeachingRole("Part-time Squash Instructor"), true, "Part-time Squash Instructor is non-teaching");
+  assert(isSupportOrNonTeachingRole("Swimming Coach"), true, "Swimming Coach is non-teaching");
+  assert(isSupportOrNonTeachingRole("Instructor - Squash"), true, "Instructor - Squash is non-teaching");
+  assert(isSupportOrNonTeachingRole("Physical Education Teacher"), false, "PE Teacher stays teaching");
+  assert(isSupportOrNonTeachingRole("Secondary Teacher of Physical Education and Swimming"), false, "PE and Swimming teacher stays teaching");
   assert(isSupportOrNonTeachingRole("Chief Financial Officer (CFO)"), true, "Chief Financial Officer (CFO) is support");
   assert(isSupportOrNonTeachingRole("Chief Financial Officer"), true, "Chief Financial Officer is support");
   assert(isSupportOrNonTeachingRole("CFO"), true, "CFO is support");

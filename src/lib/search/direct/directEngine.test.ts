@@ -27,6 +27,15 @@ const school: DirectSchool = { id: "FLIS0001", name: "Test International School"
     const r = await runDirectForSchool(school, null, deps(web, ai));
     check("anchor match: job gets the page link with its title", r.jobs.length === 1 && r.jobs[0].applyUrl === "https://www.test.edu/careers/post/relief-teacher-1");
   }
+  // 0b. job adverts are PDF files whose link text is just "Download" -> still linked by file name
+  {
+    const web = {
+      "https://www.test.edu/careers": page("https://www.test.edu/careers", "Open Positions Recruitment of Chinese Percussion Instructor closing 16 October 2026", [["Download", "https://www.test.edu/f/jobs/Ad_Chinese%20Percussion%20Instructor_Oct2026.pdf"]]),
+    };
+    const ai: AiJob[] = [{ title: "Chinese Percussion Instructor", applyUrl: null, evidence: "Chinese Percussion Instructor" }];
+    const r = await runDirectForSchool(school, null, deps(web, ai));
+    check("pdf advert: job links to its own pdf", r.jobs.length === 1 && /Percussion%20Instructor_Oct2026\.pdf$/.test(r.jobs[0].applyUrl));
+  }
   // 1. Good page: invented title dropped, TES link replaced, same job twice kept once, paging followed
   {
     const web = {

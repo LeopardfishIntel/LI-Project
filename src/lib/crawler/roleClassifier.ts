@@ -33,6 +33,9 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
 
   // Standalone Sports Coaches (Non-PE Teachers)
   /\b(coach\s+padel|coach\s+basketball|hek\s+coach|volleyball\s+coach|rugby\s+coach)\b/i,
+  // Sport instructors and coaches for a single sport (squash, tennis, golf ...) are activity staff, not teachers
+  /\b(squash|tennis|golf|badminton|table\s+tennis|padel|cricket|football|soccer|swimming|fencing|archery|martial\s+arts|karate|judo|taekwondo)\s+(instructors?|coach(es)?|trainers?)\b/i,
+  /\b(instructors?|coach(es)?)\s*[-–:(,]?\s*(squash|tennis|golf|badminton|table\s+tennis|padel|cricket|football|soccer|swimming|fencing|archery|martial\s+arts|karate|judo|taekwondo)\b/i,
 
   // Placeholder / Talent Pool / Control pages
   /\b(control\s+school|talent\s+pool|share\s+your\s+profile)\b/i,

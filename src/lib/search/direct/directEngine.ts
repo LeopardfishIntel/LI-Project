@@ -38,7 +38,12 @@ export function anchorsOf(html: string, base: string): Anchor[] {
   for (const m of html.matchAll(/<a\b[^>]*href=["']([^"'#][^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
     let href = m[1].trim(); try { href = new URL(href, base).toString(); } catch { continue; }
     if (!/^https?:/i.test(href)) continue;
-    out.push({ label: clean(m[2]).slice(0, 120), href });
+    let label = clean(m[2]).slice(0, 120);
+    // a document link with no readable words (an icon, "Download") is labelled by its file name, e.g. "Ad SPCC Chinese Percussion Instructor Oct2026"
+    if (/\.(pdf|docx?)(\?|$)/i.test(href) && (label.length < 12 || /^(download|view|pdf|click here|apply|read more|more)\b/i.test(label))) {
+      try { const f = decodeURIComponent(new URL(href).pathname.split("/").pop() || "").replace(/\.(pdf|docx?)$/i, "").replace(/[_\-+]+/g, " ").trim(); if (f.length > 5) label = (label && label.length > 2 ? label + " " : "") + f; } catch { /* keep label */ }
+    }
+    out.push({ label: label.slice(0, 160), href });
   }
   return out;
 }
@@ -117,7 +122,10 @@ export async function runDirectForSchool(school: DirectSchool, prev: DirectState
 
   // 4. ask the AI, then check every answer
   const seenHref = new Set<string>();
-  const slimLinks = links.filter((l) => l.label.length > 2 && !seenHref.has(l.href) && !!seenHref.add(l.href)).slice(0, 200);
+  // job adverts are often PDF/Word files far down a page full of menu links, so those links go first and are never cut off
+  const isDoc = (h: string) => /\.(pdf|docx?)(\?|$)/i.test(h);
+  const uniq = links.filter((l) => l.label.length > 2 && !seenHref.has(l.href) && !!seenHref.add(l.href));
+  const slimLinks = [...uniq.filter((l) => isDoc(l.href)), ...uniq.filter((l) => !isDoc(l.href))].slice(0, 200);
   const known = new Set<string>(links.map((l) => l.href)); known.add(page.url);
   const ai = await deps.askAI({ schoolName: school.name, pageUrl: page.url, text, links: slimLinks });
   res.tokensIn = ai.tokensIn; res.tokensOut = ai.tokensOut;
