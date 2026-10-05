@@ -82,7 +82,7 @@ function buildCacheDocument(
   engineQuarantined: boolean = false
 ): CacheJobDocument {
   const parsedDate = parseClosingDate(record.closingDate);
-  const closingDateISO = parsedDate.closingDate
+  let closingDateISO: string | null = parsedDate.closingDate
     ? parsedDate.closingDate.toISOString().split("T")[0]
     : null;
     
@@ -95,6 +95,7 @@ function buildCacheDocument(
     const postTime = record.datePosted ? new Date(record.datePosted).getTime() : NaN;
     const baseTime = !isNaN(postTime) ? postTime : Date.now();
     closingDateMillis = baseTime + 42 * 24 * 60 * 60 * 1000;
+    closingDateISO = new Date(closingDateMillis).toISOString().split("T")[0]; // imposed date shown as a date, not blank
   }
 
   const srcName = record.source || "TES";
