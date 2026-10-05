@@ -17,6 +17,8 @@ import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools } from "@/lib/search/tes";
 import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
+import { AUTO_APPROVE_SOURCES } from "@/lib/pipelines/jobGate";
+import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +65,16 @@ export async function GET(request: Request) {
         telemetry.skippedEngines.push({
           engineKey: key,
           reason: "Not scheduled for execution today (Seasonality / Timetable Rule)"
+        });
+        continue;
+      }
+
+      // Roger (2026-10-05): the nightly sweep runs only engines that have been reviewed, fixed and signed off in jobGate.ts.
+      // An engine can still be run on purpose with ?forceEngine=KEY.
+      if (!isForced && !AUTO_APPROVE_SOURCES.has(key)) {
+        telemetry.skippedEngines.push({
+          engineKey: key,
+          reason: "Not yet reviewed and signed off in jobGate.ts (nightly sweep runs signed-off engines only)"
         });
         continue;
       }
@@ -144,7 +156,16 @@ export async function GET(request: Request) {
         console.warn(`⚠️ Failed to persist CrawlLog for ${key}:`, logErr?.message || logErr);
       }
 
+      // Drift protection: a signed-off engine whose results change sharply is paused (its jobs then go to pending).
+      let drift: { drifted: boolean; reason?: string } = { drifted: false };
+      if (AUTO_APPROVE_SOURCES.has(key)) {
+        drift = await recordRunAndCheckDrift(key, { found: totalFound, kept: ingestedCount });
+        if (drift.drifted) console.warn(`🚨 [DRIFT] Engine ${key} paused: ${drift.reason}`);
+      }
+
       telemetry.executedEngines.push({
+        driftPaused: drift.drifted,
+        driftReason: drift.reason,
         engineKey: key,
         matchesFound: totalFound,
         dbMatched,

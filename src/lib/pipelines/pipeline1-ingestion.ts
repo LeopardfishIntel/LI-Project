@@ -19,6 +19,7 @@ import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
 import { decideReviewStatus, acceptsUnsureRoles } from "./jobGate";
+import { isEngineQuarantined } from "../crawler/engineDrift";
 import { isMalvernCampus } from "../search/malvern";
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
 import { isEsfSchool, ESF_PORTAL_URL } from "../search/esf";
@@ -75,7 +76,8 @@ function buildCacheDocument(
   record: RawJobRecord,
   fingerprint: string,
   fallbackSchoolName: string,
-  roleUnsure: boolean = false
+  roleUnsure: boolean = false,
+  engineQuarantined: boolean = false
 ): CacheJobDocument {
   const parsedDate = parseClosingDate(record.closingDate);
   const closingDateISO = parsedDate.closingDate
@@ -230,6 +232,7 @@ function buildCacheDocument(
     applyUrl: record.applyUrl,
     closingDateMillis,
     roleUnsure,
+    engineQuarantined,
   });
   const allReasons = [...(record.verificationReasons || []), ...gate.reasons.filter((r) => !(record.verificationReasons || []).includes(r))];
 
@@ -416,7 +419,7 @@ export async function runIngestionPipeline(
     seenFingerprints.add(fp);
     acceptedFingerprints.push(fp);
 
-    const cacheDoc = buildCacheDocument(record, fp, ownerName, roleUnsure);
+    const cacheDoc = buildCacheDocument(record, fp, ownerName, roleUnsure, await isEngineQuarantined(record.source || ""));
 
     mappedJobs.push({
       id: fp,

@@ -7,7 +7,8 @@
  *   2. The school match is certain (matchConfidence = "high").
  *   3. The job has a direct link to apply.
  *   4. The closing date is not more than MAX_FUTURE_CLOSING_DAYS away (a far-off date is usually a placeholder).
- *   5. The title is clearly a teaching or leadership role (an unclear title is kept, but sent to pending).
+ *   5. The engine has not been paused by the drift check (engineDrift.ts).
+ *   6. The title is clearly a teaching or leadership role (an unclear title is kept, but sent to pending).
  * Role, expired date and duplicates are rejected earlier in Pipeline 1 and never reach this gate.
  * An imposed closing date (posted date + 42 days) is allowed; the job is then marked isRollingDeadline = true so it is clear the date is imposed.
  */
@@ -30,6 +31,8 @@ export interface GateInput {
   closingDateMillis: number | null;
   /** True when the title is not clearly a teaching or leadership role (but is not support staff either). */
   roleUnsure?: boolean;
+  /** True when the drift check has paused this engine (see engineDrift.ts). */
+  engineQuarantined?: boolean;
   now?: number;
 }
 
@@ -43,6 +46,9 @@ export function decideReviewStatus(i: GateInput): GateDecision {
   const reasons: string[] = [];
   if (!AUTO_APPROVE_SOURCES.has(String(i.source || "").toUpperCase().trim())) {
     reasons.push(`Source "${i.source}" is not yet signed off for automatic approval`);
+  }
+  if (i.engineQuarantined) {
+    reasons.push("Engine paused by the drift check (its results changed sharply); needs a re-check");
   }
   if (i.matchConfidence !== "high") {
     reasons.push(`School match not certain (${i.matchConfidence || "not checked"})`);

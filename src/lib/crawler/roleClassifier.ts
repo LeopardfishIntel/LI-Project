@@ -73,6 +73,7 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
 
   // HR / Operations
   /\b(hr|human\s+resources)\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
+  /\b(head|director|chief|vp|vice\s+president|manager|lead)\s+of\s+(hr|human\s+resources|technology|it|information\s+technology|operations|marketing|communications|finance|admissions)\b/i,
   /\boperations\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
 
   // IT Technician / Facilities / Transport / Security / Lab Technicians
@@ -171,6 +172,45 @@ export function isSupportOrNonTeachingRole(title: string | null | undefined): bo
  * Counselors are listed here deliberately (see file header) - they are no longer
  * hard-rejected upstream, so this is what actually classifies a counselor title as academic.
  */
+/**
+ * Subject-only teaching titles, e.g. "HS Chemistry", "Middle School Math", "Grade 5 PYP", "Lower School Music (Tentative)".
+ * Roger (2026-10-05): these are all teaching jobs. The rule is deliberately cautious: EVERY word in the title (apart from
+ * anything in brackets) must be a known phase, programme, subject or joining word, and at least one must be a subject.
+ * A title with any unknown word (e.g. "Speech Language Pathologist", "University Advisor") is NOT matched here.
+ * Add words to the lists below as we meet new genuine teaching titles.
+ */
+const PHASE_WORDS = new Set([
+  "hs", "ms", "es", "ls", "us", "msh", "high", "middle", "elementary", "lower", "upper", "secondary", "primary", "school",
+  "early", "years", "kindergarten", "kg", "pre", "nursery", "prenursery", "mini", "me", "k", "grade", "grades", "year",
+  "myp", "pyp", "dp", "ibdp", "ibpd", "ib", "ap", "igcse", "gcse", "level", "common", "core", "midlle", "midle",
+]);
+const SUBJECT_WORDS = new Set([
+  "math", "maths", "mathematics", "science", "sciences", "chemistry", "physics", "biology", "english", "ela", "language",
+  "languages", "literature", "arts", "art", "visual", "humanities", "social", "studies", "ss", "history", "geography",
+  "music", "band", "choir", "choral", "general", "drama", "theater", "theatre", "theory", "knowledge", "kowledge", "tok",
+  "pe", "physical", "education", "health", "spanish", "french", "mandarin", "chinese", "german", "arabic", "world",
+  "design", "technology", "fabrication", "robotics", "computer", "cs", "business", "economics", "psychology", "politics",
+  "global", "individuals", "societies", "ess", "environmental", "systems", "learning", "support", "lss", "eal", "ell",
+  "inclusion", "life", "centered", "performing", "dance", "library", "media", "literacy", "reading", "coding",
+  "programming", "interdisciplinary", "facilitator",
+]);
+/** A class level on its own counts as a teaching job, e.g. "Grade 2 PYP", "Kindergarten PYP", "Pre-Nursery". */
+const CLASS_WORDS = new Set(["grade", "grades", "kindergarten", "kg", "nursery", "prenursery", "mini"]);
+const JOINING_WORDS = new Set(["and", "an", "with", "including", "emphasis", "in", "on", "of", "or", "the", "a", "fte", "preferred", "tentative", "potential"]);
+
+export function isSubjectOnlyTeachingTitle(title: string | null | undefined): boolean {
+  if (!title || typeof title !== "string") return false;
+  const tokens = title.toLowerCase().replace(/\(.*?\)/g, " ").split(/[^a-z0-9]+/).filter(Boolean);
+  if (tokens.length === 0 || tokens.length > 14) return false;
+  let hasSubject = false;
+  for (const t of tokens) {
+    if (SUBJECT_WORDS.has(t) || CLASS_WORDS.has(t)) { hasSubject = true; continue; }
+    if (PHASE_WORDS.has(t) || JOINING_WORDS.has(t) || /^\d+(st|nd|rd|th)?$/.test(t)) continue;
+    return false;
+  }
+  return hasSubject;
+}
+
 export function isStrictAcademicTeachingRole(title: string | null | undefined): boolean {
   if (!title || typeof title !== "string") return false;
   const cleanTitle = title.trim();
@@ -184,5 +224,5 @@ export function isStrictAcademicTeachingRole(title: string | null | undefined): 
   const academicNounPattern =
     /\b(teachers?|teachers?\s+of|lead\s+teachers?|subject\s+leaders?|head of\s+(?!college|school|board|admissions|finance|marketing|hr|operations|facilities|it\b|communications)|principals?|vice\s+principals?|deputy\s+heads?|assistant\s+heads?|coordinators?|counselors?|counsellors?|librarians?|specialists?|instructors?|educators?|lecturers?|homeroom|pyp\s+teachers?|myp\s+teachers?|dp\s+teachers?|igcse\s+teachers?|eyfs\s+teachers?|primary\s+teachers?|secondary\s+teachers?|kindergarten\s+teachers?|early\s+years\s+teachers?|learning\s+coach|(?<=\S\s)faculty(?!\s+(?:housing|support|services|accommodation|and\b|&))|head\s+of\s+school|dean\s+of\s+(?:students|studies|academics|curriculum|teaching|learning)|(?:elementary|middle|high|secondary|primary|lower|upper)\s+school\s+dean|director\s+of\s+(?:academic|secondary|elementary|primary|learning|teaching|curriculum|studies|college\s+counsel\w*|english\s+language|early\s+years|inclusion|student\s+support|literacy)|(?:eyfs|phase|year|key\s+stage|division)\s+(?:leader|lead|head))\b/i;
 
-  return academicNounPattern.test(cleanTitle);
+  return academicNounPattern.test(cleanTitle) || isSubjectOnlyTeachingTitle(cleanTitle);
 }
