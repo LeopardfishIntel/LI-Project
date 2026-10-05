@@ -14,7 +14,7 @@ export interface InflationTable {
 }
 
 /** Figures older than this are shown as "not reported". */
-export const INFLATION_MAX_AGE_MONTHS = 6;
+export const INFLATION_MAX_AGE_MONTHS = 12;
 
 /** Country name (lowercase, as used on school records) -> IMF ISO3 code. */
 export const COUNTRY_TO_ISO3: Record<string, string> = {
@@ -42,7 +42,7 @@ export const ALL_ISO3 = Array.from(new Set(Object.values(COUNTRY_TO_ISO3)));
 
 /**
  * Returns e.g. "2.8%" for a country, or "not reported" when we have no
- * figure or the latest one is older than 6 months.
+ * figure or the latest one is older than 12 months.
  */
 export function formatInflation(country: any, table?: InflationTable | null, now: Date = new Date()): string {
   const name = String(typeof country === 'string' ? country : (country?.country || '')).toLowerCase().trim();

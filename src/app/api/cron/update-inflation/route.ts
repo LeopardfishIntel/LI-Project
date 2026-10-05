@@ -42,7 +42,7 @@ export async function GET() {
 
     if (Object.keys(byIso3).length === 0) throw new Error('IMF returned no usable data; keeping previous figures.');
 
-    // Merge so a country missing this month keeps its last known figure (staleness rule hides it after 6 months).
+    // Merge so a country missing this month keeps its last known figure (staleness rule hides it after 12 months).
     const { getDocument } = await import('@/firebase/admin');
     const existing = await getDocument('system', 'inflation_rates');
     const previous = existing.exists() ? (existing.data() as any)?.byIso3 || {} : {};
