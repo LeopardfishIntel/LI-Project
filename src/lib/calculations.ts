@@ -286,11 +286,16 @@ export function getProfileByLabel(label: string): FamilyProfileInfo {
   return profile || FAMILY_PROFILES[0];
 }
 
+// Looks the names up in the ORDER GIVEN (first name in the list that holds a value wins), same as Evaluate.
+// Firestore returns fields A-Z, so the old "first match in the record" could pick an old alternate field before the canonical one.
 export function getCOLField(data: any, keys: string[]): any {
   if (!data) return null;
-  const targetKeys = keys.map(k => k.toLowerCase().replace(/[^a-z0-9]/g, ''));
-  const foundKey = Object.keys(data).find(k => targetKeys.includes(k.toLowerCase().replace(/[^a-z0-9]/g, '')));
-  return foundKey ? data[foundKey] : null;
+  const fields = Object.keys(data);
+  for (const want of keys.map(k => k.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
+    const foundKey = fields.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === want);
+    if (foundKey !== undefined && data[foundKey] !== null && data[foundKey] !== undefined && data[foundKey] !== '') return data[foundKey];
+  }
+  return null;
 }
 
 export function findCostOfLiving(city: string, country: string, costOfLivingList: any[]): any {

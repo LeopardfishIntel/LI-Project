@@ -556,11 +556,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         const isHousingProvidedVal = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
         
         // Single profile values (which is the default userProfile passed to Genkit)
-        const singleRent = isHousingProvidedVal ? 0 : ((safeVal((activeCoL as any).monthlyRent1BR || (activeCoL as any).rent1br) || 1200) * rentWeight);
+        const singleRent = isHousingProvidedVal ? 0 : ((safeVal((activeCoL as any).rent1br || (activeCoL as any).monthlyRent1BR) || 1200) * rentWeight);
         const singleUtilities = safeVal(activeCoL.utilities) || 150;
         const singleInternet = safeVal(activeCoL.internet) || 60;
-        const singleMobile = safeVal(activeCoL.mobile) || 30;
-        const singleFood = safeVal(activeCoL.food) || 350;
+        const singleMobile = safeVal((activeCoL as any).mobilePhone) || safeVal(activeCoL.mobile) || 30;
+        const singleFood = safeVal((activeCoL as any).groceries) || safeVal(activeCoL.food) || 350;
         const singleDining = (safeVal(activeCoL.diningSocial) || 150) * diningWeight;
         const singleTransport = safeVal(activeCoL.transport) || 60;
         const singleMedical = safeVal(activeCoL.uncoveredMedical) || 50;

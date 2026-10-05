@@ -88,9 +88,9 @@ export function CostOfLivingCalculator({
     const safeVal = (val: any) => parseFloat(String(val)) || 0;
     
     const { rentWeight, diningWeight } = getZoneLocationWeights(school);
-    const foodCost = (safeVal(activeCoL.food) || safeVal((activeCoL as any).monthlyFood) || 350) * adults + (safeVal(activeCoL.food) || 350) * 0.5 * children;
+    const foodCost = ((safeVal((activeCoL as any).groceries) || safeVal(activeCoL.food)) || safeVal((activeCoL as any).monthlyFood) || 350) * adults + ((safeVal((activeCoL as any).groceries) || safeVal(activeCoL.food)) || 350) * 0.5 * children;
     const transportCost = (safeVal(activeCoL.transport) || safeVal((activeCoL as any).monthlyTransport) || 60) * adults + (safeVal(activeCoL.transport) || 60) * 0.3 * children;
-    const mobileCost = (safeVal(activeCoL.mobile) || safeVal((activeCoL as any).mobileMonthly) || 30) * adults;
+    const mobileCost = ((safeVal((activeCoL as any).mobilePhone) || safeVal(activeCoL.mobile)) || safeVal((activeCoL as any).mobileMonthly) || 30) * adults;
     const diningSocialCost = (safeVal(activeCoL.diningSocial) || safeVal((activeCoL as any).socialMonthly) || 150) * adults * diningWeight;
     const uncoveredMedicalCost = (safeVal(activeCoL.uncoveredMedical) || 50) * adults + (safeVal(activeCoL.uncoveredMedical) || 50) * 0.5 * children;
     
@@ -98,7 +98,7 @@ export function CostOfLivingCalculator({
     const isProvided = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
     
     if (!isProvided) {
-        rentCost = (getRentForFamily(activeCoL as any, familyStatus).rent || (safeVal(activeCoL.monthlyRent1BR) || 1200)) * rentWeight;
+        rentCost = (getRentForFamily(activeCoL as any, familyStatus).rent || (safeVal((activeCoL as any).rent1br ?? activeCoL.monthlyRent1BR) || 1200)) * rentWeight;
     }
     
     const total =
@@ -174,11 +174,11 @@ export function CostOfLivingCalculator({
         </div>
         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
           <span className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-purple-400" /> Mobile data</span>
-          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).mobile)) || 30) * adults), targetCurrency)}</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).mobilePhone ?? (activeCoL as any).mobile)) || 30) * adults), targetCurrency)}</span>
         </div>
          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
           <span className="flex items-center gap-2"><Utensils className="w-4 h-4 text-amber-400" /> Monthly Groceries</span>
-          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).food)) || 350) * adults + (parseFloat(String((activeCoL as any).food)) || 350) * 0.5 * children), targetCurrency)}</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).groceries ?? (activeCoL as any).food)) || 350) * adults + (parseFloat(String((activeCoL as any).groceries ?? (activeCoL as any).food)) || 350) * 0.5 * children), targetCurrency)}</span>
         </div>
          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
           <span className="flex items-center gap-2"><Coffee className="w-4 h-4 text-orange-400" /> Dining & social</span>
