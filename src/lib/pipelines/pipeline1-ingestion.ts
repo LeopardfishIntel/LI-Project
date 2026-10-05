@@ -32,6 +32,8 @@ export interface IngestionResult {
   acceptedFingerprints: string[];
   addedCount?: number;
   removedCount?: number;
+  /** Only set on a dry run: the board documents that WOULD be written. */
+  previewDocs?: CacheJobDocument[];
 }
 
 export interface CacheJobDocument {
@@ -315,7 +317,7 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
 export async function runIngestionPipeline(
   schoolId: string,
   rawRecords: RawJobRecord[],
-  options?: { purgeTesVacancies?: boolean }
+  options?: { purgeTesVacancies?: boolean; dryRun?: boolean }
 ): Promise<IngestionResult> {
   if (!rawRecords || rawRecords.length === 0) {
     return { accepted: 0, rejected: 0, reasons: [], acceptedFingerprints: [], addedCount: 0, removedCount: 0 };
@@ -439,6 +441,11 @@ export async function runIngestionPipeline(
     });
 
     cacheDocs.push(cacheDoc);
+  }
+
+  // Dry run: report what would be written, write nothing.
+  if (options?.dryRun) {
+    return { accepted: mappedJobs.length, rejected, reasons, acceptedFingerprints, addedCount: 0, removedCount: rejected, previewDocs: cacheDocs };
   }
 
   if (mappedJobs.length > 0) {

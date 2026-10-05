@@ -18,6 +18,7 @@ import { searchTesDbSchools } from "@/lib/search/tes";
 import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 import { AUTO_APPROVE_SOURCES } from "@/lib/pipelines/jobGate";
+import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
 import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 
 export const dynamic = "force-dynamic";
@@ -96,31 +97,7 @@ export async function GET(request: Request) {
       let removedCount = 0;
 
       // Group matches by schoolId so records are ingested in full school batches
-      const schoolGroups = new Map<string, any[]>();
-      for (const m of matches) {
-        if (!m.schoolId) continue;
-        const sId = m.schoolId.toUpperCase().trim();
-        if (!schoolGroups.has(sId)) {
-          schoolGroups.set(sId, []);
-        }
-        schoolGroups.get(sId)!.push({
-          rawTitle: m.title,
-          source: m.source || key,
-          sources: (m as any).sources || undefined,
-          sourceUrls: (m as any).sourceUrls || undefined,
-          directUrl: (m as any).directUrl || undefined,
-          group: (m as any).group || undefined,
-          applyUrl: m.applyUrl,
-          schoolId: m.schoolId,
-          schoolName: m.schoolName,
-          city: m.city,
-          country: m.country,
-          datePosted: m.datePosted || null,
-          closingDate: m.closingDate || null,
-          matchConfidence: (m as any).matchConfidence || undefined,
-          verificationReasons: (m as any).reasons || (m as any).verificationReasons || undefined
-        });
-      }
+      const schoolGroups = groupMatchesBySchool(matches, key);
 
       for (const [sId, records] of schoolGroups.entries()) {
         const res = await runIngestionPipeline(sId, records, {
