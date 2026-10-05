@@ -90,7 +90,7 @@ const pilotMatch = runner.match(/DIRECT_PILOT_IDS: string\[\] = \[([\s\S]*?)\];/
 const pilotIds: string[] = pilotMatch ? (pilotMatch[1].match(/FLIS\d{4}/g) || []) : [];
 check("Direct pilot list can be read", pilotIds.length > 0);
 check("Direct pilot stays small (40 schools or fewer) until deliberately widened", pilotIds.length <= 40);
-["FLIS0017", "FLIS0030", "FLIS0037", "FLIS0028", "FLIS0032", "FLIS0014"].forEach((id) => check("Direct pilot leaves out " + id + " (needs browser / board-only)", !pilotIds.includes(id)));
+["FLIS0017", "FLIS0030", "FLIS0037", "FLIS0028", "FLIS0032", "FLIS0014", "FLIS0222"].forEach((id) => check("Direct pilot leaves out " + id + " (needs browser / board-only)", !pilotIds.includes(id)));
 const eng = src("src/lib/search/direct/directEngine.ts");
 check("Direct engine never sets a job status itself (the job gate decides)", !/status:\s*["'](approved|pending_review)["']/.test(eng.slice(eng.indexOf("export function toRawRecords"))));
 check("Direct engine records use the existing 'School Web' source name", /source: "School Web"/.test(eng));
