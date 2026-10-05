@@ -7,11 +7,18 @@ export async function GET(request: Request) {
     const limitParam = searchParams.get('limit');
     const forceAll = searchParams.get('force') === 'true';
 
-    // 🛸 Pipeline 3 — Janitor: fire-and-forget (non-blocking)
-    import('@/lib/pipelines/pipeline3-janitor')
-      .then(({ runJanitorPipeline }) => runJanitorPipeline())
-      .then(r => console.log(`🛸 [DAILY SWEEP] Janitor — expired=${r.expired} promoted=${r.promoted} durationMs=${r.durationMs}`))
-      .catch(err => console.error('🛸 [DAILY SWEEP] Janitor failed (non-fatal):', err));
+    // 🛸 Pipeline 3 — Janitor: WAIT for it to finish. On the hosting a background job is cut off once the
+    // answer is sent, so the expiry and tidy steps never completed when this was fire-and-forget.
+    let janitor: any = null;
+    let janitorError: string | null = null;
+    try {
+      const { runJanitorPipeline } = await import('@/lib/pipelines/pipeline3-janitor');
+      janitor = await runJanitorPipeline();
+      console.log(`🛸 [DAILY SWEEP] Janitor — expired=${janitor.expired} promoted=${janitor.promoted} purgedFolderCopies=${janitor.purgedFolderCopies ?? 0} durationMs=${janitor.durationMs}`);
+    } catch (err: any) {
+      janitorError = err?.message || String(err);
+      console.error('🛸 [DAILY SWEEP] Janitor failed:', err);
+    }
 
     const schools = await getCollectionDocs('schools');
     const now = Date.now();
@@ -82,7 +89,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      janitorRan: true,
+      janitorRan: janitor !== null,
+      janitorError,
+      janitorSummary: janitor ? { expired: janitor.expired, promoted: janitor.promoted, purgedFolderCopies: janitor.purgedFolderCopies ?? 0, mirrorErrors: janitor.mirrorErrors, errors: (janitor.errors || []).slice(0, 5), durationMs: janitor.durationMs } : null,
       totalSchoolsInDatabase: schools.length,
       staleSchoolsCount: staleSchools.length,
       triggeredCount: targets.length,

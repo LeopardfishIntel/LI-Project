@@ -10,18 +10,21 @@ jobs:
   daily-sweep:
     name: Execute 24-Hour Automated Scraper Sweep & Janitor
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Trigger Daily Sweep API
         run: |
           echo "📡 Triggering automated 24h daily sweep endpoint..."
           APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
-          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/daily-sweep?force=false")
+          # The site uses trailing slashes (trailingSlash: true), so the address must end in "/" and curl must follow redirects.
+          RESPONSE=$(curl -sS -L --max-time 540 -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/daily-sweep/?force=false")
           echo "Response:"
           echo "$RESPONSE"
-          
+
           HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] && echo "$RESPONSE" | grep -q '"success":true'; then
             echo "✅ Automated daily sweep completed successfully!"
           else
-            echo "⚠️ Warning: Sweep API returned HTTP status $HTTP_STATUS"
+            echo "❌ Sweep failed (HTTP status $HTTP_STATUS, or the answer did not say success)."
+            exit 1
           fi
