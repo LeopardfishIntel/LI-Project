@@ -104,20 +104,6 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
       return { success: true };
     }
 
-    // 🛰️ DIAGNOSTIC: Log headers to see what geolocation info is passed
-    try {
-      const allHeaders: Record<string, string> = {};
-      headersList.forEach((value, key) => {
-        allHeaders[key] = value;
-      });
-      await addDocument('diagnostics_headers', {
-        timestamp: new Date().toISOString(),
-        headers: allHeaders
-      });
-    } catch (diagErr) {
-      console.error("Diagnostics header logging failed:", diagErr);
-    }
-
     const visitorId = (metadata && metadata.visitor_id) ? metadata.visitor_id : 'unknown';
     if (metadata && metadata.visitor_id) {
       delete metadata.visitor_id;
