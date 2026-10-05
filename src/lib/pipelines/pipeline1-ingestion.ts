@@ -15,6 +15,7 @@ import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
 
 import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "../crawler/roleClassifier";
 import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
+import { findBoardMatch, isDirectSourceName } from "./boardMatch";
 import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
@@ -272,12 +273,11 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
     const db = getAdminDb();
     if (db) {
       const snap = await db.collection("featured_jobs_cache").where("schoolId", "==", doc.schoolId).get();
-      const normTitle = doc.title.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
-      const existingDoc = snap.docs.find((d: any) => {
-        const data = d.data();
-        const dTitle = String(data.title || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
-        return data.schoolId === doc.schoolId && dTitle === normTitle;
-      });
+      // Same job already on the board? Exact title always; different wording too when one side is a school's own page (Direct).
+      const existingDoc = findBoardMatch<any>(
+        snap.docs.map((d: any) => ({ id: d.id, ref: d, ...(d.data() || {}) })).filter((r: any) => r.schoolId === doc.schoolId),
+        { title: doc.title, source: doc.source, sources: doc.sources }
+      )?.ref;
 
       if (existingDoc) {
         const exData = existingDoc.data();
@@ -293,7 +293,11 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
         const mergedUrls = { ...(exData.sourceUrls || {}), ...(doc.sourceUrls || {}) };
         if (exData.applyUrl) mergedUrls[exData.source || "Official Source"] = exData.applyUrl;
         if (doc.applyUrl) mergedUrls[doc.source] = doc.applyUrl;
-        if (doc.directUrl) mergedUrls["Malvern"] = doc.directUrl;
+        const incomingIsDirect = [doc.source, ...(doc.sources || [])].some(isDirectSourceName);
+        // Malvern link only for Malvern jobs - a Direct job's own link must never create a Malvern pill.
+        if (doc.directUrl && !incomingIsDirect) mergedUrls["Malvern"] = doc.directUrl;
+        // A Direct job joining an existing card: keep its own link for the Direct pill.
+        if (incomingIsDirect && (doc.directUrl || doc.applyUrl)) mergedUrls["Direct"] = doc.directUrl || doc.applyUrl;
 
         await existingDoc.ref.update({
           sources: mergedSources,

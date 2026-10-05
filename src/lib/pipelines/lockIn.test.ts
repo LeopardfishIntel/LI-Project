@@ -103,6 +103,10 @@ check("Direct runner writes a crawl log named DIRECT", /engine: "DIRECT"/.test(r
 // 5d. Teach Away no longer saves unmatched employers (collection unmapped_discovered_schools was deleted on request)
 check("Teach Away does not write to unmapped_discovered_schools", !/unmapped_discovered_schools/.test(src("src/lib/search/teachaway.ts")));
 
+// 5e. A job already on the board (even worded differently) gets the Direct source as another pill, not a second card
+check("ingestion matches existing board jobs with findBoardMatch", /findBoardMatch/.test(p1));
+check("a Direct job's own link never creates a Malvern pill", /doc\.directUrl && !incomingIsDirect/.test(p1));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("board counts and filters still know the School Web (Direct) source", /SCHOOL WEB/.test(sort) && /DIRECT: direct/.test(sort));
