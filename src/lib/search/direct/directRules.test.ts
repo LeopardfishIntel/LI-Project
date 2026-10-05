@@ -1,6 +1,6 @@
 import {
   cleanTitle, sameTitle, titleKey, titleInText, chooseApplyUrl, makeUniqueUrls, isSoftHomepage, isHomepageUrl, toIsoDate, pagingInfo,
-  findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash, pickRotation,
+  findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash, pickRotation, anchorForTitle,
 } from "./directRules";
 
 let passed = 0, failed = 0;
@@ -80,6 +80,10 @@ const rot = pickRotation(["A", "B", "C", "D"], { A: 500, B: undefined, C: 100, D
 check("rotation: never-checked first, then longest ago", rot.join(",") === "B,C,A");
 check("rotation: never more than the limit", pickRotation(["A", "B"], {}, 1).length === 1 && pickRotation(["A"], {}, 25).length === 1);
 check("rotation: same inputs give the same order", pickRotation(["A", "B", "C"], {}, 3).join(",") === "A,B,C");
+
+const uwcAnchors = [{ label: "Home", href: "https://www.uwcsea.edu.sg/" }, { label: "Counsellor (Middle and High School - 1 Year Local Contract) East Campus", href: "https://www.uwcsea.edu.sg/uwcsea-careers/x/~board/y/post/counsellor-123" }];
+check("anchor for title: page link carrying the job's words", anchorForTitle("Counsellor (Middle and High School - 1 Year Local Contract) East Campus", uwcAnchors, "https://www.uwcsea.edu.sg/uwcsea-careers") === "https://www.uwcsea.edu.sg/uwcsea-careers/x/~board/y/post/counsellor-123");
+check("anchor for title: no matching link -> null", anchorForTitle("Teacher of Physics", uwcAnchors, "https://www.uwcsea.edu.sg/uwcsea-careers") === null);
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

@@ -91,6 +91,21 @@ export function chooseApplyUrl(jobUrl: string | null | undefined, pageUrl: strin
   if (knownLinks && u !== pageUrl && !knownLinks.has(u)) return pageUrl;
   return u;
 }
+/**
+ * The AI sometimes gives no link for a job although the page has one (a long page has more links than the AI is shown).
+ * Find the page link whose words are this job's title. Only a link that passes chooseApplyUrl later is used.
+ */
+export function anchorForTitle(title: string, anchors: Anchor[], pageUrl: string): string | null {
+  const t = titleKey(title);
+  if (!t) return null;
+  for (const a of anchors) {
+    if (!a.href || a.href.split("#")[0] === pageUrl.split("#")[0]) continue;
+    const l = titleKey(a.label);
+    if (!l) continue;
+    if (sameTitle(a.label, title) || (Math.min(l.length, t.length) >= 10 && (l.includes(t) || t.includes(l)))) return a.href;
+  }
+  return null;
+}
 /** Pipeline 1 drops jobs that share an apply link. Jobs without a link of their own get a unique "#job-..." ending (the page still opens normally). */
 export function makeUniqueUrls<T extends { title: string; applyUrl: string }>(jobs: T[], pageUrl: string): T[] {
   const used = new Set<string>();

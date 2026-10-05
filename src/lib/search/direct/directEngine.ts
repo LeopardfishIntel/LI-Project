@@ -8,7 +8,7 @@
  */
 import type { RawJobRecord } from "@/lib/crawler/adaptors/raw-job.types";
 import {
-  Anchor, chooseApplyUrl, cleanTitle, deeperLinks, findNextPageUrl, hostOf, isGroupSitePage, isHomepageUrl, isJobBoardUrl, isSoftHomepage,
+  Anchor, chooseApplyUrl, cleanTitle, deeperLinks, findNextPageUrl, hostOf, isGroupSitePage, isHomepageUrl, isJobBoardUrl, isSoftHomepage, anchorForTitle,
   looksBlocked, makeUniqueUrls, pagingInfo, rankRepairCandidates, sameTitle, textHash, titleInText, toIsoDate,
 } from "./directRules";
 
@@ -128,7 +128,12 @@ export async function runDirectForSchool(school: DirectSchool, prev: DirectState
     if (title.length < 4 || title.length > 140) continue;
     if (!titleInText(title, text)) continue; // not really on the page
     if (kept.some((k) => sameTitle(k.title, title))) continue;
-    kept.push({ title, applyUrl: chooseApplyUrl(j.applyUrl, page.url, known), closingDate: toIsoDate(j.closingDate), evidence: String(j.evidence || "").slice(0, 160) });
+    let link = chooseApplyUrl(j.applyUrl, page.url, known);
+    if (link === page.url) { // the AI gave no usable link: look for the page link that carries this job's title
+      const found = anchorForTitle(title, links, page.url);
+      if (found) link = chooseApplyUrl(found, page.url, known);
+    }
+    kept.push({ title, applyUrl: link, closingDate: toIsoDate(j.closingDate), evidence: String(j.evidence || "").slice(0, 160) });
   }
   res.jobs = makeUniqueUrls(kept, page.url);
   if (!res.jobs.length) {

@@ -13,8 +13,12 @@
  * An imposed closing date (posted date + 42 days) is allowed; the job is then marked isRollingDeadline = true so it is clear the date is imposed.
  */
 
-/** Engines checked one by one and signed off for automatic approval. Add an engine here only after its trial run looks right. */
-export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC"]);
+/**
+ * Engines checked one by one and signed off for automatic approval. Add an engine here only after its trial run looks right.
+ * "SCHOOL WEB" is the Direct engine (a school's own careers page). Roger signed it off 2026-10-05 for HIGH-confidence jobs only:
+ * the gate below still needs matchConfidence "high" (the job has its own link), a sane date and a clear teaching title; anything else stays pending.
+ */
+export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB"]);
 
 /** For signed-off engines, a title that is not clearly teaching or leadership (e.g. "HS Chemistry") is kept but sent to pending, not thrown away. */
 export function acceptsUnsureRoles(source: string): boolean {

@@ -18,6 +18,15 @@ function deps(web: Record<string, PageResult>, ai: AiJob[], counter?: { ai: numb
 const school: DirectSchool = { id: "FLIS0001", name: "Test International School", city: "Testville", country: "Testland", careersUrl: "https://www.test.edu/careers", website: "https://www.test.edu/" };
 
 (async () => {
+  // 0. AI gives no link, but the page has a link whose label is the job title -> use that link
+  {
+    const web = {
+      "https://www.test.edu/careers": page("https://www.test.edu/careers", "Open Positions Relief Teacher English Humanities Art", [["Relief Teacher English Humanities Art", "https://www.test.edu/careers/post/relief-teacher-1"]]),
+    };
+    const ai: AiJob[] = [{ title: "Relief Teacher English Humanities Art", applyUrl: null, evidence: "Relief Teacher English Humanities Art" }];
+    const r = await runDirectForSchool(school, null, deps(web, ai));
+    check("anchor match: job gets the page link with its title", r.jobs.length === 1 && r.jobs[0].applyUrl === "https://www.test.edu/careers/post/relief-teacher-1");
+  }
   // 1. Good page: invented title dropped, TES link replaced, same job twice kept once, paging followed
   {
     const web = {

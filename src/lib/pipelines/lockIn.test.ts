@@ -15,11 +15,14 @@ const src = (p: string) => fs.readFileSync(path.resolve(process.cwd(), p), "utf8
 console.log("Lock-in tests");
 
 // 1. Only GRC is signed off. Signing off another engine must be a deliberate edit of this test.
-check("signed-off engines are exactly {GRC}", AUTO_APPROVE_SOURCES.size === 1 && AUTO_APPROVE_SOURCES.has("GRC"));
+check("signed-off engines are exactly {GRC, SCHOOL WEB (Direct, high confidence only)}", AUTO_APPROVE_SOURCES.size === 2 && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("SCHOOL WEB"));
 const now = Date.parse("2026-10-05T00:00:00Z"), D = 864e5;
 const good = { matchConfidence: "high", applyUrl: "https://x", closingDateMillis: now + 20 * D, now };
-["TES", "Tes", "Teach Away", "Teacher Horizons", "UWC", "Taylors", "Taaleem", "ESF", "School Web", "School ATS Portal", "Official Website", "Direct"].forEach((s) =>
+["TES", "Tes", "Teach Away", "Teacher Horizons", "UWC", "Taylors", "Taaleem", "ESF", "School ATS Portal", "Official Website", "Direct"].forEach((s) =>
   check("unsigned engine always goes to pending: " + s, decideReviewStatus({ ...good, source: s }).status === "pending_review"));
+check("Direct (School Web), own job link, high -> approved", decideReviewStatus({ ...good, source: "School Web" }).status === "approved");
+check("Direct (School Web), careers-page link (medium) -> pending", decideReviewStatus({ ...good, source: "School Web", matchConfidence: "medium" }).status === "pending_review");
+check("Direct (School Web), unclear title -> pending", decideReviewStatus({ ...good, source: "School Web", roleUnsure: true }).status === "pending_review");
 check("GRC with every check passed is approved", decideReviewStatus({ ...good, source: "GRC" }).status === "approved");
 check("GRC is matched in any letter case", decideReviewStatus({ ...good, source: " grc " }).status === "approved");
 
