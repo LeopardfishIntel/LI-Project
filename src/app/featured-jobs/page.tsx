@@ -1283,6 +1283,16 @@ export default function FeaturedJobsPage() {
         if (!sourcesList.includes('Search Associates')) sourcesList.push('Search Associates');
       }
 
+      // Jobs read from a school's own page (Direct engine): give the Direct pill the job's own link, same as on the public cards.
+      const pendingHasRealDirect = [jobDoc.source, jobDoc.sourceName, ...(Array.isArray(jobDoc.sources) ? jobDoc.sources : [])]
+        .filter(Boolean)
+        .some((n: any) => /DIRECT|OFFICIAL|WEBSITE|SCHOOL WEB|SCHOOL ATS/.test(String(n).toUpperCase()));
+      const pendingDirectLink = jobDoc.directUrl || (pendingHasRealDirect ? rawSourceUrl : '');
+      if (pendingHasRealDirect && pendingDirectLink && typeof pendingDirectLink === 'string' && pendingDirectLink.startsWith('http')) {
+        sourceUrlsMap['Direct'] = pendingDirectLink;
+        sourceUrlsMap['DIRECT'] = pendingDirectLink;
+      }
+
       jobsList.push({
         id: jobDoc.id || schoolId + '_' + Math.random().toString(36).substring(2, 7),
         title: translateJobTitleToEnglish(jobDoc.title || jobDoc.jobTitle || 'Teaching Vacancy'),
@@ -1291,6 +1301,7 @@ export default function FeaturedJobsPage() {
         sources: sourcesList,
         source_url: rawSourceUrl,
         sourceUrls: sourceUrlsMap,
+        directUrl: pendingHasRealDirect ? (pendingDirectLink || undefined) : undefined,
         date_listed: jobDoc.scrapedAt
           ? new Date(jobDoc.scrapedAt.seconds ? jobDoc.scrapedAt.seconds * 1000 : jobDoc.scrapedAt).toLocaleDateString()
           : (jobDoc.date_listed || jobDoc.datePosted || null),
