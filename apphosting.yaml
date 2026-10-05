@@ -51,4 +51,4 @@ environmentVariables:
   # 🔐 PASSWORD FOR THE SCHEDULED SWEEPS (cron endpoints refuse calls without it)
   - variable: CRON_SECRET
     secret: CRON_SECRET
-    availability: [RUNTIME]
+    availability: [BUILD, RUNTIME]
