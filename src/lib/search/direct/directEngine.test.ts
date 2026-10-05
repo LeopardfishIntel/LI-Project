@@ -15,7 +15,7 @@ function deps(web: Record<string, PageResult>, ai: AiJob[], counter?: { ai: numb
     askAI: async () => { if (counter) counter.ai++; return { jobs: ai, tokensIn: 1000, tokensOut: 100 }; },
   };
 }
-const school: DirectSchool = { id: "FLIS9001", name: "Test International School", city: "Testville", country: "Testland", careersUrl: "https://www.test.edu/careers", website: "https://www.test.edu/" };
+const school: DirectSchool = { id: "FLIS0001", name: "Test International School", city: "Testville", country: "Testland", careersUrl: "https://www.test.edu/careers", website: "https://www.test.edu/" };
 
 (async () => {
   // 1. Good page: invented title dropped, TES link replaced, same job twice kept once, paging followed
@@ -45,7 +45,7 @@ const school: DirectSchool = { id: "FLIS9001", name: "Test International School"
     check("good page: all apply links different", new Set(r.jobs.map((j) => j.applyUrl.toLowerCase())).size === r.jobs.length);
     check("good page: tokens recorded", r.tokensIn === 1000 && r.tokensOut === 100);
     const recs = toRawRecords(school, r);
-    check("records: source is School Web, school filled in", recs.length === 4 && recs.every((x) => x.source === "School Web" && x.schoolId === "FLIS9001" && x.schoolName === school.name));
+    check("records: source is School Web, school filled in", recs.length === 4 && recs.every((x) => x.source === "School Web" && x.schoolId === "FLIS0001" && x.schoolName === school.name));
     check("records: Direct pill opens the job's own link", recs.every((x) => x.directUrl === x.applyUrl));
     check("records: no status set (the job gate decides, Direct is not signed off)", recs.every((x) => x.status === undefined));
     check("records: own link -> high, careers-page link -> medium", recs.find((x) => x.rawTitle === "Principal")!.matchConfidence === "high" && recs.find((x) => x.rawTitle === "Teacher of Math")!.matchConfidence === "medium");
