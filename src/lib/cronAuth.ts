@@ -46,20 +46,5 @@ export async function isAuthorizedCron(request: Request): Promise<boolean> {
 /** Returns a 401 answer when the call is not allowed, or null when it is fine to continue. */
 export async function rejectUnlessCron(request: Request): Promise<NextResponse | null> {
   if (await isAuthorizedCron(request)) return null;
-  const secret = await getServerPassword();
-  const header = request.headers.get("authorization") || "";
-  // Temporary helper while setting up: yes/no facts and lengths only, never the password itself.
-  return NextResponse.json(
-    {
-      status: "error",
-      error: "Unauthorized",
-      why: {
-        serverHasPassword: !!secret,
-        serverPasswordLength: secret.length,
-        callHadBearerHeader: header.startsWith("Bearer "),
-        callPasswordLength: header.startsWith("Bearer ") ? header.length - 7 : 0,
-      },
-    },
-    { status: 401 }
-  );
+  return NextResponse.json({ status: "error", error: "Unauthorized" }, { status: 401 });
 }
