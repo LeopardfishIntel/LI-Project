@@ -19,6 +19,9 @@ export interface WhitelistedSchoolInfo {
   country?: string;
   tesEmployerSlug?: string;
   aliases?: string[];
+  /** How the school was matched. Only set on results of isWhitelistedSchool. "high" = exact name, alias, legal name, website or id. */
+  matchConfidence?: "high" | "medium";
+  matchType?: string;
 }
 
 let whitelistCache: Map<string, WhitelistedSchoolInfo> | null = null;
@@ -96,7 +99,7 @@ export async function isWhitelistedSchool(
   if (candidateDomain) {
     for (const school of whitelist.values()) {
       if (school.officialDomain && school.officialDomain === candidateDomain) {
-        return school;
+        return { ...school, matchConfidence: "high", matchType: "domain" };
       }
     }
   }
@@ -110,7 +113,9 @@ export async function isWhitelistedSchool(
         { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: candidateCity, country: candidateCountry }
       );
       if (match.isMatch) {
-        return school;
+        // Exact name, alias, legal name and platform id are certain. Fuzzy and acronym matches are not: they go to pending.
+        const certain = ["exact", "alias", "legal_name", "platform_id"].includes(match.matchType);
+        return { ...school, matchConfidence: certain ? "high" : "medium", matchType: match.matchType };
       }
     }
   }
@@ -118,7 +123,7 @@ export async function isWhitelistedSchool(
   // 3. Fallback: Direct Target School ID lookup ONLY if no org name or domain/url were provided
   if (targetSchoolId && !organizationName && !domainOrUrl) {
     const directMatch = whitelist.get(targetSchoolId.toLowerCase());
-    if (directMatch) return directMatch;
+    if (directMatch) return { ...directMatch, matchConfidence: "high", matchType: "id" };
   }
 
   return null;

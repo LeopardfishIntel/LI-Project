@@ -18,6 +18,7 @@ import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
+import { decideReviewStatus } from "./jobGate";
 import { isMalvernCampus } from "../search/malvern";
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
 import { isEsfSchool, ESF_PORTAL_URL } from "../search/esf";
@@ -222,6 +223,14 @@ function buildCacheDocument(
     (record.rawTitle && (record.rawTitle.toLowerCase().includes("maternity") || record.rawTitle.toLowerCase().includes("immediate start") || record.rawTitle.toLowerCase().includes("asap")))
   );
 
+  const gate = decideReviewStatus({
+    source: record.source || "TES",
+    matchConfidence: record.matchConfidence,
+    applyUrl: record.applyUrl,
+    closingDateMillis,
+  });
+  const allReasons = [...(record.verificationReasons || []), ...gate.reasons.filter((r) => !(record.verificationReasons || []).includes(r))];
+
   return {
     id: fingerprint,
     title: translateJobTitleToEnglish(record.rawTitle),
@@ -239,13 +248,13 @@ function buildCacheDocument(
     city: targetCity,
     country: record.country || "",
     campus,
-    status: 'pending_review',
+    status: gate.status,
     ingestedAtMillis: Date.now(),
-    isRollingDeadline: closingDateMillis === null,
+    isRollingDeadline: !parsedDate.closingDate, // true when the closing date was imposed (posted date + 42 days)
     isAgencyListing: false,
     agencyName: record.source || "TES",
     matchConfidence: record.matchConfidence ?? null,
-    verificationReasons: record.verificationReasons ?? null,
+    verificationReasons: allReasons.length > 0 ? allReasons : null,
   };
 }
 
@@ -402,6 +411,8 @@ export async function runIngestionPipeline(
     seenFingerprints.add(fp);
     acceptedFingerprints.push(fp);
 
+    const cacheDoc = buildCacheDocument(record, fp, ownerName);
+
     mappedJobs.push({
       id: fp,
       title: record.rawTitle,
@@ -414,12 +425,12 @@ export async function runIngestionPipeline(
       city: record.city || "",
       country: record.country || "",
       jobFingerprint: fp,
-      status: "pending_review",
+      status: cacheDoc.status,
       matchConfidence: record.matchConfidence ?? null,
-      verificationReasons: record.verificationReasons ?? null,
+      verificationReasons: cacheDoc.verificationReasons ?? null,
     });
 
-    cacheDocs.push(buildCacheDocument(record, fp, ownerName));
+    cacheDocs.push(cacheDoc);
   }
 
   if (mappedJobs.length > 0) {

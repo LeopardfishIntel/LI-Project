@@ -142,6 +142,10 @@ export async function runGrcAdaptor(input?: AdaptorInput): Promise<RawJobRecord[
         datePosted: datePostedStr,
         closingDate: closingDateStr,
         status: "pending_review",
+        matchConfidence: whitelistedSchool.matchConfidence || "medium",
+        verificationReasons: whitelistedSchool.matchConfidence === "high"
+          ? undefined
+          : [`GRC names the school "${grcSchoolName}"; matched to "${whitelistedSchool.schoolName}" by ${whitelistedSchool.matchType || "unknown"} name match`],
       });
     }
 
