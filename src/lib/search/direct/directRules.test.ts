@@ -1,4 +1,4 @@
-import {
+import { isJobDescriptionFile,
   cleanTitle, sameTitle, titleKey, titleInText, chooseApplyUrl, makeUniqueUrls, isSoftHomepage, isHomepageUrl, toIsoDate, pagingInfo,
   findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash, pickRotation, anchorForTitle,
 } from "./directRules";
@@ -84,6 +84,11 @@ check("rotation: same inputs give the same order", pickRotation(["A", "B", "C"],
 const uwcAnchors = [{ label: "Home", href: "https://www.uwcsea.edu.sg/" }, { label: "Counsellor (Middle and High School - 1 Year Local Contract) East Campus", href: "https://www.uwcsea.edu.sg/uwcsea-careers/x/~board/y/post/counsellor-123" }];
 check("anchor for title: page link carrying the job's words", anchorForTitle("Counsellor (Middle and High School - 1 Year Local Contract) East Campus", uwcAnchors, "https://www.uwcsea.edu.sg/uwcsea-careers") === "https://www.uwcsea.edu.sg/uwcsea-careers/x/~board/y/post/counsellor-123");
 check("anchor for title: no matching link -> null", anchorForTitle("Teacher of Physics", uwcAnchors, "https://www.uwcsea.edu.sg/uwcsea-careers") === null);
+const jdPage = "https://neevschools.org/key-links-careers/"; const jdKnown = new Set(["https://neevschools.org/wp-content/uploads/2026/10/JD-PHE.pdf", "https://neevschools.org/wp-content/uploads/2026/02/Job-Description-Early-Years-Home-Room-Teacher-.pdf", "https://www.spcc.edu.hk/f/jobs_and_tenders/5092/Ad_SPCC_Chinese%20Percussion%20Instructor_Oct2026.pdf"]);
+check("job description file is not the apply link (JD)", chooseApplyUrl("https://neevschools.org/wp-content/uploads/2026/10/JD-PHE.pdf", jdPage, jdKnown) === jdPage);
+check("job description file is not the apply link (Job-Description)", chooseApplyUrl("https://neevschools.org/wp-content/uploads/2026/02/Job-Description-Early-Years-Home-Room-Teacher-.pdf", jdPage, jdKnown) === jdPage);
+check("a real advert pdf is kept", chooseApplyUrl("https://www.spcc.edu.hk/f/jobs_and_tenders/5092/Ad_SPCC_Chinese%20Percussion%20Instructor_Oct2026.pdf", "https://www.spcc.edu.hk/jobs-and-tenders", jdKnown).endsWith("Oct2026.pdf"));
+check("isJobDescriptionFile: normal words are not caught", !isJobDescriptionFile("https://x.edu/f/Adjudicator-Notice.pdf") && isJobDescriptionFile("https://x.edu/f/JD_Head-Curriculum-updated.pdf"));
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

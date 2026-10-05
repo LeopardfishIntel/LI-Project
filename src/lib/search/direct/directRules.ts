@@ -82,10 +82,18 @@ export function isSoftHomepage(savedUrl: string, finalUrl: string): boolean {
  * Picks the apply link for a job. Allowed: a link that was really on the page, on the school's own website or a known job system.
  * Never a job-board link (TES etc.), a homepage, or a mailto. Anything else falls back to the careers page itself.
  */
+/** A file that is only a job description or role profile (not an advert people can apply from), e.g. "JD-PHE.pdf", "Job-Description-Early-Years.pdf". */
+export function isJobDescriptionFile(u: string): boolean {
+  try {
+    const f = decodeURIComponent(new URL(u).pathname.split("/").pop() || "");
+    if (!/\.(pdf|docx?)$/i.test(f)) return false;
+    return /(^|[^a-z])(jd|job[\s_\-]*descriptions?|jobdescription|role[\s_\-]*(profile|description)|person[\s_\-]*specification)([^a-z]|$)/i.test(f);
+  } catch { return false; }
+}
 export function chooseApplyUrl(jobUrl: string | null | undefined, pageUrl: string, knownLinks?: Set<string>): string {
   const u = String(jobUrl || "").trim();
   if (!/^https?:\/\//i.test(u)) return pageUrl;
-  if (isJobBoardUrl(u) || isHomepageUrl(u)) return pageUrl;
+  if (isJobBoardUrl(u) || isHomepageUrl(u) || isJobDescriptionFile(u)) return pageUrl;
   const sameSite = registrableDomain(hostOf(u)) === registrableDomain(hostOf(pageUrl));
   if (!sameSite && !ATS_HOST_RX.test(hostOf(u))) return pageUrl;
   if (knownLinks && u !== pageUrl && !knownLinks.has(u)) return pageUrl;
