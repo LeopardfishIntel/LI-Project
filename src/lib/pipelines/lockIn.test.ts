@@ -84,6 +84,18 @@ const svf = src("src/ai/flows/search-vacancies-flow.ts");
   check("school refresh does not use the old adaptor: " + n, !new RegExp("adaptors/" + n).test(svf)));
 check("school refresh does not call the old search functions", !/runSchoolWebsiteAdaptor\(|runCzechHubAdaptor\(|runBoardHubAdaptor\(|runTesAdaptor\(/.test(svf));
 
+// 5c. New Direct engine: small pilot only, never self-approves
+const runner = src("src/lib/search/direct/directRunner.ts");
+const pilotMatch = runner.match(/DIRECT_PILOT_IDS: string\[\] = \[([\s\S]*?)\];/);
+const pilotIds: string[] = pilotMatch ? (pilotMatch[1].match(/FLIS\d{4}/g) || []) : [];
+check("Direct pilot list can be read", pilotIds.length > 0);
+check("Direct pilot stays small (40 schools or fewer) until deliberately widened", pilotIds.length <= 40);
+["FLIS0017", "FLIS0030", "FLIS0037", "FLIS0028", "FLIS0032", "FLIS0014"].forEach((id) => check("Direct pilot leaves out " + id + " (needs browser / board-only)", !pilotIds.includes(id)));
+const eng = src("src/lib/search/direct/directEngine.ts");
+check("Direct engine never sets a job status itself (the job gate decides)", !/status:\s*["'](approved|pending_review)["']/.test(eng.slice(eng.indexOf("export function toRawRecords"))));
+check("Direct engine records use the existing 'School Web' source name", /source: "School Web"/.test(eng));
+check("Direct engine asks the AI only through the checked path (titles must be on the page)", /titleInText\(/.test(eng) && /chooseApplyUrl\(/.test(eng));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("Most Recent sort uses first-added time first", /job\.ingestedAtMillis,\s*job\.createdAtMillis/.test(sort));

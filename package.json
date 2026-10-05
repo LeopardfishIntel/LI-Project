@@ -14,7 +14,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "npx tsx src/lib/crawler/entityMatcher.test.ts && npx tsx src/lib/search/teachaway.test.ts && npx tsx src/lib/crawler/schoolMatchWholeWord.test.ts && npx tsx src/lib/featuredJobs/pillResolver.test.ts && npx tsx src/lib/search/ispSlugMatcher.test.ts && npx tsx src/lib/search/ispDriftChecker.test.ts && npx tsx src/lib/pipelines/jobGate.test.ts && npx tsx src/lib/pipelines/lockIn.test.ts",
+    "test": "npx tsx src/lib/crawler/entityMatcher.test.ts && npx tsx src/lib/search/teachaway.test.ts && npx tsx src/lib/crawler/schoolMatchWholeWord.test.ts && npx tsx src/lib/featuredJobs/pillResolver.test.ts && npx tsx src/lib/search/ispSlugMatcher.test.ts && npx tsx src/lib/search/ispDriftChecker.test.ts && npx tsx src/lib/pipelines/jobGate.test.ts && npx tsx src/lib/pipelines/lockIn.test.ts && npx tsx src/lib/search/direct/directRules.test.ts && npx tsx src/lib/search/direct/directEngine.test.ts",
     "audit:ids": "npx tsx src/scripts/audit_canonical_ids.ts",
     "test:e2e": "playwright test",
     "test:cypress": "cypress run"
