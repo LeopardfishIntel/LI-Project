@@ -754,21 +754,6 @@ export default function FeaturedJobsPage() {
     }
   };
 
-  const [isSweeping, setIsSweeping] = useState(false);
-
-  const handleRunFullSweep = async () => {
-    setIsSweeping(true);
-    try {
-      await fetch('/api/daily-sweep', { method: 'GET' });
-    } catch (err) {
-      console.error("Failed to run daily sweep:", err);
-    } finally {
-      setTimeout(() => {
-        setIsSweeping(false);
-      }, 5000);
-    }
-  };
-
   // Admin Actions
   const handleMoveToPending = async (schoolId: string, jobId: string) => {
     try {
@@ -1773,22 +1758,6 @@ export default function FeaturedJobsPage() {
                 >
                   <PlusCircle className="size-3.5 text-emerald-400 group-hover:text-white" />
                   <span>+ Add Vacancy</span>
-                </button>
-
-                <button
-                  onClick={handleRunFullSweep}
-                  disabled={isSweeping}
-                  className="bg-[#D96B27]/10 hover:bg-[#D96B27] border border-[#D96B27]/30 text-[#D96B27] hover:text-white px-3 py-2 text-xs font-black uppercase tracking-wider transition-all rounded-sm flex items-center gap-1.5"
-                >
-                  {isSweeping ? (
-                    <>
-                      <Loader2 className="animate-spin size-3.5" /> Sweeping
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCw className="size-3.5" /> DB + Jan
-                    </>
-                  )}
                 </button>
 
                 <div className="flex bg-[#0b1224] border border-white/10 p-1 rounded-sm">
