@@ -18,7 +18,7 @@ import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
-import { decideReviewStatus, acceptsUnsureRoles } from "./jobGate";
+import { decideReviewStatus, acceptsUnsureRoles, isPlaceholderClosingDate } from "./jobGate";
 import { isEngineQuarantined } from "../crawler/engineDrift";
 import { isMalvernCampus } from "../search/malvern";
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
@@ -384,6 +384,12 @@ export async function runIngestionPipeline(
       rejected++;
       reasons.push(`[ROLE_FILTER_NON_ACADEMIC] "${record.rawTitle}"`);
       continue;
+    }
+
+    // A stated closing date far in the future is a placeholder: ignore it, so the 42-day rule (posted date + 42 days) applies.
+    const statedClosing = parseClosingDate(record.closingDate);
+    if (statedClosing.closingDate && isPlaceholderClosingDate(statedClosing.closingDate.getTime())) {
+      record.closingDate = null;
     }
 
     // ── GATE 3: Expired Closing Date & Past Intake Check ───────────────────

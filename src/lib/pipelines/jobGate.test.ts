@@ -1,4 +1,4 @@
-import { decideReviewStatus } from "./jobGate";
+import { decideReviewStatus, isPlaceholderClosingDate } from "./jobGate";
 import { detectDrift } from "../crawler/engineDrift";
 import { isStrictAcademicTeachingRole, isSupportOrNonTeachingRole } from "../crawler/roleClassifier";
 
@@ -29,6 +29,13 @@ teaching.forEach((t) => check("teaching/leadership: " + t, isStrictAcademicTeach
 const notTeaching = ["Head of HR - Prospect", "Director of Technology", "Director of Operations", "Head of Marketing", "Director of Finance", "Director of Admissions", "IT Support Technician", "Faculty Housing Manager", "Business Manager", "ES - Speech Language Pathologist"];
 notTeaching.forEach((t) => check("not teaching: " + t, !isStrictAcademicTeachingRole(t)));
 ["Head of HR - Prospect", "Director of Technology", "Director of Operations", "Head of IT"].forEach((t) => check("rejected as non-academic leadership: " + t, isSupportOrNonTeachingRole(t)));
+
+check("closing date 10 months away is a placeholder", isPlaceholderClosingDate(now + 300 * D, now));
+check("closing date 4 months away is real", !isPlaceholderClosingDate(now + 120 * D, now));
+check("no closing date is not a placeholder", !isPlaceholderClosingDate(null, now));
+["High School University Advisor", "Potential Middle/High School English Language Learning Speci", "English Language Learning Specialist", "EAL Teacher", "Elementary EAL Teacher"].forEach((t) => check("teaching: " + t, isStrictAcademicTeachingRole(t)));
+check("Speech Language Pathologist is not teaching", !isStrictAcademicTeachingRole("ES - Speech Language Pathologist"));
+check("Speech Language Pathologist is support", isSupportOrNonTeachingRole("ES - Speech Language Pathologist"));
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

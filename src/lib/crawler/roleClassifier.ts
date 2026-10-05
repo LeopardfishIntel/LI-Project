@@ -73,6 +73,7 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
 
   // HR / Operations
   /\b(hr|human\s+resources)\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
+  /\b(speech[\s-]*(and\s+)?language\s+(pathologist|therapist)|speech\s+therapist)\b/i,
   /\b(head|director|chief|vp|vice\s+president|manager|lead)\s+of\s+(hr|human\s+resources|technology|it|information\s+technology|operations|marketing|communications|finance|admissions)\b/i,
   /\boperations\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
 
@@ -222,7 +223,7 @@ export function isStrictAcademicTeachingRole(title: string | null | undefined): 
 
   // Must contain a legitimate academic position noun (preventing generic division/header matching)
   const academicNounPattern =
-    /\b(teachers?|teachers?\s+of|lead\s+teachers?|subject\s+leaders?|head of\s+(?!college|school|board|admissions|finance|marketing|hr|operations|facilities|it\b|communications)|principals?|vice\s+principals?|deputy\s+heads?|assistant\s+heads?|coordinators?|counselors?|counsellors?|librarians?|specialists?|instructors?|educators?|lecturers?|homeroom|pyp\s+teachers?|myp\s+teachers?|dp\s+teachers?|igcse\s+teachers?|eyfs\s+teachers?|primary\s+teachers?|secondary\s+teachers?|kindergarten\s+teachers?|early\s+years\s+teachers?|learning\s+coach|(?<=\S\s)faculty(?!\s+(?:housing|support|services|accommodation|and\b|&))|head\s+of\s+school|dean\s+of\s+(?:students|studies|academics|curriculum|teaching|learning)|(?:elementary|middle|high|secondary|primary|lower|upper)\s+school\s+dean|director\s+of\s+(?:academic|secondary|elementary|primary|learning|teaching|curriculum|studies|college\s+counsel\w*|english\s+language|early\s+years|inclusion|student\s+support|literacy)|(?:eyfs|phase|year|key\s+stage|division)\s+(?:leader|lead|head))\b/i;
+    /\b(teachers?|teachers?\s+of|lead\s+teachers?|subject\s+leaders?|head of\s+(?!college|school|board|admissions|finance|marketing|hr|operations|facilities|it\b|communications)|principals?|vice\s+principals?|deputy\s+heads?|assistant\s+heads?|coordinators?|counselors?|counsellors?|librarians?|specialists?|instructors?|educators?|lecturers?|homeroom|pyp\s+teachers?|myp\s+teachers?|dp\s+teachers?|igcse\s+teachers?|eyfs\s+teachers?|primary\s+teachers?|secondary\s+teachers?|kindergarten\s+teachers?|early\s+years\s+teachers?|learning\s+coach|(?:university|college)\s+advis[eo]rs?|english\s+language\s+learn\w*|language\s+acquisition|eal|ell|esl|efl|(?<=\S\s)faculty(?!\s+(?:housing|support|services|accommodation|and\b|&))|head\s+of\s+school|dean\s+of\s+(?:students|studies|academics|curriculum|teaching|learning)|(?:elementary|middle|high|secondary|primary|lower|upper)\s+school\s+dean|director\s+of\s+(?:academic|secondary|elementary|primary|learning|teaching|curriculum|studies|college\s+counsel\w*|english\s+language|early\s+years|inclusion|student\s+support|literacy)|(?:eyfs|phase|year|key\s+stage|division)\s+(?:leader|lead|head))\b/i;
 
   return academicNounPattern.test(cleanTitle) || isSubjectOnlyTeachingTitle(cleanTitle);
 }

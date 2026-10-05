@@ -39,7 +39,10 @@ export function cleanGrcJobTitle(rawTitle: string): string {
 
   // STRICT 60-CHARACTER MAXIMUM LENGTH CAP
   if (clean.length > 60) {
-    clean = clean.substring(0, 60).replace(/[-,\s]+$/, "").trim();
+    let cut = clean.substring(0, 60);
+    // Cut at a whole word, never in the middle of one (e.g. "...Learning Speci").
+    if (clean.charAt(60) !== " " && cut.lastIndexOf(" ") > 40) cut = cut.substring(0, cut.lastIndexOf(" "));
+    clean = cut.replace(/[-,\s]+$/, "").trim();
   }
 
   return clean || rawTitle.trim().substring(0, 60);

@@ -22,6 +22,15 @@ export function acceptsUnsureRoles(source: string): boolean {
 }
 
 export const MAX_FUTURE_CLOSING_DAYS = 365;
+
+/**
+ * A stated closing date more than this many days away is treated as a placeholder ("fishing" post, Roger 2026-10-05):
+ * it is ignored and the 42-day rule applies instead (posted date + 42 days).
+ */
+export const MAX_STATED_CLOSING_DAYS = 180;
+export function isPlaceholderClosingDate(closingMillis: number | null | undefined, now: number = Date.now()): boolean {
+  return Boolean(closingMillis) && (closingMillis as number) - now > MAX_STATED_CLOSING_DAYS * 24 * 60 * 60 * 1000;
+}
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface GateInput {

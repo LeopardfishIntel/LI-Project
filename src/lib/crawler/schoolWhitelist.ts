@@ -112,10 +112,9 @@ export async function isWhitelistedSchool(
         { name: school.schoolName, schoolname: school.schoolName, city: school.city, country: school.country, aliases: school.aliases, tesEmployerSlug: school.tesEmployerSlug },
         { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: candidateCity, country: candidateCountry }
       );
-      if (match.isMatch) {
-        // Exact name, alias, legal name and platform id are certain. Fuzzy and acronym matches are not: they go to pending.
-        const certain = ["exact", "alias", "legal_name", "platform_id"].includes(match.matchType);
-        return { ...school, matchConfidence: certain ? "high" : "medium", matchType: match.matchType };
+      // Roger (2026-10-05): DIRECT matching only - exact name, alias, legal name or platform id. No fuzzy or acronym matching.
+      if (match.isMatch && ["exact", "alias", "legal_name", "platform_id"].includes(match.matchType)) {
+        return { ...school, matchConfidence: "high", matchType: match.matchType };
       }
     }
   }
