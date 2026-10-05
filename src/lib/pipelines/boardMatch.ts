@@ -15,11 +15,23 @@ import { sameTitle } from "../search/direct/directRules";
 const DIRECT_RX = /DIRECT|OFFICIAL|WEBSITE|SCHOOL WEB|SCHOOL ATS/;
 export function isDirectSourceName(n: unknown): boolean { return DIRECT_RX.test(String(n || "").toUpperCase()); }
 
-export interface BoardRow { id: string; title: string; status?: string | null; source?: string | null; sources?: string[] | null }
-export interface Incoming { title: string; source?: string | null; sources?: string[] | null }
+export interface BoardRow { id: string; title: string; status?: string | null; source?: string | null; sources?: string[] | null; applyUrl?: string | null; sourceUrls?: Record<string, string> | null }
+export interface Incoming { title: string; source?: string | null; sources?: string[] | null; applyUrl?: string | null }
 
 const flat = (t: string) => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 const namesOf = (x: { source?: string | null; sources?: string[] | null }) => [x.source, ...(Array.isArray(x.sources) ? x.sources : [])].filter(Boolean);
+
+/**
+ * A link that points at ONE job (an id in the path, a query, or a fragment) - not a general careers page shared by many jobs.
+ */
+export function isSpecificUrl(u: unknown): boolean {
+  try {
+    const x = new URL(String(u || ""));
+    const segs = x.pathname.split("/").filter(Boolean);
+    return Boolean(x.search || x.hash || (segs.length >= 2 && /\d/.test(segs[segs.length - 1])));
+  } catch { return false; }
+}
+const normUrl = (u: unknown) => String(u || "").toLowerCase().trim().replace(/\/+$/, "");
 
 export function findBoardMatch<T extends BoardRow>(rows: T[], incoming: Incoming): T | undefined {
   const key = flat(incoming.title);
@@ -27,6 +39,16 @@ export function findBoardMatch<T extends BoardRow>(rows: T[], incoming: Incoming
   const exact = rows.find((r) => flat(r.title) === key);
   if (exact) return exact;
   const incomingDirect = namesOf(incoming).some(isDirectSourceName);
+  // Same job-specific link = same job, whatever the title says (only when a school's own page is involved).
+  const inUrl = normUrl(incoming.applyUrl);
+  if (inUrl && isSpecificUrl(inUrl)) {
+    const byUrl = rows.find((r) => {
+      if (String(r.status || "").toLowerCase() === "merged") return false;
+      if (!incomingDirect && !namesOf(r).some(isDirectSourceName)) return false;
+      return [r.applyUrl, ...Object.values(r.sourceUrls || {})].some((x) => normUrl(x) === inUrl);
+    });
+    if (byUrl) return byUrl;
+  }
   return rows.find((r) => {
     if (String(r.status || "").toLowerCase() === "merged") return false;
     if (!incomingDirect && !namesOf(r).some(isDirectSourceName)) return false;

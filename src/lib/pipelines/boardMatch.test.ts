@@ -17,5 +17,10 @@ check("Direct: unrelated title makes a new card", findBoardMatch(rows, { title: 
 check("two non-Direct engines with different wording stay separate", findBoardMatch(rows, { title: "IGCSE Chemistry Teacher", source: "TES" }) === undefined);
 check("a merged row is never matched loosely", findBoardMatch([{ id: "m", title: "Teacher of Biology & Environmental Systems", status: "merged", source: "School Web", sources: ["School Web"] }], { title: "Teacher of Biology & Environmental Systems & Societies (ESS)", ...D }) === undefined);
 check("an existing Direct row is matched by a later non-Direct engine with similar wording", findBoardMatch([{ id: "z", title: "Teacher of Biology & ESS", status: "pending_review", source: "School Web", sources: ["School Web"] }], { title: "Teacher of Biology & ESS.", source: "GRC" })?.id === "z");
+const island = [{ id: "g", title: "Greek Teacher", status: "approved", source: "School ATS Portal", sources: ["School ATS Portal", "Globeducate"], applyUrl: "https://isl.bamboohr.com/careers/296", sourceUrls: {} }];
+check("same job-specific link joins the card even when the title differs", findBoardMatch(island, { title: "Greek Primary Teacher", ...D, applyUrl: "https://isl.bamboohr.com/careers/296" })?.id === "g");
+check("a different job link does not join", findBoardMatch(island, { title: "Greek Secondary Teacher", ...D, applyUrl: "https://isl.bamboohr.com/careers/295" }) === undefined);
+check("a general careers page shared by many jobs never joins", findBoardMatch([{ id: "h", title: "Maths Teacher", status: "approved", source: "School Web", sources: ["School Web"], applyUrl: "https://school.edu/careers" }], { title: "Art Teacher", ...D, applyUrl: "https://school.edu/careers" }) === undefined);
+check("a link match needs a school-page side (two job boards stay separate)", findBoardMatch([{ id: "t", title: "Greek Teacher", status: "approved", source: "TES", sources: ["TES"], applyUrl: "https://x.com/jobs/296" }], { title: "Greek Primary Teacher", source: "GRC", applyUrl: "https://x.com/jobs/296" }) === undefined);
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

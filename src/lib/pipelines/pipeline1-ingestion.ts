@@ -276,7 +276,7 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
       // Same job already on the board? Exact title always; different wording too when one side is a school's own page (Direct).
       const existingDoc = findBoardMatch<any>(
         snap.docs.map((d: any) => ({ id: d.id, ref: d, ...(d.data() || {}) })).filter((r: any) => r.schoolId === doc.schoolId),
-        { title: doc.title, source: doc.source, sources: doc.sources }
+        { title: doc.title, source: doc.source, sources: doc.sources, applyUrl: doc.applyUrl }
       )?.ref;
 
       if (existingDoc) {
