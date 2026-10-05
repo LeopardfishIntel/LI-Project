@@ -1153,7 +1153,14 @@ export default function FeaturedJobsPage() {
         }
 
         const directCandidate = (cacheDoc as any).directUrl || (cacheDoc as any).direct_url || sourceUrlsMap['Direct'] || sourceUrlsMap['DIRECT'] || cacheDoc.schoolWebsite || schoolObj?.careersPageUrl || schoolObj?.careersUrl || (schoolObj?.website && schoolObj.website !== '#' ? schoolObj.website : undefined);
-        if (directCandidate && typeof directCandidate === 'string' && directCandidate.startsWith('http') && !isTesDomainUrl(directCandidate) && !directCandidate.includes('grcfair.org') && !directCandidate.includes('teachaway') && !directCandidate.includes('theguardian.com') && !directCandidate.includes('guardianjobs')) {
+        // A job only gets the Direct source (pill + count) when the database says it really was found on a school's own
+        // page/portal. We no longer add "Direct" to every job that merely has a school website (that made ISP/other jobs
+        // count as Direct and sent the pill to a general careers page).
+        const hasRealDirectSource = [cacheDoc.source, ...(Array.isArray(cacheDoc.sources) ? cacheDoc.sources : [])]
+          .filter(Boolean)
+          .some((n: any) => /DIRECT|OFFICIAL|WEBSITE|SCHOOL WEB|SCHOOL ATS/.test(String(n).toUpperCase()))
+          || Boolean(((cacheDoc as any).sourceUrls || {})['Direct'] || ((cacheDoc as any).sourceUrls || {})['DIRECT']);
+        if (hasRealDirectSource && directCandidate && typeof directCandidate === 'string' && directCandidate.startsWith('http') && !isTesDomainUrl(directCandidate) && !directCandidate.includes('grcfair.org') && !directCandidate.includes('teachaway') && !directCandidate.includes('theguardian.com') && !directCandidate.includes('guardianjobs')) {
           if (!sourcesList.includes('Direct')) {
             sourcesList.push('Direct');
           }

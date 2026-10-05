@@ -106,6 +106,7 @@ check("Teach Away does not write to unmapped_discovered_schools", !/unmapped_dis
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
 check("board counts and filters still know the School Web (Direct) source", /SCHOOL WEB/.test(sort) && /DIRECT: direct/.test(sort));
+check("board only adds a Direct source to jobs that really have one", /hasRealDirectSource/.test(sort) && /if \(hasRealDirectSource && directCandidate/.test(sort));
 check("Most Recent sort uses first-added time first", /job\.ingestedAtMillis,\s*job\.createdAtMillis/.test(sort));
 check("'DB + Jan' button stays removed", !/handleRunFullSweep|DB \+ Jan/.test(sort));
 
