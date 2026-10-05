@@ -3,8 +3,9 @@
  * After a HEALTHY run of a signed-off engine (not paused by the drift check, and it returned jobs), any approved board job that claims
  * that engine but is missing from the run is stale (the source took it down, or our own checks now reject it):
  *   - if another source also lists the job: only that engine's pill is removed (the card stays);
- *   - otherwise: the board job AND its school-folder copy are deleted. (Deleting the folder copy too stops the janitor
- *     from copying it back onto the board.)
+ *   - otherwise: the board job is deleted, and its school-folder copy is KEPT as history: marked expired + historical with the reason
+ *     "taken_down_by_source". The folder copies are the school's job history (first-discovered date, lifespan), which the staff turnover
+ *     figures use, so they must not be erased. The janitor only promotes APPROVED folder copies, so an expired one cannot come back.
  * Safety: if this would retire a large share of the engine's jobs, nothing is changed (a half-empty source list must never wipe the board).
  */
 import { getAdminDb } from "@/firebase/admin";
@@ -93,7 +94,15 @@ export async function applyRetirePlan(plan: RetirePlan): Promise<{ deleted: numb
       await db.collection("featured_jobs_cache").doc(it.id).update(it.boardAfter);
       out.stripped++;
     } else {
-      if (it.folderPath && it.folderBefore) await db.doc(it.folderPath).delete();
+      if (it.folderPath && it.folderBefore) {
+        const retiredAt = new Date().toISOString();
+        await db.doc(it.folderPath).update({
+          status: "expired",
+          isHistorical: true,
+          historicalMetadata: { ...(it.folderBefore.historicalMetadata || {}), archivedAt: retiredAt, lifecycleReason: "taken_down_by_source" },
+          retiredAt,
+        });
+      }
       await db.collection("featured_jobs_cache").doc(it.id).delete();
       out.deleted++;
     }
