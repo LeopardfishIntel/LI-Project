@@ -484,12 +484,14 @@ function parseTimestampRobust(val: any): number {
 
 export function getJobSortTimestamp(job: any): number {
   if (!job) return 0;
+  // "Most recent" = when the job was first added. updatedAtMillis is NOT used first:
+  // it changes whenever another engine merges into the card, which pushed old jobs above brand-new ones.
   const candidates = [
-    job.updatedAtMillis,
-    job.createdAtMillis,
     job.ingestedAtMillis,
-    job.updatedAt,
+    job.createdAtMillis,
     job.createdAt,
+    job.updatedAtMillis,
+    job.updatedAt,
     job.scrapedAtRaw,
     job.scrapedAt,
     job.datePosted,
