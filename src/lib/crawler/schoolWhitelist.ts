@@ -20,6 +20,8 @@ export interface WhitelistedSchoolInfo {
   tesEmployerSlug?: string;
   aliases?: string[];
   /** How the school was matched. Only set on results of isWhitelistedSchool. "high" = exact name, alias, legal name, website or id. */
+  /** Other towns/suburbs the school is known by (e.g. Oberursel for Frankfurt International School). Set in the schools collection as alternateCities. */
+  alternateCities?: string[];
   matchConfidence?: "high" | "medium";
   matchType?: string;
 }
@@ -50,6 +52,7 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
         const officialDomain = extractCanonicalDomain(rawWebsite);
         const tesEmployerSlug = d.tesEmployerSlug || undefined;
         const aliases = d.aliases || undefined;
+        const alternateCities: string[] | undefined = Array.isArray(d.alternateCities) ? d.alternateCities.map((x: any) => String(x)) : undefined;
 
         // Exclude agency profiles (isAgency: true / type: school_agent) from job target whitelist
         if (d.isAgency === true || d.type === "school_agent" || schoolId.toUpperCase().startsWith("AGNT")) {
@@ -69,6 +72,7 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
           country: d.country || "",
           tesEmployerSlug,
           aliases,
+          alternateCities,
         });
       });
     }
@@ -80,6 +84,17 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
   lastCacheLoadMillis = now;
   console.log(`🛸 [WHITELIST] Loaded ${map.size} whitelisted school(s) into memory.`);
   return map;
+}
+
+const plainCity = (x: any) => String(x || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+/** If the source's city is one of the school's alternate cities (a suburb or nearby town), treat it as the school's own city. */
+function cityForSchool(school: WhitelistedSchoolInfo, candidateCity?: string): string | undefined {
+  const c = plainCity(candidateCity);
+  if (c && (school.alternateCities || []).some((a) => { const n = plainCity(a); return n && (c.includes(n) || n.includes(c)); })) {
+    return school.city;
+  }
+  return candidateCity;
 }
 
 /**
@@ -110,7 +125,7 @@ export async function isWhitelistedSchool(
     for (const school of whitelist.values()) {
       const match = matchSchoolEntity(
         { name: school.schoolName, schoolname: school.schoolName, city: school.city, country: school.country, aliases: school.aliases, tesEmployerSlug: school.tesEmployerSlug },
-        { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: candidateCity, country: candidateCountry }
+        { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: cityForSchool(school, candidateCity), country: candidateCountry }
       );
       // Roger (2026-10-05): DIRECT matching only - exact name, alias, legal name or platform id. No fuzzy or acronym matching.
       if (match.isMatch && ["exact", "alias", "legal_name", "platform_id"].includes(match.matchType)) {
