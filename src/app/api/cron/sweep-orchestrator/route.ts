@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/firebase/admin";
 import { NextResponse } from "next/server";
+import { rejectUnlessCron } from "@/lib/cronAuth";
 import { getCurrentSeason, shouldEngineRunToday, CRAWLER_TIMETABLE } from "@/lib/crawler/timetableScheduler";
 import { isEngineCoolingDown } from "@/lib/crawler/safetyEngine";
 import { searchIspDbSchools } from "@/lib/search/isp";
@@ -24,6 +25,8 @@ import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const denied = rejectUnlessCron(request);
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
     const forcedEngine = searchParams.get("forceEngine");

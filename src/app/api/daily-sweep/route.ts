@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { rejectUnlessCron } from "@/lib/cronAuth";
 import { getCollectionDocs, updateDocument } from '@/firebase/admin';
 
 export async function GET(request: Request) {
+  const denied = rejectUnlessCron(request);
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
     const limitParam = searchParams.get('limit');

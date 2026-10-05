@@ -1,0 +1,33 @@
+name: Leopardfish Nightly Job Engines
+
+on:
+  schedule:
+    # Runs every night at 02:00 UTC, one hour BEFORE the daily sweep + janitor (03:00 UTC),
+    # so new jobs are on the board before the janitor tidies up.
+    - cron: '0 2 * * *'
+  workflow_dispatch: # manual run from the GitHub Actions tab
+
+jobs:
+  engines:
+    name: Run signed-off job engines (GRC only for now)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Trigger the sweep orchestrator
+        run: |
+          APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
+          # The site uses trailing slashes, so the address ends in "/" and curl follows redirects.
+          # Only engines signed off in src/lib/pipelines/jobGate.ts (AUTO_APPROVE_SOURCES) are run.
+          RESPONSE=$(curl -sS -L --max-time 600 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/")
+          echo "Response:"
+          echo "$RESPONSE"
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] && echo "$RESPONSE" | grep -q '"status":"success"'; then
+            echo "✅ Engines finished."
+          else
+            echo "❌ Engine run failed (HTTP status $HTTP_STATUS, or the answer did not say success)."
+            exit 1
+          fi
+          if echo "$RESPONSE" | grep -q '"driftPaused":true'; then
+            echo "⚠️ An engine was PAUSED by the drift check. Its jobs now go to pending until you re-check it."
+          fi

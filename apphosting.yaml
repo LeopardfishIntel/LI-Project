@@ -47,3 +47,8 @@ environmentVariables:
   - variable: RESEND_API_KEY
     secret: RESEND_API_KEY
     availability: [BUILD, RUNTIME]
+
+  # 🔐 PASSWORD FOR THE SCHEDULED SWEEPS (cron endpoints refuse calls without it)
+  - variable: CRON_SECRET
+    secret: CRON_SECRET
+    availability: [RUNTIME]

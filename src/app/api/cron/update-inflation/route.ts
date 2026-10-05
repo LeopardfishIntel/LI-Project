@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rejectUnlessCron } from "@/lib/cronAuth";
 import { setDocument } from '@/firebase/admin';
 import { ALL_ISO3, type InflationEntry } from '@/lib/inflation';
 
@@ -9,7 +10,9 @@ export const maxDuration = 60;
  * from the IMF CPI database and stores it at system/inflation_rates.
  * Countries the IMF has no data for are simply left out ("not reported").
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = rejectUnlessCron(request);
+  if (denied) return denied;
   try {
     const url =
       `https://api.imf.org/external/sdmx/2.1/data/IMF.STA,CPI/${ALL_ISO3.join('+')}` +
