@@ -20,7 +20,7 @@ export function cleanTitle(raw: string): string {
   let t = String(raw ?? "").replace(/\s+/g, " ").trim();
   for (let i = 0; i < 4; i++) {
     const before = t;
-    t = t.replace(PREFIX_A, "").replace(PREFIX_B, "").replace(SUFFIX_RX, "").replace(ID_RX, "").trim();
+    t = t.replace(PREFIX_A, "").replace(PREFIX_B, "").replace(SUFFIX_RX, "").replace(ID_RX, "").replace(/[\s.:;,]+$/, "").trim();
     if (t === before) break;
   }
   return t;
@@ -74,7 +74,8 @@ export function isGroupSitePage(u: string): boolean { return GROUP_PAGE_RX.test(
 export function isHomepageUrl(u: string): boolean { try { const x = new URL(u); return x.pathname.replace(/\/+$/, "") === "" && !x.search; } catch { return false; } }
 /** A saved careers link that silently lands on the school's homepage is not a careers page. */
 export function isSoftHomepage(savedUrl: string, finalUrl: string): boolean {
-  try { const s = new URL(savedUrl), f = new URL(finalUrl); return s.pathname.replace(/\/+$/, "") !== "" && f.pathname.replace(/\/+$/, "") === "" && !f.search; } catch { return false; }
+  // Only a redirect to the SAME site's homepage counts. A redirect to another address (e.g. careers.school.edu, the school's job system) is fine.
+  try { const s = new URL(savedUrl), f = new URL(finalUrl); return hostOf(savedUrl) === hostOf(finalUrl) && s.pathname.replace(/\/+$/, "") !== "" && f.pathname.replace(/\/+$/, "") === "" && !f.search; } catch { return false; }
 }
 
 /**
@@ -137,7 +138,7 @@ export function rankRepairCandidates(anchors: Anchor[], homeUrl: string): { url:
   }
   return out.sort((x, y) => y.score - x.score).slice(0, 3);
 }
-const DEEPER_RX = /teaching (roles|jobs|positions)|current (vacanc|jobs|openings|positions)|job openings|vacancies|open positions|available positions|view (all )?(jobs|vacancies|roles)|positions available|employment opportunit/i;
+const DEEPER_RX = /faculty positions|click here to view|staff vacanc|view (openings|positions)|see (all )?(vacancies|openings|jobs)|teaching (roles|jobs|positions)|current (vacanc|jobs|openings|positions)|job openings|vacancies|open positions|available positions|view (all )?(jobs|vacancies|roles)|positions available|employment opportunit/i;
 export function deeperLinks(anchors: Anchor[], pageUrl: string, max = 3): Anchor[] {
   const m = new Map<string, Anchor>();
   anchors.forEach((a) => { if (hostOf(a.href) === hostOf(pageUrl) && a.href !== pageUrl && !BAD_RX.test(a.href) && DEEPER_RX.test(a.label)) m.set(a.href, a); });

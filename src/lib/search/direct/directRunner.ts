@@ -20,7 +20,7 @@ export const DIRECT_PILOT_IDS: string[] = [
 export interface DirectSchoolOutcome {
   school: DirectSchool; result: DirectResult;
   preview?: { title: string; status: string; closingDate: string | null; applyUrl: string; reasons: string[] | null }[];
-  ingested?: { accepted: number; rejected: number };
+  ingested?: { accepted: number; rejected: number; addedCount: number; removedCount: number };
   error?: string;
 }
 
@@ -29,6 +29,7 @@ export async function runDirectBatch(opts: { ids?: string[]; write: boolean; dep
   if (!db || typeof db.collection !== "function") throw new Error("database not available");
   const deps = opts.deps || realDeps;
   const out: DirectSchoolOutcome[] = [];
+  const startMs = Date.now();
   for (const rawId of opts.ids || DIRECT_PILOT_IDS) {
     const id = rawId.toUpperCase().trim();
     const snap = await db.collection("schools").doc(id).get();
@@ -48,10 +49,10 @@ export async function runDirectBatch(opts: { ids?: string[]; write: boolean; dep
       if (records.length) {
         if (opts.write) {
           const r = await runIngestionPipeline(id, records);
-          o.ingested = { accepted: r.accepted, rejected: r.rejected };
+          o.ingested = { accepted: r.accepted, rejected: r.rejected, addedCount: r.addedCount || 0, removedCount: 0 };
         } else {
           const r = await runIngestionPipeline(id, records, { dryRun: true });
-          o.ingested = { accepted: r.accepted, rejected: r.rejected };
+          o.ingested = { accepted: r.accepted, rejected: r.rejected, addedCount: 0, removedCount: 0 };
           o.preview = (r.previewDocs || []).map((p) => ({ title: p.title, status: p.status, closingDate: p.closingDate, applyUrl: p.applyUrl, reasons: p.verificationReasons || null }));
         }
       }
@@ -76,6 +77,21 @@ export async function runDirectBatch(opts: { ids?: string[]; write: boolean; dep
     }
     out.push(o);
     opts.onSchool?.(o);
+  }
+  // Same crawl-log record the other engines write, so Direct shows in the admin telemetry table with its counts.
+  if (opts.write && out.length) {
+    try {
+      await db.collection("crawllogs").add({
+        engine: "DIRECT",
+        addedCount: out.reduce((a, o) => a + (o.ingested?.addedCount || 0), 0),
+        removedCount: 0,
+        totalFound: out.reduce((a, o) => a + o.result.jobs.length, 0),
+        dbMatched: out.reduce((a, o) => a + o.result.jobs.length, 0),
+        durationMs: Date.now() - startMs,
+        createdAt: new Date().toISOString(),
+        createdAtMillis: Date.now(),
+      });
+    } catch (e: any) { console.warn("Direct: could not write the crawl log:", e?.message || e); }
   }
   return out;
 }

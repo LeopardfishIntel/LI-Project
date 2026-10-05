@@ -147,7 +147,7 @@ export function toRawRecords(school: DirectSchool, r: DirectResult): RawJobRecor
     return {
       rawTitle: j.title,
       applyUrl: j.applyUrl,
-      directUrl: r.pageUrl,
+      directUrl: j.applyUrl, // the Direct pill opens the job's own link when it has one, otherwise the careers page
       source: "School Web",
       sources: ["School Web"],
       sourceUrls: { "School Web": j.applyUrl },

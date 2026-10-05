@@ -96,8 +96,13 @@ check("Direct engine never sets a job status itself (the job gate decides)", !/s
 check("Direct engine records use the existing 'School Web' source name", /source: "School Web"/.test(eng));
 check("Direct engine asks the AI only through the checked path (titles must be on the page)", /titleInText\(/.test(eng) && /chooseApplyUrl\(/.test(eng));
 
+const adminSrc = src("src/app/admin/page.tsx");
+check("admin crawl-log table lists the DIRECT engine", (adminSrc.match(/"TEACHER_HORIZONS", "DIRECT"\]/g) || []).length === 2);
+check("Direct runner writes a crawl log named DIRECT", /engine: "DIRECT"/.test(runner));
+
 // 6. Board display rules
 const sort = src("src/app/featured-jobs/page.tsx");
+check("board counts and filters still know the School Web (Direct) source", /SCHOOL WEB/.test(sort) && /DIRECT: direct/.test(sort));
 check("Most Recent sort uses first-added time first", /job\.ingestedAtMillis,\s*job\.createdAtMillis/.test(sort));
 check("'DB + Jan' button stays removed", !/handleRunFullSweep|DB \+ Jan/.test(sort));
 

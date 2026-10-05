@@ -46,6 +46,7 @@ const school: DirectSchool = { id: "FLIS9001", name: "Test International School"
     check("good page: tokens recorded", r.tokensIn === 1000 && r.tokensOut === 100);
     const recs = toRawRecords(school, r);
     check("records: source is School Web, school filled in", recs.length === 4 && recs.every((x) => x.source === "School Web" && x.schoolId === "FLIS9001" && x.schoolName === school.name));
+    check("records: Direct pill opens the job's own link", recs.every((x) => x.directUrl === x.applyUrl));
     check("records: no status set (the job gate decides, Direct is not signed off)", recs.every((x) => x.status === undefined));
     check("records: own link -> high, careers-page link -> medium", recs.find((x) => x.rawTitle === "Principal")!.matchConfidence === "high" && recs.find((x) => x.rawTitle === "Teacher of Math")!.matchConfidence === "medium");
 

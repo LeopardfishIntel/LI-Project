@@ -1,6 +1,6 @@
 import {
   cleanTitle, sameTitle, titleKey, titleInText, chooseApplyUrl, makeUniqueUrls, isSoftHomepage, isHomepageUrl, toIsoDate, pagingInfo,
-  findNextPageUrl, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash,
+  findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash,
 } from "./directRules";
 
 let passed = 0, failed = 0;
@@ -48,6 +48,9 @@ check("unique links: still open the careers page", uniq[0].applyUrl.startsWith(p
 
 check("soft homepage: path redirected to root", isSoftHomepage("https://s.org/porg/careers", "https://s.org/"));
 check("soft homepage: normal page is fine", !isSoftHomepage("https://s.org/careers", "https://s.org/careers/jobs"));
+check("soft homepage: redirect to the school's job system (other address) is fine", !isSoftHomepage("https://www.gsis.edu.hk/en/about-us/careers/job-openings", "https://careers.gsis.edu.hk/"));
+check("clean: trailing full stop removed", cleanTitle("Teacher of High School Economics Dover Campus.") === "Teacher of High School Economics Dover Campus");
+check("deeper: 'Click here to view' sub-page is followed", deeperLinks([{ label: "Faculty Positions Click Here to View", href: "https://s.org/faculty" }], "https://s.org/careers").length === 1);
 check("homepage url", isHomepageUrl("http://www.cky.edu.hk") && !isHomepageUrl("https://s.org/careers"));
 
 check("date: weekday and long month", toIsoDate("Sunday, 25 October 2026") === "2026-10-25");
