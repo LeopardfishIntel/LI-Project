@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, attributeGroupJob, campusWords } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -81,5 +81,16 @@ check("unclosed bracket and its tail removed", tidyTitleEnd("GERMAN & FRENCH TEA
 check("a clean title is left alone", tidyTitleEnd("Head of Music") === "Head of Music");
 check("a closed bracket is left alone", tidyTitleEnd("Teacher of Maths (Secondary)") === "Teacher of Maths (Secondary)");
 check("'Head of' is not stripped as a connector", tidyTitleEnd("Head of Art") === "Head of Art");
+
+// Group page attribution (2026-10-06)
+const TAAL = [{ schoolId: "FLIS0318", name: "Dubai Schools Al Barsha" }, { schoolId: "FLIS0319", name: "Dubai School Nad Al Sheba" }, { schoolId: "FLIS0320", name: "Harrow International School Abu Dhabi" }, { schoolId: "FLIS0321", name: "Dubai Schools Al Khawaneej" }, { schoolId: "FLIS0341", name: "Jebel Ali School" }, { schoolId: "FLIS0423", name: "Jumeira Baccalaureate School" }];
+const ALD = [{ schoolId: "FLIS0027", name: "Aldar Academies" }, { schoolId: "FLIS0366", name: "Yasmina British Academy" }, { schoolId: "FLIS0368", name: "Al Mamoura Academy" }];
+check("Taaleem: campus in title -> that school", attributeGroupJob({ title: "KG Teacher - Dubai Schools Al Barsha - Maternity Cover", employer: "Taaleem" }, TAAL).schoolId === "FLIS0318");
+check("Taaleem: no campus named -> none (left out)", attributeGroupJob({ title: "Physics Teacher - AY 2026-2027", employer: "Taaleem" }, TAAL).schoolId === null);
+check("Taaleem: campus only in description -> that school", attributeGroupJob({ title: "ICT Teacher", description: "Join us at Jebel Ali School in Dubai", employer: "Taaleem" }, TAAL).schoolId === "FLIS0341");
+check("Taaleem: description names two campuses -> none", attributeGroupJob({ title: "ICT Teacher", description: "Khawaneej or Nad Al Sheba", employer: "Taaleem" }, TAAL).schoolId === null);
+check("Aldar: 'Mamoura British Academy' in title -> Al Mamoura", attributeGroupJob({ title: "Teacher - EYFS - Mamoura British Academy (January 2027)", employer: "Aldar Education" }, ALD).schoolId === "FLIS0368");
+check("Aldar: group name alone does not pick Aldar Academies", attributeGroupJob({ title: "Teacher - Physics - Aldar Education (Immediate Start)", employer: "Aldar Education" }, ALD).schoolId === null);
+check("generic words are not campus words", campusWords("Dubai Schools Al Barsha", ["Dubai School Nad Al Sheba"], "Taaleem").join(",") === "barsha");
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

@@ -135,3 +135,40 @@ export function tidyTitleEnd(title: string, cutMidWord = false): string {
   for (let i = 0; i < 4; i++) t = t.replace(/(?:\s+(?:at|for|with|in|of|to|and|&|the|-|–|—))+$/i, "").replace(/[-_\s/,:–—]+$/, "").trim();
   return t;
 }
+
+
+/**
+ * Which school of a GROUP's TES page does one vacancy belong to?  (Roger, 2026-10-06)
+ * On a group page the employer is the group ("Aldar Education", "Taaleem") on every job, so the employer name cannot tell the campus.
+ * The campus can only come from the job's own words (title, then description). A campus counts only by words that belong to that one school's name:
+ * words shared by several members, generic school words, and the group's own name are ignored.
+ * Exactly one school named -> that school. None or more than one -> null (the job is left out and counted; never guessed).
+ */
+const GENERIC = new Set(["the", "of", "in", "at", "and", "for", "school", "schools", "international", "academy", "academies", "college", "british", "american", "english", "primary", "secondary", "senior", "junior", "community", "private", "education", "campus", "dubai", "abu", "dhabi", "sharjah", "uae", "emirates", "al"]);
+function wordsOf(s: string): string[] { return plain(s).split(/[^a-z0-9]+/).filter(Boolean); }
+
+export function campusWords(memberName: string, otherNames: string[], employer: string): string[] {
+  const mine = wordsOf(memberName).filter((w) => w.length >= 3 && !GENERIC.has(w));
+  const theirs = new Set(otherNames.flatMap(wordsOf));
+  const group = new Set(wordsOf(employer));
+  return mine.filter((w) => !theirs.has(w) && !group.has(w));
+}
+
+export function attributeGroupJob(
+  job: { title: string; description?: string | null; employer?: string | null },
+  members: { schoolId: string; name: string }[]
+): { schoolId: string | null; by: "title" | "description" | "none" | "several"; reason: string } {
+  const employer = job.employer || "";
+  const words = members.map((m) => ({ m, w: campusWords(m.name, members.filter((x) => x.schoolId !== m.schoolId).map((x) => x.name), employer) }));
+  const hit = (text: string) => {
+    const flat = " " + wordsOf(text).join(" ") + " ";
+    return words.filter((x) => x.w.some((w) => flat.includes(" " + w + " "))).map((x) => x.m);
+  };
+  const inTitle = hit(job.title || "");
+  if (inTitle.length === 1) return { schoolId: inTitle[0].schoolId, by: "title", reason: `title names ${inTitle[0].name}` };
+  if (inTitle.length > 1) return { schoolId: null, by: "several", reason: `title names several: ${inTitle.map((x) => x.schoolId).join(",")}` };
+  const inDesc = hit(job.description || "");
+  if (inDesc.length === 1) return { schoolId: inDesc[0].schoolId, by: "description", reason: `description names ${inDesc[0].name}` };
+  if (inDesc.length > 1) return { schoolId: null, by: "several", reason: `description names several: ${inDesc.map((x) => x.schoolId).join(",")}` };
+  return { schoolId: null, by: "none", reason: "no campus named" };
+}

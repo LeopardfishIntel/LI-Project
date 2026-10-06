@@ -207,7 +207,7 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
   };
 }
 
-async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }> {
+async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null; description?: string | null }> {
   try {
     const res = await fetch(urlStr, { headers: STEALTH_HEADERS });
     if (!res.ok) return { closingDate: null, datePosted: null, exactTitle: null };
@@ -223,6 +223,7 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
         datePosted: p.datePosted || null,
         exactTitle: p.title || p.name || null,
         hiringOrg: String((typeof p.hiringOrganization === "string" ? p.hiringOrganization : p.hiringOrganization?.name) || "").trim() || null,
+        description: (() => { const d = String(p.description || ""); return d ? d.replace(/<[^>]*>/g, " ").replace(/&nbsp;|&amp;|&#\d+;/g, " ").replace(/\s+/g, " ").trim().slice(0, 6000) : null; })(),
         locality: (() => { const jl = Array.isArray(p.jobLocation) ? p.jobLocation[0] : p.jobLocation; const a = jl?.address || {}; return String(a.addressLocality || a.addressRegion || jl?.name || "").trim() || null; })(),
       };
     }
@@ -240,8 +241,8 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
 async function fetchDeepClosingDatesConcurrently(
   items: { href: string; title: string }[],
   concurrency = 5
-): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }>> {
-  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }>();
+): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null; description?: string | null }>> {
+  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null; description?: string | null }>();
   for (let i = 0; i < items.length; i += concurrency) {
     const chunk = items.slice(i, i + concurrency);
     const chunkResults = await Promise.all(
@@ -634,7 +635,7 @@ export async function scrapeTesEmployerHub(
  * Read a TES employer page for what each vacancy says about itself - used to work out which school a GROUP page's job belongs to.
  * Returns every teaching-type vacancy link with the employer name, place and closing date from the vacancy's own page. No school is chosen here.
  */
-export async function readTesPageRaw(url: string): Promise<{ href: string; title: string; hiringOrg: string | null; locality: string | null; closingDate: string | null; exactTitle: string | null }[]> {
+export async function readTesPageRaw(url: string): Promise<{ href: string; title: string; hiringOrg: string | null; locality: string | null; closingDate: string | null; exactTitle: string | null; description: string | null }[]> {
   const links = await discoverTesVacancyLinks(url);
   const seen = new Set<string>();
   const items: { href: string; title: string }[] = [];
@@ -647,6 +648,6 @@ export async function readTesPageRaw(url: string): Promise<{ href: string; title
   const deep = await fetchDeepClosingDatesConcurrently(items, 5);
   return items.map((it) => {
     const d: any = deep.get(it.href) || {};
-    return { href: it.href, title: it.title, hiringOrg: d.hiringOrg || null, locality: d.locality || null, closingDate: d.closingDate || null, exactTitle: d.exactTitle || null };
+    return { href: it.href, title: it.title, hiringOrg: d.hiringOrg || null, locality: d.locality || null, closingDate: d.closingDate || null, exactTitle: d.exactTitle || null, description: d.description || null };
   });
 }
