@@ -101,6 +101,17 @@ const isoDay = (v: any): string | null => {
 };
 
 /**
+ * GEMS posts recruitment events ("In-Person Interviews", "Expression of Interest") and office / admin jobs under teacher campuses.
+ * Signed-off engines send titles that are not clearly teaching to PENDING instead of dropping them, so the engine drops these itself.
+ */
+export function gemsIsNotATeachingJob(title: any): boolean {
+  const t = String(title || "");
+  if (/\b(interviews?|expressions? of interest|recruitment (event|drive|fair)|open day)\b/i.test(t)) return true;
+  if (/\b(officer|executive|administrator|technician)\b/i.test(t)) return true;
+  return /^\s*(data manager|it assistant|it support)\b/i.test(t);
+}
+
+/**
  * Keep or leave out one GEMS job (the school is decided separately by gemsCampusFor).
  * Closing date = GEMS's own expiry date. If it has passed the job is left out. If GEMS gives none (or one we cannot read) closingDate is null and the gate's own rule applies.
  */
@@ -114,6 +125,7 @@ export function gemsDecide(j: { title?: any; description?: any; expDate?: any; c
   const base = { closingDate, datePosted, expUnreadable };
   if (!title) return { keep: false, why: "no title", ...base };
   if (isSupportOrNonTeachingRole(title)) return { keep: false, why: "not a teaching or leadership role", ...base };
+  if (gemsIsNotATeachingJob(title)) return { keep: false, why: "not a teaching job (event, office or admin post)", ...base };
   if (isPastAcademicIntake(title, now).isPast || isPastAcademicIntake(j.description, now).isPast || isPastAcademicIntake(j.crtDate, now).isPast) {
     return { keep: false, why: "an old intake or an old posting", ...base };
   }

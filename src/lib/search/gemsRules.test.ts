@@ -4,7 +4,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { GEMS_SCHOOL_COMPANY_MAP, GEMS_UNREGISTERED_CAMPUSES, normGemsCompany, gemsCampusFor, gemsApplyUrl, gemsJobId, gemsDecide, GEMS_SOURCE } from "./gemsRules";
+import { GEMS_SCHOOL_COMPANY_MAP, GEMS_UNREGISTERED_CAMPUSES, normGemsCompany, gemsCampusFor, gemsApplyUrl, gemsJobId, gemsDecide, gemsIsNotATeachingJob, GEMS_SOURCE } from "./gemsRules";
 import { cleanGemsJobTitle } from "../crawler/adaptors/gems-adaptor";
 
 let passed = 0, failed = 0;
@@ -52,6 +52,10 @@ check("support role is left out", !gemsDecide({ title: "School Bus Driver", now:
 check("empty title is left out", !gemsDecide({ title: "  ", now: NOW }).keep);
 check("old intake in the title is left out", !gemsDecide({ title: "Maths Teacher - August 2024", now: NOW }).keep);
 check("old posting age is left out", !gemsDecide({ title: "Teacher", crtDate: "Posted 2 years ago", now: NOW }).keep);
+
+check("event posts are left out", ["Richmond, London In-Person Interviews – November 2026 (Expressions of Interest)", "Manila, Philippines In-Person Interviews – November 2026", "Expression of Interest – Primary Teaching Positions – August 2027"].every((t) => !gemsDecide({ title: t, now: NOW }).keep));
+check("office posts are left out", ["IT Assistant", "Data Manager", "Examinations Officer", "Talent Acquisition Executive"].every((t) => gemsIsNotATeachingJob(t) && !gemsDecide({ title: t, now: NOW }).keep));
+check("real teaching and leadership titles are not caught", ["Head of Primary", "Director of Inclusion", "Teacher of Mathematics", "Designated Safeguarding Lead", "Head of Exams", "Whole School Music Teacher"].every((t) => !gemsIsNotATeachingJob(t)));
 
 // ---- title cleaner ----
 check("title: plain title unchanged", cleanGemsJobTitle("Teacher of Mathematics") === "Teacher of Mathematics");
