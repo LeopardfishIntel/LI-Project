@@ -14,6 +14,7 @@ import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
+import { purgeLooksSafe } from "../../search/tesRules";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -214,7 +215,7 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
   };
 }
 
-async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null }> {
+async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }> {
   try {
     const res = await fetch(urlStr, { headers: STEALTH_HEADERS });
     if (!res.ok) return { closingDate: null, datePosted: null, exactTitle: null };
@@ -228,7 +229,8 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
       return {
         closingDate,
         datePosted: p.datePosted || null,
-        exactTitle: p.title || p.name || null
+        exactTitle: p.title || p.name || null,
+        hiringOrg: String((typeof p.hiringOrganization === "string" ? p.hiringOrganization : p.hiringOrganization?.name) || "").trim() || null,
       };
     }
     // No JSON-LD JobPosting found at all — still try the visible-text fallback
@@ -245,8 +247,8 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
 async function fetchDeepClosingDatesConcurrently(
   items: { href: string; title: string }[],
   concurrency = 5
-): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null }>> {
-  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null }>();
+): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }>> {
+  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }>();
   for (let i = 0; i < items.length; i += concurrency) {
     const chunk = items.slice(i, i + concurrency);
     const chunkResults = await Promise.all(
@@ -289,6 +291,16 @@ export async function purgeStaleTesVacancies(
     let purgedCount = 0;
     const batch = db.batch();
 
+    // Roger (2026-10-06): jobs missing from this read are only removed when the read looks complete.
+    // A page that half-loaded must not wipe a school's live TES jobs. Jobs past their closing date are always removed.
+    const tesDocs = snapshot.docs.filter((d: any) => (d.data() || {}).source === "TES" && ["approved", "pending_review"].includes(String((d.data() || {}).status || "").toLowerCase()));
+    const missingNow = tesDocs.filter((d: any) => {
+      const x = d.data() || {};
+      return !activeNormalized.has(normalizeUrl(String(x.applyUrl || x.source_url || "")));
+    }).length;
+    const removeMissing = purgeLooksSafe(tesDocs.length, missingNow);
+    if (!removeMissing) console.warn(`🛡️ [TES GARBAGE COLLECTOR] ${schoolId}: this read is missing ${missingNow} of ${tesDocs.length} live TES jobs - looks like a half-loaded page, so jobs missing from it were NOT removed.`);
+
     for (const doc of snapshot.docs) {
       const data = doc.data();
       if (data.source !== "TES") continue;
@@ -296,7 +308,7 @@ export async function purgeStaleTesVacancies(
       const applyUrl = normalizeUrl(String(data.applyUrl || data.source_url || ""));
       const isPastClosing = data.closingDateMillis && data.closingDateMillis < Date.now();
 
-      if (!activeNormalized.has(applyUrl) || isPastClosing) {
+      if ((removeMissing && !activeNormalized.has(applyUrl)) || isPastClosing) {
         batch.delete(doc.ref);
         purgedCount++;
       }
@@ -413,7 +425,22 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
 
     const records: RawJobRecord[] = [];
     for (const item of validItems) {
-      const deepData = deepDateMap.get(item.href) || { closingDate: null, datePosted: null, exactTitle: null };
+      const deepData = deepDateMap.get(item.href) || { closingDate: null, datePosted: null, exactTitle: null, hiringOrg: null };
+      // 🛡️ Hiring-organisation check on the page-reading path too (Roger, 2026-10-06): the vacancy page must name this school as the employer.
+      // The structured-data path always did this; this path did not, and let other schools' jobs through.
+      if (!deepData.hiringOrg) {
+        console.warn(`🛑 [TES PLAYWRIGHT] Rejected: vacancy page names no hiring organisation for ${input.schoolName} [${item.href}]`);
+        continue;
+      }
+      const orgCheck = matchSchoolEntity(
+        { id: input.schoolId, name: input.schoolName, schoolname: input.schoolName, city: input.city || "", country: input.country || "", tesEmployerSlug: input.tesEmployerSlug, tesOrganizationId: input.tesOrganizationId } as SchoolEntity,
+        { candidateText: deepData.hiringOrg, city: input.city, country: input.country },
+        0.85
+      );
+      if (!orgCheck.isMatch || orgCheck.score < 0.85) {
+        console.warn(`🛑 [TES PLAYWRIGHT] Rejected hiringOrganization mismatch for ${input.schoolName} (hiringOrg="${deepData.hiringOrg}", score=${orgCheck.score.toFixed(2)}) [${item.href}]`);
+        continue;
+      }
       const rawTitle = deepData.exactTitle || item.title;
       if (isSupportOrNonTeachingRole(rawTitle)) continue;
 

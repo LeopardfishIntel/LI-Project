@@ -126,5 +126,12 @@ check("pending review cards give a Direct job its own Direct link", /pendingHasR
 check("Most Recent sort uses first-added time first", /job\.ingestedAtMillis,\s*job\.createdAtMillis/.test(sort));
 check("'DB + Jan' button stays removed", !/handleRunFullSweep|DB \+ Jan/.test(sort));
 
+// 7. TES safeguards (Roger, 2026-10-06)
+const tesSearch = src("src/lib/search/tes.ts");
+const tesAdaptor = src("src/lib/crawler/adaptors/tes-adaptor.ts");
+check("TES search skips schools whose saved TES page is a group page or another school's", /tesSchoolsToSkip\(/.test(tesSearch) && /candidateSchools\.splice/.test(tesSearch));
+check("TES clean-up will not remove jobs after a half-loaded read", /purgeLooksSafe\(/.test(tesAdaptor) && /removeMissing && !activeNormalized/.test(tesAdaptor));
+check("TES page-reading path checks the hiring organisation", /Rejected hiringOrganization mismatch[^`]*\[\$\{item\.href\}\]/.test(tesAdaptor) && /names no hiring organisation/.test(tesAdaptor));
+
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

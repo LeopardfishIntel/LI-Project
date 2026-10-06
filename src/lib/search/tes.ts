@@ -1,6 +1,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { runTesAdaptor, purgeStaleTesVacancies } from "@/lib/crawler/adaptors/tes-adaptor";
 import type { AdaptorInput, RawJobRecord } from "@/lib/crawler/adaptors/raw-job.types";
+import { tesSchoolsToSkip } from "./tesRules";
 
 export interface TesJobMatch {
   jobId: string;
@@ -66,6 +67,16 @@ export async function searchTesDbSchools(): Promise<TesJobMatch[]> {
         });
       }
     });
+
+    // Roger (2026-10-06): a TES page shared by several schools (a whole group, or another school's page) shows every school the same jobs.
+    // Those schools are not read from their saved page; the group's own engine (Taaleem, GEMS, ...) supplies their jobs.
+    const skipList = tesSchoolsToSkip(candidateSchools.map((c) => ({ schoolId: c.schoolId, name: c.schoolName, slug: c.tesEmployerSlug, org: c.tesOrganizationId })));
+    if (skipList.length) {
+      const skipIds = new Set(skipList.map((x) => x.schoolId));
+      console.warn(`🛑 [TES CRAWLER] Skipping ${skipIds.size} school(s) whose saved TES page is a group page or belongs to another school.`);
+      skipList.forEach((x) => console.warn(`   - ${x.schoolId}: ${x.reason}`));
+      for (let k = candidateSchools.length - 1; k >= 0; k--) if (skipIds.has(candidateSchools[k].schoolId)) candidateSchools.splice(k, 1);
+    }
 
     if (candidateSchools.length === 0) {
       console.log("ℹ️ No schools with TES configuration found in DB.");
