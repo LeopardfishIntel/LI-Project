@@ -568,7 +568,7 @@ export default function FeaturedJobsPage() {
   const [minSavings, setMinSavings] = useState<number>(0);
   const [minRating, setMinRating] = useState<number>(0);
   const [familyStatus, setFamilyStatus] = useState<string>("Single");
-  const [sortBy, setSortBy] = useState<string>("LF Overall Match");
+  const [sortBy, setSortBy] = useState<string>("Most recent"); // Roger 2026-10-06: the board always opens newest first
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [engineBarOpen, setEngineBarOpen] = useState(false);
   const [isAddVacancyModalOpen, setIsAddVacancyModalOpen] = useState(false);
@@ -1937,7 +1937,7 @@ export default function FeaturedJobsPage() {
                 setMinSavings(0);
                 setMinRating(0);
                 setFamilyStatus("Single");
-                setSortBy("LF Overall Match");
+                setSortBy("Most recent");
               }}
               className="w-full h-9 md:h-11 border border-slate-700/80 text-xs font-bold text-slate-400 hover:text-white hover:border-slate-500 transition-all rounded-md"
             >
@@ -2017,10 +2017,10 @@ export default function FeaturedJobsPage() {
                       onChange={(e) => setSortBy(e.target.value)}
                       className="bg-[#1e293b] border border-slate-700/80 text-white rounded px-2.5 py-1 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                     >
+                      <option value="Most recent">Recent</option>
                       <option value="LF Overall Match">Match</option>
                       <option value="LF Projected Surplus">Surplus</option>
                       <option value="LF School Scores">Score</option>
-                      <option value="Most recent">Recent</option>
                       <option value="Oldest (by closing date)">Closing</option>
                     </select>
                   </div>
@@ -2073,10 +2073,10 @@ export default function FeaturedJobsPage() {
                         onChange={(e) => setSortBy(e.target.value)}
                         className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                       >
+                        <option value="Most recent">Most Recent</option>
                         <option value="LF Overall Match">LF Overall Match</option>
                         <option value="LF Projected Surplus">LF Projected Surplus</option>
                         <option value="LF School Scores">LF School Scores</option>
-                        <option value="Most recent">Most Recent</option>
                         <option value="Oldest (by closing date)">Oldest (by closing date)</option>
                       </select>
                     </div>
