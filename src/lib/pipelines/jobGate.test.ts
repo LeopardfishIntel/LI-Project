@@ -14,7 +14,7 @@ check("no match confidence -> pending", decideReviewStatus({ ...base, matchConfi
 check("no link -> pending", decideReviewStatus({ ...base, applyUrl: "" }).status === "pending_review");
 check("date 2 years away -> pending", decideReviewStatus({ ...base, closingDateMillis: now + 700 * D }).status === "pending_review");
 check("unclear title -> pending", decideReviewStatus({ ...base, roleUnsure: true }).status === "pending_review");
-check("engine not signed off -> pending", decideReviewStatus({ ...base, source: "TES" }).status === "pending_review");
+check("engine not signed off -> pending", decideReviewStatus({ ...base, source: "ISP" }).status === "pending_review");
 check("Direct (School Web) is signed off for high confidence only", decideReviewStatus({ ...base, source: "School Web" }).status === "approved" && decideReviewStatus({ ...base, source: "School Web", matchConfidence: "medium" }).status === "pending_review");
 check("engine paused by drift -> pending", decideReviewStatus({ ...base, engineQuarantined: true }).status === "pending_review");
 

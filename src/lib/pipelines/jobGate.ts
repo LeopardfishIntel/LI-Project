@@ -17,8 +17,10 @@
  * Engines checked one by one and signed off for automatic approval. Add an engine here only after its trial run looks right.
  * "SCHOOL WEB" is the Direct engine (a school's own careers page). Roger signed it off 2026-10-05 for HIGH-confidence jobs only:
  * the gate below still needs matchConfidence "high" (the job has its own link), a sane date and a clear teaching title; anything else stays pending.
+ * "TES" signed off by Roger 2026-10-06 after the trial runs on 163 schools: only schools with their OWN TES employer page are read (group / shared pages are skipped),
+ * each vacancy page must name the school as employer, the link must be a TES vacancy page, and clean-up only removes a job after checking its own page.
  */
-export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB"]);
+export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB", "TES"]);
 
 /** For signed-off engines, a title that is not clearly teaching or leadership (e.g. "HS Chemistry") is kept but sent to pending, not thrown away. */
 export function acceptsUnsureRoles(source: string): boolean {

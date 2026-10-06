@@ -18,6 +18,7 @@ export interface TesJobMatch {
   group?: string;
   datePosted?: string | null;
   closingDate?: string | null;
+  matchConfidence?: "high" | "medium" | "low";
 }
 
 const BATCH_SIZE = 3;
@@ -121,6 +122,9 @@ export async function searchTesDbSchools(): Promise<TesJobMatch[]> {
                 group: r.group,
                 datePosted: r.datePosted || null,
                 closingDate: r.closingDate || null,
+                // Every TES job reaching here was read from the school's OWN TES employer page, passed the country check, and the employer named on
+                // its vacancy page matched the school (Roger, 2026-10-06). Group / shared pages are skipped before this point. So the school match is certain.
+                matchConfidence: "high",
               });
             }
 
