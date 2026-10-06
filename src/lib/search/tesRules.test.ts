@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -72,5 +72,14 @@ check("employer with a campus on the end fits (Repton Abu Dhabi - Fry Campus)", 
 check("a UK school does NOT fit Deira page", !hiringOrgFitsPage("The Bridge School", "deira-international-school-1057506"));
 check("one-word group page never accepts by the campus rule", !hiringOrgFitsPage("Taaleem Jebel Ali School", "taaleem-1058642"));
 check("no slug -> not accepted", !hiringOrgFitsPage("Epsom College Malaysia", undefined));
+
+// Title ends (2026-10-06 trial)
+check("dangling 'at' removed", tidyTitleEnd("EYFS/KS1 Arabic Teacher at") === "EYFS/KS1 Arabic Teacher");
+check("dangling 'at' and dash removed", tidyTitleEnd("Secondary Teacher of English & Literature at - January") === "Secondary Teacher of English & Literature at - January");
+check("trailing 'at' after level removed", tidyTitleEnd("Assistant Headteacher Secondary at") === "Assistant Headteacher Secondary");
+check("unclosed bracket and its tail removed", tidyTitleEnd("GERMAN & FRENCH TEACHER (SECONDARY SCHOOL - GERMAN INTERNATI", true) === "GERMAN & FRENCH TEACHER");
+check("a clean title is left alone", tidyTitleEnd("Head of Music") === "Head of Music");
+check("a closed bracket is left alone", tidyTitleEnd("Teacher of Maths (Secondary)") === "Teacher of Maths (Secondary)");
+check("'Head of' is not stripped as a connector", tidyTitleEnd("Head of Art") === "Head of Art");
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

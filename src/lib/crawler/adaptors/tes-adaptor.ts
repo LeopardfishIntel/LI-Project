@@ -14,7 +14,7 @@ import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
-import { slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage } from "../../search/tesRules";
+import { slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd } from "../../search/tesRules";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -42,9 +42,12 @@ export function cleanJobTitle(rawTitle: string, schoolName?: string): string {
   // Clean up trailing dashes and extra spaces
   clean = clean.replace(/[-_\s/]+$/, "").replace(/\s+/g, " ").trim();
 
+  let cut = false;
   if (clean.length > 60) {
+    cut = clean.length > 60 && clean[60] !== " ";
     clean = clean.substring(0, 60).replace(/[-_\s/]+$/, "").trim();
   }
+  clean = tidyTitleEnd(clean, cut) || clean;
 
   return clean || rawTitle.trim().substring(0, 60);
 }

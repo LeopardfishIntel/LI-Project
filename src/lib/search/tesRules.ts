@@ -121,3 +121,17 @@ export function classifyVacancyPage(i: { status: number; hasJobPosting: boolean;
   }
   return "unknown";
 }
+
+/**
+ * Tidy the end of a job title after the school name has been taken out of it and it has been cut to length.
+ * Found in the 2026-10-06 trial: "EYFS/KS1 Arabic Teacher at", "Assistant Headteacher Secondary at", and a cut such as
+ * "GERMAN & FRENCH TEACHER (SECONDARY SCHOOL - GERMAN INTERNATI". Removes a dangling "at / for / with / in / of / -",
+ * a half word left by the length cut, and an unclosed bracket and what follows it.
+ */
+export function tidyTitleEnd(title: string, cutMidWord = false): string {
+  let t = String(title || "").replace(/\s+/g, " ").trim();
+  if (cutMidWord) t = t.replace(/\s+\S*$/, "").trim();
+  if ((t.match(/\(/g) || []).length > (t.match(/\)/g) || []).length) t = t.replace(/\s*\([^)]*$/, "").trim();
+  for (let i = 0; i < 4; i++) t = t.replace(/(?:\s+(?:at|for|with|in|of|to|and|&|the|-|–|—))+$/i, "").replace(/[-_\s/,:–—]+$/, "").trim();
+  return t;
+}
