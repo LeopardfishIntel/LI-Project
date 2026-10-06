@@ -133,5 +133,10 @@ check("TES search skips schools whose saved TES page is a group page or another 
 check("TES clean-up will not remove jobs after a half-loaded read", /purgeLooksSafe\(/.test(tesAdaptor) && /removeMissing && !activeNormalized/.test(tesAdaptor));
 check("TES page-reading path checks the hiring organisation", /Rejected hiringOrganization mismatch[^`]*\[\$\{item\.href\}\]/.test(tesAdaptor) && /names no hiring organisation/.test(tesAdaptor));
 
+// 8. Old rejected / merged records are tidied by the daily janitor (Roger, 2026-10-06)
+const janitorSrc = src("src/lib/pipelines/pipeline3-janitor.ts");
+check("janitor tidies old rejected/merged board records", /tidyRejectedAndMerged\(db, now\)/.test(janitorSrc) && /isTidyable\(/.test(janitorSrc));
+check("daily sweep reports tidied records", /tidiedBoardRecords/.test(src("src/app/api/daily-sweep/route.ts")));
+
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed > 0) process.exit(1);

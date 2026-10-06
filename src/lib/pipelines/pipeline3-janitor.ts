@@ -21,6 +21,7 @@ export interface JanitorRunResult {
   expired: number;
   promoted: number;
   purgedFolderCopies?: number;
+  tidiedBoardRecords?: number;
   skippedProvenanceMismatch?: number;
   mirrorErrors: number;
   errors: string[];
@@ -31,6 +32,7 @@ import { isPastAcademicIntake, triageVacancyLifecycle } from '@/lib/crawler/date
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isMalvernCampus } from '@/lib/search/malvern';
 import { isRetiredSchool } from "@/lib/schools/retiredSchools";
+import { isTidyable, TIDY_MAX_PER_RUN } from "./tidyRules";
 
 // ─── Admin SDK helpers ────────────────────────────────────────────────────────
 
@@ -194,6 +196,33 @@ async function purgeOrphanFolderCopies(db: any): Promise<{ purged: number; error
     errors.push(`purgeOrphanFolderCopies: ${e?.message || e}`);
   }
   return { purged, errors };
+}
+
+// ─── Tidy old rejected / merged board records (Roger, 2026-10-06) ─────────────
+// See tidyRules.ts for why these exist and how long they are kept. Board record and its school-folder copy go together.
+async function tidyRejectedAndMerged(db: any, now: number): Promise<{ tidied: number; errors: string[] }> {
+  let tidied = 0;
+  const errors: string[] = [];
+  if (typeof db.collection !== 'function') return { tidied, errors };
+  try {
+    const snap = await db.collection('featured_jobs_cache').where('status', 'in', ['rejected', 'merged']).get();
+    if (snap.empty) return { tidied, errors };
+    const doomed = snap.docs.filter((d: any) => isTidyable(d.data() || {}, now)).slice(0, TIDY_MAX_PER_RUN);
+    for (let i = 0; i < doomed.length; i += 200) {
+      const batch = db.batch();
+      doomed.slice(i, i + 200).forEach((d: any) => {
+        batch.delete(d.ref);
+        const sid = String((d.data() || {}).schoolId || '').toUpperCase().trim();
+        if (/^FLIS\d{4}$/.test(sid)) batch.delete(db.collection('schools').doc(sid).collection('jobs').doc(d.id));
+      });
+      await batch.commit();
+    }
+    tidied = doomed.length;
+    if (tidied > 0) console.log(`🧹 [JANITOR] Tidied ${tidied} old rejected/merged board records (cap ${TIDY_MAX_PER_RUN}/run).`);
+  } catch (e: any) {
+    errors.push(`tidyRejectedAndMerged: ${e?.message || e}`);
+  }
+  return { tidied, errors };
 }
 
 async function promoteApprovedJobs(db: any): Promise<{ promoted: number; skippedProvenanceMismatch: number; errors: string[] }> {
@@ -579,6 +608,7 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
   const now = Date.now();
 
   const purgeResult = await purgeOrphanFolderCopies(db);
+  const tidyResult = await tidyRejectedAndMerged(db, now);
 
   const [expireResult, promoteResult] = await Promise.all([
     expireOverdueJobs(db, now),
@@ -592,14 +622,15 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
     expired: expireResult.expired,
     promoted: promoteResult.promoted,
     purgedFolderCopies: purgeResult.purged,
+    tidiedBoardRecords: tidyResult.tidied,
     skippedProvenanceMismatch: promoteResult.skippedProvenanceMismatch,
     mirrorErrors: expireResult.mirrorErrors,
-    errors: [...expireResult.errors, ...promoteResult.errors, ...purgeResult.errors, ...syncResult.errors],
+    errors: [...expireResult.errors, ...promoteResult.errors, ...purgeResult.errors, ...tidyResult.errors, ...syncResult.errors],
     durationMs,
   };
 
   console.log(
-    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | purgedFolderCopies=${purgeResult.purged} | skippedProvenance=${promoteResult.skippedProvenanceMismatch} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
+    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | purgedFolderCopies=${purgeResult.purged} | tidiedBoardRecords=${tidyResult.tidied} | skippedProvenance=${promoteResult.skippedProvenanceMismatch} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
   );
 
   return result;

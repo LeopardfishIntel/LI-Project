@@ -94,7 +94,7 @@ export async function GET(request: Request) {
       success: true,
       janitorRan: janitor !== null,
       janitorError,
-      janitorSummary: janitor ? { expired: janitor.expired, promoted: janitor.promoted, purgedFolderCopies: janitor.purgedFolderCopies ?? 0, mirrorErrors: janitor.mirrorErrors, errors: (janitor.errors || []).slice(0, 5), durationMs: janitor.durationMs } : null,
+      janitorSummary: janitor ? { expired: janitor.expired, promoted: janitor.promoted, purgedFolderCopies: janitor.purgedFolderCopies ?? 0, tidiedBoardRecords: janitor.tidiedBoardRecords ?? 0, mirrorErrors: janitor.mirrorErrors, errors: (janitor.errors || []).slice(0, 5), durationMs: janitor.durationMs } : null,
       totalSchoolsInDatabase: schools.length,
       staleSchoolsCount: staleSchools.length,
       triggeredCount: targets.length,
