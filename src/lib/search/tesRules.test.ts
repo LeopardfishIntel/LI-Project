@@ -68,6 +68,9 @@ check("employer 'St George's, The British International School - Cologne' fits",
 check("employer 'The English School' fits", hiringOrgFitsPage("The English School", "the-english-school-1057316"));
 check("another school's name does NOT fit (Jebel Ali on a Taaleem group page)", !hiringOrgFitsPage("Jebel Ali School", "taaleem-1058642"));
 check("a different school does NOT fit (JESS on another school's page)", !hiringOrgFitsPage("Jumeirah English Speaking School", "neev-academy-1234567"));
+check("employer with a campus on the end fits (Repton Abu Dhabi - Fry Campus)", hiringOrgFitsPage("Repton School, Abu Dhabi - Fry Campus", "repton-school-abu-dhabi-1065997"));
+check("a UK school does NOT fit Deira page", !hiringOrgFitsPage("The Bridge School", "deira-international-school-1057506"));
+check("one-word group page never accepts by the campus rule", !hiringOrgFitsPage("Taaleem Jebel Ali School", "taaleem-1058642"));
 check("no slug -> not accepted", !hiringOrgFitsPage("Epsom College Malaysia", undefined));
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

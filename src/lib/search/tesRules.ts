@@ -36,7 +36,12 @@ export function nameFitsSlug(name: string, slug: string): number {
  */
 export function hiringOrgFitsPage(hiringOrg: string, slug?: string): boolean {
   if (!hiringOrg || !slug) return false;
-  return nameFitsSlug(hiringOrg, slug) >= 0.8;
+  if (nameFitsSlug(hiringOrg, slug) >= 0.8) return true;
+  // The employer may add a campus on the end ("Repton School, Abu Dhabi - Fry Campus" on repton-school-abu-dhabi-1065997):
+  // fine when every word of the page's own name (two or more) is in the employer name.
+  const pageWords = plain(slug).replace(/-\d{5,9}$/, "").split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOP.has(w));
+  const orgFlat = plain(hiringOrg).replace(/[^a-z0-9]+/g, "");
+  return pageWords.length >= 2 && pageWords.every((w) => orgFlat.includes(w));
 }
 
 /**
