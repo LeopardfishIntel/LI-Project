@@ -207,7 +207,7 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
   };
 }
 
-async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }> {
+async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }> {
   try {
     const res = await fetch(urlStr, { headers: STEALTH_HEADERS });
     if (!res.ok) return { closingDate: null, datePosted: null, exactTitle: null };
@@ -223,6 +223,7 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
         datePosted: p.datePosted || null,
         exactTitle: p.title || p.name || null,
         hiringOrg: String((typeof p.hiringOrganization === "string" ? p.hiringOrganization : p.hiringOrganization?.name) || "").trim() || null,
+        locality: (() => { const jl = Array.isArray(p.jobLocation) ? p.jobLocation[0] : p.jobLocation; const a = jl?.address || {}; return String(a.addressLocality || a.addressRegion || jl?.name || "").trim() || null; })(),
       };
     }
     // No JSON-LD JobPosting found at all — still try the visible-text fallback
@@ -239,8 +240,8 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
 async function fetchDeepClosingDatesConcurrently(
   items: { href: string; title: string }[],
   concurrency = 5
-): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }>> {
-  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null }>();
+): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }>> {
+  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null; hiringOrg?: string | null; locality?: string | null }>();
   for (let i = 0; i < items.length; i += concurrency) {
     const chunk = items.slice(i, i + concurrency);
     const chunkResults = await Promise.all(
@@ -345,66 +346,78 @@ export async function purgeStaleTesVacancies(
   }
 }
 
-async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promise<RawJobRecord[]> {
+/**
+ * Open a TES employer page in a real browser, expand "Load more", and return every vacancy link on it (title + link). No filtering here.
+ * Used by the school reader below and by the group-page reader (Roger, 2026-10-06).
+ */
+export async function discoverTesVacancyLinks(url: string): Promise<{ title: string; href: string }[]> {
+  const { chromium } = await import("playwright");
+  const browser = await chromium.launch({ headless: true });
   try {
-    const { chromium } = await import("playwright");
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
+      const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
-    
-    // 🔄 Large Hub Pagination & Dynamic "Load More" Expansion Loop
-    let loadMoreClicks = 0;
-    const MAX_LOAD_MORE_CLICKS = 10;
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
+      
+      // 🔄 Large Hub Pagination & Dynamic "Load More" Expansion Loop
+      let loadMoreClicks = 0;
+      const MAX_LOAD_MORE_CLICKS = 10;
 
-    while (loadMoreClicks < MAX_LOAD_MORE_CLICKS) {
-      await page.evaluate(async () => {
-        await new Promise((resolve) => {
-          let totalHeight = 0;
-          const distance = 400;
-          const timer = setInterval(() => {
-            const scrollHeight = document.body.scrollHeight;
-            window.scrollBy(0, distance);
-            totalHeight += distance;
-            if (totalHeight >= scrollHeight || totalHeight > 8000) {
-              clearInterval(timer);
-              resolve(true);
-            }
-          }, 80);
+      while (loadMoreClicks < MAX_LOAD_MORE_CLICKS) {
+        await page.evaluate(async () => {
+          await new Promise((resolve) => {
+            let totalHeight = 0;
+            const distance = 400;
+            const timer = setInterval(() => {
+              const scrollHeight = document.body.scrollHeight;
+              window.scrollBy(0, distance);
+              totalHeight += distance;
+              if (totalHeight >= scrollHeight || totalHeight > 8000) {
+                clearInterval(timer);
+                resolve(true);
+              }
+            }, 80);
+          });
         });
-      });
-      await page.waitForTimeout(600);
+        await page.waitForTimeout(600);
 
-      const loadMoreBtn = await page.$(
-        'button:has-text("Load more"), button:has-text("Show more"), [data-testid*="load-more"], a:has-text("Load more"), button.load-more, .load-more-btn'
-      );
+        const loadMoreBtn = await page.$(
+          'button:has-text("Load more"), button:has-text("Show more"), [data-testid*="load-more"], a:has-text("Load more"), button.load-more, .load-more-btn'
+        );
 
-      if (loadMoreBtn && (await loadMoreBtn.isVisible())) {
-        try {
-          await loadMoreBtn.click();
-          loadMoreClicks++;
-          await page.waitForTimeout(1200);
-        } catch {
+        if (loadMoreBtn && (await loadMoreBtn.isVisible())) {
+          try {
+            await loadMoreBtn.click();
+            loadMoreClicks++;
+            await page.waitForTimeout(1200);
+          } catch {
+            break;
+          }
+        } else {
           break;
         }
-      } else {
-        break;
       }
-    }
 
-    const rawItems = await page.evaluate(() => {
-      const links = Array.from(document.querySelectorAll('a[href*="/jobs/vacancy/"]'));
-      return links.map((a) => {
-        const headingEl = a.querySelector('h2, h3, h4, .headline, .job-title, [class*="title"]');
-        const rawHeading = headingEl ? headingEl.textContent : (a.textContent || "");
-        return {
-          title: (rawHeading || "").trim(),
-          href: (a as HTMLAnchorElement).href,
-        };
+      const rawItems = await page.evaluate(() => {
+        const links = Array.from(document.querySelectorAll('a[href*="/jobs/vacancy/"]'));
+        return links.map((a) => {
+          const headingEl = a.querySelector('h2, h3, h4, .headline, .job-title, [class*="title"]');
+          const rawHeading = headingEl ? headingEl.textContent : (a.textContent || "");
+          return {
+            title: (rawHeading || "").trim(),
+            href: (a as HTMLAnchorElement).href,
+          };
+        });
       });
-    });
 
-    await browser.close();
+    return rawItems;
+  } finally {
+    await browser.close().catch(() => {});
+  }
+}
+
+async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promise<RawJobRecord[]> {
+  try {
+    const rawItems = await discoverTesVacancyLinks(url);
 
     // 🛡️ Gate 1: Role Classification Filter (Filter non-academic roles before deep fetches)
     const validItems: { href: string; title: string }[] = [];
@@ -613,5 +626,27 @@ export async function scrapeTesEmployerHub(
     schoolName: schoolName || slug,
     city: "",
     country: "",
+  });
+}
+
+
+/**
+ * Read a TES employer page for what each vacancy says about itself - used to work out which school a GROUP page's job belongs to.
+ * Returns every teaching-type vacancy link with the employer name, place and closing date from the vacancy's own page. No school is chosen here.
+ */
+export async function readTesPageRaw(url: string): Promise<{ href: string; title: string; hiringOrg: string | null; locality: string | null; closingDate: string | null; exactTitle: string | null }[]> {
+  const links = await discoverTesVacancyLinks(url);
+  const seen = new Set<string>();
+  const items: { href: string; title: string }[] = [];
+  for (const l of links) {
+    const clean = sanitizeUrl(l.href);
+    if (!clean || !clean.includes("tes.com/jobs/vacancy/") || seen.has(clean) || !l.title || isSupportOrNonTeachingRole(l.title)) continue;
+    seen.add(clean);
+    items.push({ href: clean, title: l.title });
+  }
+  const deep = await fetchDeepClosingDatesConcurrently(items, 5);
+  return items.map((it) => {
+    const d: any = deep.get(it.href) || {};
+    return { href: it.href, title: it.title, hiringOrg: d.hiringOrg || null, locality: d.locality || null, closingDate: d.closingDate || null, exactTitle: d.exactTitle || null };
   });
 }
