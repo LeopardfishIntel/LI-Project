@@ -15,7 +15,7 @@ const src = (p: string) => fs.readFileSync(path.resolve(process.cwd(), p), "utf8
 console.log("Lock-in tests");
 
 // 1. Only GRC is signed off. Signing off another engine must be a deliberate edit of this test.
-check("signed-off engines are exactly {GRC, SCHOOL WEB (Direct), TES}", AUTO_APPROVE_SOURCES.size === 3 && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES"));
+check("signed-off engines are exactly {GRC, SCHOOL WEB (Direct), TES, SEARCH ASSOCIATES}", AUTO_APPROVE_SOURCES.size === 4 && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES") && AUTO_APPROVE_SOURCES.has("SEARCH ASSOCIATES"));
 check("TES jobs carry matchConfidence high (otherwise the gate would keep every one in pending)", /matchConfidence: "high"/.test(src("src/lib/search/tes.ts")));
 const now = Date.parse("2026-10-05T00:00:00Z"), D = 864e5;
 const good = { matchConfidence: "high", applyUrl: "https://x", closingDateMillis: now + 20 * D, now };
@@ -49,7 +49,7 @@ check("ingestion uses the gate for review status", /decideReviewStatus\(/.test(p
 // 4. Nightly engines: only signed-off engines run; password required on every cron route
 const orch = src("src/app/api/cron/sweep-orchestrator/route.ts");
 check("orchestrator skips engines that are not signed off", /!isForced && !isSignedOffEngine\(key\)/.test(orch));
-check("engine keys with underscores map to the gate's source names", isSignedOffEngine("TES") && isSignedOffEngine("grc") && !isSignedOffEngine("SEARCH_ASSOCIATES") && !isSignedOffEngine("TEACH_AWAY"));
+check("engine keys with underscores map to the gate's source names", isSignedOffEngine("TES") && isSignedOffEngine("grc") && isSignedOffEngine("SEARCH_ASSOCIATES") && !isSignedOffEngine("TEACH_AWAY"));
 check("Search Associates is wired into the orchestrator (runner, retire rule, drift under the gate's name)", /SEARCH_ASSOCIATES: searchSearchAssociatesDbSchools/.test(orch) && /label: "SEARCH ASSOCIATES"/.test(orch) && /recordRunAndCheckDrift\(key\.replace\(\/_\/g, " "\)/.test(orch));
 const pipe1 = src("src/lib/pipelines/pipeline1-ingestion.ts");
 check("pipeline recognises Search Associates only with a searchassociates.com link", /srcUpper === "SEARCH ASSOCIATES" && record\.applyUrl && \/searchassociates/.test(pipe1));

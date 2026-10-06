@@ -19,8 +19,9 @@
  * the gate below still needs matchConfidence "high" (the job has its own link), a sane date and a clear teaching title; anything else stays pending.
  * "TES" signed off by Roger 2026-10-06 after the trial runs on 163 schools: only schools with their OWN TES employer page are read (group / shared pages are skipped),
  * each vacancy page must name the school as employer, the link must be a TES vacancy page, and clean-up only removes a job after checking its own page.
+ * "SEARCH ASSOCIATES" signed off by Roger 2026-10-06 after the trial (9 open jobs, every school matched by whole-word name + country, real deadlines, past or "no longer accepting" jobs dropped, business roles left out).
  */
-export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB", "TES"]);
+export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB", "TES", "SEARCH ASSOCIATES"]);
 
 /** For signed-off engines, a title that is not clearly teaching or leadership (e.g. "HS Chemistry") is kept but sent to pending, not thrown away. */
 export function acceptsUnsureRoles(source: string): boolean {
