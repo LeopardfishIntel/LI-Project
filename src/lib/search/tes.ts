@@ -1,7 +1,8 @@
 import { getAdminDb } from "@/firebase/admin";
-import { runTesAdaptor, purgeStaleTesVacancies } from "@/lib/crawler/adaptors/tes-adaptor";
+import { runTesAdaptor, purgeStaleTesVacancies, readTesPageRaw, cleanJobTitle } from "@/lib/crawler/adaptors/tes-adaptor";
+import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import type { AdaptorInput, RawJobRecord } from "@/lib/crawler/adaptors/raw-job.types";
-import { tesSchoolsToSkip } from "./tesRules";
+import { tesSchoolsToSkip, findGroupPages, attributeGroupJob, slugForeignCountry } from "./tesRules";
 
 export interface TesJobMatch {
   jobId: string;
@@ -72,6 +73,12 @@ export async function searchTesDbSchools(): Promise<TesJobMatch[]> {
     // Roger (2026-10-06): a TES page shared by several schools (a whole group, or another school's page) shows every school the same jobs.
     // Those schools are not read from their saved page; the group's own engine (Taaleem, GEMS, ...) supplies their jobs.
     const skipList = tesSchoolsToSkip(candidateSchools.map((c) => ({ schoolId: c.schoolId, name: c.schoolName, slug: c.tesEmployerSlug, org: c.tesOrganizationId })));
+    const snapInfo = new Map<string, AdaptorInput>(candidateSchools.map((c) => [c.schoolId, c]));
+    // Real group pages (no clear owner among the schools that share them) are read once, below, and each job is placed on a campus.
+    const groupPages = findGroupPages(
+      candidateSchools.map((c) => ({ schoolId: c.schoolId, name: c.schoolName, slug: c.tesEmployerSlug, org: c.tesOrganizationId })),
+      new Set(skipList.map((x) => x.schoolId))
+    );
     if (skipList.length) {
       const skipIds = new Set(skipList.map((x) => x.schoolId));
       console.warn(`🛑 [TES CRAWLER] Skipping ${skipIds.size} school(s) whose saved TES page is a group page or belongs to another school.`);
@@ -79,7 +86,7 @@ export async function searchTesDbSchools(): Promise<TesJobMatch[]> {
       for (let k = candidateSchools.length - 1; k >= 0; k--) if (skipIds.has(candidateSchools[k].schoolId)) candidateSchools.splice(k, 1);
     }
 
-    if (candidateSchools.length === 0) {
+    if (candidateSchools.length === 0 && groupPages.length === 0) {
       console.log("ℹ️ No schools with TES configuration found in DB.");
       return [];
     }
@@ -148,6 +155,40 @@ export async function searchTesDbSchools(): Promise<TesJobMatch[]> {
         await sleep(BATCH_DELAY_MS);
       }
     }
+
+    // ── Group pages: read each once, place each job on the one campus it names; anything else is left out and counted ──
+    let groupLeftOut = 0;
+    for (const gp of groupPages) {
+      try {
+        const memberInfo = gp.members.map((m) => candidateSchools.find((c) => c.schoolId === m.schoolId) || snapInfo.get(m.schoolId)).filter(Boolean) as AdaptorInput[];
+        const jobs = await readTesPageRaw(`https://www.tes.com/jobs/employer/${gp.slug}`);
+        const activeByMember = new Map<string, Set<string>>();
+        memberInfo.forEach((m) => activeByMember.set(m.schoolId, new Set<string>()));
+        for (const j of jobs) {
+          const r = attributeGroupJob({ title: String(j.exactTitle || j.title), description: j.description, employer: j.hiringOrg }, memberInfo.map((m) => ({ schoolId: m.schoolId, name: m.schoolName })));
+          const owner = r.schoolId ? memberInfo.find((m) => m.schoolId === r.schoolId) : undefined;
+          if (!owner) { groupLeftOut++; console.warn(`   ↪ [TES GROUP] left out (${r.reason}): ${String(j.exactTitle || j.title).slice(0, 70)} [${gp.slug}]`); continue; }
+          if (slugForeignCountry(j.href, owner.country)) continue;
+          const title = cleanJobTitle(String(j.exactTitle || j.title), owner.schoolName);
+          if (!title || isSupportOrNonTeachingRole(title)) continue;
+          activeByMember.get(owner.schoolId)!.add(j.href);
+          allMatches.push({
+            jobId: `${owner.schoolId}_${j.href.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+            title, applyUrl: j.href, schoolId: owner.schoolId, schoolName: owner.schoolName,
+            city: owner.city || "", country: owner.country || "",
+            source: "TES", sources: ["TES"], sourceUrls: { TES: j.href },
+            datePosted: null, closingDate: j.closingDate || null,
+            // A campus named in the title is certain enough to go live; one found only in the description goes to pending for a look.
+            matchConfidence: r.by === "title" ? "high" : "medium",
+          });
+        }
+        for (const [sid, urls] of activeByMember) totalPurgedCount += await purgeStaleTesVacancies(sid, urls);
+        console.log(`🛸 [TES GROUP] ${gp.slug}: ${jobs.length} vacancies read, ${[...activeByMember.values()].reduce((n, u) => n + u.size, 0)} placed on a campus.`);
+      } catch (e: any) {
+        console.error(`⚠️ [TES GROUP] Error reading group page ${gp.slug}:`, e?.message || e);
+      }
+    }
+    if (groupLeftOut) console.log(`ℹ️ [TES GROUP] ${groupLeftOut} group job(s) left out because no single campus was named.`);
 
     console.log(`✅ [TES CRAWLER] Sweep completed. Found ${allMatches.length} active vacancies, purged ${totalPurgedCount} stale records across ${candidateSchools.length} schools.`);
     return allMatches;

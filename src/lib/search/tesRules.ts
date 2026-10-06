@@ -172,3 +172,27 @@ export function attributeGroupJob(
   if (inDesc.length > 1) return { schoolId: null, by: "several", reason: `description names several: ${inDesc.map((x) => x.schoolId).join(",")}` };
   return { schoolId: null, by: "none", reason: "no campus named" };
 }
+
+
+/**
+ * TES pages shared by several schools where NO school is the clear owner (a real group page: Aldar, Taaleem, Kings, ...).
+ * These are read once, and each job is placed on a campus by attributeGroupJob. A shared page that has a clear owner (e.g. Sunmarke's page
+ * borrowed by Regent International) is NOT a group page: the owner is read normally and the other school is skipped.
+ */
+export function findGroupPages<T extends TesCandidate>(all: T[], skippedIds: Set<string>): { pageId: string; slug: string; members: T[] }[] {
+  const groups = new Map<string, T[]>();
+  for (const c of all) {
+    const id = pageIdOf(c);
+    if (!id) continue;
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id)!.push(c);
+  }
+  const out: { pageId: string; slug: string; members: T[] }[] = [];
+  for (const [pageId, members] of groups) {
+    if (members.length < 2 || !members.every((m) => skippedIds.has(m.schoolId))) continue;
+    const slug = String(members.find((m) => m.slug)?.slug || "");
+    if (!slug) continue;
+    out.push({ pageId, slug, members });
+  }
+  return out;
+}

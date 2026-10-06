@@ -138,6 +138,8 @@ check("TES search skips schools whose saved TES page is a group page or another 
 check("TES clean-up only removes a missing job after checking its own page", /classifyVacancyPage\(/.test(tesAdaptor) && /=== "gone"/.test(tesAdaptor) && !/purgeLooksSafe/.test(tesAdaptor));
 check("TES accepts an employer that matches the school's own TES page", (tesAdaptor.match(/hiringOrgFitsPage\(/g) || []).length >= 2);
 check("TES clean-up keeps links it cannot check (only employer-page links removed unchecked)", /tes\.com\/jobs\/employer\//.test(tesAdaptor) && /we cannot check/.test(tesAdaptor));
+check("TES group pages: read once, each job placed on the one campus it names, else left out", /findGroupPages\(/.test(src("src/lib/search/tes.ts")) && /attributeGroupJob\(/.test(src("src/lib/search/tes.ts")) && /left out/.test(src("src/lib/search/tes.ts")));
+check("TES group jobs: title-named campus -> high, description-only -> medium (pending)", /r\.by === "title" \? "high" : "medium"/.test(src("src/lib/search/tes.ts")));
 check("TES uses the shared country-slug check", /slugForeignCountry\(/.test(tesAdaptor) && !/foreignCountries/.test(tesAdaptor));
 check("TES page-reading path checks the hiring organisation", /Rejected hiringOrganization mismatch[^`]*\[\$\{item\.href\}\]/.test(tesAdaptor) && /names no hiring organisation/.test(tesAdaptor));
 

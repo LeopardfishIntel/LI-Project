@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, attributeGroupJob, campusWords } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, attributeGroupJob, campusWords, findGroupPages } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -92,5 +92,14 @@ check("Taaleem: description names two campuses -> none", attributeGroupJob({ tit
 check("Aldar: 'Mamoura British Academy' in title -> Al Mamoura", attributeGroupJob({ title: "Teacher - EYFS - Mamoura British Academy (January 2027)", employer: "Aldar Education" }, ALD).schoolId === "FLIS0368");
 check("Aldar: group name alone does not pick Aldar Academies", attributeGroupJob({ title: "Teacher - Physics - Aldar Education (Immediate Start)", employer: "Aldar Education" }, ALD).schoolId === null);
 check("generic words are not campus words", campusWords("Dubai Schools Al Barsha", ["Dubai School Nad Al Sheba"], "Taaleem").join(",") === "barsha");
+
+// Which shared pages count as real group pages
+{
+  const skippedIds = new Set(tesSchoolsToSkip(all).map((x) => x.schoolId));
+  const gp = findGroupPages(all, skippedIds).map((g) => g.pageId).sort();
+  check("Taaleem, Kings, Aldar are group pages", ["1058642", "1058490", "1220983"].every((id) => gp.includes(id)));
+  check("Sunmarke's page (clear owner) is NOT a group page", !gp.includes("1077790"));
+  check("GEMS World Academy page (clear owner) is NOT a group page", !gp.includes("1060996"));
+}
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);
