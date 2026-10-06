@@ -66,6 +66,7 @@ export async function GET(request: Request) {
     const RETIRE_RULES: Record<string, { label: string; urlHint: string }> = {
       GRC: { label: "GRC", urlHint: "grcfair.org" },
       SEARCH_ASSOCIATES: { label: "SEARCH ASSOCIATES", urlHint: "searchassociates.com" },
+      GEMS: { label: "GEMS", urlHint: "careers.gemseducation.com" },
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {

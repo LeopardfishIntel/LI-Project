@@ -27,14 +27,14 @@ export function cleanGemsJobTitle(rawTitle: string): string {
     .trim();
 
   clean = clean
-    .replace(/[-,s]+$/, "")
+    .replace(/[-,\s]+$/, "")
     .replace(/\s+/g, " ")
     .trim();
 
   if (clean.length > 60) {
     clean = clean
       .substring(0, 60)
-      .replace(/[-,s]+$/, "")
+      .replace(/[-,\s]+$/, "")
       .trim();
   }
 
