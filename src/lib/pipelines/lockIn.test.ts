@@ -4,7 +4,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { AUTO_APPROVE_SOURCES, decideReviewStatus, isPlaceholderClosingDate, MAX_FUTURE_CLOSING_DAYS, MAX_STATED_CLOSING_DAYS } from "./jobGate";
+import { AUTO_APPROVE_SOURCES, isSignedOffEngine, decideReviewStatus, isPlaceholderClosingDate, MAX_FUTURE_CLOSING_DAYS, MAX_STATED_CLOSING_DAYS } from "./jobGate";
 import { DRIFT_MIN_USUAL_KEPT, DRIFT_RATIO } from "../crawler/engineDrift";
 import { decideRetire } from "./retireRules";
 
@@ -48,7 +48,14 @@ check("ingestion uses the gate for review status", /decideReviewStatus\(/.test(p
 
 // 4. Nightly engines: only signed-off engines run; password required on every cron route
 const orch = src("src/app/api/cron/sweep-orchestrator/route.ts");
-check("orchestrator skips engines that are not signed off", /!isForced && !AUTO_APPROVE_SOURCES\.has\(key\)/.test(orch));
+check("orchestrator skips engines that are not signed off", /!isForced && !isSignedOffEngine\(key\)/.test(orch));
+check("engine keys with underscores map to the gate's source names", isSignedOffEngine("TES") && isSignedOffEngine("grc") && !isSignedOffEngine("SEARCH_ASSOCIATES") && !isSignedOffEngine("TEACH_AWAY"));
+check("Search Associates is wired into the orchestrator (runner, retire rule, drift under the gate's name)", /SEARCH_ASSOCIATES: searchSearchAssociatesDbSchools/.test(orch) && /label: "SEARCH ASSOCIATES"/.test(orch) && /recordRunAndCheckDrift\(key\.replace\(\/_\/g, " "\)/.test(orch));
+const pipe1 = src("src/lib/pipelines/pipeline1-ingestion.ts");
+check("pipeline recognises Search Associates only with a searchassociates.com link", /srcUpper === "SEARCH ASSOCIATES" && record\.applyUrl && \/searchassociates/.test(pipe1));
+check("'SEARCH ASSOCIATES' (it contains the letters TES) is not read as TES", !/srcUpper\.includes\("TES"\)/.test(pipe1) && !/\.includes\("TES"\) && j\.applyUrl/.test(pipe1));
+const sae = src("src/lib/search/searchassociates.ts");
+check("Search Associates engine writes nothing itself and sends only high-confidence, registry-matched jobs", !/\.doc\(|\.batch\(|\.delete\(|\.update\(|\.collection\([^)]*\)\.(add|set)\(/.test(sae) && /matchConfidence: "high"/.test(sae) && /isRetiredSchool/.test(sae));
 check("orchestrator retires vanished GRC jobs", /planRetireVanished\(/.test(orch) && /applyRetirePlan\(/.test(orch));
 check("orchestrator runs the drift check", /recordRunAndCheckDrift\(/.test(orch));
 ["src/app/api/cron/sweep-orchestrator/route.ts", "src/app/api/daily-sweep/route.ts", "src/app/api/cron/update-inflation/route.ts"].forEach((f) =>

@@ -935,7 +935,7 @@ export default function FeaturedJobsPage() {
         // MULTI-ENGINE SOURCE FILTER
         const sourceUpper = String(cacheDoc.source || '').toUpperCase();
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = sourceUpper.includes('TES') || isTesDomainUrl(applyUrlLower);
+        const isTes = /(^|[^A-Z])TES([^A-Z]|$)/.test(sourceUpper) || isTesDomainUrl(applyUrlLower);
         const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordanglia.com') || applyUrlLower.includes('nordangliaeducation.com');
         const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
         const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');

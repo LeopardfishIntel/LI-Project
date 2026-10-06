@@ -27,6 +27,11 @@ export function acceptsUnsureRoles(source: string): boolean {
   return AUTO_APPROVE_SOURCES.has(String(source || "").toUpperCase().trim());
 }
 
+/** True when the engine KEY (e.g. "SEARCH_ASSOCIATES") is signed off. Keys use underscores, the source names the gate sees use spaces. */
+export function isSignedOffEngine(engineKey: string): boolean {
+  return AUTO_APPROVE_SOURCES.has(String(engineKey || "").toUpperCase().trim().replace(/_/g, " "));
+}
+
 export const MAX_FUTURE_CLOSING_DAYS = 365;
 
 /**

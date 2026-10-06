@@ -347,9 +347,11 @@ export async function runIngestionPipeline(
   for (const record of rawRecords) {
     // ── MULTI-ENGINE SOURCE GATE ──────────────────────────────────────────
     const srcUpper = (record.source || "").toUpperCase();
-    const isTes = (srcUpper === "TES" || srcUpper.includes("TES")) && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
+    const isTes = /(^|[^A-Z])TES([^A-Z]|$)/.test(srcUpper) && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
     const isNordAnglia = (srcUpper.includes("NORD ANGLIA") || srcUpper.includes("NORD_ANGLIA") || (record.applyUrl && (record.applyUrl.includes("nordangliaeducation.com") || record.applyUrl.includes("nordanglia.com"))));
     const isGrc = srcUpper === "GRC" && record.applyUrl && (record.applyUrl.includes("grcfair.org/job-details/") || record.applyUrl.includes("grcfair.org/job/"));
+
+    const isSearchAssociates = srcUpper === "SEARCH ASSOCIATES" && record.applyUrl && /searchassociates\.com\//i.test(record.applyUrl);
 
     const isInspired = (srcUpper.includes("INSPIRED") || (record.applyUrl && record.applyUrl.includes("inspirededu.com/job/")));
     const isTeachAway = (srcUpper.includes("TEACH AWAY") || (record.applyUrl && record.applyUrl.includes("teachaway.com/")));
@@ -363,7 +365,7 @@ export async function runIngestionPipeline(
     const isTaylors = (srcUpper.includes("TAYLOR") || (record.applyUrl && record.applyUrl.includes("taylors")));
     const isDirectWeb = (srcUpper.includes("DIRECT") || srcUpper.includes("SCHOOL WEB") || srcUpper.includes("WEBSITE") || srcUpper.includes("OFFICIAL") || srcUpper.includes("ATS")) && record.applyUrl && !record.applyUrl.includes("google.com/maps");
 
-    const isRecognizedSource = isTes || isNordAnglia || isGrc || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobeducate || isGems || isGuardian || isTaylors || isDirectWeb;
+    const isRecognizedSource = isTes || isNordAnglia || isGrc || isSearchAssociates || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobeducate || isGems || isGuardian || isTaylors || isDirectWeb;
 
     if (!isRecognizedSource) {
       rejected++;
@@ -493,7 +495,7 @@ export async function runIngestionPipeline(
     const activeTesUrls = new Set(
       mappedJobs
         .filter(j => (ownerByFp.get(j.id) || sweepSchoolUpper) === sweepSchoolUpper)
-        .filter(j => (j.source || "").toUpperCase().includes("TES") && j.applyUrl)
+        .filter(j => /(^|[^A-Z])TES([^A-Z]|$)/.test((j.source || "").toUpperCase()) && j.applyUrl)
         .map(j => j.applyUrl)
     );
     if (activeTesUrls.size > 0) {

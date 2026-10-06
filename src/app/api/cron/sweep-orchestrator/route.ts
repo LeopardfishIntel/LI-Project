@@ -16,9 +16,10 @@ import { searchGrcDbSchools } from "@/lib/search/grc";
 import { searchGuardianDbSchools } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools } from "@/lib/search/tes";
+import { searchSearchAssociatesDbSchools } from "@/lib/search/searchassociates";
 import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
-import { AUTO_APPROVE_SOURCES } from "@/lib/pipelines/jobGate";
+import { isSignedOffEngine } from "@/lib/pipelines/jobGate";
 import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
 import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 import { planRetireVanished, applyRetirePlan } from "@/lib/pipelines/retireVanished";
@@ -60,6 +61,13 @@ export async function GET(request: Request) {
       GRC: searchGrcDbSchools,
       TES: searchTesDbSchools,
       TAALEEM: searchTaaleemDbSchools,
+      SEARCH_ASSOCIATES: searchSearchAssociatesDbSchools,
+    };
+
+    // Engines whose vanished jobs are retired after a healthy run: the pill / source name and a word that is in their links.
+    const RETIRE_RULES: Record<string, { label: string; urlHint: string }> = {
+      GRC: { label: "GRC", urlHint: "grcfair.org" },
+      SEARCH_ASSOCIATES: { label: "SEARCH ASSOCIATES", urlHint: "searchassociates.com" },
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
@@ -76,7 +84,7 @@ export async function GET(request: Request) {
 
       // Roger (2026-10-05): the nightly sweep runs only engines that have been reviewed, fixed and signed off in jobGate.ts.
       // An engine can still be run on purpose with ?forceEngine=KEY.
-      if (!isForced && !AUTO_APPROVE_SOURCES.has(key)) {
+      if (!isForced && !isSignedOffEngine(key)) {
         telemetry.skippedEngines.push({
           engineKey: key,
           reason: "Not yet reviewed and signed off in jobGate.ts (nightly sweep runs signed-off engines only)"
@@ -139,16 +147,17 @@ export async function GET(request: Request) {
 
       // Drift protection: a signed-off engine whose results change sharply is paused (its jobs then go to pending).
       let drift: { drifted: boolean; reason?: string } = { drifted: false };
-      if (AUTO_APPROVE_SOURCES.has(key)) {
-        drift = await recordRunAndCheckDrift(key, { found: totalFound, kept: ingestedCount });
+      if (isSignedOffEngine(key)) {
+        // The drift record is kept under the source name the gate sees (spaces, not underscores).
+        drift = await recordRunAndCheckDrift(key.replace(/_/g, " "), { found: totalFound, kept: ingestedCount });
         if (drift.drifted) console.warn(`🚨 [DRIFT] Engine ${key} paused: ${drift.reason}`);
       }
 
       // Jobs the engine no longer supplies are retired (only after a healthy run of a signed-off engine; see retireVanished.ts).
       let retire: any = null;
-      if (AUTO_APPROVE_SOURCES.has(key) && !drift.drifted && key === "GRC") {
+      if (isSignedOffEngine(key) && !drift.drifted && RETIRE_RULES[key]) {
         try {
-          const plan = await planRetireVanished({ engineLabel: "GRC", urlHint: "grcfair.org", liveUrls: matches.map((m: any) => m.applyUrl).filter(Boolean) });
+          const plan = await planRetireVanished({ engineLabel: RETIRE_RULES[key].label, urlHint: RETIRE_RULES[key].urlHint, liveUrls: matches.map((m: any) => m.applyUrl).filter(Boolean) });
           const done = await applyRetirePlan(plan);
           retire = { claims: plan.claims, wouldRetire: plan.items.length, ...done, skipped: plan.skipped };
           if (plan.items.length) console.log(`🧹 [RETIRE] ${key}: ${plan.items.length} stale job(s):`, plan.items.map((i) => `${i.action} ${i.title} (${i.schoolId})`));
