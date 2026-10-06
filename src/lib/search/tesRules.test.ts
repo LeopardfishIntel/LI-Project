@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -60,5 +60,14 @@ check("page loads, closing date passed -> gone", classifyVacancyPage({ status: 2
 check("page loads with no job data -> unknown (never removed)", classifyVacancyPage({ status: 200, hasJobPosting: false }) === "unknown");
 check("blocked (403) -> unknown", classifyVacancyPage({ status: 403, hasJobPosting: false }) === "unknown");
 check("network trouble (status 0) -> unknown", classifyVacancyPage({ status: 0, hasJobPosting: false }) === "unknown");
+
+// Employer named on the vacancy vs the school's own TES page (2026-10-06 wide trial: 31 real jobs were wrongly rejected)
+check("employer 'Jumeirah English Speaking School' fits its own page", hiringOrgFitsPage("Jumeirah English Speaking School", "jumeirah-english-speaking-school-jess-1055094"));
+check("employer 'Epsom College Malaysia' fits its own page", hiringOrgFitsPage("Epsom College Malaysia", "epsom-college-malaysia-1061281"));
+check("employer 'St George's, The British International School - Cologne' fits", hiringOrgFitsPage("St. George\u2019s, The British International School - Cologne", "st-george-s-the-british-international-school-cologne-1058656"));
+check("employer 'The English School' fits", hiringOrgFitsPage("The English School", "the-english-school-1057316"));
+check("another school's name does NOT fit (Jebel Ali on a Taaleem group page)", !hiringOrgFitsPage("Jebel Ali School", "taaleem-1058642"));
+check("a different school does NOT fit (JESS on another school's page)", !hiringOrgFitsPage("Jumeirah English Speaking School", "neev-academy-1234567"));
+check("no slug -> not accepted", !hiringOrgFitsPage("Epsom College Malaysia", undefined));
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

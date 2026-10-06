@@ -14,7 +14,7 @@ import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
-import { slugForeignCountry, classifyVacancyPage } from "../../search/tesRules";
+import { slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage } from "../../search/tesRules";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -182,7 +182,7 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
     0.85
   );
 
-  if (!orgMatch.isMatch || orgMatch.score < 0.85) {
+  if ((!orgMatch.isMatch || orgMatch.score < 0.85) && !hiringOrgFitsPage(hiringOrgName, input.tesEmployerSlug)) {
     console.warn(`🛑 [TES ADAPTOR] Rejected hiringOrganization mismatch for ${input.schoolName} (hiringOrg="${hiringOrgName}", score=${orgMatch.score.toFixed(2)}) [${cleanUrl}]`);
     return null;
   }
@@ -295,10 +295,11 @@ export async function purgeStaleTesVacancies(
       if (isPastClosing) { batch.delete(doc.ref); purgedCount++; continue; }
       if (activeNormalized.has(applyUrl)) continue;
       if (!["approved", "pending_review"].includes(String(data.status || "").toLowerCase())) continue;
-      if (!applyUrl.includes("tes.com/jobs/vacancy/")) {
-        console.log(`🧹 [TES GARBAGE COLLECTOR] ${schoolId}: removing "${data.title}" - link is not a TES vacancy page (${applyUrl}).`);
+      if (applyUrl.includes("tes.com/jobs/employer/")) {
+        console.log(`🧹 [TES GARBAGE COLLECTOR] ${schoolId}: removing "${data.title}" - its link is the TES employer page, not a job (${applyUrl}).`);
         batch.delete(doc.ref); purgedCount++; continue;
       }
+      if (!applyUrl.includes("tes.com/jobs/vacancy/")) continue; // a link we cannot check (school's own site etc.): keep
       candidates.push({ doc, url: String(data.applyUrl || data.source_url) });
     }
     for (let i = 0; i < candidates.length; i += FETCH_CONCURRENCY) {
@@ -439,7 +440,7 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
         { candidateText: deepData.hiringOrg, city: input.city, country: input.country },
         0.85
       );
-      if (!orgCheck.isMatch || orgCheck.score < 0.85) {
+      if ((!orgCheck.isMatch || orgCheck.score < 0.85) && !hiringOrgFitsPage(deepData.hiringOrg, input.tesEmployerSlug)) {
         console.warn(`🛑 [TES PLAYWRIGHT] Rejected hiringOrganization mismatch for ${input.schoolName} (hiringOrg="${deepData.hiringOrg}", score=${orgCheck.score.toFixed(2)}) [${item.href}]`);
         continue;
       }

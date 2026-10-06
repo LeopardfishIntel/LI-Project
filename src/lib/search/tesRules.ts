@@ -29,6 +29,17 @@ export function nameFitsSlug(name: string, slug: string): number {
 }
 
 /**
+ * Does the employer named on a vacancy page match the school's own TES employer page?  e.g. "Jumeirah English Speaking School" on
+ * jumeirah-english-speaking-school-jess-1055094. The strict name matcher said no to many real employers (found in the 2026-10-06 wide trial:
+ * "Epsom College Malaysia" vs "Epsom College in Malaysia", "The English School" vs "The English School Nicosia" ...).
+ * Only used for a school's own page - shared / group pages are skipped before this is ever reached.
+ */
+export function hiringOrgFitsPage(hiringOrg: string, slug?: string): boolean {
+  if (!hiringOrg || !slug) return false;
+  return nameFitsSlug(hiringOrg, slug) >= 0.8;
+}
+
+/**
  * Schools whose saved TES page cannot safely be read for them.
  *  - a group / other-school page: the school's name does not fit the page's slug (fit under 0.5), or
  *  - a page that several schools share: only the one school that clearly fits (over 0.5, and best) is kept, the rest are skipped.
