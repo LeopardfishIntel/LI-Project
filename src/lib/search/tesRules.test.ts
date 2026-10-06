@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, purgeLooksSafe, pageIdOf } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -42,9 +42,23 @@ check("fit: clear match is 1", nameFitsSlug("Sunmarke School", "sunmarke-school-
 check("fit: no match is 0", nameFitsSlug("Regent International School", "sunmarke-school-1077790") === 0);
 check("page id from slug", pageIdOf({ schoolId: "x", name: "x", slug: "taaleem-1058642" }) === "1058642");
 check("page id falls back to org", pageIdOf({ schoolId: "x", name: "x", org: "123456" }) === "123456");
-check("purge: school with 2 jobs, 2 missing -> allowed", purgeLooksSafe(2, 2));
-check("purge: 10 jobs, 2 missing -> allowed", purgeLooksSafe(10, 2));
-check("purge: 10 jobs, 9 missing -> blocked", !purgeLooksSafe(10, 9));
-check("purge: nothing missing -> allowed", purgeLooksSafe(10, 0));
+const U = "United Arab Emirates";
+check("UAE school: '-dubai-' link is home (the 2026-10-06 Sunmarke fault)", slugForeignCountry("https://www.tes.com/jobs/vacancy/key-stage-1-teacher-january-2027-sunmarke-school-dubai-2266116", U) === null);
+check("UAE school: '-united-arab-emirates-' link is home", slugForeignCountry("https://www.tes.com/jobs/vacancy/primary-arabic-teacher-a-immediate-start-united-arab-emirates-2243809", U) === null);
+check("UAE school: '-uae-' link is home", slugForeignCountry("https://www.tes.com/jobs/vacancy/teacher-of-music-dubai-uae-2341050", U) === null);
+check("Singapore school: '-dubai-' link is foreign", slugForeignCountry("https://www.tes.com/jobs/vacancy/teacher-dubai-2341050", "Singapore") === "dubai");
+check("Bahrain school: '-united-arab-emirates-' link is foreign (the British School of Bahrain mix-up)", slugForeignCountry("https://www.tes.com/jobs/vacancy/ks2-primary-teacher-maternity-cover-united-arab-emirates-2332441", "Bahrain") === "united-arab-emirates");
+check("Korea school: '-korea-republic-of-' link is home", slugForeignCountry("https://www.tes.com/jobs/vacancy/elementary-school-grade-2-classroom-teacher-korea-republic-of-2344223", "South Korea") === null);
+check("Singapore school: '-singapore-' link is home", slugForeignCountry("https://www.tes.com/jobs/vacancy/class-teacher-infant-school-singapore-2348923", "Singapore") === null);
+check("link naming no country is never foreign", slugForeignCountry("https://www.tes.com/jobs/vacancy/myp-individuals-and-society-teacher-seoul-2344978", "South Korea") === null);
+check("school with no country on file: nothing is rejected", slugForeignCountry("https://www.tes.com/jobs/vacancy/x-dubai-1", "") === null);
+check("page not found -> gone", classifyVacancyPage({ status: 404, hasJobPosting: false }) === "gone");
+check("page gone (410) -> gone", classifyVacancyPage({ status: 410, hasJobPosting: false }) === "gone");
+check("page loads with a job, not closed -> live (keep it)", classifyVacancyPage({ status: 200, hasJobPosting: true, validThroughMs: Date.now() + 86400000 }) === "live");
+check("page loads with a job, no closing date -> live", classifyVacancyPage({ status: 200, hasJobPosting: true }) === "live");
+check("page loads, closing date passed -> gone", classifyVacancyPage({ status: 200, hasJobPosting: true, validThroughMs: Date.now() - 86400000 }) === "gone");
+check("page loads with no job data -> unknown (never removed)", classifyVacancyPage({ status: 200, hasJobPosting: false }) === "unknown");
+check("blocked (403) -> unknown", classifyVacancyPage({ status: 403, hasJobPosting: false }) === "unknown");
+check("network trouble (status 0) -> unknown", classifyVacancyPage({ status: 0, hasJobPosting: false }) === "unknown");
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

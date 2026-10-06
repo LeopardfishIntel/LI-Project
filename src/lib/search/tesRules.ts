@@ -61,12 +61,47 @@ export function tesSchoolsToSkip(all: TesCandidate[]): { schoolId: string; reaso
 }
 
 /**
- * Is it safe to delete the TES jobs that are missing from this read?
- * A read that found far fewer jobs than the school already has is more likely a half-loaded page than a real clear-out.
- * Jobs past their closing date are always safe to delete (the caller handles those separately).
+ * Does a TES vacancy link name a country the school is NOT in?  e.g. "...-singapore-2348923" under a school in Thailand.
+ * Cities and country names that mean the same place are treated as home: for a school in the United Arab Emirates, "-dubai-", "-uae-" and
+ * "-united-arab-emirates-" are all home (the first version of this rule rejected "-dubai-" for a UAE school - found in the 2026-10-06 trial).
+ * Returns the foreign word it found, or null.
  */
-export function purgeLooksSafe(existingTesJobs: number, missingFromRead: number): boolean {
-  if (missingFromRead <= 0) return true;
-  if (existingTesJobs < 4) return true;
-  return missingFromRead / existingTesJobs <= 0.6;
+const PLACES: { token: string; home: string[] }[] = [
+  { token: "thailand", home: ["thailand"] }, { token: "china", home: ["china"] }, { token: "singapore", home: ["singapore"] },
+  { token: "japan", home: ["japan"] }, { token: "spain", home: ["spain"] }, { token: "italy", home: ["italy"] },
+  { token: "france", home: ["france"] }, { token: "germany", home: ["germany"] }, { token: "greece", home: ["greece"] },
+  { token: "switzerland", home: ["switzerland"] }, { token: "brazil", home: ["brazil"] }, { token: "argentina", home: ["argentina"] },
+  { token: "uae", home: ["united arab emirates", "uae", "emirates"] }, { token: "dubai", home: ["united arab emirates", "uae", "emirates"] },
+  { token: "united-arab-emirates", home: ["united arab emirates", "uae", "emirates"] },
+  { token: "qatar", home: ["qatar"] }, { token: "oman", home: ["oman"] }, { token: "kuwait", home: ["kuwait"] }, { token: "bahrain", home: ["bahrain"] },
+  { token: "egypt", home: ["egypt"] }, { token: "kenya", home: ["kenya"] }, { token: "vietnam", home: ["vietnam", "viet nam"] },
+  { token: "malaysia", home: ["malaysia"] }, { token: "indonesia", home: ["indonesia"] }, { token: "india", home: ["india"] },
+  { token: "saudi-arabia", home: ["saudi arabia", "saudi"] }, { token: "korea", home: ["korea"] }, { token: "hong-kong", home: ["hong kong"] },
+  { token: "cyprus", home: ["cyprus"] }, { token: "azerbaijan", home: ["azerbaijan"] }, { token: "philippines", home: ["philippines"] },
+];
+export function slugForeignCountry(url: string, schoolCountry?: string): string | null {
+  const home = String(schoolCountry || "").toLowerCase().trim();
+  if (!home) return null;
+  const u = String(url || "").toLowerCase();
+  for (const p of PLACES) {
+    if (!u.includes(`-${p.token}-`)) continue;
+    if (p.home.some((n) => home.includes(n) || n.includes(home))) continue;
+    return p.token;
+  }
+  return null;
+}
+
+/**
+ * What does a TES vacancy page say about the job? Used before removing a job TES no longer lists.
+ *  "gone"    - the page is not found (404/410), or it is a live page whose own closing date has passed.
+ *  "live"    - the page loads and carries a JobPosting that has not closed: the job is still there (the list read just missed it).
+ *  "unknown" - anything else (network trouble, blocked, a page with no job data). Unknown is NEVER removed.
+ */
+export function classifyVacancyPage(i: { status: number; hasJobPosting: boolean; validThroughMs?: number | null }, now: number = Date.now()): "gone" | "live" | "unknown" {
+  if (i.status === 404 || i.status === 410) return "gone";
+  if (i.status >= 200 && i.status < 300 && i.hasJobPosting) {
+    if (i.validThroughMs && i.validThroughMs < now) return "gone";
+    return "live";
+  }
+  return "unknown";
 }

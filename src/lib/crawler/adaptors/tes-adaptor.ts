@@ -14,7 +14,7 @@ import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
-import { purgeLooksSafe } from "../../search/tesRules";
+import { slugForeignCountry, classifyVacancyPage } from "../../search/tesRules";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -147,22 +147,11 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
     }
   }
 
-  // 🛡️ Gate 3: URL Slug Country Mismatch Shield
-  if (input.country) {
-    const urlLower = cleanUrl.toLowerCase();
-    const inputCountryLower = input.country.toLowerCase();
-    // Check known international countries in URL slug (e.g., -thailand-, -china-, -singapore-, etc.)
-    const foreignCountries = [
-      "thailand", "china", "singapore", "japan", "spain", "italy", "france", "germany",
-      "greece", "switzerland", "brazil", "argentina", "uae", "dubai", "qatar", "oman",
-      "kuwait", "bahrain", "egypt", "kenya", "vietnam", "malaysia", "indonesia", "india"
-    ];
-    for (const fc of foreignCountries) {
-      if (urlLower.includes(`-${fc}-`) && !inputCountryLower.includes(fc) && !fc.includes(inputCountryLower)) {
-        console.warn(`🛑 [TES ADAPTOR] Rejected foreign country slug "-${fc}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
-        return null;
-      }
-    }
+  // 🛡️ Gate 3: URL Slug Country Mismatch Shield (a slug naming the school's own country or city is fine)
+  const slugBad = slugForeignCountry(cleanUrl, input.country);
+  if (slugBad) {
+    console.warn(`🛑 [TES ADAPTOR] Rejected foreign country slug "-${slugBad}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
+    return null;
   }
 
   // 🛡️ Gate 4: Hiring Organization Verification Gate
@@ -291,27 +280,53 @@ export async function purgeStaleTesVacancies(
     let purgedCount = 0;
     const batch = db.batch();
 
-    // Roger (2026-10-06): jobs missing from this read are only removed when the read looks complete.
-    // A page that half-loaded must not wipe a school's live TES jobs. Jobs past their closing date are always removed.
-    const tesDocs = snapshot.docs.filter((d: any) => (d.data() || {}).source === "TES" && ["approved", "pending_review"].includes(String((d.data() || {}).status || "").toLowerCase()));
-    const missingNow = tesDocs.filter((d: any) => {
-      const x = d.data() || {};
-      return !activeNormalized.has(normalizeUrl(String(x.applyUrl || x.source_url || "")));
-    }).length;
-    const removeMissing = purgeLooksSafe(tesDocs.length, missingNow);
-    if (!removeMissing) console.warn(`🛡️ [TES GARBAGE COLLECTOR] ${schoolId}: this read is missing ${missingNow} of ${tesDocs.length} live TES jobs - looks like a half-loaded page, so jobs missing from it were NOT removed.`);
-
+    // Roger (2026-10-06): a job missing from this read is only removed when we can show it is really gone.
+    // - past its closing date: removed
+    // - its link is not a TES vacancy page (e.g. the employer hub page): removed
+    // - its own TES page is gone (404/410) or has expired: removed
+    // - anything else (page still live, or we could not tell): kept. A half-loaded hub page can never wipe live jobs.
+    const FETCH_CONCURRENCY = 5;
+    const candidates: { doc: any; url: string }[] = [];
     for (const doc of snapshot.docs) {
       const data = doc.data();
       if (data.source !== "TES") continue;
-
       const applyUrl = normalizeUrl(String(data.applyUrl || data.source_url || ""));
       const isPastClosing = data.closingDateMillis && data.closingDateMillis < Date.now();
-
-      if ((removeMissing && !activeNormalized.has(applyUrl)) || isPastClosing) {
-        batch.delete(doc.ref);
-        purgedCount++;
+      if (isPastClosing) { batch.delete(doc.ref); purgedCount++; continue; }
+      if (activeNormalized.has(applyUrl)) continue;
+      if (!["approved", "pending_review"].includes(String(data.status || "").toLowerCase())) continue;
+      if (!applyUrl.includes("tes.com/jobs/vacancy/")) {
+        console.log(`🧹 [TES GARBAGE COLLECTOR] ${schoolId}: removing "${data.title}" - link is not a TES vacancy page (${applyUrl}).`);
+        batch.delete(doc.ref); purgedCount++; continue;
       }
+      candidates.push({ doc, url: String(data.applyUrl || data.source_url) });
+    }
+    for (let i = 0; i < candidates.length; i += FETCH_CONCURRENCY) {
+      const chunk = candidates.slice(i, i + FETCH_CONCURRENCY);
+      const verdicts = await Promise.all(chunk.map(async (c) => {
+        try {
+          const res = await fetch(c.url, { headers: STEALTH_HEADERS });
+          let hasJobPosting = false;
+          let validThroughMs: number | null = null;
+          if (res.ok) {
+            const html = await res.text();
+            const postings = extractJobPostingsFromHtml(html);
+            hasJobPosting = postings.length > 0;
+            const vt = postings[0]?.validThrough;
+            const t = vt ? Date.parse(String(vt)) : NaN;
+            validThroughMs = Number.isFinite(t) ? t : null;
+          }
+          return classifyVacancyPage({ status: res.status, hasJobPosting, validThroughMs });
+        } catch {
+          return "unknown" as const;
+        }
+      }));
+      chunk.forEach((c, idx) => {
+        if (verdicts[idx] === "gone") {
+          console.log(`🧹 [TES GARBAGE COLLECTOR] ${schoolId}: removing "${c.doc.data().title}" - its TES page is gone.`);
+          batch.delete(c.doc.ref); purgedCount++;
+        }
+      });
     }
 
     if (purgedCount > 0) {
@@ -397,23 +412,10 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
       if (!item.title || isSupportOrNonTeachingRole(item.title)) continue;
 
       // 🛡️ Gate: Foreign country in vacancy slug
-      if (input.country) {
-        const urlLower = cleanUrl.toLowerCase();
-        const inputCountryLower = input.country.toLowerCase();
-        const foreignCountries = [
-          "thailand", "china", "singapore", "japan", "spain", "italy", "france", "germany",
-          "greece", "switzerland", "brazil", "argentina", "uae", "dubai", "qatar", "oman",
-          "kuwait", "bahrain", "egypt", "kenya", "vietnam", "malaysia", "indonesia", "india"
-        ];
-        let hasConflict = false;
-        for (const fc of foreignCountries) {
-          if (urlLower.includes(`-${fc}-`) && !inputCountryLower.includes(fc) && !fc.includes(inputCountryLower)) {
-            hasConflict = true;
-            console.warn(`🛑 [TES PLAYWRIGHT] Rejected foreign country slug "-${fc}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
-            break;
-          }
-        }
-        if (hasConflict) continue;
+      const slugBad = slugForeignCountry(cleanUrl, input.country);
+      if (slugBad) {
+        console.warn(`🛑 [TES PLAYWRIGHT] Rejected foreign country slug "-${slugBad}-" for ${input.schoolName} (${input.country}) [${cleanUrl}]`);
+        continue;
       }
 
       seenUrls.add(cleanUrl);
