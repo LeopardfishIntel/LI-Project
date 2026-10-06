@@ -11,7 +11,6 @@ import { searchInspiredDbSchools } from "@/lib/search/inspired";
 import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
 import { searchGemsDbSchools } from "@/lib/search/gems";
 import { searchTaylorsDbSchools } from "@/lib/search/taylors";
-import { searchTeacherHorizonsDbSchools } from "@/lib/search/teacherhorizons";
 import { searchGrcDbSchools } from "@/lib/search/grc";
 import { searchGuardianDbSchools } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
@@ -57,7 +56,6 @@ export async function GET(request: Request) {
       TEACH_AWAY: searchTeachAwayDbSchools,
       GEMS: searchGemsDbSchools,
       TAYLORS: searchTaylorsDbSchools,
-      TEACHER_HORIZONS: searchTeacherHorizonsDbSchools,
       GRC: searchGrcDbSchools,
       TES: searchTesDbSchools,
       TAALEEM: searchTaaleemDbSchools,

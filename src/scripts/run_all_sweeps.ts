@@ -7,7 +7,6 @@ import { searchIspDbSchools } from "../lib/search/isp";
 import { searchGlobeducateDbSchools } from "../lib/search/globeducate";
 import { searchInspiredDbSchools } from "../lib/search/inspired";
 import { searchTeachAwayDbSchools } from "../lib/search/teachaway";
-import { searchTeacherHorizonsDbSchools } from "../lib/search/teacherhorizons";
 import { searchTaylorsDbSchools } from "../lib/search/taylors";
 import { searchUwcDbSchools } from "../lib/search/uwc";
 import { runIngestionPipeline } from "../lib/pipelines/pipeline1-ingestion";
@@ -29,7 +28,6 @@ const ENGINES: EngineDef[] = [
   { key: "GLOBEDUCATE", name: "Globeducate", runner: searchGlobeducateDbSchools },
   { key: "INSPIRED", name: "Inspired Education", runner: searchInspiredDbSchools },
   { key: "TEACH_AWAY", name: "Teach Away", runner: searchTeachAwayDbSchools },
-  { key: "TEACHER_HORIZONS", name: "Teacher Horizons", runner: searchTeacherHorizonsDbSchools },
   { key: "TAYLORS", name: "Taylors Education", runner: searchTaylorsDbSchools },
   { key: "UWC", name: "United World Colleges (UWC)", runner: searchUwcDbSchools },
 ];

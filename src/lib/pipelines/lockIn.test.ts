@@ -112,7 +112,7 @@ check("Direct engine records use the existing 'School Web' source name", /source
 check("Direct engine asks the AI only through the checked path (titles must be on the page)", /titleInText\(/.test(eng) && /chooseApplyUrl\(/.test(eng));
 
 const adminSrc = src("src/app/admin/page.tsx");
-check("admin crawl-log table lists the DIRECT engine", (adminSrc.match(/"TEACHER_HORIZONS", "DIRECT"\]/g) || []).length === 2);
+check("admin crawl-log table lists the DIRECT engine", (adminSrc.match(/"TAYLORS", "DIRECT"\]/g) || []).length === 2 && !/TEACHER_HORIZONS/.test(adminSrc));
 check("Direct runner writes a crawl log named DIRECT", /engine: "DIRECT"/.test(runner));
 
 // 5d. Teach Away no longer saves unmatched employers (collection unmapped_discovered_schools was deleted on request)
