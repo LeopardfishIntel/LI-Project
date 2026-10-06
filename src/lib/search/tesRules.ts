@@ -23,9 +23,14 @@ export function pageIdOf(c: TesCandidate): string {
 /** Share of the school's name words (3+ letters) that appear in its TES slug. 1 = the slug is clearly this school. */
 export function nameFitsSlug(name: string, slug: string): number {
   const slugFlat = plain(slug).replace(/[^a-z0-9]+/g, "");
-  const words = plain(name).split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOP.has(w));
+  const everyWord = plain(name).split(/[^a-z0-9]+/).filter(Boolean);
+  const words = everyWord.filter((w) => w.length >= 3 && !STOP.has(w));
   if (!words.length || !slugFlat) return 1;
-  return words.filter((w) => slugFlat.includes(w)).length / words.length;
+  // A slug that starts with the school's initials ("sji-international-school" for "St. Joseph's Institution International") counts those name words as matched.
+  const first = plain(slug).split("-")[0].replace(/[^a-z]/g, "");
+  const initials = everyWord.map((w) => w[0]).join("");
+  const initialsWords = first.length >= 3 && initials.startsWith(first) ? new Set(everyWord.slice(0, first.length)) : new Set<string>();
+  return words.filter((w) => slugFlat.includes(w) || initialsWords.has(w)).length / words.length;
 }
 
 /**

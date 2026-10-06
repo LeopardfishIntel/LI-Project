@@ -101,5 +101,11 @@ check("generic words are not campus words", campusWords("Dubai Schools Al Barsha
   check("Sunmarke's page (clear owner) is NOT a group page", !gp.includes("1077790"));
   check("GEMS World Academy page (clear owner) is NOT a group page", !gp.includes("1060996"));
 }
+
+// Initials in a slug (2026-10-06 skipped list: St. Joseph's Institution International was wrongly skipped)
+check("SJI slug fits 'St. Joseph's Institution International'", nameFitsSlug("St. Joseph's Institution International", "sji-international-school-1055929") >= 0.99);
+check("SJI school is not skipped", !tesSchoolsToSkip([S("FLIS0023", "St. Joseph's Institution International", "sji-international-school-1055929")]).length);
+check("initials rule does not rescue an unrelated page", nameFitsSlug("Dubai Schools Al Barsha", "taaleem-1058642") < 0.5);
+check("initials rule does not rescue College du Leman on Nord Anglia page", nameFitsSlug("College du Leman", "nord-anglia-education-1065805") < 0.5);
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);
