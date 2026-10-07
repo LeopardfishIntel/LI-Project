@@ -28,13 +28,21 @@ export function healthyLine(): { green: boolean; text: string } {
 const DAY = 86400000;
 const dayKey = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
+/**
+ * Engines that were rebuilt: only the run records from this day on are judged (older records come from the old, broken engine).
+ * Add an engine here when it is rebuilt. Format: "YYYY-MM-DD" (UTC).
+ */
+export const REBUILT_ON: Record<string, string> = { GEMS: "2026-10-07", TES: "2026-10-07" };
+
 export function assessEngineHealth(
   engine: string,
   logs: HealthLog[],
   nowMs: number,
   isDueOn: (date: Date) => boolean,
+  rebuiltOn?: string,
 ): EngineHealth {
-  const mine = logs.filter((l) => String(l.engine).toUpperCase() === engine.toUpperCase());
+  const sinceMs = rebuiltOn ? Date.parse(rebuiltOn + "T00:00:00Z") : 0;
+  const mine = logs.filter((l) => String(l.engine).toUpperCase() === engine.toUpperCase() && l.createdAtMillis >= sinceMs);
   const days = new Map<string, { found: number; added: number }>();
   for (const l of mine) {
     const k = dayKey(l.createdAtMillis);

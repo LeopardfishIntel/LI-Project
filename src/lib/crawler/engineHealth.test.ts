@@ -23,6 +23,8 @@ check("new jobs in the last 14 days -> not yellow", assessEngineHealth("GRC", Ar
 check("other engines' records are ignored", assessEngineHealth("GEMS", [log("GRC", 0, 150), log("GEMS", 0, 80)], now, always).level === "ok");
 check("green line is not shown while a watched engine is unapproved", WATCHED_ENGINES.every((e) => APPROVED_ENGINES.includes(e)) === healthyLine().green);
 check("waiting text names the unapproved engines", WATCHED_ENGINES.filter((e) => !APPROVED_ENGINES.includes(e)).every((e) => healthyLine().text.includes(e.replace(/_/g, " "))) || healthyLine().green);
+check("rebuilt engine: records from before the rebuild are ignored (no false yellow)", assessEngineHealth("TES", [...Array.from({ length: 16 }, (_, i) => log("TES", i + 1, 0, 0)), log("TES", 0, 200, 0)], now, always, "2026-10-07").level === "ok");
+check("without the rebuild date the old records still count", assessEngineHealth("TES", [...Array.from({ length: 16 }, (_, i) => log("TES", i + 1, 150, 0)), log("TES", 0, 200, 0)], now, always).level === "yellow");
 const eh = (engine: string, level: EngineHealth["level"]): EngineHealth => ({ engine, level, reason: "", lastGoodDay: null });
 check("pill: red stays red", pillTone("TES", [eh("TES", "red")]) === "red");
 check("pill: approved + ok -> green", pillTone("GRC", [eh("GRC", "ok")]) === "green");
