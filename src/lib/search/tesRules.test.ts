@@ -1,4 +1,4 @@
-import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, attributeGroupJob, campusWords, findGroupPages } from "./tesRules";
+import { tesSchoolsToSkip, nameFitsSlug, pageIdOf, slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, attributeGroupJob, campusWords, findGroupPages, parseTesVacancyLinksFromHtml } from "./tesRules";
 
 let passed = 0, failed = 0;
 function check(name: string, ok: boolean) { if (ok) { passed++; console.log(`  PASS: ${name}`); } else { failed++; console.error(`  FAIL: ${name}`); } }
@@ -107,5 +107,15 @@ check("SJI slug fits 'St. Joseph's Institution International'", nameFitsSlug("St
 check("SJI school is not skipped", !tesSchoolsToSkip([S("FLIS0023", "St. Joseph's Institution International", "sji-international-school-1055929")]).length);
 check("initials rule does not rescue an unrelated page", nameFitsSlug("Dubai Schools Al Barsha", "taaleem-1058642") < 0.5);
 check("initials rule does not rescue College du Leman on Nord Anglia page", nameFitsSlug("College du Leman", "nord-anglia-education-1065805") < 0.5);
+
+// Plain-page reader (real Uptown page, 2026-10-07: 5 jobs, each link shown twice on the page)
+const A = (id: string, slug: string, t: string) => `<a class="job-v2-mobile" href="https://www.tes.com/jobs/vacancy/${slug}-${id}" target="_self"><div><div class="job-v2-mobile-title"><strong>${t}</strong></div><div>Uptown International School</div></div></a>`;
+const page = A("2348955", "secondary-music-teacher-maternity-cover-united-arab-emirates", "Secondary Music Teacher - Maternity Cover") + A("2345419", "arabic-learning-assistant-january-2027-united-arab-emirates", "Arabic Learning Assistant - January 2027") + A("2348955", "secondary-music-teacher-maternity-cover-united-arab-emirates", "Secondary Music Teacher - Maternity Cover") + `<a href="/jobs/vacancy/x-teacher-111?ref=1"><h3>Teacher of Art &amp; Design</h3></a><a href="/jobs/employer/foo">Not a job</a>`;
+const got = parseTesVacancyLinksFromHtml(page);
+check("plain page: each job once", got.length === 3);
+check("plain page: title read from the title tag", got[0].title === "Secondary Music Teacher - Maternity Cover");
+check("plain page: relative link made full, query dropped, &amp; fixed", got[2].href === "https://www.tes.com/jobs/vacancy/x-teacher-111" && got[2].title === "Teacher of Art & Design");
+check("plain page: employer links are not jobs", !got.some((g) => g.href.includes("/employer/")));
+check("plain page: empty page -> nothing", parseTesVacancyLinksFromHtml("<html></html>").length === 0);
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);

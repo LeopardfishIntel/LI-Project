@@ -14,7 +14,7 @@ import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { matchSchoolEntity, SchoolEntity } from "../entityMatcher";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
-import { slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd } from "../../search/tesRules";
+import { slugForeignCountry, classifyVacancyPage, hiringOrgFitsPage, tidyTitleEnd, parseTesVacancyLinksFromHtml } from "../../search/tesRules";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -351,7 +351,18 @@ export async function purgeStaleTesVacancies(
  * Open a TES employer page in a real browser, expand "Load more", and return every vacancy link on it (title + link). No filtering here.
  * Used by the school reader below and by the group-page reader (Roger, 2026-10-06).
  */
+async function discoverTesVacancyLinksPlain(url: string): Promise<{ title: string; href: string }[]> {
+  try {
+    const res = await fetch(url, { headers: STEALTH_HEADERS, redirect: "follow" });
+    if (!res.ok) return [];
+    return parseTesVacancyLinksFromHtml(await res.text());
+  } catch { return []; }
+}
+
 export async function discoverTesVacancyLinks(url: string): Promise<{ title: string; href: string }[]> {
+  // Plain request first (works on the website server). The browser is only the fallback when the plain page showed no vacancy links.
+  const plain = await discoverTesVacancyLinksPlain(url);
+  if (plain.length > 0) return plain;
   const { chromium } = await import("playwright");
   const browser = await chromium.launch({ headless: true });
   try {

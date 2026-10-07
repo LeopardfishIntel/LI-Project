@@ -201,3 +201,27 @@ export function findGroupPages<T extends TesCandidate>(all: T[], skippedIds: Set
   }
   return out;
 }
+
+/**
+ * Reads the vacancy links out of a TES employer page's plain HTML (no browser). Checked 2026-10-07: a plain request that follows
+ * redirects returns the vacancy links, with titles, for Uptown (5 of 5). The website server has no browser, so this is the path that works there.
+ */
+export function parseTesVacancyLinksFromHtml(html: string): { title: string; href: string }[] {
+  const out: { title: string; href: string }[] = [];
+  const seen = new Set<string>();
+  const rx = /<a\b[^>]*href="([^"]*\/jobs\/vacancy\/[^"#?]*)[^"]*"[^>]*>([\s\S]*?)<\/a>/gi;
+  const strip = (t: string) => t.replace(/<[^>]*>/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&apos;/g, "'").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+  let m: RegExpExecArray | null;
+  while ((m = rx.exec(html))) {
+    let href = m[1];
+    if (href.startsWith("/")) href = "https://www.tes.com" + href;
+    if (seen.has(href)) continue;
+    const strong = /<strong[^>]*>([\s\S]*?)<\/strong>/i.exec(m[2]);
+    const heading = /<h[2-4][^>]*>([\s\S]*?)<\/h[2-4]>/i.exec(m[2]);
+    const title = strip((strong || heading)?.[1] || m[2]);
+    if (!title) continue;
+    seen.add(href);
+    out.push({ title, href });
+  }
+  return out;
+}
