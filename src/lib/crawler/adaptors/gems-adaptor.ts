@@ -117,12 +117,11 @@ export function extractRoleTier(title: string, description?: string): "Classroom
  * A browser is not available on the website's server, so the old browser version found nothing there.
  * If the read is incomplete (a page fails, or far fewer jobs than the list says), it returns NOTHING, so a half-read can never retire jobs.
  */
-// The GEMS site answers 401 to Node's default request (checked 2026-10-07, also from a Mac) but accepts curl and browsers, so we send browser-like headers.
+// The GEMS list address answers 401 to Node's default request AND to browser-like headers, but 200 to curl's labels
+// (checked 2026-10-07 from a Mac with plain Node). So the same labels curl sends are used here.
 const GEMS_HEADERS: Record<string, string> = {
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-  "Accept": "application/json, text/javascript, */*; q=0.01",
-  "Accept-Language": "en-GB,en;q=0.9",
-  "Referer": "https://careers.gemseducation.com/en/job-search-results/",
+  "User-Agent": "curl/8.7.1",
+  "Accept": "*/*",
   "X-Requested-With": "XMLHttpRequest",
 };
 
