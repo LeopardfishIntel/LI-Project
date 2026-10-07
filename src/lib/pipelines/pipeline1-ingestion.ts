@@ -15,7 +15,8 @@ import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
 
 import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "../crawler/roleClassifier";
 import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
-import { findBoardMatch, isDirectSourceName } from "./boardMatch";
+import { findBoardMatch, isDirectSourceName, isSpecificUrl } from "./boardMatch";
+import { isUwcSchool, UWC_SOURCE } from "@/lib/search/direct/uwcRules";
 import { generateJobFingerprint, saveScrapedJobs, getAdminDb, setDocument } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
@@ -267,6 +268,23 @@ function buildCacheDocument(
   };
 }
 
+const uwcPageCache = new Map<string, string>();
+/** The school's own careers page (or website), used as the UWC pill link when no job-specific school link is known. */
+async function uwcSchoolPage(schoolId: string): Promise<string> {
+  if (uwcPageCache.has(schoolId)) return uwcPageCache.get(schoolId) as string;
+  let url = "";
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (db) {
+      const d: any = (await db.collection("schools").doc(schoolId).get()).data() || {};
+      url = [d.careersPageUrl, d.careersUrl, d.website].map((x: any) => String(x || "").trim()).find((x: string) => /^https?:\/\//i.test(x)) || "";
+    }
+  } catch { /* no link: the UWC label is simply not added */ }
+  uwcPageCache.set(schoolId, url);
+  return url;
+}
+
 async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: boolean }> {
   try {
     const { getAdminDb } = await import("@/firebase/admin");
@@ -293,6 +311,8 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
         const mergedUrls = { ...(exData.sourceUrls || {}), ...(doc.sourceUrls || {}) };
         if (exData.applyUrl) mergedUrls[exData.source || "Official Source"] = exData.applyUrl;
         if (doc.applyUrl) mergedUrls[doc.source] = doc.applyUrl;
+        // A job-specific UWC link already on the card is never replaced by the general careers page.
+        if (exData.sourceUrls?.UWC && doc.sourceUrls?.UWC && exData.sourceUrls.UWC !== doc.sourceUrls.UWC && isSpecificUrl(exData.sourceUrls.UWC) && !isSpecificUrl(doc.sourceUrls.UWC)) mergedUrls["UWC"] = exData.sourceUrls.UWC;
         const incomingIsDirect = [doc.source, ...(doc.sources || [])].some(isDirectSourceName);
         // Malvern link only for Malvern jobs - a Direct job's own link must never create a Malvern pill.
         if (doc.directUrl && !incomingIsDirect) mergedUrls["Malvern"] = doc.directUrl;
@@ -427,6 +447,17 @@ export async function runIngestionPipeline(
     }
     const fp = generateJobFingerprint(ownerId, record.rawTitle, undefined, record.applyUrl, record.datePosted);
     ownerByFp.set(fp, ownerId);
+
+    // UWC schools: a job found by ANY engine also gets the UWC label (and pill). The pill opens the school's own link for the job when we
+    // have one (Direct), otherwise the school's careers page. UWC is a group label on top of the engines, not a separate engine.
+    if (isUwcSchool(ownerId) && !(record.sources || []).some((x) => String(x).toUpperCase() === UWC_SOURCE)) {
+      const direct = [record.source, ...(record.sources || [])].some(isDirectSourceName);
+      const uwcUrl = (record as any).sourceUrls?.[UWC_SOURCE] || (direct ? record.applyUrl : await uwcSchoolPage(ownerId));
+      if (uwcUrl) {
+        record.sources = [...((record.sources && record.sources.length) ? record.sources : [record.source]), UWC_SOURCE];
+        (record as any).sourceUrls = { ...((record as any).sourceUrls || {}), [UWC_SOURCE]: uwcUrl };
+      }
+    }
 
     if (seenFingerprints.has(fp)) {
       rejected++;
