@@ -13,7 +13,7 @@ import { searchTaylorsDbSchools } from "@/lib/search/taylors";
 import { searchGrcDbSchools } from "@/lib/search/grc";
 import { searchGuardianDbSchools } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
-import { searchTesDbSchools } from "@/lib/search/tes";
+import { searchTesDbSchools, getTesRunInfo, markTesChecked } from "@/lib/search/tes";
 import { searchSearchAssociatesDbSchools } from "@/lib/search/searchassociates";
 import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
@@ -123,6 +123,14 @@ export async function GET(request: Request) {
         if (res?.removedCount) removedCount += res.removedCount;
       }
 
+      // TES is a work queue: mark the schools this call read as checked (only now that their jobs are in), and note how many are left.
+      let remaining: number | undefined;
+      if (key === "TES") {
+        const info = getTesRunInfo();
+        try { await markTesChecked(info.checked); } catch (e: any) { console.warn("⚠️ Could not mark TES schools as checked:", e?.message || e); }
+        remaining = info.remaining;
+      }
+
       const durationMs = Date.now() - startMs;
       const totalFound = matches.length;
       const dbMatched = matches.filter(m => !!m.schoolId).length;
@@ -138,6 +146,7 @@ export async function GET(request: Request) {
             totalFound,
             dbMatched,
             durationMs,
+            ...(remaining !== undefined ? { remaining } : {}),
             createdAt: new Date().toISOString(),
             createdAtMillis: Date.now()
           });
@@ -151,7 +160,22 @@ export async function GET(request: Request) {
       let drift: { drifted: boolean; reason?: string } = { drifted: false };
       if (isSignedOffEngine(key)) {
         // The drift record is kept under the source name the gate sees (spaces, not underscores).
-        drift = await recordRunAndCheckDrift(key.replace(/_/g, " "), { found: totalFound, kept: ingestedCount });
+        if (remaining === undefined) {
+          drift = await recordRunAndCheckDrift(key.replace(/_/g, " "), { found: totalFound, kept: ingestedCount });
+        } else {
+          // A queue engine reads in chunks. One chunk is not comparable with the last chunk, so the totals of a whole pass are compared instead.
+          const db: any = getAdminDb();
+          const ref = db.collection("engine_cycle").doc(key);
+          const snap = await ref.get();
+          const prev: any = snap.exists ? snap.data() : {};
+          const cyc = { found: (prev.found || 0) + totalFound, kept: (prev.kept || 0) + ingestedCount };
+          if (remaining === 0) {
+            drift = await recordRunAndCheckDrift(key.replace(/_/g, " "), cyc);
+            await ref.set({ found: 0, kept: 0, updatedAtMillis: Date.now() });
+          } else {
+            await ref.set({ ...cyc, updatedAtMillis: Date.now() });
+          }
+        }
         if (drift.drifted) console.warn(`🚨 [DRIFT] Engine ${key} paused: ${drift.reason}`);
       }
 
@@ -180,6 +204,7 @@ export async function GET(request: Request) {
         removedCount,
         durationMs,
         ingestedCount,
+        remaining,
         note: key === "GEMS" ? (getGemsLastNote() || undefined) : undefined
       });
     }

@@ -11,7 +11,7 @@ jobs:
   engines:
     name: Engine ${{ matrix.engine }}
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 60
     strategy:
       fail-fast: false # one engine failing never stops the others
       matrix:
@@ -24,16 +24,25 @@ jobs:
           APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
           # The site uses trailing slashes, so the address ends in "/" and curl follows redirects.
           # Only engines signed off in src/lib/pipelines/jobGate.ts (AUTO_APPROVE_SOURCES) are run.
-          RESPONSE=$(curl -sS -L --max-time 420 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/?only=${{ matrix.engine }}")
-          echo "Response:"
-          echo "$RESPONSE"
-          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] && echo "$RESPONSE" | grep -q '"status":"success"'; then
-            echo "✅ Engines finished."
-          else
-            echo "❌ Engine run failed (HTTP status $HTTP_STATUS, or the answer did not say success)."
-            exit 1
-          fi
-          if echo "$RESPONSE" | grep -q '"driftPaused":true'; then
-            echo "⚠️ An engine was PAUSED by the drift check. Its jobs now go to pending until you re-check it."
+          # A queue engine (TES) reads part of its schools per call and answers "remaining":N. Calls repeat until nothing is left (at most 12 calls).
+          for CALL in $(seq 1 12); do
+            RESPONSE=$(curl -sS -L --max-time 420 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/?only=${{ matrix.engine }}")
+            echo "Response (call $CALL):"
+            echo "$RESPONSE"
+            HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+            if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] && echo "$RESPONSE" | grep -q '"status":"success"'; then
+              echo "✅ Call $CALL finished."
+            else
+              echo "❌ Engine run failed (HTTP status $HTTP_STATUS, or the answer did not say success)."
+              exit 1
+            fi
+            if echo "$RESPONSE" | grep -q '"driftPaused":true'; then
+              echo "⚠️ An engine was PAUSED by the drift check. Its jobs now go to pending until you re-check it."
+            fi
+            REMAINING=$(echo "$RESPONSE" | grep -o '"remaining":[0-9]*' | head -1 | cut -d':' -f2)
+            if [ -z "$REMAINING" ] || [ "$REMAINING" -eq 0 ]; then break; fi
+            echo "ℹ️ $REMAINING item(s) left; calling again."
+          done
+          if [ -n "$REMAINING" ] && [ "$REMAINING" -gt 0 ]; then
+            echo "⚠️ $REMAINING item(s) still left after 12 calls; they will be read next night (longest-ago first)."
           fi
