@@ -12,6 +12,7 @@ import {
   GitCompare, FileCheck, FileText, ExternalLink, ArrowRight, Flame, Sparkles,
   Search, Filter, Award, Mail, ShieldAlert
 } from 'lucide-react';
+import { healthyLine } from '@/lib/crawler/engineHealth';
 import { 
   getCrawlLogsAction, type CrawlLogItem, getEngineHealthAction, getCoolingStatusesAction, type EngineCoolingItem, 
   uploadRegistryJsonAction, 
@@ -1587,7 +1588,7 @@ export default function AdminCommandPage() {
                             {engineHealth.length > 0 && (
                                 <div className="flex flex-wrap items-center gap-2">
                                     {engineHealth.filter((h) => h.level !== "ok").length === 0 ? (
-                                        <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">All watched engines healthy</span>
+                                        <span className={cn("text-[10px] font-black uppercase tracking-wider", healthyLine().green ? "text-emerald-400" : "text-slate-400")}>{healthyLine().text}</span>
                                     ) : engineHealth.filter((h) => h.level !== "ok").map((h) => (
                                         <span
                                             key={h.engine}

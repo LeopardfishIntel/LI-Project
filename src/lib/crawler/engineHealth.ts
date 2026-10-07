@@ -12,6 +12,19 @@ export interface EngineHealth { engine: string; level: HealthLevel; reason: stri
 /** Engines that are signed off and run every night (add an engine here when it is signed off). */
 export const WATCHED_ENGINES = ["GEMS", "GRC", "SEARCH_ASSOCIATES", "TES"] as const;
 
+/**
+ * Engines Roger has approved after a rebuild (Roger, 2026-10-07: the green "healthy" line must not show for an engine that is not approved yet).
+ * Add an engine here ONLY when Roger says so. GEMS and TES were rebuilt on 2026-10-07 and wait for his approval.
+ */
+export const APPROVED_ENGINES: readonly string[] = ["GRC", "SEARCH_ASSOCIATES"];
+
+/** The line shown when no engine has a warning. Green only when every watched engine is approved; otherwise says which are waiting. */
+export function healthyLine(): { green: boolean; text: string } {
+  const waiting = WATCHED_ENGINES.filter((e) => !APPROVED_ENGINES.includes(e));
+  if (!waiting.length) return { green: true, text: "All watched engines healthy and approved" };
+  return { green: false, text: `No warnings. Waiting for your approval: ${waiting.map((e) => e.replace(/_/g, " ")).join(", ")}` };
+}
+
 const DAY = 86400000;
 const dayKey = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
