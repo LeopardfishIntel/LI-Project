@@ -277,6 +277,8 @@ export default function AdminCommandPage() {
       if (activeTab === 'members') {
         loadMembers();
       }
+      // Engine warnings load in the background so the Daily Intelligence button can show a coloured dot from any tab.
+      getEngineHealthAction().then((h) => { if (h.success) setEngineHealth(h.data); }).catch(() => {});
       // Load members count in background on mount
       if (members.length === 0) {
         loadMembers();
@@ -344,6 +346,11 @@ export default function AdminCommandPage() {
             >
                 <Activity className="size-3.5" />
                 Daily Intelligence
+                {(() => {
+                    const worst = engineHealth.some((h) => h.level === "red") ? "red" : engineHealth.some((h) => h.level === "amber") ? "amber" : engineHealth.some((h) => h.level === "yellow") ? "yellow" : null;
+                    if (!worst) return null;
+                    return <span title="An engine needs attention - open Daily Intelligence" className={cn("size-2.5 rounded-full", worst === "red" && "bg-red-500 animate-pulse", worst === "amber" && "bg-amber-400", worst === "yellow" && "bg-yellow-300")} />;
+                })()}
             </button>
             <button 
                 onClick={() => setActiveTab('members')}
