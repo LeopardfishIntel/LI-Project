@@ -11,7 +11,7 @@ import { realDeps } from "./directIo";
 /**
  * Pilot set (Roger, 2026-10-05): the trial schools whose own careers page can be read without a real browser.
  * NOT included on purpose: Baku International School FLIS0222 (a QSI school - jobs sit on QSI's group site, not its own page), Dulwich Beijing FLIS0017, Bombay International FLIS0030, Ecole Jeannine Manuel FLIS0037 (need a real browser / campus pages),
- * JESS Dubai FLIS0028, International School Nanshan FLIS0032, European Azerbaijan FLIS0014 (they only use TES / Teacher Horizons).
+ * JESS Dubai FLIS0028, International School Nanshan FLIS0032, European Azerbaijan FLIS0014 (they only use TES; Teacher Horizons was removed).
  */
 export const DIRECT_PILOT_IDS: string[] = [
   "FLIS0001", "FLIS0002", "FLIS0003", "FLIS0004", "FLIS0005", "FLIS0007", "FLIS0008", "FLIS0009", "FLIS0010", "FLIS0012", "FLIS0016",
