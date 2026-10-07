@@ -54,7 +54,7 @@ export async function markTesChecked(ids: string[]): Promise<void> {
   }
 }
 
-export async function searchTesDbSchools(opts?: { budgetMs?: number; maxItems?: number }): Promise<TesJobMatch[]> {
+export async function searchTesDbSchools(opts?: { budgetMs?: number; maxItems?: number; passHours?: number }): Promise<TesJobMatch[]> {
   lastRunInfo = { checked: [], remaining: 0, total: 0, slowest: [] };
   console.log("🛸 [TES CRAWLER] Starting automated sweep of TES employer hubs...");
 
@@ -132,6 +132,11 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number; maxItems?: 
       st.docs.forEach((d: any) => lastChecked.set(d.id, Number(d.data()?.lastCheckedAt) || 0));
     } catch (e: any) { console.warn("⚠️ [TES CRAWLER] Could not read tes_state (reading in registry order):", e?.message || e); }
     queue.sort((x, y) => (lastChecked.get(x.id) || 0) - (lastChecked.get(y.id) || 0) || x.id.localeCompare(y.id));
+    // A pass = every item read once. Items read within the last PASS_HOURS count as done, so the caller sees "remaining" fall to 0 and stops.
+    const PASS_HOURS = opts?.passHours ?? 6;
+    const dueBefore = Date.now() - PASS_HOURS * 3600000;
+    const total = queue.length;
+    for (let k = queue.length - 1; k >= 0; k--) if ((lastChecked.get(queue[k].id) || 0) >= dueBefore) queue.splice(k, 1);
 
     const readSchoolInner = async (input: AdaptorInput) => {
       try {
@@ -232,8 +237,8 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number; maxItems?: 
       batch.forEach((b) => checked.push(b.id));
       if (idx < queue.length) await sleep(BATCH_DELAY_MS);
     }
-    lastRunInfo = { checked, remaining: queue.length - idx, total: queue.length, slowest: timings.sort((a, b) => b.ms - a.ms).slice(0, 5) };
-    console.log(`🛸 [TES CRAWLER] This call read ${checked.length} of ${queue.length}; ${queue.length - idx} left for the next call.`);
+    lastRunInfo = { checked, remaining: queue.length - idx, total, slowest: timings.sort((a, b) => b.ms - a.ms).slice(0, 5) };
+    console.log(`🛸 [TES CRAWLER] This call read ${checked.length}; ${queue.length - idx} still due this pass (${total} in all).`);
 
     console.log(`✅ [TES CRAWLER] Sweep completed. Found ${allMatches.length} active vacancies, purged ${totalPurgedCount} stale records across ${candidateSchools.length} schools.`);
     return allMatches;
