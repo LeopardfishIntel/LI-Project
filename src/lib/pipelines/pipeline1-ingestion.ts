@@ -106,9 +106,11 @@ function buildCacheDocument(
     srcUrls[srcName] = record.applyUrl;
   }
 
-  const initialSources = record.sources && record.sources.length > 0
+  // Each source is listed once (a card must never show "TES, TES").
+  const uniqueSourceNames = (list: string[]) => { const seen = new Set<string>(); return list.filter((x) => { const k = String(x).toUpperCase().trim(); if (!k || seen.has(k)) return false; seen.add(k); return true; }); };
+  const initialSources = uniqueSourceNames(record.sources && record.sources.length > 0
     ? [...record.sources]
-    : [srcName];
+    : [srcName]);
 
   // Multi-campus & St. Christopher's Bahrain canonical master re-parenting
   let targetSchoolId = record.schoolId ? record.schoolId.toUpperCase() : '';
@@ -331,6 +333,7 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
       }
     }
     const { setDocument } = await import("@/firebase/admin");
+    if (Array.isArray(doc.sources)) { const seenSrc = new Set<string>(); doc.sources = doc.sources.filter((x: string) => { const k = String(x).toUpperCase().trim(); if (!k || seenSrc.has(k)) return false; seenSrc.add(k); return true; }); }
     await setDocument("featured_jobs_cache", doc.id, doc, { merge: true });
     return { isNew: true };
   } catch (err) {
