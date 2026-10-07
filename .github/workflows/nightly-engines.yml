@@ -9,7 +9,7 @@ on:
 
 jobs:
   engines:
-    name: Run signed-off job engines (GRC only for now)
+    name: Run signed-off job engines
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
