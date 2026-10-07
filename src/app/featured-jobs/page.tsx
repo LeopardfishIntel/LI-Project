@@ -599,6 +599,15 @@ export default function FeaturedJobsPage() {
   // Fallback to check document profile roles
   const calculatedIsAdmin = isAdminUser || user?.email === 'admin@leopardfish.intel' || user?.email === 'roger@leopardfishintel.com' || user?.email?.endsWith('@leopardfishintel.com') || userProfileData?.role === 'admin' || userProfileData?.isAdmin === true || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
 
+  // ADMIN ONLY: engine health, used to colour the engine pills (red flashing / amber / yellow).
+  const [engineHealth, setEngineHealth] = useState<import('@/lib/crawler/engineHealth').EngineHealth[] | null>(null);
+  useEffect(() => {
+    if (!calculatedIsAdmin) { setEngineHealth(null); return; }
+    let cancelled = false;
+    import('@/app/admin/actions').then((m) => m.getEngineHealthAction()).then((r) => { if (!cancelled && r?.success) setEngineHealth(r.data); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [calculatedIsAdmin]);
+
   // Auto-fill family status if registered or returning user
   useEffect(() => {
     if (teacherProfile?.familyStatus) {
@@ -2000,6 +2009,7 @@ export default function FeaturedJobsPage() {
                       activeFilter={selectedSourceEngine}
                       onSelectFilter={(f) => { setSelectedSourceEngine(f); setEngineBarOpen(false); }}
                       isAdmin={calculatedIsAdmin}
+                      engineHealth={engineHealth}
                     />
                   </div>
                 )}
@@ -2037,6 +2047,7 @@ export default function FeaturedJobsPage() {
                   activeFilter={selectedSourceEngine}
                   onSelectFilter={setSelectedSourceEngine}
                   isAdmin={calculatedIsAdmin}
+                  engineHealth={engineHealth}
                 />
 
                 {filteredJobs.length > 0 && (

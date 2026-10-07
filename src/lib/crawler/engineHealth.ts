@@ -71,3 +71,18 @@ export function assessEngineHealth(
   if (spanDays >= 14 && addedRecent === 0) return { engine, level: "yellow", reason: "No new job added for 14 days.", lastGoodDay };
   return { engine, level: "ok", reason: "Running normally.", lastGoodDay };
 }
+
+/**
+ * Colour for an engine's pill on the jobs page (ADMIN VIEW ONLY).
+ *   red (flashing) / amber / yellow = the warnings above.
+ *   green   = running normally AND approved by Roger.
+ *   waiting = running normally but not approved yet (shown plain, no green).
+ *   none    = engine is not watched (no colour change).
+ */
+export type PillTone = "red" | "amber" | "yellow" | "green" | "waiting" | "none";
+export function pillTone(engineKey: string, health: EngineHealth[] | null | undefined): PillTone {
+  const h = (health || []).find((x) => x.engine.toUpperCase() === engineKey.replace(/ /g, "_").toUpperCase());
+  if (!h) return "none";
+  if (h.level !== "ok") return h.level;
+  return APPROVED_ENGINES.includes(h.engine) ? "green" : "waiting";
+}

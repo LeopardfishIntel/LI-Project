@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { pillTone, type EngineHealth, type PillTone } from "@/lib/crawler/engineHealth";
 
 interface SourceFilterBarProps {
   engineCounts: Record<string, number>;
@@ -8,6 +9,8 @@ interface SourceFilterBarProps {
   activeFilter: string;
   onSelectFilter: (filterKey: string) => void;
   isAdmin?: boolean;
+  /** ADMIN ONLY: engine health used to colour the pills (ignored for everyone else). */
+  engineHealth?: EngineHealth[] | null;
 }
 
 interface SourceMeta {
@@ -64,12 +67,23 @@ export const ALL_SOURCES: SourceMeta[] = [
   { key: "DIRECT", label: "DIRECT", category: "DIRECT" },
 ];
 
+/** Admin warning colours for a pill (red flashes). Not used for the pill the admin has selected, so the selection stays clear. */
+const TONE_CLASS: Record<PillTone, string> = {
+  red: "bg-red-600/90 text-white border border-red-400 animate-pulse",
+  amber: "bg-amber-500/90 text-black border border-amber-300",
+  yellow: "bg-yellow-300/90 text-black border border-yellow-100",
+  green: "bg-emerald-600/80 text-white border border-emerald-400",
+  waiting: "border border-dashed border-sky-400/70",
+  none: "",
+};
+
 export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
   engineCounts,
   totalCount,
   activeFilter,
   onSelectFilter,
   isAdmin = false,
+  engineHealth = null,
 }) => {
   const [showInactive, setShowInactive] = useState(false);
 
@@ -83,6 +97,18 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
       engineCounts[strippedKey] ??
       0
     );
+  };
+
+  // Admin only: warning colour for this engine's pill ("" for everyone else and for engines we do not watch).
+  const toneClass = (key: string, isActive: boolean): string => {
+    if (!isAdmin || isActive) return "";
+    return TONE_CLASS[pillTone(key, engineHealth)];
+  };
+  const toneTitle = (key: string): string | undefined => {
+    if (!isAdmin) return undefined;
+    const h = (engineHealth || []).find((x) => x.engine.toUpperCase() === key.toUpperCase());
+    if (!h) return undefined;
+    return h.level === "ok" ? (pillTone(key, engineHealth) === "green" ? "Healthy and approved" : "Running normally, waiting for your approval") : h.reason;
   };
 
   const isFilterActive = (key: string): boolean => {
@@ -143,9 +169,12 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
+              title={toneTitle(item.key)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
                 isActive
                   ? "bg-[#FF6B35] text-white border border-[#FF6B35] shadow-md shadow-[#FF6B35]/25"
+                  : toneClass(item.key, isActive)
+                  ? toneClass(item.key, isActive)
                   : isZero
                   ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50"
@@ -182,9 +211,12 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
+              title={toneTitle(item.key)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
                 isActive
                   ? "bg-[#FF6B35] text-white border border-[#FF6B35] shadow-md shadow-[#FF6B35]/25"
+                  : toneClass(item.key, isActive)
+                  ? toneClass(item.key, isActive)
                   : isZero
                   ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/50 text-slate-300 border border-slate-700/40 hover:bg-slate-700/50"
