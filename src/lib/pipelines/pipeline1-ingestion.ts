@@ -334,6 +334,8 @@ export async function runIngestionPipeline(
   const reasons: string[] = [];
   let rejected = 0;
   const seenFingerprints = new Set<string>();
+  // Same school + same title in one run = the same job (e.g. one school page read through its campus pages): one card, never two.
+  const seenTitleKeys = new Set<string>();
   const seenUrls = new Set<string>();
   const mappedJobs: any[] = [];
   const cacheDocs: CacheJobDocument[] = [];
@@ -431,6 +433,13 @@ export async function runIngestionPipeline(
       reasons.push(`[DEDUP_FP] "${record.rawTitle}" (fingerprint: ${fp})`);
       continue;
     }
+    const titleKey = `${ownerId}|${String(record.rawTitle || "").toLowerCase().replace(/[^a-z0-9]/g, "")}`;
+    if (titleKey.endsWith("|") === false && seenTitleKeys.has(titleKey)) {
+      rejected++;
+      reasons.push(`[DEDUP_TITLE] "${record.rawTitle}" (same school and title already in this run)`);
+      continue;
+    }
+    seenTitleKeys.add(titleKey);
     seenFingerprints.add(fp);
     acceptedFingerprints.push(fp);
 
@@ -488,7 +497,9 @@ export async function runIngestionPipeline(
     console.warn(`⚠️ [PIPELINE 1] Failed to update lastSweptAtMillis on ${schoolId}:`, err.message);
   }
 
-  const cacheResults = await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
+  // One at a time: each write looks at the board first, so a later job must see the earlier one (parallel writes could both look "new").
+  const cacheResults: { isNew: boolean }[] = [];
+  for (const d of cacheDocs) cacheResults.push(await writeToCacheCollection(d));
 
   // 🧹 Auto-purge stale TES vacancies for this school ONLY when explicitly requested for full-school sweep
   if (options?.purgeTesVacancies === true) {
