@@ -1903,3 +1903,25 @@ export async function runJobAuditAction(): Promise<JobAuditResult> {
     return { ...empty, error: err?.message || String(err) };
   }
 }
+
+
+/**
+ * 🚨 Action: Engine health for the admin warning pills (admin view only).
+ * Reads the last 30 days of run records and judges each watched engine (rules and tests: src/lib/crawler/engineHealth.ts).
+ */
+export async function getEngineHealthAction(): Promise<{ success: boolean; data: import("@/lib/crawler/engineHealth").EngineHealth[]; error: string | null }> {
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const { assessEngineHealth, WATCHED_ENGINES } = await import("@/lib/crawler/engineHealth");
+    const { shouldEngineRunToday } = await import("@/lib/crawler/timetableScheduler");
+    const db = getAdminDb();
+    if (!db) return { success: false, data: [], error: "Admin DB unavailable" };
+    const nowMs = Date.now();
+    const snap = await db.collection("crawllogs").where("createdAtMillis", ">=", nowMs - 30 * 86400000).orderBy("createdAtMillis", "desc").limit(2000).get();
+    const logs = snap.docs.map((d: any) => { const x = d.data(); return { engine: String(x.engine || ""), totalFound: Number(x.totalFound || 0), addedCount: Number(x.addedCount || 0), createdAtMillis: Number(x.createdAtMillis || 0) }; });
+    const data = WATCHED_ENGINES.map((e) => assessEngineHealth(e, logs, nowMs, (date) => shouldEngineRunToday(e, date)));
+    return { success: true, data, error: null };
+  } catch (err: any) {
+    return { success: false, data: [], error: err?.message || String(err) };
+  }
+}

@@ -13,7 +13,7 @@ import {
   Search, Filter, Award, Mail, ShieldAlert
 } from 'lucide-react';
 import { 
-  getCrawlLogsAction, type CrawlLogItem, getCoolingStatusesAction, type EngineCoolingItem, 
+  getCrawlLogsAction, type CrawlLogItem, getEngineHealthAction, getCoolingStatusesAction, type EngineCoolingItem, 
   uploadRegistryJsonAction, 
   enrichAllSchoolsAction, 
   updateLocationCostOfLivingAction, 
@@ -100,6 +100,7 @@ export default function AdminCommandPage() {
   const [memberSearchQuery, setMemberSearchQuery] = useState('');
   const [memberTierFilter, setMemberTierFilter] = useState<'ALL' | 'free' | 'admin'>('ALL');
   const [crawlLogs, setCrawlLogs] = useState<CrawlLogItem[]>([]);
+  const [engineHealth, setEngineHealth] = useState<{ engine: string; level: string; reason: string; lastGoodDay: string | null }[]>([]);
   const [loadingCrawlLogs, setLoadingCrawlLogs] = useState(false);
   const [selectedEngineFilter, setSelectedEngineFilter] = useState<string>("ALL");
   const [coolingStatuses, setCoolingStatuses] = useState<Record<string, EngineCoolingItem>>({});
@@ -260,6 +261,8 @@ export default function AdminCommandPage() {
     setLoadingTelemetry(false);
     const crawlRes = await getCrawlLogsAction();
     if (crawlRes.success) setCrawlLogs(crawlRes.data);
+    const healthRes = await getEngineHealthAction();
+    if (healthRes.success) setEngineHealth(healthRes.data);
     const coolRes = await getCoolingStatusesAction();
     if (coolRes.success) setCoolingStatuses(coolRes.data);
     setLoadingCrawlLogs(false);
@@ -1579,6 +1582,28 @@ export default function AdminCommandPage() {
                                     </span>
                                 </div>
                             </div>
+
+                            {/* ENGINE WARNING PILLS (admin only): red flashes = something broke, amber = probably broken, yellow = quiet for 14 days */}
+                            {engineHealth.length > 0 && (
+                                <div className="flex flex-wrap items-center gap-2">
+                                    {engineHealth.filter((h) => h.level !== "ok").length === 0 ? (
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">All watched engines healthy</span>
+                                    ) : engineHealth.filter((h) => h.level !== "ok").map((h) => (
+                                        <span
+                                            key={h.engine}
+                                            title={`${h.reason}${h.lastGoodDay ? ` Last good day: ${h.lastGoodDay}.` : ""}`}
+                                            className={cn(
+                                                "px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border",
+                                                h.level === "red" && "bg-red-600/20 text-red-300 border-red-500/60 animate-pulse",
+                                                h.level === "amber" && "bg-amber-500/20 text-amber-300 border-amber-500/60",
+                                                h.level === "yellow" && "bg-yellow-400/10 text-yellow-200 border-yellow-400/40"
+                                            )}
+                                        >
+                                            {h.engine.replace(/_/g, " ")}: {h.reason}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
 
                             {/* High-Level Differential Summary Cards */}
                             {(() => {
