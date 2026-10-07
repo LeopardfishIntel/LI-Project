@@ -126,16 +126,6 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     utcEndWindow: "04:45",
     targetDurationMinutes: 15
   },
-  UWC: {
-    engineKey: "UWC",
-    sourceName: "UWC Network",
-    method: "Directory Parsing",
-    peakSchedule: "SUNDAY",
-    offPeakSchedule: "EVERY_14_DAYS",
-    utcStartWindow: "05:15",
-    utcEndWindow: "05:30",
-    targetDurationMinutes: 15
-  },
   SEARCH_ASSOCIATES: {
     engineKey: "SEARCH_ASSOCIATES",
     sourceName: "Search Associates Leadership",

@@ -5,7 +5,6 @@ import { getCurrentSeason, shouldEngineRunToday, CRAWLER_TIMETABLE } from "@/lib
 import { isEngineCoolingDown } from "@/lib/crawler/safetyEngine";
 import { searchIspDbSchools } from "@/lib/search/isp";
 import { searchGlobeducateDbSchools } from "@/lib/search/globeducate";
-import { searchUwcDbSchools } from "@/lib/search/uwc";
 import { searchCognitaDbSchools } from "@/lib/search/cognita";
 import { searchInspiredDbSchools } from "@/lib/search/inspired";
 import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
@@ -50,7 +49,6 @@ export async function GET(request: Request) {
       NORD_ANGLIA: searchNordAngliaDbSchools,
       ISP: searchIspDbSchools,
       GLOBEDUCATE: searchGlobeducateDbSchools,
-      UWC: searchUwcDbSchools,
       COGNITA: searchCognitaDbSchools,
       INSPIRED: searchInspiredDbSchools,
       TEACH_AWAY: searchTeachAwayDbSchools,

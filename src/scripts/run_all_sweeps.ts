@@ -8,7 +8,6 @@ import { searchGlobeducateDbSchools } from "../lib/search/globeducate";
 import { searchInspiredDbSchools } from "../lib/search/inspired";
 import { searchTeachAwayDbSchools } from "../lib/search/teachaway";
 import { searchTaylorsDbSchools } from "../lib/search/taylors";
-import { searchUwcDbSchools } from "../lib/search/uwc";
 import { runIngestionPipeline } from "../lib/pipelines/pipeline1-ingestion";
 import { getAdminDb } from "../firebase/admin";
 
@@ -29,7 +28,6 @@ const ENGINES: EngineDef[] = [
   { key: "INSPIRED", name: "Inspired Education", runner: searchInspiredDbSchools },
   { key: "TEACH_AWAY", name: "Teach Away", runner: searchTeachAwayDbSchools },
   { key: "TAYLORS", name: "Taylors Education", runner: searchTaylorsDbSchools },
-  { key: "UWC", name: "United World Colleges (UWC)", runner: searchUwcDbSchools },
 ];
 
 async function main() {

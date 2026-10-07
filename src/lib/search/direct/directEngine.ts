@@ -7,6 +7,7 @@
  * Every Direct job goes to Pipeline 1 and the job gate, and starts as PENDING (Direct is not signed off).
  */
 import type { RawJobRecord } from "@/lib/crawler/adaptors/raw-job.types";
+import { withUwcLabel } from "./uwcRules";
 import {
   Anchor, chooseApplyUrl, cleanTitle, deeperLinks, findNextPageUrl, hostOf, isGroupSitePage, isHomepageUrl, isJobBoardUrl, isSoftHomepage, anchorForTitle,
   looksBlocked, makeUniqueUrls, pagingInfo, rankRepairCandidates, sameTitle, textHash, titleInText, toIsoDate,
@@ -157,7 +158,7 @@ export async function runDirectForSchool(school: DirectSchool, prev: DirectState
 export function toRawRecords(school: DirectSchool, r: DirectResult): RawJobRecord[] {
   return r.jobs.map((j) => {
     const own = j.applyUrl.split("#")[0] !== r.pageUrl.split("#")[0];
-    return {
+    return withUwcLabel({
       rawTitle: j.title,
       applyUrl: j.applyUrl,
       directUrl: j.applyUrl, // the Direct pill opens the job's own link when it has one, otherwise the careers page
@@ -172,6 +173,6 @@ export function toRawRecords(school: DirectSchool, r: DirectResult): RawJobRecor
       country: school.country,
       matchConfidence: own && hostOf(j.applyUrl) !== "" ? "high" : "medium",
       verificationReasons: [`Direct: read from the school's careers page ${r.pageUrl}`, j.evidence ? `evidence: "${j.evidence}"` : "evidence: title found on page"],
-    } as RawJobRecord;
+    } as RawJobRecord, j.applyUrl);
   });
 }
