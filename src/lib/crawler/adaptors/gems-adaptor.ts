@@ -117,7 +117,12 @@ export function extractRoleTier(title: string, description?: string): "Classroom
  * A browser is not available on the website's server, so the old browser version found nothing there.
  * If the read is incomplete (a page fails, or far fewer jobs than the list says), it returns NOTHING, so a half-read can never retire jobs.
  */
+let gemsLastNote = "";
+/** Why the last GEMS read gave nothing (shown in the nightly answer, so a failure is never silent). */
+export function getGemsLastNote(): string { return gemsLastNote; }
+
 export async function sweepAllGemsNetwork(): Promise<any[]> {
+  gemsLastNote = "";
   console.log("💎 [GEMS ENGINE] Reading the GEMS careers list (plain requests)...");
   const base = "https://careers.gemseducation.com/app/control/byt_job_search_manager";
   const getPage = async (p: number): Promise<any> => {
@@ -146,11 +151,13 @@ export async function sweepAllGemsNetwork(): Promise<any[]> {
     }
     console.log(`💎 [GEMS ENGINE] The list says ${totalJobs} jobs; read ${all.length}.`);
     if (!totalJobs || all.length < totalJobs * 0.9) {
+      gemsLastNote = `Incomplete read: the list says ${totalJobs} jobs, read ${all.length}`;
       console.error("❌ [GEMS ENGINE] Incomplete read - returning nothing so no job is changed.");
       return [];
     }
     return all;
   } catch (err: any) {
+    gemsLastNote = `Could not read the GEMS list: ${String(err?.message || err).slice(0, 200)}`;
     console.error("❌ [GEMS ENGINE] Could not read the GEMS list:", err?.message || err);
     return [];
   }

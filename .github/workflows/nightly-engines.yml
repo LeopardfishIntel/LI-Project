@@ -9,16 +9,22 @@ on:
 
 jobs:
   engines:
-    name: Run signed-off job engines
+    name: Engine ${{ matrix.engine }}
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false # one engine failing never stops the others
+      matrix:
+        # Each engine gets its own request (the website host cuts a single request off after about 5 minutes).
+        # An engine that is not due today, or not signed off, simply answers "skipped".
+        engine: [GEMS, GRC, SEARCH_ASSOCIATES, TES]
     steps:
       - name: Trigger the sweep orchestrator
         run: |
           APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
           # The site uses trailing slashes, so the address ends in "/" and curl follows redirects.
           # Only engines signed off in src/lib/pipelines/jobGate.ts (AUTO_APPROVE_SOURCES) are run.
-          RESPONSE=$(curl -sS -L --max-time 600 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/")
+          RESPONSE=$(curl -sS -L --max-time 420 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/?only=${{ matrix.engine }}")
           echo "Response:"
           echo "$RESPONSE"
           HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)

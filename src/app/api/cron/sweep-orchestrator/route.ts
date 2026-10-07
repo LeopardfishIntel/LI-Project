@@ -18,6 +18,7 @@ import { searchSearchAssociatesDbSchools } from "@/lib/search/searchassociates";
 import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 import { isSignedOffEngine } from "@/lib/pipelines/jobGate";
+import { getGemsLastNote } from "@/lib/crawler/adaptors/gems-adaptor";
 import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
 import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 import { planRetireVanished, applyRetirePlan } from "@/lib/pipelines/retireVanished";
@@ -30,6 +31,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const forcedEngine = searchParams.get("forceEngine");
+    // ?only=KEY runs just that one engine (still only when due and signed off). The nightly workflow calls each engine in its own request,
+    // because one request is cut off by the website host after about 5 minutes.
+    const onlyEngine = (searchParams.get("only") || "").toUpperCase();
 
     const now = new Date();
     const season = getCurrentSeason(now);
@@ -68,6 +72,7 @@ export async function GET(request: Request) {
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
+      if (onlyEngine && onlyEngine !== key) continue;
       const isForced = forcedEngine && forcedEngine.toUpperCase() === key;
       const isDue = shouldEngineRunToday(key, now);
 
@@ -174,7 +179,8 @@ export async function GET(request: Request) {
         addedCount,
         removedCount,
         durationMs,
-        ingestedCount
+        ingestedCount,
+        note: key === "GEMS" ? (getGemsLastNote() || undefined) : undefined
       });
     }
 
