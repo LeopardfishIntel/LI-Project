@@ -16,9 +16,8 @@ const schools = [
   { id: "FLIS0374", name: "Singapore American School", country: "Singapore" },
   { id: "FLIS0170", name: "Stockholm International School", country: "Sweden" },
   { id: "FLIS0381", name: "Hong Kong International School", country: "China/Hong Kong" },
-  { id: "FLIS0900", name: "American School of Doha", country: "Kuwait" }, // same name, other country (test only)
-  { id: "FLIS0901", name: "Colegio Nueva Granada", country: "Colombia" },
-].filter((s) => s.id !== "FLIS0900");
+  { id: "FLIS0270", name: "Colegio Nueva Granada", country: "Colombia" },
+];
 
 const M = (heading: string, role: string) => { const t = saSchoolText(heading, role); return matchSaSchool(t.school, t.country, schools); };
 
@@ -44,7 +43,7 @@ check("Warsaw by name", M("Middle School Vice Principal American School of Warsa
 check("Jakarta by name", M("Schoolwide Curriculum Coordinator Jakarta Intercultural School (Indonesia)", "Schoolwide Curriculum Coordinator").schoolId === "FLIS0145");
 check("Singapore by name", M("High School Deputy Principal Singapore American School (Singapore)", "High School Deputy Principal").schoolId === "FLIS0374");
 check("Hong Kong country wording fits", M("Secondary School Associate Principal Hong Kong International School (China/Hong Kong)", "Secondary School Associate Principal").schoolId === "FLIS0381");
-check("Colegio Nueva Granada with city text", M("Middle School Principal Colegio Nueva Granada, Bogota (Colombia)", "Middle School Principal").schoolId === "FLIS0901");
+check("Colegio Nueva Granada with city text", M("Middle School Principal Colegio Nueva Granada, Bogota (Colombia)", "Middle School Principal").schoolId === "FLIS0270");
 
 // not in the registry
 check("Macao not in registry -> no match", M("Head of School The International School of Macao (China/Macao)", "Head of School").schoolId === null);
