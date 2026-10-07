@@ -90,10 +90,14 @@ export function isJobDescriptionFile(u: string): boolean {
     return /(^|[^a-z])(jd|job[\s_\-]*descriptions?|jobdescription|role[\s_\-]*(profile|description)|person[\s_\-]*specification)([^a-z]|$)/i.test(f);
   } catch { return false; }
 }
+/** A picture (poster/flyer), never somewhere a person can apply from: the careers page is used instead. */
+export function isImageFile(u: string): boolean {
+  try { return /\.(png|jpe?g|gif|webp|svg|bmp)$/i.test(new URL(u).pathname); } catch { return false; }
+}
 export function chooseApplyUrl(jobUrl: string | null | undefined, pageUrl: string, knownLinks?: Set<string>): string {
   const u = String(jobUrl || "").trim();
   if (!/^https?:\/\//i.test(u)) return pageUrl;
-  if (isJobBoardUrl(u) || isHomepageUrl(u) || isJobDescriptionFile(u)) return pageUrl;
+  if (isJobBoardUrl(u) || isHomepageUrl(u) || isJobDescriptionFile(u) || isImageFile(u)) return pageUrl;
   const sameSite = registrableDomain(hostOf(u)) === registrableDomain(hostOf(pageUrl));
   if (!sameSite && !ATS_HOST_RX.test(hostOf(u))) return pageUrl;
   if (knownLinks && u !== pageUrl && !knownLinks.has(u)) return pageUrl;

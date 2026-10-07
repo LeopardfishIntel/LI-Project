@@ -1,4 +1,4 @@
-import { isJobDescriptionFile,
+import { isImageFile, isJobDescriptionFile,
   cleanTitle, sameTitle, titleKey, titleInText, chooseApplyUrl, makeUniqueUrls, isSoftHomepage, isHomepageUrl, toIsoDate, pagingInfo,
   findNextPageUrl, deeperLinks, rankRepairCandidates, registrableDomain, looksBlocked, isJobBoardUrl, isGroupSitePage, textHash, pickRotation, anchorForTitle,
 } from "./directRules";
@@ -88,6 +88,7 @@ const jdPage = "https://neevschools.org/key-links-careers/"; const jdKnown = new
 check("job description file is not the apply link (JD)", chooseApplyUrl("https://neevschools.org/wp-content/uploads/2026/10/JD-PHE.pdf", jdPage, jdKnown) === jdPage);
 check("job description file is not the apply link (Job-Description)", chooseApplyUrl("https://neevschools.org/wp-content/uploads/2026/02/Job-Description-Early-Years-Home-Room-Teacher-.pdf", jdPage, jdKnown) === jdPage);
 check("a real advert pdf is kept", chooseApplyUrl("https://www.spcc.edu.hk/f/jobs_and_tenders/5092/Ad_SPCC_Chinese%20Percussion%20Instructor_Oct2026.pdf", "https://www.spcc.edu.hk/jobs-and-tenders", jdKnown).endsWith("Oct2026.pdf"));
+check("image links are never apply links (Costa Rica poster)", isImageFile("https://uwccostarica.org/wp-content/uploads/2026/10/Chef-Ejecutivo-a.png") && !isImageFile("https://x.edu/jobs/teacher") && chooseApplyUrl("https://uwccostarica.org/wp-content/uploads/2026/10/Chef.png", "https://uwccostarica.org/community/work/") === "https://uwccostarica.org/community/work/");
 check("isJobDescriptionFile: normal words are not caught", !isJobDescriptionFile("https://x.edu/f/Adjudicator-Notice.pdf") && isJobDescriptionFile("https://x.edu/f/JD_Head-Curriculum-updated.pdf"));
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
