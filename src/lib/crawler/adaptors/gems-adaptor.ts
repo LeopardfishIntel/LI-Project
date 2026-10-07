@@ -6,7 +6,6 @@
  * non-teaching positions, and attaches deep curriculum, term, and role metadata.
  */
 
-import { chromium } from "playwright";
 import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { isPastAcademicIntake } from "../dateParser";
@@ -114,68 +113,46 @@ export function extractRoleTier(title: string, description?: string): "Classroom
 }
 
 /**
- * 🌐 Sweeps all pages of GEMS Education network via authenticated token session
+ * 🌐 Reads all pages of the GEMS careers list with plain web requests (no browser, no token needed - checked 2026-10-07).
+ * A browser is not available on the website's server, so the old browser version found nothing there.
+ * If the read is incomplete (a page fails, or far fewer jobs than the list says), it returns NOTHING, so a half-read can never retire jobs.
  */
 export async function sweepAllGemsNetwork(): Promise<any[]> {
-  console.log("💎 [GEMS ENGINE] Launching authenticated tokenized session sweep...");
-  let browser = null;
-
+  console.log("💎 [GEMS ENGINE] Reading the GEMS careers list (plain requests)...");
+  const base = "https://careers.gemseducation.com/app/control/byt_job_search_manager";
+  const getPage = async (p: number): Promise<any> => {
+    let lastErr: any = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 20000);
+        try {
+          const res = await fetch(`${base}?action=1&query=page=${p}&body=job-search-results&lan=en`, { headers: { "X-Requested-With": "XMLHttpRequest" }, signal: ctrl.signal });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } finally { clearTimeout(timer); }
+      } catch (e: any) { lastErr = e; await new Promise((r) => setTimeout(r, 500 * attempt)); }
+    }
+    throw lastErr;
+  };
   try {
-    browser = await chromium.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-    });
-
-    const page = await browser.newPage();
-    let dynamicToken = "";
-
-    page.on("request", (req) => {
-      const u = req.url();
-      if (u.includes("byt_job_search_manager") && u.includes("token=")) {
-        const match = u.match(/token=([a-zA-Z0-9_-]+)/);
-        if (match) dynamicToken = match[1];
-      }
-    });
-
-    await page.goto("https://careers.gemseducation.com/en/job-search-results/", {
-      waitUntil: "networkidle",
-      timeout: 30000,
-    });
-
-    console.log(`💎 [GEMS ENGINE] Active Session Token Captured: "${dynamicToken || "default"}"`);
-
-    const harvestedJobs = await page.evaluate(async (tok) => {
-      const all: any[] = [];
-      const tokenParam = tok ? `&token=${tok}` : "";
-
-      const firstRes = await fetch(
-        `/app/control/byt_job_search_manager?action=1${tokenParam}&query=page=1&body=job-search-results&lan=en`,
-        { headers: { "X-Requested-With": "XMLHttpRequest" } }
-      );
-      const firstData = await firstRes.json();
-      const totalJobs = firstData.totalJobs || 0;
-      const totalPages = Math.ceil(totalJobs / 10);
-      all.push(...(firstData.jobs || []));
-
-      for (let p = 2; p <= totalPages; p++) {
-        const res = await fetch(
-          `/app/control/byt_job_search_manager?action=1${tokenParam}&query=page=${p}&body=job-search-results&lan=en`,
-          { headers: { "X-Requested-With": "XMLHttpRequest" } }
-        );
-        const data = await res.json();
-        if (data.jobs) all.push(...data.jobs);
-      }
-
-      return all;
-    }, dynamicToken);
-
-    console.log(`💎 [GEMS ENGINE] Harvested ${harvestedJobs.length} total raw network records.`);
-    return harvestedJobs;
+    const first = await getPage(1);
+    const totalJobs = Number(first.totalJobs) || 0;
+    const all: any[] = [...(first.jobs || [])];
+    const totalPages = Math.min(Math.ceil(totalJobs / 10), 200);
+    for (let p = 2; p <= totalPages; p++) {
+      const d = await getPage(p);
+      if (d.jobs) all.push(...d.jobs);
+    }
+    console.log(`💎 [GEMS ENGINE] The list says ${totalJobs} jobs; read ${all.length}.`);
+    if (!totalJobs || all.length < totalJobs * 0.9) {
+      console.error("❌ [GEMS ENGINE] Incomplete read - returning nothing so no job is changed.");
+      return [];
+    }
+    return all;
   } catch (err: any) {
-    console.error("❌ [GEMS ENGINE] Error during browser session sweep:", err?.message || err);
+    console.error("❌ [GEMS ENGINE] Could not read the GEMS list:", err?.message || err);
     return [];
-  } finally {
-    if (browser) await browser.close();
   }
 }
 
