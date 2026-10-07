@@ -24,8 +24,8 @@ jobs:
           APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
           # The site uses trailing slashes, so the address ends in "/" and curl follows redirects.
           # Only engines signed off in src/lib/pipelines/jobGate.ts (AUTO_APPROVE_SOURCES) are run.
-          # A queue engine (TES) reads part of its schools per call and answers "remaining":N. Calls repeat until nothing is left (at most 12 calls).
-          for CALL in $(seq 1 12); do
+          # A queue engine (TES) reads part of its schools per call and answers "remaining":N. Calls repeat until nothing is left (at most 40 calls).
+          for CALL in $(seq 1 40); do
             RESPONSE=$(curl -sS -L --max-time 420 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/cron/sweep-orchestrator/?only=${{ matrix.engine }}")
             echo "Response (call $CALL):"
             echo "$RESPONSE"
@@ -44,5 +44,5 @@ jobs:
             echo "ℹ️ $REMAINING item(s) left; calling again."
           done
           if [ -n "$REMAINING" ] && [ "$REMAINING" -gt 0 ]; then
-            echo "⚠️ $REMAINING item(s) still left after 12 calls; they will be read next night (longest-ago first)."
+            echo "⚠️ $REMAINING item(s) still left after 40 calls; they will be read next night (longest-ago first)."
           fi

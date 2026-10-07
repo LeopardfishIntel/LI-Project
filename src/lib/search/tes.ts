@@ -39,7 +39,7 @@ function sleep(ms: number): Promise<void> {
  * 3. Returns aggregated matches shaped for sweep-orchestrator generic ingestion.
  */
 /** What the last call did: the queue items it read, how many are left, and the queue size. Read by the orchestrator. */
-let lastRunInfo: { checked: string[]; remaining: number; total: number } = { checked: [], remaining: 0, total: 0 };
+let lastRunInfo: { checked: string[]; remaining: number; total: number; slowest: { id: string; ms: number; timedOut?: boolean }[] } = { checked: [], remaining: 0, total: 0, slowest: [] };
 export function getTesRunInfo() { return lastRunInfo; }
 
 /** Marks queue items as checked (call after their jobs were ingested). */
@@ -54,8 +54,8 @@ export async function markTesChecked(ids: string[]): Promise<void> {
   }
 }
 
-export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<TesJobMatch[]> {
-  lastRunInfo = { checked: [], remaining: 0, total: 0 };
+export async function searchTesDbSchools(opts?: { budgetMs?: number; maxItems?: number }): Promise<TesJobMatch[]> {
+  lastRunInfo = { checked: [], remaining: 0, total: 0, slowest: [] };
   console.log("🛸 [TES CRAWLER] Starting automated sweep of TES employer hubs...");
 
   try {
@@ -116,7 +116,10 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<
     const allMatches: TesJobMatch[] = [];
     let totalPurgedCount = 0;
     let groupLeftOut = 0;
-    const deadline = Date.now() + (opts?.budgetMs ?? 120000);
+    const deadline = Date.now() + (opts?.budgetMs ?? 90000);
+    const MAX_PER_CALL = opts?.maxItems ?? 10; // a call never starts more than this many queue items
+    const SCHOOL_TIMEOUT_MS = 45000; // one slow school can never hold the whole call
+    const timings: { id: string; ms: number; timedOut?: boolean }[] = [];
 
     type QItem = { id: string; school?: AdaptorInput; group?: (typeof groupPages)[number] };
     const queue: QItem[] = [
@@ -130,7 +133,7 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<
     } catch (e: any) { console.warn("⚠️ [TES CRAWLER] Could not read tes_state (reading in registry order):", e?.message || e); }
     queue.sort((x, y) => (lastChecked.get(x.id) || 0) - (lastChecked.get(y.id) || 0) || x.id.localeCompare(y.id));
 
-    const readSchool = async (input: AdaptorInput) => {
+    const readSchoolInner = async (input: AdaptorInput) => {
       try {
             const rawRecords: RawJobRecord[] = await runTesAdaptor(input);
 
@@ -174,6 +177,18 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<
       }
     };
 
+    const readSchool = async (input: AdaptorInput) => {
+      const t0 = Date.now();
+      let timedOut = false;
+      const res = await Promise.race([
+        readSchoolInner(input),
+        new Promise<{ matches: TesJobMatch[]; purged: number }>((resolve) => setTimeout(() => { timedOut = true; resolve({ matches: [], purged: 0 }); }, SCHOOL_TIMEOUT_MS)),
+      ]);
+      if (timedOut) console.warn(`⏱️ [TES CRAWLER] ${input.schoolId} took more than ${SCHOOL_TIMEOUT_MS / 1000}s; skipped for this pass.`);
+      timings.push({ id: input.schoolId, ms: Date.now() - t0, timedOut: timedOut || undefined });
+      return res;
+    };
+
     const readGroup = async (gp: (typeof groupPages)[number]) => {
       try {
         const memberInfo = gp.members.map((m) => candidateSchools.find((c) => c.schoolId === m.schoolId) || snapInfo.get(m.schoolId)).filter(Boolean) as AdaptorInput[];
@@ -207,9 +222,9 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<
 
     let idx = 0;
     const checked: string[] = [];
-    while (idx < queue.length && Date.now() < deadline) {
+    while (idx < queue.length && Date.now() < deadline && checked.length < MAX_PER_CALL) {
       const item = queue[idx];
-      if (item.group) { await readGroup(item.group); checked.push(item.id); idx++; continue; }
+      if (item.group) { const g0 = Date.now(); await Promise.race([readGroup(item.group), new Promise<void>((r) => setTimeout(r, 90000))]); timings.push({ id: item.id, ms: Date.now() - g0 }); checked.push(item.id); idx++; continue; }
       const batch: QItem[] = [];
       while (batch.length < BATCH_SIZE && idx < queue.length && queue[idx].school) { batch.push(queue[idx]); idx++; }
       const batchResults = await Promise.all(batch.map((b) => readSchool(b.school as AdaptorInput)));
@@ -217,7 +232,7 @@ export async function searchTesDbSchools(opts?: { budgetMs?: number }): Promise<
       batch.forEach((b) => checked.push(b.id));
       if (idx < queue.length) await sleep(BATCH_DELAY_MS);
     }
-    lastRunInfo = { checked, remaining: queue.length - idx, total: queue.length };
+    lastRunInfo = { checked, remaining: queue.length - idx, total: queue.length, slowest: timings.sort((a, b) => b.ms - a.ms).slice(0, 5) };
     console.log(`🛸 [TES CRAWLER] This call read ${checked.length} of ${queue.length}; ${queue.length - idx} left for the next call.`);
 
     console.log(`✅ [TES CRAWLER] Sweep completed. Found ${allMatches.length} active vacancies, purged ${totalPurgedCount} stale records across ${candidateSchools.length} schools.`);

@@ -205,6 +205,7 @@ export async function GET(request: Request) {
         durationMs,
         ingestedCount,
         remaining,
+        tesSlowest: key === "TES" ? getTesRunInfo().slowest : undefined,
         note: key === "GEMS" ? (getGemsLastNote() || undefined) : undefined
       });
     }
