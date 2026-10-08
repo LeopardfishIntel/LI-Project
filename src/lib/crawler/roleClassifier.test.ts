@@ -1,4 +1,4 @@
-import { isSupportOrNonTeachingRole } from "./roleClassifier";
+import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "./roleClassifier";
 
 function runTests() {
   console.log("🧪 Running Expanded Role Classifier Unit Tests...");
@@ -79,6 +79,14 @@ function runTests() {
   assert(isSupportOrNonTeachingRole("Teacher of Business and Economics"), false, "Teacher of Business is retained");
   assert(isSupportOrNonTeachingRole("Teacher of Accounting"), false, "Teacher of Accounting is retained");
   assert(isSupportOrNonTeachingRole("MYP - Science Teacher"), false, "MYP Science Teacher is retained");
+
+  // French teaching titles (Lycee Libanais, Taaleem) are teaching jobs; a French admin title is not
+  assert(isStrictAcademicTeachingRole("Professeur d'éducation physique et sportive"), true, "French PE teacher is teaching");
+  assert(isStrictAcademicTeachingRole("Professeur des matières MOE"), true, "French 'Professeur des matières MOE' is teaching");
+  assert(isStrictAcademicTeachingRole("Enseignant de mathématiques"), true, "French maths teacher is teaching");
+  assert(isStrictAcademicTeachingRole("Institutrice maternelle"), true, "French nursery teacher is teaching");
+  assert(isStrictAcademicTeachingRole("Comptable"), false, "French accountant is not teaching");
+  assert(isStrictAcademicTeachingRole("Accountant"), false, "Accountant is still not teaching");
 
   console.log("\n📊 Role Classifier Test Summary: " + passed + " passed, " + failed + " failed.\n");
 }
