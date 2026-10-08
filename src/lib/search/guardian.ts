@@ -31,6 +31,72 @@ const AXIOS_HEADERS = {
   "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8"
 };
 
+export interface GuardianRawListing {
+  guardianJobId: string;
+  title: string;
+  recruiter: string;
+  location: string;
+  salary: string;
+  href: string;
+  dateText: string;
+}
+
+/** Reads the Guardian Jobs search pages and returns every listing found (no school matching yet). Shared by the engine and the trial script. */
+export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
+  const rawListings: GuardianRawListing[] = [];
+
+  const seenUrls = new Set<string>();
+
+  for (const searchUrl of GUARDIAN_SEARCH_URLS) {
+    for (let page = 1; page <= 2; page++) {
+      const pageUrl = page === 1 ? searchUrl : `${searchUrl}&page=${page}`;
+      try {
+        const res = await axios.get(pageUrl, {
+          headers: AXIOS_HEADERS,
+          timeout: 12000
+        });
+
+        if (res.status !== 200 || !res.data) continue;
+
+        const $ = cheerio.load(res.data);
+
+        $("li.lister__item, article.lister__item").each((_, el) => {
+          const titleEl = $(el).find("h3.lister__header a, a.lister__view-details").first();
+          const rawTitle = titleEl.find("span").first().text().trim() || titleEl.text().trim();
+          const rawHref = titleEl.attr("href") || "";
+
+          const cleanHref = rawHref.trim().replace(/\s+/g, "");
+          if (!rawTitle || !cleanHref) return;
+
+          const fullUrl = cleanHref.startsWith("http") ? cleanHref : `https://jobs.theguardian.com${cleanHref}`;
+          if (seenUrls.has(fullUrl)) return;
+          seenUrls.add(fullUrl);
+
+          const recruiter = $(el).find(".lister__meta-item--recruiter").text().trim();
+          const location = $(el).find(".lister__meta-item--location").text().trim();
+          const salary = $(el).find(".lister__meta-item--salary").text().trim();
+          const dateText = $(el).find(".job-actions__action.pipe, time").first().text().trim();
+          const guardianJobId = $(el).find("input[name=\"JobId\"]").val()?.toString() || cleanHref.replace(/[^0-9]/g, "");
+
+          rawListings.push({
+            guardianJobId,
+            title: rawTitle.replace(/\s+/g, " "),
+            recruiter: recruiter.replace(/\s+/g, " "),
+            location: location.replace(/\s+/g, " "),
+            salary: salary.replace(/\s+/g, " "),
+            href: fullUrl,
+            dateText
+          });
+        });
+      } catch (fetchErr: any) {
+        console.warn(`⚠️ [GUARDIAN CRAWLER] Failed to fetch page ${pageUrl}:`, fetchErr?.message || fetchErr);
+      }
+    }
+  }
+
+  return rawListings;
+}
+
 /**
  * Sweeps Guardian Jobs for international school teaching vacancies
  * and grounds them strictly against canonical database schools.
@@ -62,64 +128,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
       return [];
     }
 
-    const rawListings: Array<{
-      guardianJobId: string;
-      title: string;
-      recruiter: string;
-      location: string;
-      salary: string;
-      href: string;
-      dateText: string;
-    }> = [];
-
-    const seenUrls = new Set<string>();
-
-    for (const searchUrl of GUARDIAN_SEARCH_URLS) {
-      for (let page = 1; page <= 2; page++) {
-        const pageUrl = page === 1 ? searchUrl : `${searchUrl}&page=${page}`;
-        try {
-          const res = await axios.get(pageUrl, {
-            headers: AXIOS_HEADERS,
-            timeout: 12000
-          });
-
-          if (res.status !== 200 || !res.data) continue;
-
-          const $ = cheerio.load(res.data);
-
-          $("li.lister__item, article.lister__item").each((_, el) => {
-            const titleEl = $(el).find("h3.lister__header a, a.lister__view-details").first();
-            const rawTitle = titleEl.find("span").first().text().trim() || titleEl.text().trim();
-            const rawHref = titleEl.attr("href") || "";
-
-            const cleanHref = rawHref.trim().replace(/\s+/g, "");
-            if (!rawTitle || !cleanHref) return;
-
-            const fullUrl = cleanHref.startsWith("http") ? cleanHref : `https://jobs.theguardian.com${cleanHref}`;
-            if (seenUrls.has(fullUrl)) return;
-            seenUrls.add(fullUrl);
-
-            const recruiter = $(el).find(".lister__meta-item--recruiter").text().trim();
-            const location = $(el).find(".lister__meta-item--location").text().trim();
-            const salary = $(el).find(".lister__meta-item--salary").text().trim();
-            const dateText = $(el).find(".job-actions__action.pipe, time").first().text().trim();
-            const guardianJobId = $(el).find("input[name=\"JobId\"]").val()?.toString() || cleanHref.replace(/[^0-9]/g, "");
-
-            rawListings.push({
-              guardianJobId,
-              title: rawTitle.replace(/\s+/g, " "),
-              recruiter: recruiter.replace(/\s+/g, " "),
-              location: location.replace(/\s+/g, " "),
-              salary: salary.replace(/\s+/g, " "),
-              href: fullUrl,
-              dateText
-            });
-          });
-        } catch (fetchErr: any) {
-          console.warn(`⚠️ [GUARDIAN CRAWLER] Failed to fetch page ${pageUrl}:`, fetchErr?.message || fetchErr);
-        }
-      }
-    }
+    const rawListings = await harvestGuardianListings();
 
     console.log(`🛸 [GUARDIAN CRAWLER] Harvested ${rawListings.length} raw listings from Guardian Jobs.`);
 
