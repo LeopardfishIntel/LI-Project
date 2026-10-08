@@ -37,6 +37,10 @@ const AXIOS_HEADERS = {
   "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8"
 };
 
+let guardianLastNote = "";
+/** One line for the engine's run record: how many listings were read and how many were placed on a school. */
+export function getGuardianLastNote(): string { return guardianLastNote; }
+
 export interface GuardianRawListing {
   guardianJobId: string;
   title: string;
@@ -244,6 +248,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
       }
     }
 
+    guardianLastNote = `read ${rawListings.length} listings from Guardian Jobs, ${matches.length} placed on one of our schools`;
     console.log(`🛸 [GUARDIAN CRAWLER] Grounded ${matches.length} DB-verified vacancies from Guardian Jobs.`);
     return matches;
   } catch (err: any) {

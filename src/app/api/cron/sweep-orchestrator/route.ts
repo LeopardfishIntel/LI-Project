@@ -11,7 +11,7 @@ import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
 import { searchGemsDbSchools } from "@/lib/search/gems";
 import { searchTaylorsDbSchools } from "@/lib/search/taylors";
 import { searchGrcDbSchools } from "@/lib/search/grc";
-import { searchGuardianDbSchools, guardianLiveUrls } from "@/lib/search/guardian";
+import { searchGuardianDbSchools, guardianLiveUrls, getGuardianLastNote } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools, getTesRunInfo, markTesChecked } from "@/lib/search/tes";
 import { searchSearchAssociatesDbSchools } from "@/lib/search/searchassociates";
@@ -213,7 +213,7 @@ export async function GET(request: Request) {
         ingestedCount,
         remaining,
         tesSlowest: key === "TES" ? getTesRunInfo().slowest : undefined,
-        note: key === "GEMS" ? (getGemsLastNote() || undefined) : key === "SEARCH_ASSOCIATES" ? (getSaLastNote() || undefined) : key === "TAALEEM" ? (getTaaleemLastNote() || undefined) : undefined
+        note: key === "GEMS" ? (getGemsLastNote() || undefined) : key === "SEARCH_ASSOCIATES" ? (getSaLastNote() || undefined) : key === "TAALEEM" ? (getTaaleemLastNote() || undefined) : key === "GUARDIAN" ? (getGuardianLastNote() || undefined) : undefined
       });
     }
 
