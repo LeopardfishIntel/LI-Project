@@ -19,7 +19,7 @@ check("signed-off engines are exactly {GRC, TES, SEARCH ASSOCIATES, GEMS, TAALEE
 check("TES jobs carry matchConfidence high (otherwise the gate would keep every one in pending)", /matchConfidence: "high"/.test(src("src/lib/search/tes.ts")));
 const now = Date.parse("2026-10-05T00:00:00Z"), D = 864e5;
 const good = { matchConfidence: "high", applyUrl: "https://x", closingDateMillis: now + 20 * D, now };
-["Teach Away", "Teacher Horizons", "UWC", "Taylors", "Taaleem", "ESF", "School ATS Portal", "Official Website", "Direct"].forEach((s) =>
+["Teach Away", "Teacher Horizons", "UWC", "Taylors", "ESF", "School ATS Portal", "Official Website", "Direct"].forEach((s) =>
   check("unsigned engine always goes to pending: " + s, decideReviewStatus({ ...good, source: s }).status === "pending_review"));
 check("TES, high confidence, own vacancy link -> approved", decideReviewStatus({ ...good, source: "TES" }).status === "approved");
 check("TES, not high confidence -> pending", decideReviewStatus({ ...good, source: "TES", matchConfidence: "medium" }).status === "pending_review");
