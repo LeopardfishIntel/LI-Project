@@ -3,6 +3,12 @@ import { sweepAllTaaleemNetwork, cleanTaaleemJobTitle } from "@/lib/crawler/adap
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { TAALEEM_CAMPUS_MAP, isTaaleemSchool, TaaleemJobMatch } from "@/lib/search/taaleem";
 
+/** Company names that are the group itself or its head office - the job names no campus, so it is left out. */
+export function isTaaleemNoCampusCompany(company: string): boolean {
+  const c = String(company || "").trim().toLowerCase().replace(/\s+/g, " ");
+  return c === "taaleem" || c === "taaleem education" || c === "taaleem education network" || c === "central office" || c === "";
+}
+
 interface CampusCandidate {
   key: string;
   schoolId: string;
@@ -75,6 +81,7 @@ export async function searchTaaleemDbSchools(): Promise<TaaleemJobMatch[]> {
 
     const matches: TaaleemJobMatch[] = [];
     let unmatchedCount = 0;
+    let noCampusCount = 0;
     const now = Date.now();
 
     for (const job of rawJobs) {
@@ -92,6 +99,11 @@ export async function searchTaaleemDbSchools(): Promise<TaaleemJobMatch[]> {
       }
 
       const rawCompany = String(job.companyName || "").trim().toLowerCase();
+      // Jobs posted under the group's own name (no campus named) are never guessed onto a school (Roger, 2026-10-08).
+      if (isTaaleemNoCampusCompany(rawCompany)) {
+        noCampusCount++;
+        continue;
+      }
       let matchedCandidate: CampusCandidate | null = null;
       let matchConfidence: "high" | "medium" = "high";
       let reasons: string[] = [];
@@ -147,7 +159,7 @@ export async function searchTaaleemDbSchools(): Promise<TaaleemJobMatch[]> {
       });
     }
 
-    console.log(`✅ [TAALEEM ENGINE] Sweep completed: ${rawJobs.length} total vacancies scanned, ${matches.length} grounded to campuses, ${unmatchedCount} ungrounded (skipped).`);
+    console.log(`✅ [TAALEEM ENGINE] Sweep completed: ${rawJobs.length} total vacancies scanned, ${matches.length} grounded to campuses, ${unmatchedCount} ungrounded (skipped), ${noCampusCount} posted by the group with no campus named (left out).`);
     return matches;
   } catch (err: any) {
     console.error("❌ [TAALEEM ENGINE] Fatal sweep error:", err?.message || err);
