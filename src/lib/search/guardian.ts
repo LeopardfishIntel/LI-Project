@@ -55,8 +55,11 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
 
   for (const searchUrl of GUARDIAN_SEARCH_URLS) {
     let emptyPages = 0;
+    const seenAtStart = seenUrls.size;
+    let pagesRead = 0;
     for (let page = 1; page <= GUARDIAN_MAX_PAGES; page++) {
       const before = seenUrls.size;
+      pagesRead++;
       const pageUrl = page === 1 ? searchUrl : `${searchUrl}${searchUrl.includes("?") ? "&" : "?"}page=${page}`;
       try {
         const res = await axios.get(pageUrl, {
@@ -103,6 +106,7 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
       if (seenUrls.size === before) { emptyPages++; if (emptyPages >= 2) break; } else { emptyPages = 0; }
       await new Promise((r) => setTimeout(r, 400));
     }
+    console.log(`🛸 [GUARDIAN CRAWLER] ${searchUrl} -> ${pagesRead} page(s) read, ${seenUrls.size - seenAtStart} new listing(s)`);
   }
 
   return rawListings;
