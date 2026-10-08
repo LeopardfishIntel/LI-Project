@@ -14,9 +14,9 @@ export const WATCHED_ENGINES = ["GEMS", "GRC", "SEARCH_ASSOCIATES", "TES"] as co
 
 /**
  * Engines Roger has approved after a rebuild (Roger, 2026-10-07: the green "healthy" line must not show for an engine that is not approved yet).
- * Add an engine here ONLY when Roger says so. GEMS and TES were rebuilt on 2026-10-07 and wait for his approval.
+ * Add an engine here ONLY when Roger says so. GEMS and TES were rebuilt on 2026-10-07 and approved by Roger on 2026-10-08.
  */
-export const APPROVED_ENGINES: readonly string[] = ["GRC", "SEARCH_ASSOCIATES"];
+export const APPROVED_ENGINES: readonly string[] = ["GRC", "SEARCH_ASSOCIATES", "GEMS", "TES"];
 
 /** The line shown when no engine has a warning. Green only when every watched engine is approved; otherwise says which are waiting. */
 export function healthyLine(): { green: boolean; text: string } {
