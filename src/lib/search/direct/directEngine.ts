@@ -138,10 +138,10 @@ export async function runDirectForSchool(school: DirectSchool, prev: DirectState
     if (!titleInText(title, text)) continue; // not really on the page
     if (kept.some((k) => sameTitle(k.title, title))) continue;
     let link = chooseApplyUrl(j.applyUrl, page.url, known);
-    if (link === page.url) { // the AI gave no usable link: look for the page link that carries this job's title
-      const found = anchorForTitle(title, links, page.url);
-      if (found) link = chooseApplyUrl(found, page.url, known);
-    }
+    // A page link that carries this job's own title is the job's own page: it wins over a general link (e.g. a campus page shared by many jobs, UWCSEA)
+    // and is used when the AI gave no usable link.
+    const found = anchorForTitle(title, links, page.url);
+    if (found) { const own = chooseApplyUrl(found, page.url, known); if (own !== page.url) link = own; }
     kept.push({ title, applyUrl: link, closingDate: toIsoDate(j.closingDate), evidence: String(j.evidence || "").slice(0, 160) });
   }
   res.jobs = makeUniqueUrls(kept, page.url);
