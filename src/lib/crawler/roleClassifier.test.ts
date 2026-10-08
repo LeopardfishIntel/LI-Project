@@ -92,7 +92,7 @@ function runTests() {
   assert(isStrictAcademicTeachingRole("Learning Assistant"), false, "Learning Assistant is support");
   assert(isStrictAcademicTeachingRole("Homeroom Learning Assistant"), false, "Homeroom Learning Assistant is support");
   assert(isStrictAcademicTeachingRole("Learning Assistant - Arabic"), false, "Learning Assistant - Arabic is support");
-  assert(isStrictAcademicTeachingRole("Learning Assistant - Librarian (Secondary)"), false, "Learning Assistant - Librarian is support");
+  assert(isStrictAcademicTeachingRole("Learning Assistant - Librarian (Secondary)"), true, "Learning Assistant - Librarian is kept (Roger, 2026-10-08)");
   assert(isStrictAcademicTeachingRole("Learning Support Assistant"), false, "Learning Support Assistant is still support");
   assert(isStrictAcademicTeachingRole("Homeroom Teacher"), true, "Homeroom Teacher is still teaching");
   assert(isStrictAcademicTeachingRole("Learning Coach"), true, "Learning Coach is still teaching");

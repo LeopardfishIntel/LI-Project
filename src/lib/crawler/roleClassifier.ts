@@ -44,7 +44,7 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /\b(control\s+school|talent\s+pool|share\s+your\s+profile)\b/i,
 
   // Teaching Assistants / Educational Assistants / Classroom Assistants / Instructional Assistants
-  /\b(teaching\s+assistants?|teacher\s+assistants?|educational\s+assistants?|classroom\s+assistants?|instructional\s+assistants?|learning(?:\s+support)?\s+assistants?|lsa)\b/i,
+  /\b(teaching\s+assistants?|teacher\s+assistants?|educational\s+assistants?|classroom\s+assistants?|instructional\s+assistants?|learning(?:\s+support)?\s+assistants?(?!\s*[-–—:]\s*librarian)|lsa)\b/i,
   /\b(assistant\s+teachers?|ta\s+instructional|ta)\b/i,
 
   // Relief / Substitute / Supply / Temporary Cover Teachers
