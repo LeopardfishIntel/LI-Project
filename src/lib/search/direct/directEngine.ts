@@ -14,6 +14,12 @@ import {
 } from "./directRules";
 
 export interface DirectSchool { id: string; name: string; city?: string; country?: string; careersUrl: string; website?: string }
+/**
+ * Rules version. It is mixed into the page fingerprint, so when the way jobs or links are read is improved (change this text),
+ * every school is read once again instead of being skipped as "page text unchanged".
+ */
+export const DIRECT_RULES_VERSION = "2026-10-08-own-links";
+
 export interface DirectState { pageUrl?: string; repairedFrom?: string; textHash?: string; lastStatus?: string; lastCheckedAt?: number; lastJobCount?: number; failCount?: number }
 export type DirectStatus = "ok" | "no_jobs" | "unchanged" | "dead_link" | "blocked" | "needs_browser" | "board_only" | "group_skipped" | "no_link" | "error";
 export interface DirectJob { title: string; applyUrl: string; closingDate: string | null; evidence: string }
@@ -116,7 +122,7 @@ export async function runDirectForSchool(school: DirectSchool, prev: DirectState
   if (pg && pg.total > 1 && res.pagesRead < pg.total) res.note = `page says "Page ${pg.page} of ${pg.total}" but the next page could not be followed`;
 
   // 3. unchanged since last time -> no AI
-  res.textHash = textHash(text);
+  res.textHash = textHash(DIRECT_RULES_VERSION + "\n" + text);
   if (prev && prev.textHash === res.textHash && (prev.lastStatus === "ok" || prev.lastStatus === "no_jobs" || prev.lastStatus === "unchanged")) {
     return { ...res, status: "unchanged", note: "page text unchanged since the last check" };
   }
