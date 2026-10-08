@@ -37,12 +37,14 @@ export async function planRetireVanished(opts: {
   liveUrls: string[]; // apply links the engine returned in this run
   maxCount?: number;
   maxFraction?: number;
+  /** True when the caller has checked each job itself, so an empty live list really means "all of them are gone". */
+  allowEmpty?: boolean;
 }): Promise<RetirePlan> {
   const label = opts.engineLabel;
   const plan: RetirePlan = { engineLabel: label, claims: 0, items: [] };
   const db: any = getAdminDb();
   if (!db || typeof db.collection !== "function") { plan.skipped = "database not available"; return plan; }
-  if (!opts.liveUrls.length) { plan.skipped = "engine returned no jobs, so nothing is retired"; return plan; }
+  if (!opts.liveUrls.length && !opts.allowEmpty) { plan.skipped = "engine returned no jobs, so nothing is retired"; return plan; }
   const live = new Set(opts.liveUrls.map(normUrl));
 
   const snap = await db.collection("featured_jobs_cache").where("status", "==", "approved").get();

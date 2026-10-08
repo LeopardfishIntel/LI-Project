@@ -3,6 +3,7 @@ import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { matchSchoolEntity } from "@/lib/crawler/entityMatcher";
 import { parseRelativeDate } from "@/lib/crawler/dateParser";
 import axios from "axios";
+import { guardianPageState } from "./guardianRules";
 import * as cheerio from "cheerio";
 
 export interface GuardianJobMatch {
@@ -127,6 +128,41 @@ export function matchGuardianListingToSchool(item: { recruiter: string; location
 }
 
 /**
+ * For the clean-up step. Guardian is a SEARCH (the engine only sees a few pages of results), so "not in today's results" does NOT mean a job is gone.
+ * Instead every approved Guardian card's OWN page is opened: only a page that says expired (or is gone) counts as taken down.
+ * Returns the links that are still live (or could not be checked, which is the safe side). Checks at most 80 cards a night.
+ */
+export async function guardianLiveUrls(): Promise<string[]> {
+  const db = getAdminDb();
+  if (!db || typeof db.collection !== "function") return [];
+  const snap = await db.collection("featured_jobs_cache").where("status", "==", "approved").get();
+  const has = (arr: any) => Array.isArray(arr) && arr.some((x: any) => String(x).toUpperCase() === "GUARDIAN");
+  const urls: string[] = [];
+  for (const d of snap.docs) {
+    const x: any = d.data() || {};
+    if (!(String(x.source || "").toUpperCase() === "GUARDIAN" || has(x.sources))) continue;
+    const u = (x.sourceUrls && x.sourceUrls["GUARDIAN"]) || (String(x.applyUrl || "").includes("jobs.theguardian.com") ? x.applyUrl : "");
+    if (u) urls.push(String(u));
+  }
+  const live: string[] = [];
+  let checked = 0;
+  for (const u of urls) {
+    if (checked >= 80) { live.push(u); continue; }
+    checked++;
+    try {
+      const res = await axios.get(u, { headers: AXIOS_HEADERS, timeout: 12000, validateStatus: () => true });
+      const $ = cheerio.load(typeof res.data === "string" ? res.data : "");
+      $("script, style, nav, header, footer").remove();
+      const state = guardianPageState(res.status, $("body").text());
+      if (state !== "expired") live.push(u);
+    } catch {
+      live.push(u);
+    }
+  }
+  return live;
+}
+
+/**
  * Sweeps Guardian Jobs for international school teaching vacancies
  * and grounds them strictly against canonical database schools.
  */
@@ -186,7 +222,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
           schoolName: matchedSchool.name || matchedSchool.schoolname,
           city: matchedSchool.city || item.location || "",
           country: matchedSchool.country || "",
-          source: "Guardian Jobs",
+          source: "GUARDIAN",
           datePosted: item.dateText ? parseRelativeDate(item.dateText) : new Date().toISOString(),
           closingDate: null,
           salaryRange: item.salary || null

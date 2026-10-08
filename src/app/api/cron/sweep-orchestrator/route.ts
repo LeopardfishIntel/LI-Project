@@ -11,7 +11,7 @@ import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
 import { searchGemsDbSchools } from "@/lib/search/gems";
 import { searchTaylorsDbSchools } from "@/lib/search/taylors";
 import { searchGrcDbSchools } from "@/lib/search/grc";
-import { searchGuardianDbSchools } from "@/lib/search/guardian";
+import { searchGuardianDbSchools, guardianLiveUrls } from "@/lib/search/guardian";
 import { searchNordAngliaDbSchools } from "@/lib/search/nordanglia";
 import { searchTesDbSchools, getTesRunInfo, markTesChecked } from "@/lib/search/tes";
 import { searchSearchAssociatesDbSchools } from "@/lib/search/searchassociates";
@@ -67,11 +67,13 @@ export async function GET(request: Request) {
     };
 
     // Engines whose vanished jobs are retired after a healthy run: the pill / source name and a word that is in their links.
-    const RETIRE_RULES: Record<string, { label: string; urlHint: string }> = {
+    const RETIRE_RULES: Record<string, { label: string; urlHint: string; pageCheck?: boolean }> = {
       GRC: { label: "GRC", urlHint: "grcfair.org" },
       SEARCH_ASSOCIATES: { label: "SEARCH ASSOCIATES", urlHint: "searchassociates.com" },
       GEMS: { label: "GEMS", urlHint: "careers.gemseducation.com" },
       TAALEEM: { label: "Taaleem", urlHint: "careers.taaleem.ae" },
+      // Guardian is a search, not a full list: each card's own page is checked (pageCheck) and only a page that says "expired" retires it.
+      GUARDIAN: { label: "GUARDIAN", urlHint: "jobs.theguardian.com", pageCheck: true },
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
@@ -186,7 +188,9 @@ export async function GET(request: Request) {
       let retire: any = null;
       if (isSignedOffEngine(key) && !drift.drifted && RETIRE_RULES[key]) {
         try {
-          const plan = await planRetireVanished({ engineLabel: RETIRE_RULES[key].label, urlHint: RETIRE_RULES[key].urlHint, liveUrls: matches.map((m: any) => m.applyUrl).filter(Boolean) });
+          const pageCheck = !!RETIRE_RULES[key].pageCheck;
+          const liveUrls = pageCheck ? await guardianLiveUrls() : matches.map((m: any) => m.applyUrl).filter(Boolean);
+          const plan = await planRetireVanished({ engineLabel: RETIRE_RULES[key].label, urlHint: RETIRE_RULES[key].urlHint, liveUrls, ...(pageCheck ? { allowEmpty: true, maxFraction: 1 } : {}) });
           const done = await applyRetirePlan(plan);
           retire = { claims: plan.claims, wouldRetire: plan.items.length, ...done, skipped: plan.skipped };
           if (plan.items.length) console.log(`🧹 [RETIRE] ${key}: ${plan.items.length} stale job(s):`, plan.items.map((i) => `${i.action} ${i.title} (${i.schoolId})`));
