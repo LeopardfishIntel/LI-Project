@@ -37,11 +37,16 @@ export interface SaReadResult { pageJobs: number; matches: SaJobMatch[]; leftOut
 
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
+/** Why the last read gave nothing (shown in the engine's answer so a silent failure can be seen). */
+let saLastNote = "";
+export function getSaLastNote(): string { return saLastNote; }
+
 async function getHtml(url: string): Promise<{ ok: boolean; status: number; html: string }> {
   try {
     const r = await fetch(url, { headers: { "User-Agent": UA, Accept: "text/html" }, cache: "no-store", signal: AbortSignal.timeout(25000) });
     return { ok: r.ok, status: r.status, html: r.ok ? await r.text() : "" };
-  } catch {
+  } catch (e: any) {
+    saLastNote = `request failed: ${String(e?.cause?.code || e?.name || "error")} ${String(e?.message || "").slice(0, 120)}`;
     return { ok: false, status: 0, html: "" };
   }
 }
@@ -49,12 +54,13 @@ async function getHtml(url: string): Promise<{ ok: boolean; status: number; html
 /** Reads the page and decides every job. Used by the engine and by the trial script, so both always agree. */
 export async function readSearchAssociates(): Promise<SaReadResult> {
   const out: SaReadResult = { pageJobs: 0, matches: [], leftOut: [], pageReadOk: false };
+  saLastNote = "";
   const list = await getHtml(SA_LEADERSHIP_URL);
-  if (!list.ok) { console.warn(`⚠️ [SEARCH ASSOCIATES] Leadership page not readable (HTTP ${list.status}).`); return out; }
+  if (!list.ok) { saLastNote = saLastNote || `leadership page not readable (HTTP ${list.status})`; console.warn(`⚠️ [SEARCH ASSOCIATES] Leadership page not readable (HTTP ${list.status}).`); return out; }
   const rows = parseSaListing(list.html);
   out.pageJobs = rows.length;
   out.pageReadOk = rows.length > 0;
-  if (!rows.length) { console.warn("⚠️ [SEARCH ASSOCIATES] No jobs found on the page (layout changed?)."); return out; }
+  if (!rows.length) { saLastNote = `page read (HTTP ${list.status}, ${list.html.length} characters) but no jobs found on it (layout changed or blocked page?)`; console.warn("⚠️ [SEARCH ASSOCIATES] No jobs found on the page (layout changed?)."); return out; }
 
   const db: any = getAdminDb();
   const snap = await db.collection("schools").get();

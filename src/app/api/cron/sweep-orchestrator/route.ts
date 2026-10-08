@@ -19,6 +19,7 @@ import { searchTaaleemDbSchools } from "@/lib/search/taaleem-server";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
 import { isSignedOffEngine } from "@/lib/pipelines/jobGate";
 import { getGemsLastNote } from "@/lib/crawler/adaptors/gems-adaptor";
+import { getSaLastNote } from "@/lib/search/searchassociates";
 import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
 import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
 import { planRetireVanished, applyRetirePlan } from "@/lib/pipelines/retireVanished";
@@ -206,7 +207,7 @@ export async function GET(request: Request) {
         ingestedCount,
         remaining,
         tesSlowest: key === "TES" ? getTesRunInfo().slowest : undefined,
-        note: key === "GEMS" ? (getGemsLastNote() || undefined) : undefined
+        note: key === "GEMS" ? (getGemsLastNote() || undefined) : key === "SEARCH_ASSOCIATES" ? (getSaLastNote() || undefined) : undefined
       });
     }
 
