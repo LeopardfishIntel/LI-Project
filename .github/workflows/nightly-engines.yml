@@ -18,7 +18,7 @@ jobs:
       matrix:
         # Each engine gets its own request (the website host cuts a single request off after about 5 minutes).
         # An engine that is not due today, or not signed off, simply answers "skipped".
-        engine: [GEMS, GRC, SEARCH_ASSOCIATES, TES]
+        engine: [GEMS, TAALEEM, GRC, SEARCH_ASSOCIATES, TES]
     steps:
       - name: Trigger the sweep orchestrator
         run: |

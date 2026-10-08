@@ -66,6 +66,16 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     utcEndWindow: "02:30",
     targetDurationMinutes: 20
   },
+  TAALEEM: {
+    engineKey: "TAALEEM",
+    sourceName: "Taaleem Education",
+    method: "Careers list (plain requests)",
+    peakSchedule: "DAILY",
+    offPeakSchedule: "MWF",
+    utcStartWindow: "02:50",
+    utcEndWindow: "03:05",
+    targetDurationMinutes: 10
+  },
   GEMS: {
     engineKey: "GEMS",
     sourceName: "GEMS Education",

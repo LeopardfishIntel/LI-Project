@@ -151,7 +151,7 @@ export async function searchTaaleemDbSchools(): Promise<TaaleemJobMatch[]> {
         schoolName: matchedCandidate.canonicalName,
         city: matchedCandidate.city,
         country: matchedCandidate.country,
-        source: "Taaleem Official ATS",
+        source: "Taaleem", // the same name the existing Taaleem cards carry, so the job gate, the retire step and the pills all agree
         datePosted,
         closingDate,
         matchConfidence,

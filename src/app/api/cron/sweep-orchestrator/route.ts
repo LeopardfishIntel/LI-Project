@@ -71,6 +71,7 @@ export async function GET(request: Request) {
       GRC: { label: "GRC", urlHint: "grcfair.org" },
       SEARCH_ASSOCIATES: { label: "SEARCH ASSOCIATES", urlHint: "searchassociates.com" },
       GEMS: { label: "GEMS", urlHint: "careers.gemseducation.com" },
+      TAALEEM: { label: "Taaleem", urlHint: "careers.taaleem.ae" },
     };
 
     for (const [key, runner] of Object.entries(engineRunners)) {
