@@ -29,6 +29,7 @@ const eh = (engine: string, level: EngineHealth["level"]): EngineHealth => ({ en
 check("pill: red stays red", pillTone("TES", [eh("TES", "red")]) === "red");
 check("pill: approved + ok -> green", pillTone("GRC", [eh("GRC", "ok")]) === "green");
 check("pill: unapproved + ok -> waiting, never green", pillTone("NEWENGINE", [eh("NEWENGINE", "ok")]) === "waiting");
+check("pill: ISP is approved -> green when ok", pillTone("ISP", [eh("ISP", "ok")]) === "green");
 check("pill: Guardian is approved -> green when ok", pillTone("GUARDIAN", [eh("GUARDIAN", "ok")]) === "green");
 check("pill: Taaleem is approved -> green when ok", pillTone("TAALEEM", [eh("TAALEEM", "ok")]) === "green");
 check("pill: GEMS and TES are approved -> green when ok", pillTone("GEMS", [eh("GEMS", "ok")]) === "green" && pillTone("TES", [eh("TES", "ok")]) === "green");

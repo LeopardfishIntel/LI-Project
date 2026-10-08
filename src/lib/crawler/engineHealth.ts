@@ -10,13 +10,13 @@ export type HealthLevel = "ok" | "yellow" | "amber" | "red";
 export interface EngineHealth { engine: string; level: HealthLevel; reason: string; lastGoodDay: string | null }
 
 /** Engines that are signed off and run every night (add an engine here when it is signed off). */
-export const WATCHED_ENGINES = ["GEMS", "GRC", "GUARDIAN", "SEARCH_ASSOCIATES", "TAALEEM", "TES"] as const;
+export const WATCHED_ENGINES = ["GEMS", "GRC", "GUARDIAN", "ISP", "SEARCH_ASSOCIATES", "TAALEEM", "TES"] as const;
 
 /**
  * Engines Roger has approved after a rebuild (Roger, 2026-10-07: the green "healthy" line must not show for an engine that is not approved yet).
  * Add an engine here ONLY when Roger says so. GEMS and TES were rebuilt on 2026-10-07 and Taaleem and Guardian on 2026-10-08; all four approved by Roger on 2026-10-08.
  */
-export const APPROVED_ENGINES: readonly string[] = ["GRC", "SEARCH_ASSOCIATES", "GEMS", "TES", "TAALEEM", "GUARDIAN"];
+export const APPROVED_ENGINES: readonly string[] = ["GRC", "SEARCH_ASSOCIATES", "GEMS", "TES", "TAALEEM", "GUARDIAN", "ISP"];
 
 /** The line shown when no engine has a warning. Green only when every watched engine is approved; otherwise says which are waiting. */
 export function healthyLine(): { green: boolean; text: string } {
@@ -32,7 +32,7 @@ const dayKey = (ms: number) => new Date(ms).toISOString().slice(0, 10);
  * Engines that were rebuilt: only the run records from this day on are judged (older records come from the old, broken engine).
  * Add an engine here when it is rebuilt. Format: "YYYY-MM-DD" (UTC).
  */
-export const REBUILT_ON: Record<string, string> = { GEMS: "2026-10-07", TES: "2026-10-07", TAALEEM: "2026-10-08", GUARDIAN: "2026-10-08" };
+export const REBUILT_ON: Record<string, string> = { GEMS: "2026-10-07", TES: "2026-10-07", TAALEEM: "2026-10-08", GUARDIAN: "2026-10-08", ISP: "2026-10-08" };
 
 export function assessEngineHealth(
   engine: string,

@@ -17,6 +17,7 @@
  * Engines checked one by one and signed off for automatic approval. Add an engine here only after its trial run looks right.
  * "SCHOOL WEB" is the Direct engine (a school's own careers page). Roger signed it off 2026-10-05, then took it OFF the list on 2026-10-08:
  * Direct is to be reviewed later, so every Direct job goes to pending until it is signed off again.
+ * "ISP" signed off by Roger 2026-10-08: reads the whole ISP Workday list; a job is placed only when the school name in its Workday link is one of our schools (every word of the link up to the school name must belong to that school); jobs gone from Workday are retired.
  * "GUARDIAN" signed off by Roger 2026-10-08: it reads the Guardian "Education, schools" sector page (and keyword searches); a job is placed only when the employer on the advert is one of our schools (agency adverts with no school named are left out);
  * each night every approved card's own Guardian page is opened and only "This job has expired" (or a gone page) retires it.
  * "TAALEEM" signed off by Roger 2026-10-08 after the server trial (careers site read in full, jobs placed on a campus only when the company names one, group-level posts left out, support roles dropped, undated jobs expire after 42 days).
@@ -25,7 +26,7 @@
  * "GEMS" signed off by Roger 2026-10-06 after the trial (82 of 357 listed jobs kept: company name must be exactly one of 12 mapped campuses, unknown and unregistered campuses left out, support roles and old postings dropped; GEMS gives no expiry date, so posted + 42 days applies).
  * "SEARCH ASSOCIATES" signed off by Roger 2026-10-06 after the trial (9 open jobs, every school matched by whole-word name + country, real deadlines, past or "no longer accepting" jobs dropped, business roles left out).
  */
-export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "TES", "SEARCH ASSOCIATES", "GEMS", "TAALEEM", "GUARDIAN"]);
+export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "TES", "SEARCH ASSOCIATES", "GEMS", "TAALEEM", "GUARDIAN", "ISP"]);
 
 /** For signed-off engines, a title that is not clearly teaching or leadership (e.g. "HS Chemistry") is kept but sent to pending, not thrown away. */
 export function acceptsUnsureRoles(source: string): boolean {

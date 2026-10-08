@@ -15,7 +15,7 @@ const src = (p: string) => fs.readFileSync(path.resolve(process.cwd(), p), "utf8
 console.log("Lock-in tests");
 
 // 1. Only GRC is signed off. Signing off another engine must be a deliberate edit of this test.
-check("signed-off engines are exactly {GRC, TES, SEARCH ASSOCIATES, GEMS, TAALEEM, GUARDIAN}; Direct is not", AUTO_APPROVE_SOURCES.size === 6 && AUTO_APPROVE_SOURCES.has("GUARDIAN") && AUTO_APPROVE_SOURCES.has("GEMS") && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("TAALEEM") && !AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES") && AUTO_APPROVE_SOURCES.has("SEARCH ASSOCIATES"));
+check("signed-off engines are exactly {GRC, TES, SEARCH ASSOCIATES, GEMS, TAALEEM, GUARDIAN, ISP}; Direct is not", AUTO_APPROVE_SOURCES.size === 7 && AUTO_APPROVE_SOURCES.has("ISP") && AUTO_APPROVE_SOURCES.has("GUARDIAN") && AUTO_APPROVE_SOURCES.has("GEMS") && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("TAALEEM") && !AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES") && AUTO_APPROVE_SOURCES.has("SEARCH ASSOCIATES"));
 check("TES jobs carry matchConfidence high (otherwise the gate would keep every one in pending)", /matchConfidence: "high"/.test(src("src/lib/search/tes.ts")));
 const now = Date.parse("2026-10-05T00:00:00Z"), D = 864e5;
 const good = { matchConfidence: "high", applyUrl: "https://x", closingDateMillis: now + 20 * D, now };
