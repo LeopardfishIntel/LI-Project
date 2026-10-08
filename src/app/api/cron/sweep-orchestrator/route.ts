@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { rejectUnlessCron } from "@/lib/cronAuth";
 import { getCurrentSeason, shouldEngineRunToday, CRAWLER_TIMETABLE } from "@/lib/crawler/timetableScheduler";
 import { isEngineCoolingDown } from "@/lib/crawler/safetyEngine";
-import { searchIspDbSchools } from "@/lib/search/isp";
+import { searchIspDbSchools, getIspLastNote } from "@/lib/search/isp";
 import { searchGlobeducateDbSchools } from "@/lib/search/globeducate";
 import { searchCognitaDbSchools } from "@/lib/search/cognita";
 import { searchInspiredDbSchools } from "@/lib/search/inspired";
@@ -73,6 +73,8 @@ export async function GET(request: Request) {
       GEMS: { label: "GEMS", urlHint: "careers.gemseducation.com" },
       TAALEEM: { label: "Taaleem", urlHint: "careers.taaleem.ae" },
       // Guardian is a search, not a full list: each card's own page is checked (pageCheck) and only a page that says "expired" retires it.
+      // ISP reads the whole Workday list, so a job missing from it is closed (a half-read list returns nothing and is skipped).
+      ISP: { label: "ISP", urlHint: "myworkdayjobs.com" },
       GUARDIAN: { label: "GUARDIAN", urlHint: "jobs.theguardian.com", pageCheck: true },
     };
 
@@ -213,7 +215,7 @@ export async function GET(request: Request) {
         ingestedCount,
         remaining,
         tesSlowest: key === "TES" ? getTesRunInfo().slowest : undefined,
-        note: key === "GEMS" ? (getGemsLastNote() || undefined) : key === "SEARCH_ASSOCIATES" ? (getSaLastNote() || undefined) : key === "TAALEEM" ? (getTaaleemLastNote() || undefined) : key === "GUARDIAN" ? (getGuardianLastNote() || undefined) : undefined
+        note: key === "GEMS" ? (getGemsLastNote() || undefined) : key === "SEARCH_ASSOCIATES" ? (getSaLastNote() || undefined) : key === "TAALEEM" ? (getTaaleemLastNote() || undefined) : key === "GUARDIAN" ? (getGuardianLastNote() || undefined) : key === "ISP" ? (getIspLastNote() || undefined) : undefined
       });
     }
 

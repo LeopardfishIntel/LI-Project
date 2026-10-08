@@ -60,6 +60,9 @@ async function fetchVacancyJsonLd(applyUrl: string): Promise<{
   }
 }
 
+let ispLastNote = "";
+export function getIspLastNote(): string { return ispLastNote; }
+
 export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatch[]> {
   try {
     const db = getAdminDb();
@@ -142,6 +145,14 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
 
     console.log(`🛸 [ISP WORKDAY ENGINE] Fetched ${allPostings.length} unique postings across ${totalCount} total positions.`);
 
+    // A half-read list must never look like a full one (jobs missing from it would be retired as taken down): stop and report nothing.
+    if (allPostings.length < totalCount * 0.9) {
+      ispLastNote = `ISP list incomplete (${allPostings.length} of ${totalCount}) - run skipped`;
+      console.warn(`⚠️ [ISP WORKDAY ENGINE] ${ispLastNote}`);
+      return [];
+    }
+    ispLastNote = `ISP read ${allPostings.length} postings`;
+
     // 3. Filter teaching roles
     const teachingJobs = allPostings.filter((job) => {
       const title = job.title || "";
@@ -163,12 +174,13 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
           const jobId = slugMatch ? `isp_${slugMatch}` : `isp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
           const applyUrl = `https://internationalschools.wd3.myworkdayjobs.com/en-US/ISPCareers${extPath}`;
 
-          const { datePosted, validThrough } = await fetchVacancyJsonLd(applyUrl);
-
           // Part 1: Ground Workday job strictly via the school name in the Workday link slug (whole-token match)
           // Do NOT use hiringOrganization as the deciding signal.
           const matchedSchool = matchIspWorkdaySlug(extPath || applyUrl, dbSchools);
           const workdaySchoolName = extractIspWorkdaySchoolName(extPath || applyUrl);
+
+          // Dates are only needed for jobs on our schools, so the vacancy page is read only for those (about 20 of 430).
+          const { datePosted, validThrough } = matchedSchool ? await fetchVacancyJsonLd(applyUrl) : { datePosted: null, validThrough: null };
 
           if (matchedSchool) {
             return {
