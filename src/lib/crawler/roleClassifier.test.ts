@@ -88,6 +88,16 @@ function runTests() {
   assert(isStrictAcademicTeachingRole("Comptable"), false, "French accountant is not teaching");
   assert(isStrictAcademicTeachingRole("Accountant"), false, "Accountant is still not teaching");
 
+  // Learning assistants are support staff, not teachers (Taaleem)
+  assert(isStrictAcademicTeachingRole("Learning Assistant"), false, "Learning Assistant is support");
+  assert(isStrictAcademicTeachingRole("Homeroom Learning Assistant"), false, "Homeroom Learning Assistant is support");
+  assert(isStrictAcademicTeachingRole("Learning Assistant - Arabic"), false, "Learning Assistant - Arabic is support");
+  assert(isStrictAcademicTeachingRole("Learning Assistant - Librarian (Secondary)"), false, "Learning Assistant - Librarian is support");
+  assert(isStrictAcademicTeachingRole("Learning Support Assistant"), false, "Learning Support Assistant is still support");
+  assert(isStrictAcademicTeachingRole("Homeroom Teacher"), true, "Homeroom Teacher is still teaching");
+  assert(isStrictAcademicTeachingRole("Learning Coach"), true, "Learning Coach is still teaching");
+  assert(isStrictAcademicTeachingRole("Librarian"), true, "Librarian is still kept");
+
   console.log("\n📊 Role Classifier Test Summary: " + passed + " passed, " + failed + " failed.\n");
 }
 
