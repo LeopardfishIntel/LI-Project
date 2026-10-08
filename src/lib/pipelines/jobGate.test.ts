@@ -15,7 +15,7 @@ check("no link -> pending", decideReviewStatus({ ...base, applyUrl: "" }).status
 check("date 2 years away -> pending", decideReviewStatus({ ...base, closingDateMillis: now + 700 * D }).status === "pending_review");
 check("unclear title -> pending", decideReviewStatus({ ...base, roleUnsure: true }).status === "pending_review");
 check("engine not signed off -> pending", decideReviewStatus({ ...base, source: "ISP" }).status === "pending_review");
-check("Direct (School Web) is signed off for high confidence only", decideReviewStatus({ ...base, source: "School Web" }).status === "approved" && decideReviewStatus({ ...base, source: "School Web", matchConfidence: "medium" }).status === "pending_review");
+check("Direct (School Web) is NOT signed off (Roger, 2026-10-08): always pending", decideReviewStatus({ ...base, source: "School Web" }).status === "pending_review");
 check("Search Associates is signed off: high confidence approved, medium pending", decideReviewStatus({ ...base, source: "SEARCH ASSOCIATES" }).status === "approved" && decideReviewStatus({ ...base, source: "SEARCH ASSOCIATES", matchConfidence: "medium" }).status === "pending_review");
 check("GEMS is signed off: high confidence approved, medium pending", decideReviewStatus({ ...base, source: "GEMS" }).status === "approved" && decideReviewStatus({ ...base, source: "GEMS", matchConfidence: "medium" }).status === "pending_review");
 check("engine paused by drift -> pending", decideReviewStatus({ ...base, engineQuarantined: true }).status === "pending_review");

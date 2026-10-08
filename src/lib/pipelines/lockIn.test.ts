@@ -15,7 +15,7 @@ const src = (p: string) => fs.readFileSync(path.resolve(process.cwd(), p), "utf8
 console.log("Lock-in tests");
 
 // 1. Only GRC is signed off. Signing off another engine must be a deliberate edit of this test.
-check("signed-off engines are exactly {GRC, SCHOOL WEB (Direct), TES, SEARCH ASSOCIATES, GEMS}", AUTO_APPROVE_SOURCES.size === 5 && AUTO_APPROVE_SOURCES.has("GEMS") && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES") && AUTO_APPROVE_SOURCES.has("SEARCH ASSOCIATES"));
+check("signed-off engines are exactly {GRC, TES, SEARCH ASSOCIATES, GEMS, TAALEEM}; Direct is not", AUTO_APPROVE_SOURCES.size === 5 && AUTO_APPROVE_SOURCES.has("GEMS") && AUTO_APPROVE_SOURCES.has("GRC") && AUTO_APPROVE_SOURCES.has("TAALEEM") && !AUTO_APPROVE_SOURCES.has("SCHOOL WEB") && AUTO_APPROVE_SOURCES.has("TES") && AUTO_APPROVE_SOURCES.has("SEARCH ASSOCIATES"));
 check("TES jobs carry matchConfidence high (otherwise the gate would keep every one in pending)", /matchConfidence: "high"/.test(src("src/lib/search/tes.ts")));
 const now = Date.parse("2026-10-05T00:00:00Z"), D = 864e5;
 const good = { matchConfidence: "high", applyUrl: "https://x", closingDateMillis: now + 20 * D, now };
@@ -25,7 +25,7 @@ check("TES, high confidence, own vacancy link -> approved", decideReviewStatus({
 check("TES, not high confidence -> pending", decideReviewStatus({ ...good, source: "TES", matchConfidence: "medium" }).status === "pending_review");
 check("TES, unclear title -> pending", decideReviewStatus({ ...good, source: "TES", roleUnsure: true }).status === "pending_review");
 check("TES paused by drift -> pending", decideReviewStatus({ ...good, source: "TES", engineQuarantined: true }).status === "pending_review");
-check("Direct (School Web), own job link, high -> approved", decideReviewStatus({ ...good, source: "School Web" }).status === "approved");
+check("Direct (School Web), own job link, high -> still pending (not signed off)", decideReviewStatus({ ...good, source: "School Web" }).status === "pending_review");
 check("Direct (School Web), careers-page link (medium) -> pending", decideReviewStatus({ ...good, source: "School Web", matchConfidence: "medium" }).status === "pending_review");
 check("Direct (School Web), unclear title -> pending", decideReviewStatus({ ...good, source: "School Web", roleUnsure: true }).status === "pending_review");
 check("GRC with every check passed is approved", decideReviewStatus({ ...good, source: "GRC" }).status === "approved");
