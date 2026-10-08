@@ -26,6 +26,9 @@ const GUARDIAN_SEARCH_URLS = [
   "https://jobs.theguardian.com/jobs/schools/?keywords=international",
 ];
 
+/** Most pages read for each Guardian search. A search stops earlier when the results run out. */
+const GUARDIAN_MAX_PAGES = 15;
+
 const AXIOS_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -49,7 +52,9 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
   const seenUrls = new Set<string>();
 
   for (const searchUrl of GUARDIAN_SEARCH_URLS) {
-    for (let page = 1; page <= 2; page++) {
+    let emptyPages = 0;
+    for (let page = 1; page <= GUARDIAN_MAX_PAGES; page++) {
+      const before = seenUrls.size;
       const pageUrl = page === 1 ? searchUrl : `${searchUrl}&page=${page}`;
       try {
         const res = await axios.get(pageUrl, {
@@ -57,7 +62,7 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
           timeout: 12000
         });
 
-        if (res.status !== 200 || !res.data) continue;
+        if (res.status !== 200 || !res.data) break; // past the last page (or blocked): this search is finished
 
         const $ = cheerio.load(res.data);
 
@@ -92,6 +97,9 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
       } catch (fetchErr: any) {
         console.warn(`⚠️ [GUARDIAN CRAWLER] Failed to fetch page ${pageUrl}:`, fetchErr?.message || fetchErr);
       }
+      // Stop this search when two pages in a row bring nothing new (the end of the results), and be polite between pages.
+      if (seenUrls.size === before) { emptyPages++; if (emptyPages >= 2) break; } else { emptyPages = 0; }
+      await new Promise((r) => setTimeout(r, 400));
     }
   }
 
