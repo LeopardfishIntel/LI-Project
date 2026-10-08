@@ -97,6 +97,35 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
   return rawListings;
 }
 
+/** Finds the one school (if any) a Guardian listing belongs to, using the recruiter, location and title. Shared by the engine and the check script. */
+export function matchGuardianListingToSchool(item: { recruiter: string; location: string; title: string; href: string }, dbSchools: any[]): any {
+  const candidateString = item.recruiter ? `${item.recruiter} ${item.location} ${item.title}` : `${item.title} ${item.location}`;
+  let matchedSchool: any = null;
+  for (const school of dbSchools) {
+    const res = matchSchoolEntity(school, {
+      candidateText: candidateString,
+      sourceUrl: item.href,
+      city: item.location
+    });
+    if (res.isMatch) {
+      matchedSchool = school;
+      break;
+    }
+    if (item.recruiter) {
+      const directMatch = matchSchoolEntity(school, {
+        candidateText: item.recruiter,
+        sourceUrl: item.href,
+        city: item.location
+      });
+      if (directMatch.isMatch) {
+        matchedSchool = school;
+        break;
+      }
+    }
+  }
+  return matchedSchool;
+}
+
 /**
  * Sweeps Guardian Jobs for international school teaching vacancies
  * and grounds them strictly against canonical database schools.
@@ -140,34 +169,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
         continue;
       }
 
-      const candidateString = item.recruiter ? `${item.recruiter} ${item.location} ${item.title}` : `${item.title} ${item.location}`;
-
-      let matchedSchool: any = null;
-
-      for (const school of dbSchools) {
-        const res = matchSchoolEntity(school, {
-          candidateText: candidateString,
-          sourceUrl: item.href,
-          city: item.location
-        });
-
-        if (res.isMatch) {
-          matchedSchool = school;
-          break;
-        }
-
-        if (item.recruiter) {
-          const directMatch = matchSchoolEntity(school, {
-            candidateText: item.recruiter,
-            sourceUrl: item.href,
-            city: item.location
-          });
-          if (directMatch.isMatch) {
-            matchedSchool = school;
-            break;
-          }
-        }
-      }
+      const matchedSchool = matchGuardianListingToSchool(item, dbSchools);
 
       if (matchedSchool) {
         const jobKey = `${matchedSchool.id}_${item.title.toLowerCase()}`;
