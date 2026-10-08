@@ -21,6 +21,8 @@ export interface GuardianJobMatch {
 }
 
 const GUARDIAN_SEARCH_URLS = [
+  // The whole "Education, schools" sector (28 jobs on 2026-10-08, Roger): everything schools post on Guardian Jobs, whatever words the advert uses.
+  "https://jobs.theguardian.com/jobs/education-schools/",
   "https://jobs.theguardian.com/jobs/primary-and-secondary-education/?keywords=international",
   "https://jobs.theguardian.com/jobs/?keywords=international+school",
   "https://jobs.theguardian.com/jobs/schools/?keywords=international",
@@ -55,7 +57,7 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
     let emptyPages = 0;
     for (let page = 1; page <= GUARDIAN_MAX_PAGES; page++) {
       const before = seenUrls.size;
-      const pageUrl = page === 1 ? searchUrl : `${searchUrl}&page=${page}`;
+      const pageUrl = page === 1 ? searchUrl : `${searchUrl}${searchUrl.includes("?") ? "&" : "?"}page=${page}`;
       try {
         const res = await axios.get(pageUrl, {
           headers: AXIOS_HEADERS,
