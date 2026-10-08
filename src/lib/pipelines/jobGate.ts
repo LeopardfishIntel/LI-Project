@@ -22,7 +22,7 @@
  * "GEMS" signed off by Roger 2026-10-06 after the trial (82 of 357 listed jobs kept: company name must be exactly one of 12 mapped campuses, unknown and unregistered campuses left out, support roles and old postings dropped; GEMS gives no expiry date, so posted + 42 days applies).
  * "SEARCH ASSOCIATES" signed off by Roger 2026-10-06 after the trial (9 open jobs, every school matched by whole-word name + country, real deadlines, past or "no longer accepting" jobs dropped, business roles left out).
  */
-export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB", "TES", "SEARCH ASSOCIATES", "GEMS"]);
+export const AUTO_APPROVE_SOURCES = new Set<string>(["GRC", "SCHOOL WEB", "TES", "SEARCH ASSOCIATES", "GEMS", "TAALEEM"]);
 
 /** For signed-off engines, a title that is not clearly teaching or leadership (e.g. "HS Chemistry") is kept but sent to pending, not thrown away. */
 export function acceptsUnsureRoles(source: string): boolean {
