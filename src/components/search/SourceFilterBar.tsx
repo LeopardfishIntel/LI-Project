@@ -120,18 +120,14 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
   const inactiveSources = ALL_SOURCES.filter((s) => getCount(s.key) === 0);
 
-  // Row 1: Boards, Agencies & Heavy-Hitter Groups (>= 15 jobs)
+  // Row 1: general job boards and agencies only (TES, GRC, Guardian, Teach Away, Search Associates).
   const row1Items = ALL_SOURCES.filter(
-    (s) =>
-      (s.category === "BOARDS_AGENCIES" || (s.category === "GROUPS" && getCount(s.key) >= 15)) &&
-      (isAdmin || getCount(s.key) > 0)
+    (s) => s.category === "BOARDS_AGENCIES" && (isAdmin || getCount(s.key) > 0)
   ).sort((a, b) => getCount(b.key) - getCount(a.key));
 
-  // Row 2: Direct Links (anchored first) & Secondary Groups (< 15 jobs)
+  // Row 2: Direct first, then every school group (GEMS, Taaleem, Nord Anglia ...), biggest first. A group never sits in row 1, however big it is (Roger, 2026-10-08).
   const row2Items = ALL_SOURCES.filter(
-    (s) =>
-      (s.category === "DIRECT" || (s.category === "GROUPS" && getCount(s.key) < 15)) &&
-      (isAdmin || getCount(s.key) > 0)
+    (s) => (s.category === "DIRECT" || s.category === "GROUPS") && (isAdmin || getCount(s.key) > 0)
   ).sort((a, b) => {
     if (a.category === "DIRECT") return -1;
     if (b.category === "DIRECT") return 1;
@@ -140,7 +136,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
   return (
     <div className="flex flex-col gap-1.5 p-2 bg-slate-900/95 border border-slate-800/90 rounded-xl shadow-lg backdrop-blur-md w-full">
-      {/* ROW 1: PRIMARY FEEDS & HIGH-YIELD GROUPS */}
+      {/* ROW 1: JOB BOARDS & AGENCIES */}
       <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
@@ -199,7 +195,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
       <div className="h-px w-full bg-slate-800/60" />
 
-      {/* ROW 2: DIRECT LINK, SECONDARY GROUPS & INACTIVE DRAWER */}
+      {/* ROW 2: DIRECT LINK, SCHOOL GROUPS & INACTIVE DRAWER */}
       <div className="flex flex-wrap items-center gap-1.5">
         {row2Items.map((item) => {
           const isActive = isFilterActive(item.key);
