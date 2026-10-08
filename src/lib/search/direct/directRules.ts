@@ -110,13 +110,19 @@ export function chooseApplyUrl(jobUrl: string | null | undefined, pageUrl: strin
 export function anchorForTitle(title: string, anchors: Anchor[], pageUrl: string): string | null {
   const t = titleKey(title);
   if (!t) return null;
+  let best: { href: string; score: number } | null = null;
   for (const a of anchors) {
     if (!a.href || a.href.split("#")[0] === pageUrl.split("#")[0]) continue;
     const l = titleKey(a.label);
     if (!l) continue;
-    if (sameTitle(a.label, title) || (Math.min(l.length, t.length) >= 10 && (l.includes(t) || t.includes(l)))) return a.href;
+    // a short menu link (e.g. "Dover Campus") that only appears inside the title must not win: the link words must make up most of the title
+    const ratio = Math.min(l.length, t.length) / Math.max(l.length, t.length);
+    let score = 0;
+    if (sameTitle(a.label, title)) score = 1 + ratio;
+    else if (Math.min(l.length, t.length) >= 10 && (l.includes(t) || t.includes(l)) && ratio >= 0.6) score = ratio;
+    if (score > 0 && (!best || score > best.score)) best = { href: a.href, score };
   }
-  return null;
+  return best ? best.href : null;
 }
 /** Pipeline 1 drops jobs that share an apply link. Jobs without a link of their own get a unique "#job-..." ending (the page still opens normally). */
 export function makeUniqueUrls<T extends { title: string; applyUrl: string }>(jobs: T[], pageUrl: string): T[] {

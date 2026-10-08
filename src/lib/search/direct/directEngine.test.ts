@@ -36,6 +36,15 @@ const school: DirectSchool = { id: "FLIS0001", name: "Test International School"
     const r = await runDirectForSchool(school, null, deps(web, ai));
     check("own link beats a general campus page", r.jobs.length === 1 && r.jobs[0].applyUrl === "https://www.test.edu/careers/post/maths-123");
   }
+  // 0c. a short menu link ("Dover Campus") listed BEFORE the job link must not win
+  {
+    const web = {
+      "https://www.test.edu/careers": page("https://www.test.edu/careers", "Open Positions Part-Time Teacher of High School Mathematics Dover Campus", [["Dover Campus", "https://www.test.edu/dover-campus"], ["Part-Time Teacher of High School Mathematics", "https://www.test.edu/careers/post/maths-123"]]),
+    };
+    const ai: AiJob[] = [{ title: "Part-Time Teacher of High School Mathematics Dover Campus", applyUrl: "https://www.test.edu/dover-campus", evidence: "Part-Time Teacher of High School Mathematics" }];
+    const r = await runDirectForSchool(school, null, deps(web, ai));
+    check("short menu link does not beat the job's own link", r.jobs.length === 1 && r.jobs[0].applyUrl === "https://www.test.edu/careers/post/maths-123");
+  }
   // 0b. job adverts are PDF files whose link text is just "Download" -> still linked by file name
   {
     const web = {
