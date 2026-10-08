@@ -110,6 +110,17 @@ function runTests() {
     "a slug for Park House English School (Park-House-English-School-Qatar-Doha) -> FLIS0281"
   );
 
+  // Test Case 10: look-alike names with extra leading words must NOT be placed on the wrong school
+  const lookAlikes: any[] = [
+    { id: "FLIS0063", name: "International College Spain", schoolname: "International College Spain", city: "Madrid", country: "Spain", aliases: [] },
+    { id: "FLIS0251", name: "The International School of Penang (Uplands)", schoolname: "The International School of Penang (Uplands)", city: "Penang", country: "Malaysia", aliases: [] },
+    { id: "FLIS0163", name: "The British School Warsaw", schoolname: "The British School Warsaw", city: "Warsaw", country: "Poland", aliases: [] }
+  ];
+  assertEqual(matchIspWorkdaySlug("Laude-San-Pedro-International-College-Spain-Madrid", lookAlikes), null, "Laude San Pedro must not match International College Spain");
+  assertEqual(matchIspWorkdaySlug("Straits-International-School-Penang-Malaysia-Penang", lookAlikes), null, "Straits International School Penang must not match Uplands");
+  assertEqual(matchIspWorkdaySlug("British-School-of-Wilanow-Poland-Warsaw", lookAlikes), null, "British School of Wilanow must not match The British School Warsaw");
+  assertEqual(matchIspWorkdaySlug("International-College-Spain-Madrid", lookAlikes), "FLIS0063", "International-College-Spain-Madrid -> FLIS0063 still matches");
+
   // Test Case 9: Lynn-Rose-Heights (Canada) -> no school
   assertEqual(
     matchIspWorkdaySlug("Lynn-Rose-Heights", dbSchools),

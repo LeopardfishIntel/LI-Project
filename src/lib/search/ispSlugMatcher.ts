@@ -119,6 +119,18 @@ export function matchIspWorkdaySlug(
       const allCoreTokensMatch = coreTokens.every((t) => slugTokenSet.has(t));
       if (!allCoreTokensMatch) continue;
 
+      // 1b. Leading-extra-word guard: every slug word up to the last school-name word
+      // must belong to the school's name (or be a filler word). So
+      // "Laude-San-Pedro-International-College-Spain" can NOT match "International College Spain".
+      // Failing here is safe: the job is simply not placed.
+      const nameTokenSet = new Set(nameTokens);
+      let lastPos = -1;
+      for (const t of coreTokens) lastPos = Math.max(lastPos, slugTokens.indexOf(t));
+      const hasForeignLeadingWord = slugTokens
+        .slice(0, lastPos + 1)
+        .some((t) => !nameTokenSet.has(t) && !NOISE_WORDS.has(t));
+      if (hasForeignLeadingWord) continue;
+
       // 2. Strict Negative / Conflicting Campus token checks:
       const nonGenericSchoolTokens = new Set(coreTokens.filter((t) => !GENERIC_SCHOOL_WORDS.has(t)));
 
