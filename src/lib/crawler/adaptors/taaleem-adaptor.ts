@@ -6,7 +6,6 @@
  * non-teaching positions, and attaches deep curriculum, term, and role metadata with direct URLs.
  */
 
-import { chromium } from "playwright";
 import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
 
@@ -112,79 +111,71 @@ export interface RawTaaleemJob {
   loc?: string;
 }
 
+// Same careers platform as GEMS: the list address answers 401 to Node's default request and to browser-like headers, but 200 to curl's labels.
+// No browser and no token are needed (checked 2026-10-07 with curl: 127 jobs).
+const TAALEEM_HEADERS: Record<string, string> = {
+  "User-Agent": "curl/8.7.1",
+  "Accept": "*/*",
+  "X-Requested-With": "XMLHttpRequest",
+};
+
+/** Why the last read gave nothing or was cut short (shown in the engine's answer so a silent failure can be seen). */
+let taaleemLastNote = "";
+export function getTaaleemLastNote(): string { return taaleemLastNote; }
+
 /**
- * 🌐 Sweeps all active pages of Taaleem Education network via authenticated token session
+ * 🌐 Reads the whole Taaleem careers list with plain requests (no browser). Returns nothing at all when the read is incomplete,
+ * so a half-read list can never make jobs look as if they vanished.
  */
 export async function sweepAllTaaleemNetwork(): Promise<RawTaaleemJob[]> {
-  console.log("🏫 [TAALEEM ENGINE] Launching authenticated tokenized session sweep...");
-  let browser = null;
-
+  taaleemLastNote = "";
+  console.log("🏫 [TAALEEM ENGINE] Reading the Taaleem careers list (plain requests)...");
+  const base = "https://careers.taaleem.ae/app/control/byt_job_search_manager";
+  const getPage = async (p: number): Promise<any> => {
+    let lastErr: any = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 20000);
+        try {
+          const res = await fetch(`${base}?action=1&query=page=${p}&body=job-search-results&lan=en`, { headers: TAALEEM_HEADERS, signal: ctrl.signal });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } finally { clearTimeout(timer); }
+      } catch (e: any) { lastErr = e; await new Promise((r) => setTimeout(r, 500 * attempt)); }
+    }
+    throw lastErr;
+  };
   try {
-    browser = await chromium.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-    });
-
-    const page = await browser.newPage();
-    let dynamicToken = "";
-
-    page.on("request", (req) => {
-      const u = req.url();
-      if (u.includes("byt_job_search_manager") && u.includes("token=")) {
-        const match = u.match(/token=([a-zA-Z0-9_-]+)/);
-        if (match) dynamicToken = match[1];
-      }
-    });
-
-    await page.goto("https://careers.taaleem.ae/en/job-search-results/", {
-      waitUntil: "networkidle",
-      timeout: 30000,
-    });
-
-    console.log(`🏫 [TAALEEM ENGINE] Active Session Token Captured: "${dynamicToken || "default"}"`);
-
-    const harvestedJobs: RawTaaleemJob[] = await page.evaluate(async (tok) => {
-      const all: any[] = [];
-      const tokenParam = tok ? `&token=${tok}` : "";
-
-      const firstRes = await fetch(
-        `/app/control/byt_job_search_manager?action=1${tokenParam}&query=page=1&body=job-search-results&lan=en`,
-        { headers: { "X-Requested-With": "XMLHttpRequest" } }
-      );
-      const firstData = await firstRes.json();
-      const totalJobs = firstData.totalJobs || 0;
-      const totalPages = Math.ceil(totalJobs / 10);
-      all.push(...(firstData.jobs || []));
-
-      for (let p = 2; p <= totalPages; p++) {
-        const res = await fetch(
-          `/app/control/byt_job_search_manager?action=1${tokenParam}&query=page=${p}&body=job-search-results&lan=en`,
-          { headers: { "X-Requested-With": "XMLHttpRequest" } }
-        );
-        const data = await res.json();
-        if (data.jobs) all.push(...data.jobs);
-      }
-
-      return all.map((j: any) => ({
-        id: String(j.id || ""),
-        title: String(j.title || "").trim(),
-        url: String(j.url || "").trim(),
-        applyUrl: String(j.url || "").startsWith("http") ? String(j.url || "").trim() : `https://careers.taaleem.ae${String(j.url || "").trim()}`,
-        companyName: String(j.companyName || j.company_name || "").trim(),
-        description: String(j.desc || j.description || "").trim(),
-        crtDate: j.crtDate ? String(j.crtDate) : undefined,
-        expDate: j.expDate ? String(j.expDate) : undefined,
-        loc: j.loc ? String(j.loc) : "UAE",
-      }));
-    }, dynamicToken);
-
-    console.log(`🏫 [TAALEEM ENGINE] Harvested ${harvestedJobs.length} total direct Taaleem network records.`);
-    return harvestedJobs;
+    const first = await getPage(1);
+    const totalJobs = Number(first.totalJobs) || 0;
+    const all: any[] = [...(first.jobs || [])];
+    const totalPages = Math.min(Math.ceil(totalJobs / 10), 200);
+    for (let p = 2; p <= totalPages; p++) {
+      const d = await getPage(p);
+      if (d.jobs) all.push(...d.jobs);
+    }
+    console.log(`🏫 [TAALEEM ENGINE] The list says ${totalJobs} jobs; read ${all.length}.`);
+    if (!totalJobs || all.length < totalJobs * 0.9) {
+      taaleemLastNote = `Incomplete read: the list says ${totalJobs} jobs, read ${all.length}`;
+      console.error("❌ [TAALEEM ENGINE] Incomplete read - returning nothing so no job is changed.");
+      return [];
+    }
+    return all.map((j: any) => ({
+      id: String(j.id || ""),
+      title: String(j.title || "").trim(),
+      url: String(j.url || "").trim(),
+      applyUrl: String(j.url || "").startsWith("http") ? String(j.url || "").trim() : `https://careers.taaleem.ae${String(j.url || "").trim()}`,
+      companyName: String(j.companyName || j.company_name || "").trim(),
+      description: String(j.desc || j.description || "").trim(),
+      crtDate: j.crtDate ? String(j.crtDate) : undefined,
+      expDate: j.expDate ? String(j.expDate) : undefined,
+      loc: j.loc ? String(j.loc) : "UAE",
+    }));
   } catch (err: any) {
-    console.error("❌ [TAALEEM ENGINE] Error during browser session sweep:", err?.message || err);
+    taaleemLastNote = `Could not read the Taaleem list: ${String(err?.message || err).slice(0, 200)}`;
+    console.error("❌ [TAALEEM ENGINE] Could not read the Taaleem list:", err?.message || err);
     return [];
-  } finally {
-    if (browser) await browser.close();
   }
 }
 
