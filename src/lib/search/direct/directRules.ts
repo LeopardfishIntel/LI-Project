@@ -42,7 +42,13 @@ export function sameTitle(a: string, b: string): boolean {
   const nums = (set: Set<string>) => [...set].filter((w) => /\d/.test(w)).sort().join(",");
   if (nums(A) !== nums(B)) return false;
   let n = 0; A.forEach((w) => B.has(w) && n++);
-  return n / Math.max(A.size, B.size) > 0.8;
+  if (!(n / Math.max(A.size, B.size) > 0.8)) return false;
+  // Different jobs can differ by ONE subject word only ("... Food Technology" vs "... Design Technology", UWCSEA): a real word that is only on one side
+  // (not a filler word, not just a plural) means a different job. Reworded titles ("Teacher of Maths" / "Maths Teacher") differ only by filler words.
+  const FILLER = new Set(["of", "the", "and", "for", "a", "an", "in", "at", "to", "with"]);
+  const plural = (w: string, set: Set<string>) => set.has(w + "s") || (w.endsWith("s") && set.has(w.slice(0, -1)));
+  const real = (from: Set<string>, other: Set<string>) => [...from].some((w) => !other.has(w) && !FILLER.has(w) && !plural(w, other));
+  return !(real(A, B) || real(B, A));
 }
 /** The title must really be on the page (guards against anything the AI made up). */
 export function titleInText(title: string, text: string): boolean {

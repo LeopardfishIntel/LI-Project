@@ -19,6 +19,8 @@ check("same job: & and 'and'", sameTitle("Math & Science Teacher", "Math and Sci
 check("different job: Grade 3 vs Grade 4", !sameTitle("Home Room Teacher PYP (Grade 3)", "Home Room Teacher PYP (Grade 4)"));
 check("different job: Chemistry vs Science", !sameTitle("IGCSE & IBDP Chemistry Teacher", "IGCSE / IBDP Science Teacher"));
 check("different job: Biology vs Chemistry", !sameTitle("Teacher of Biology", "Teacher of Chemistry"));
+check("different job: Food Technology vs Design Technology (UWCSEA)", !sameTitle("Part-Time Teacher of Middle School/High School Food Technology", "Part-Time Teacher of Middle School/High School Design Technology"));
+check("same job: plural only", sameTitle("Primary Class Teachers wanted urgently now", "Primary Class Teacher wanted urgently now"));
 check("different job: Mathematics vs Sciences head", !sameTitle("Head of Mathematics PYP / MYP", "Head of Sciences PYP / MYP"));
 check("title key expands abbreviations", titleKey("ES EAL Teacher") === "elementary school eal teacher");
 

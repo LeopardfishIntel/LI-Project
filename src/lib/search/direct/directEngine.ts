@@ -18,7 +18,7 @@ export interface DirectSchool { id: string; name: string; city?: string; country
  * Rules version. It is mixed into the page fingerprint, so when the way jobs or links are read is improved (change this text),
  * every school is read once again instead of being skipped as "page text unchanged".
  */
-export const DIRECT_RULES_VERSION = "2026-10-08-own-links";
+export const DIRECT_RULES_VERSION = "2026-10-08-own-links-2";
 
 export interface DirectState { pageUrl?: string; repairedFrom?: string; textHash?: string; lastStatus?: string; lastCheckedAt?: number; lastJobCount?: number; failCount?: number }
 export type DirectStatus = "ok" | "no_jobs" | "unchanged" | "dead_link" | "blocked" | "needs_browser" | "board_only" | "group_skipped" | "no_link" | "error";
