@@ -18,6 +18,7 @@ import { MARITAL_ADVISORIES } from '@/lib/marital-advisories';
 import goldfishImg from '@/assets/goldfish.jpg';
 import evaluateSchoolImg from '@/assets/evaluate-school.jpg';
 import featuredJobsImg from '@/assets/featured-jobs.png';
+import { isReviewedPublicJob } from '@/lib/featuredJobs/publicSources';
 
 const features = [
   { title: "TRUE NET SAVINGS", desc: "Calculate genuine disposable income by mapping real-world costs and tax-adjusted net offers.", icon: Wallet, color: "text-[#FF6B00]" },
@@ -88,7 +89,8 @@ export default function Home() {
     const todayMs = Date.now();
     const valid = featuredJobsData.filter((job: any) => {
       const rawStatus = String(job.status || "").toUpperCase();
-      if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") return false;
+      if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING" || rawStatus === "MERGED") return false;
+      if (!isReviewedPublicJob(job, String(job.source || "").toUpperCase().includes("TAALEEM") || String(job.applyUrl || "").toLowerCase().includes("taaleem.ae"))) return false; // same reviewed-engines list as the board
       if (job.closingDateMillis && job.closingDateMillis < todayMs) return false;
       return true;
     });

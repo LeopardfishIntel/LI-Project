@@ -104,6 +104,7 @@ import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
 import { resolvePillDeduplication } from '@/lib/featuredJobs/pillResolver';
+import { isReviewedPublicJob } from '@/lib/featuredJobs/publicSources';
 import { isMalvernCampus } from '@/lib/search/malvern';
 import { isRetiredSchool } from "@/lib/schools/retiredSchools";
 import { isCognitaSchool } from '@/lib/search/cognitaMatcher';
@@ -941,27 +942,11 @@ export default function FeaturedJobsPage() {
 
 
       cacheData.forEach((cacheDoc: FeaturedJobCacheDoc) => {
-        // MULTI-ENGINE SOURCE FILTER
+        // MULTI-ENGINE SOURCE FILTER: the public board shows only reviewed engines (list lives in lib/featuredJobs/publicSources.ts)
         const sourceUpper = String(cacheDoc.source || '').toUpperCase();
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = /(^|[^A-Z])TES([^A-Z]|$)/.test(sourceUpper) || isTesDomainUrl(applyUrlLower);
-        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordanglia.com') || applyUrlLower.includes('nordangliaeducation.com');
-        const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
-        const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
-        const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
-        const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
-        const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege');
-        const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
-        const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
-        const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
-        const isTaylors = sourceUpper.includes('TAYLOR') || applyUrlLower.includes('taylors');
-        const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
-        const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
-        const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
-        const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
         const isTaaleem = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, (cacheDoc as any).group || (cacheDoc as any).ownership) || sourceUpper.includes('TAALEEM') || applyUrlLower.includes('taaleem.ae');
-        const isSearch = sourceUpper.includes('SEARCH') || applyUrlLower.includes('searchassociates');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isSearch) return;
+        if (!isReviewedPublicJob(cacheDoc as any, isTaaleem)) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING' || rawStatus === 'MERGED') return;
