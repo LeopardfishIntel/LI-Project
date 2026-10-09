@@ -89,7 +89,7 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
             const currentRole = data.role || (emailIsAdmin ? 'admin' : 'standard');
             
             // Check for explicit admin flag or admin role or verified admin email
-            const adminStatus = emailIsAdmin || data.isAdmin === true || currentRole === 'admin' || data.customId === 'FLI007';
+            const adminStatus = emailIsAdmin; // one admin only: the verified sign-in email (flags saved on the profile do not count)
             
             setRole(currentRole as UserRole);
             setIsAdmin(adminStatus);
