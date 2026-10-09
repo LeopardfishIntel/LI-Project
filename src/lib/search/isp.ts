@@ -16,6 +16,7 @@ export interface IspJobMatch {
   status?: string;
   datePosted?: string | null;
   closingDate?: string | null;
+  matchConfidence?: "high" | "medium" | "low";
 }
 
 const STEALTH_HEADERS: Record<string, string> = {
@@ -194,6 +195,9 @@ export async function searchIspDbSchools(query: string = ""): Promise<IspJobMatc
               source: "ISP",
               datePosted: datePosted || null,
               closingDate: validThrough || null,
+              // The school was placed by the strict whole-name rule on the Workday link (ispSlugMatcher), so the match is certain.
+              // Without this the job gate never saw ISP as a certain match and ISP jobs could not approve by themselves.
+              matchConfidence: "high" as const,
             };
           }
 
