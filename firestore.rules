@@ -84,7 +84,7 @@ service cloud.firestore {
     }
 
     match /teachers/{teacherId} {
-      allow read: if isSignedIn();
+      allow read: if isOwner(teacherId) || isAdmin();
       allow create: if isAdmin() || (
         isOwner(teacherId) &&
         (!request.resource.data.keys().hasAny(['role', 'isAdmin', 'isVerified', 'relocation_pass_active', 'relocation_pass_expires_at', 'domestic_baseline_submitted', 'tier_expires_at', 'contributions_count', 'daily_contributions_count', 'last_uplift_at']) &&
