@@ -80,7 +80,7 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [operativeName, setOperativeName] = useState<string>("FRED");
-  const [teacherId, setTeacherId] = useState<string>("FLI007");
+  const [teacherId, setTeacherId] = useState<string>(""); // never default to the admin ID: that made every guest an admin
   const [teacherProfile, setTeacherProfile] = useState<TeacherProfile | null>(null);
   const [timeUntilReset, setTimeUntilReset] = useState<string>("");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -93,7 +93,7 @@ export default function Header() {
   const [parityState, setParityState] = useState<ParityState | null>(null);
   const [expandedSchoolId, setExpandedSchoolId] = useState<string | null>(null);
 
-  const isUserAdmin = checkIsAdmin(user, teacherProfile, teacherId);
+  const isUserAdmin = checkIsAdmin(user, teacherProfile, user ? teacherId : null);
   const isAdmin = isUserAdmin;
   const allowance = isUserAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
@@ -380,7 +380,7 @@ export default function Header() {
             const data = snap.data() as TeacherProfile;
             setTeacherProfile(data);
             setOperativeName(data.name || (data as any).firstName || "FRED"); 
-            setTeacherId(data.teacherId || data.id || "FLI007");
+            setTeacherId(data.teacherId || data.id || "");
           }
         });
       } else {
