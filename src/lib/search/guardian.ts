@@ -38,6 +38,8 @@ const AXIOS_HEADERS = {
 };
 
 let guardianLastNote = "";
+// What the Guardian site answered when a page could not be read (kept for the run record, so a blocked server is visible, not silent).
+let guardianFetchIssues: string[] = [];
 /** One line for the engine's run record: how many listings were read and how many were placed on a school. */
 export function getGuardianLastNote(): string { return guardianLastNote; }
 
@@ -54,6 +56,7 @@ export interface GuardianRawListing {
 /** Reads the Guardian Jobs search pages and returns every listing found (no school matching yet). Shared by the engine and the trial script. */
 export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
   const rawListings: GuardianRawListing[] = [];
+  guardianFetchIssues = [];
 
   const seenUrls = new Set<string>();
 
@@ -71,7 +74,7 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
           timeout: 12000
         });
 
-        if (res.status !== 200 || !res.data) break; // past the last page (or blocked): this search is finished
+        if (res.status !== 200 || !res.data) { if (guardianFetchIssues.length < 3) guardianFetchIssues.push(`HTTP ${res.status}`); break; } // past the last page (or blocked): this search is finished
 
         const $ = cheerio.load(res.data);
 
@@ -104,6 +107,7 @@ export async function harvestGuardianListings(): Promise<GuardianRawListing[]> {
           });
         });
       } catch (fetchErr: any) {
+        if (guardianFetchIssues.length < 3) guardianFetchIssues.push(String(fetchErr?.response?.status ? `HTTP ${fetchErr.response.status}` : (fetchErr?.message || fetchErr)).slice(0, 80));
         console.warn(`⚠️ [GUARDIAN CRAWLER] Failed to fetch page ${pageUrl}:`, fetchErr?.message || fetchErr);
       }
       // Stop this search when two pages in a row bring nothing new (the end of the results), and be polite between pages.
@@ -248,7 +252,7 @@ export async function searchGuardianDbSchools(): Promise<GuardianJobMatch[]> {
       }
     }
 
-    guardianLastNote = `read ${rawListings.length} listings from Guardian Jobs, ${matches.length} placed on one of our schools`;
+    guardianLastNote = `read ${rawListings.length} listings from Guardian Jobs, ${matches.length} placed on one of our schools${rawListings.length === 0 && guardianFetchIssues.length ? ` (the Guardian site answered: ${guardianFetchIssues.join("; ")})` : ""}`;
     console.log(`🛸 [GUARDIAN CRAWLER] Grounded ${matches.length} DB-verified vacancies from Guardian Jobs.`);
     return matches;
   } catch (err: any) {
