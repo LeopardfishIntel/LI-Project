@@ -2,9 +2,9 @@ name: Leopardfish Nightly Job Engines
 
 on:
   schedule:
-    # Runs every night at 02:00 UTC, one hour BEFORE the daily sweep + janitor (03:00 UTC),
-    # so new jobs are on the board before the janitor tidies up.
-    - cron: '0 2 * * *'
+    # Runs every night at 23:23 UTC (Roger, 2026-10-09: earlier, so the whole batch is finished before the Direct engine (01:00 UTC)
+    # and the daily sweep + janitor (03:00 UTC), and off the busy top-of-the-hour so GitHub is less likely to delay or skip it).
+    - cron: '23 23 * * *'
   workflow_dispatch: # manual run from the GitHub Actions tab
 
 jobs:

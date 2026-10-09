@@ -16,9 +16,9 @@ jobs:
         run: |
           echo "📡 Triggering automated 24h daily sweep endpoint..."
           APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
-          # limit=40: only the 40 oldest schools refresh per run (raise to 200 after a clean test night).
+          # limit=200 (Roger, 2026-10-09): the 200 oldest-checked schools refresh per run (was 40).
           # The site uses trailing slashes (trailingSlash: true), so the address must end in "/" and curl must follow redirects.
-          RESPONSE=$(curl -sS -L --max-time 540 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/daily-sweep/?force=false&limit=40")
+          RESPONSE=$(curl -sS -L --max-time 540 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/daily-sweep/?force=false&limit=200")
           echo "Response:"
           echo "$RESPONSE"
 
