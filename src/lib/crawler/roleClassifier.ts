@@ -73,6 +73,8 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /\boffice\b.*\b(administrator|manager|assistant|clerk|executive)\b/i,
   /\b(housekeeping|hospitality)\b.*\b(manager|supervisor|staff|assistant)\b/i,
   /\breceptionist\b/i,
+  // Front desk / registry / trades / accounts staff (Taaleem pending list, Roger 2026-10-09)
+  /\b(front\s+desk|registrar|handy\s*man|reprographics?|accountant|bookkeeper|electrician|plumber|cleaner|gardener|groundskeeper|marketing\s+admin)\b/i,
   /\bsecretary\b/i,
   /\bclerk\b/i,
   /\bdata\s+entry\b/i,

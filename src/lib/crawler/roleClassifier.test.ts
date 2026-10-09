@@ -98,6 +98,12 @@ function runTests() {
   assert(isStrictAcademicTeachingRole("Learning Coach"), true, "Learning Coach is still teaching");
   assert(isStrictAcademicTeachingRole("Librarian"), true, "Librarian is still kept");
 
+  // Admin / trades / accounts roles that landed in pending (Taaleem, 2026-10-09)
+  ["Front Desk Administrator", "Marketing Admin– UAE Nationals", "Registrar", "Handyman", "Reprographics Officer", "Accountant"].forEach((t) =>
+    assert(isSupportOrNonTeachingRole(t), true, t + " is support"));
+  ["Teacher of Junior School", "Head of Art Department", "Learning Technology Coach", "Teacher of Senior School Mathematics", "Head of Business Senior School"].forEach((t) =>
+    assert(isSupportOrNonTeachingRole(t), false, t + " is not support"));
+
   console.log("\n📊 Role Classifier Test Summary: " + passed + " passed, " + failed + " failed.\n");
 }
 
