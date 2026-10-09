@@ -9,19 +9,10 @@
  */
 import { getAdminDb } from "@/firebase/admin";
 
-export interface EngineRunStats { found: number; kept: number }
-export interface DriftResult { drifted: boolean; reason?: string }
-
-export const DRIFT_MIN_USUAL_KEPT = 5;
-export const DRIFT_RATIO = 0.4;
-
-export function detectDrift(usual: EngineRunStats | null | undefined, now: EngineRunStats): DriftResult {
-  if (!usual || usual.kept < DRIFT_MIN_USUAL_KEPT) return { drifted: false };
-  if (now.found === 0) return { drifted: true, reason: `Found nothing; the usual is ${usual.found}` };
-  if (now.found < usual.found * DRIFT_RATIO) return { drifted: true, reason: `Found ${now.found}; the usual is ${usual.found}` };
-  if (now.kept < usual.kept * DRIFT_RATIO) return { drifted: true, reason: `Kept ${now.kept}; the usual is ${usual.kept}` };
-  return { drifted: false };
-}
+import { detectDrift, queueCallHadNoWork, DRIFT_MIN_USUAL_KEPT, DRIFT_RATIO } from "./engineDriftRules";
+import type { EngineRunStats, DriftResult } from "./engineDriftRules";
+export { detectDrift, queueCallHadNoWork, DRIFT_MIN_USUAL_KEPT, DRIFT_RATIO };
+export type { EngineRunStats, DriftResult };
 
 const docIdFor = (engineKey: string) => String(engineKey || "").toLowerCase().trim();
 const quarantineCache = new Map<string, { value: boolean; at: number }>();

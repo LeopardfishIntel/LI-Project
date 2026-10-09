@@ -22,7 +22,7 @@ import { getGemsLastNote } from "@/lib/crawler/adaptors/gems-adaptor";
 import { getSaLastNote } from "@/lib/search/searchassociates";
 import { getTaaleemLastNote } from "@/lib/crawler/adaptors/taaleem-adaptor";
 import { groupMatchesBySchool } from "@/lib/pipelines/engineRunner";
-import { recordRunAndCheckDrift } from "@/lib/crawler/engineDrift";
+import { recordRunAndCheckDrift, queueCallHadNoWork } from "@/lib/crawler/engineDrift";
 import { planRetireVanished, applyRetirePlan } from "@/lib/pipelines/retireVanished";
 
 export const dynamic = "force-dynamic";
@@ -172,6 +172,10 @@ export async function GET(request: Request) {
         } else {
           // A queue engine reads in chunks. One chunk is not comparable with the last chunk, so the totals of a whole pass are compared instead.
           const db: any = getAdminDb();
+          // A call that read no schools (all already checked inside the pass window) is not judged and changes nothing.
+          if (queueCallHadNoWork(getTesRunInfo().checked.length, totalFound)) {
+            console.log(`ℹ️ [DRIFT] ${key}: nothing was due this call, drift check skipped.`);
+          } else {
           const ref = db.collection("engine_cycle").doc(key);
           const snap = await ref.get();
           const prev: any = snap.exists ? snap.data() : {};
@@ -181,6 +185,7 @@ export async function GET(request: Request) {
             await ref.set({ found: 0, kept: 0, updatedAtMillis: Date.now() });
           } else {
             await ref.set({ ...cyc, updatedAtMillis: Date.now() });
+          }
           }
         }
         if (drift.drifted) console.warn(`🚨 [DRIFT] Engine ${key} paused: ${drift.reason}`);
