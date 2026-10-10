@@ -4465,25 +4465,37 @@ function DecoderContent() {
                                     </ul>
                                   </div>
 
+                                  <p className="text-[10px] text-slate-400 font-medium leading-relaxed mt-2">
+                                    Known vacancies are jobs advertised on public recruitment sites that we have found. They are not every departure, and earlier years may be incomplete.
+                                  </p>
+                                  {vacancyCounts && vacancyCounts.currentYear.count === 0 && vacancyCounts.previousYear.count === 0 && (
+                                    <p className="text-[10px] text-slate-400 font-medium leading-relaxed mt-2">
+                                      Insight unavailable: we are still building the history for this school.
+                                    </p>
+                                  )}
+
                                   {/* Category Assessment Card matching Expatriate Package cards */}
-                                  <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-2">
-                                    <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Turnover Assessment &amp; Category</p>
-                                    <div className="text-xs text-slate-300 font-medium leading-relaxed">
-                                      {isUnavailable ? (
-                                        <div>
-                                          <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
-                                          <strong className="text-white font-bold mr-1">Building the Ledger:</strong>
-                                          <span>Vacancy tracking is currently limited for this campus. Historical retention patterns will surface as hiring season progresses.</span>
-                                        </div>
-                                      ) : (
-                                        <div>
-                                          <strong className={cn("font-black mr-1.5", categoryTitleColor)}>{categoryTitle}:</strong>
-                                          <strong className="font-bold text-white mr-1.5">{subtitle}:</strong>
-                                          <span>{descriptor}</span>
-                                        </div>
-                                      )}
+                                  {/* Hidden for now. The old assessment used a ~12 months rule. Code kept for later. */}
+                                  {false && (
+                                    <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-2">
+                                      <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Turnover Assessment &amp; Category</p>
+                                      <div className="text-xs text-slate-300 font-medium leading-relaxed">
+                                        {isUnavailable ? (
+                                          <div>
+                                            <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
+                                            <strong className="text-white font-bold mr-1">Building the Ledger:</strong>
+                                            <span>Vacancy tracking is currently limited for this campus. Historical retention patterns will surface as hiring season progresses.</span>
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <strong className={cn("font-black mr-1.5", categoryTitleColor)}>{categoryTitle}:</strong>
+                                            <strong className="font-bold text-white mr-1.5">{subtitle}:</strong>
+                                            <span>{descriptor}</span>
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
-                                  </div>
+                                  )}
 
                                   {/* DISCOVERED VACANCIES LEDGER */}
                                   {allProcessedJobs.length > 0 && (
