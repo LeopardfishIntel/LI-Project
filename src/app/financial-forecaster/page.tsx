@@ -4548,9 +4548,12 @@ function DecoderContent() {
                                               </div>
                                             </summary>
                                             <div className="p-3 border-t border-white/5 space-y-4 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
-                                              <p className="text-[11px] text-slate-400 italic pb-2 border-b border-white/5">
-                                                * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles.
-                                              </p>
+                                              {/* Hidden for now. It described the old churn rate, which is no longer shown. */}
+                                              {false && (
+                                                <p className="text-[11px] text-slate-400 italic pb-2 border-b border-white/5">
+                                                  * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles.
+                                                </p>
+                                              )}
                                               {currentJobs.length > 0 && (
                                                 <div className="space-y-2">
                                                   <div className="text-[9px] font-black uppercase text-teal-400 px-2 pt-1 pb-0.5 tracking-wider border-b border-teal-500/10">Current Cycle (Last 12 Months)</div>
