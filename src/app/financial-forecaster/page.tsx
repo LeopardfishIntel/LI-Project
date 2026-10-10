@@ -34,6 +34,7 @@ import CoupleCountryAdvisoryPanel from '@/components/CoupleCountryAdvisory';
 import { openMethodologyModal } from '@/components/methodology-modal';
 import { checkIsAdmin } from '@/lib/auth/admin';
 import { isRetiredSchool } from "@/lib/schools/retiredSchools";
+import { countSchoolVacancies } from '@/lib/vacancy-counts';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -1164,6 +1165,40 @@ function DecoderContent() {
       return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
     });
   }, [schoolJobsData, adminJobsData, stabilityReport, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
+
+  const vacancyCounts = useMemo(() => {
+    const hasSchoolJobs = schoolJobsData && schoolJobsData.length > 0;
+    const hasAdminJobs = adminJobsData && adminJobsData.length > 0;
+    if (!hasSchoolJobs && !hasAdminJobs) return null;
+
+    const rawList = [...(schoolJobsData || []), ...(adminJobsData || [])];
+
+    const filtered = rawList.filter((record: any) => {
+      const title = record?.title || "";
+      const schoolId = record?.schoolId || activeSchool?.id;
+      return (
+        isValidJobTitle(title) &&
+        !isInvalidNonJobTitle(title) &&
+        !isCityOrCampusMismatch(
+          title,
+          activeSchool?.city,
+          activeSchool?.country,
+          schoolId,
+          activeSchool?.id
+        )
+      );
+    });
+
+    return countSchoolVacancies(filtered, activeSchool?.country);
+  }, [
+    schoolJobsData,
+    adminJobsData,
+    activeSchool?.country,
+    activeSchool?.city,
+    activeSchool?.id,
+    isInvalidNonJobTitle,
+    isCityOrCampusMismatch,
+  ]);
 
   // 📅 Compute earliest posted date among processed jobs
   const earliestPosted = useMemo(() => {
