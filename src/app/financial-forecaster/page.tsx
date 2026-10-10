@@ -138,6 +138,60 @@ export function formatVacancyClosingDate(rawDate?: string): { text: string; dotC
   return { text: `· ${clean}`, dotClass: "bg-emerald-400" };
 }
 
+/**
+ * Strictly parses a plain integer from 1 to 1000.
+ * Skips text like "8500%" or "30% Expat / 70% Local" and numbers outside 1..1000.
+ */
+export function parsePlainStaffNumber(val: any): number | null {
+  if (val === null || val === undefined) return null;
+  if (typeof val === 'number') {
+    if (Number.isFinite(val) && val >= 1 && val <= 1000) return Math.round(val);
+    return null;
+  }
+  if (typeof val === 'string') {
+    const trimmed = val.trim();
+    // Only accept plain numbers (digits, optional thousands comma) without percentage or text
+    if (/^\d{1,4}$/.test(trimmed) || /^\d{1,3},\d{3}$/.test(trimmed)) {
+      const n = parseInt(trimmed.replace(/,/g, ''), 10);
+      if (!isNaN(n) && n >= 1 && n <= 1000) return n;
+    }
+  }
+  return null;
+}
+
+/**
+ * Resolves the staff base in standard priority:
+ * 1. staffcount (if valid plain number 1..1000)
+ * 2. numericalstaff (if valid plain number 1..1000)
+ * 3. estimatedStaffBase from stabilityReport / cachedStability (if valid plain number 1..1000)
+ * 4. fallbackDefault (default 80)
+ */
+export function getEffectiveStaffBase(
+  school: any,
+  stabilityReport?: any,
+  fallbackDefault: number = 80
+): { staffBase: number; isStated: boolean } {
+  const staffCount = parsePlainStaffNumber(school?.staffcount);
+  if (staffCount !== null) {
+    return { staffBase: staffCount, isStated: true };
+  }
+
+  const numericalStaff = parsePlainStaffNumber(school?.numericalstaff);
+  if (numericalStaff !== null) {
+    return { staffBase: numericalStaff, isStated: true };
+  }
+
+  const estimatedBase = parsePlainStaffNumber(
+    stabilityReport?.metrics?.estimatedStaffBase ||
+    school?.cachedStability?.metrics?.estimatedStaffBase
+  );
+  if (estimatedBase !== null) {
+    return { staffBase: estimatedBase, isStated: false };
+  }
+
+  return { staffBase: fallbackDefault, isStated: false };
+}
+
 const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900, TZS: 3308, KES: 165
@@ -635,7 +689,7 @@ function DecoderContent() {
       if (masterDoc) {
         const merged: Record<string, any> = { ...masterDoc, ...foundDoc };
         const fieldsToInherit = [
-          'salary', 'startingSalary', 'expectedSalary5Years', 'salary5YearsExp', 'salaryrange',
+          'salary', 'salaryrange',
           'netbase', 'netmonthlyusd', 'salaryrangeusd', 'cost_savings_rating', 'overall_rating',
           'academic_rating', 'city_safety', 'housingprovision', 'housing', 'accommodation',
           'noncontacttime', 'classsize', 'approvals', 'curriculum', 'profitstatus', 'briefing',
@@ -1290,11 +1344,7 @@ function DecoderContent() {
       setStabilityReport(null);
     }
     try {
-      let staffBaseVal = parseInt(String(activeSchool.numericalstaff || activeSchool.staffcount || "80").replace(/[^0-9]/g, ''), 10) || 80;
-      if (staffBaseVal > 1000 && activeSchool.staffcount) {
-        const alt = parseInt(String(activeSchool.staffcount).replace(/[^0-9]/g, ''), 10);
-        if (alt > 0 && alt <= 1000) staffBaseVal = alt;
-      }
+      const { staffBase: staffBaseVal } = getEffectiveStaffBase(activeSchool, undefined, 80);
       const res = await getSchoolStabilityReport({
         schoolId: activeSchool.id,
         schoolName: activeSchool.schoolname || activeSchool.school || activeSchool.name,
@@ -4301,8 +4351,10 @@ function DecoderContent() {
                               // Read pre-calculated allProcessedJobs from component scope
                               const processedJobs12 = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const knownVacanciesCount = Math.max(processedJobs12.length, stabilityReport.metrics?.totalKnownVacancies || stabilityReport.total_known_vacancies || 0);
-                              const churnRate = stabilityReport.metrics?.estimatedStaffBase
-                                ? Math.round((knownVacanciesCount / stabilityReport.metrics.estimatedStaffBase) * 100)
+                              const { staffBase: effectiveStaffBase, isStated } = getEffectiveStaffBase(activeSchool, stabilityReport, 0);
+                              const statedStaffCount = isStated ? effectiveStaffBase : null;
+                              const churnRate = effectiveStaffBase
+                                ? Math.round((knownVacanciesCount / effectiveStaffBase) * 100)
                                 : (stabilityReport.metrics?.estimatedChurnRatePercent || 0);
 
                               const currentJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
@@ -4339,9 +4391,9 @@ function DecoderContent() {
                                     <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                       <li className="flex items-start">
                                         <div className="space-y-1">
-                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Est. Staff Base</p>
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">{statedStaffCount ? "Staff Base" : "Est. Staff Base"}</p>
                                           <p className="text-sm font-black text-white tracking-tighter">
-                                            {stabilityReport.metrics?.estimatedStaffBase || '—'}
+                                            {effectiveStaffBase || '—'}
                                           </p>
                                         </div>
                                       </li>

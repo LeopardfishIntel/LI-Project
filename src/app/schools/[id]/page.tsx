@@ -328,7 +328,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   };
 
   // 💰 Aggressive Finance Mapping declared at the very top to prevent Temporal Dead Zone ReferenceErrors
-  const rawFinance = (school as any)?.salary_scale_5yr_net || (school as any)?.net_salary || school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || (school as any)?.salaryRange || (school as any)?.expectedSalary5Years || '—';
+  const rawFinance = (school as any)?.salary_scale_5yr_net || (school as any)?.net_salary || school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.salaryValue || (school as any)?.salaryRange || '—';
   const schoolCurrency = (school as any)?.currency || (school as any)?.salaryCurrency || 'USD';
   const salaryNum = parseSalaryToMedianMonthlyUSD(rawFinance, school?.country || (school as any)?.location, schoolCurrency);
 

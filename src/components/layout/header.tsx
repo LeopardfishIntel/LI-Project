@@ -460,9 +460,6 @@ export default function Header() {
                 </div>
                 <div className="text-left hidden sm:block">
                   <p className="text-[10px] font-black uppercase text-white leading-none">{operativeName}</p>
-                  <p className="text-[9px] font-bold text-[#007FFF] leading-none mt-1 tracking-widest uppercase">
-                    {teacherId}
-                  </p>
                 </div>
                 <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-500/20">
                   ⚡ {remainingEvaluations}
