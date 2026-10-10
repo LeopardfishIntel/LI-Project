@@ -192,6 +192,16 @@ export function getEffectiveStaffBase(
   return { staffBase: fallbackDefault, isStated: false };
 }
 
+export function getAcademicStaff(school: any): number | null {
+  const staffCount = parsePlainStaffNumber(school?.staffcount);
+  const numericalStaff = parsePlainStaffNumber(school?.numericalstaff);
+
+  if (staffCount !== null && numericalStaff !== null && numericalStaff < staffCount) {
+    return numericalStaff;
+  }
+  return null;
+}
+
 const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900, TZS: 3308, KES: 165
@@ -4391,9 +4401,9 @@ function DecoderContent() {
                                     <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                       <li className="flex items-start">
                                         <div className="space-y-1">
-                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">{statedStaffCount ? "Staff Base" : "Est. Staff Base"}</p>
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Est. Academic Staff</p>
                                           <p className="text-sm font-black text-white tracking-tighter">
-                                            {effectiveStaffBase || '—'}
+                                            {getAcademicStaff(activeSchool) ?? "Not known"}
                                           </p>
                                         </div>
                                       </li>
