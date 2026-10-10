@@ -1167,9 +1167,7 @@ function DecoderContent() {
   }, [schoolJobsData, adminJobsData, stabilityReport, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
 
   const vacancyCounts = useMemo(() => {
-    const hasSchoolJobs = schoolJobsData && schoolJobsData.length > 0;
-    const hasAdminJobs = adminJobsData && adminJobsData.length > 0;
-    if (!hasSchoolJobs && !hasAdminJobs) return null;
+    if (!schoolJobsData && !adminJobsData) return null;
 
     const rawList = [...(schoolJobsData || []), ...(adminJobsData || [])];
 
@@ -4444,17 +4442,23 @@ function DecoderContent() {
                                       </li>
                                       <li className="flex items-start">
                                         <div className="space-y-1">
-                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Known Vacancies</p>
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Known Vacancies Found</p>
                                           <p className="text-sm font-black text-white tracking-tighter">
-                                            {knownVacanciesCount}
+                                            {vacancyCounts ? vacancyCounts.currentYear.count : "—"}
+                                          </p>
+                                          <p className="text-[10px] text-slate-400 font-medium">
+                                            {vacancyCounts?.currentYear.label}
                                           </p>
                                         </div>
                                       </li>
                                       <li className="flex items-start">
                                         <div className="space-y-1">
-                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Est. Churn Rate</p>
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Known Vacancies Found</p>
                                           <p className="text-sm font-black text-white tracking-tighter">
-                                            {isUnavailable ? "—" : `${churnRate}%`}
+                                            {vacancyCounts ? vacancyCounts.previousYear.count : "—"}
+                                          </p>
+                                          <p className="text-[10px] text-slate-400 font-medium">
+                                            {vacancyCounts?.previousYear.label}
                                           </p>
                                         </div>
                                       </li>
